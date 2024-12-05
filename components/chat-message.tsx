@@ -11,67 +11,63 @@ interface ChatMessageProps {
   content: string
   isTyping?: boolean
   onNewMessage?: (message: { role: 'user' | 'assistant', content: string }) => void
+  oddsType?: string | null // Add oddsType prop
 }
 
 const SAMPLE_ODDS = {
-  basketball: {
-    event: "Los Angeles Lakers vs Golden State Warriors",
-    markets: [
+  "basketball": {
+    "event": "Los Angeles Lakers vs Golden State Warriors",
+    "markets": [
       {
-        name: "Money Line",
-        options: [
-          { name: "Lakers", odds: "-150" },
-          { name: "Warriors", odds: "+130" }
-        ]
-      },
-      {
-        name: "Point Spread",
-        options: [
-          { name: "Lakers -3.5", odds: "-110" },
-          { name: "Warriors +3.5", odds: "-110" }
-        ]
-      },
-      {
-        name: "Total Points",
-        options: [
-          { name: "Over 235.5", odds: "-115" },
-          { name: "Under 235.5", odds: "-105" }
+        "name": "Money Line",
+        "options": [
+          { "name": "Lakers", "odds": "1.67" },
+          { "name": "Warriors", "odds": "2.30" }
         ]
       }
     ]
   },
-  soccer: {
-    event: "Manchester City vs Real Madrid",
-    markets: [
+  "soccer": {
+    "event": "Manchester City vs Real Madrid",
+    "markets": [
       {
-        name: "Match Result",
-        options: [
-          { name: "Man City", odds: "-120" },
-          { name: "Real Madrid", odds: "+280" }
+        "name": "Match Result",
+        "options": [
+          { "name": "Man City", "odds": "1.83" },
+          { "name": "Real Madrid", "odds": "3.80" }
         ]
-      },
+      }
+    ]
+  },
+  "f1": {
+    "event": "Monaco Grand Prix",
+    "markets": [
       {
-        name: "Total Goals",
-        options: [
-          { name: "Over 2.5", odds: "-130" },
-          { name: "Under 2.5", odds: "+110" }
+        "name": "Race Winner",
+        "options": [
+          { "name": "Lewis Hamilton", "odds": "2.50" },
+          { "name": "Max Verstappen", "odds": "2.75" }
         ]
-      },
+      }
+    ]
+  },
+  "ufc": {
+    "event": "UFC 312: Alex Pereira vs Jamal Hill 2",
+    "markets": [
       {
-        name: "Both Teams to Score",
-        options: [
-          { name: "Yes", odds: "-150" },
-          { name: "No", odds: "+120" }
+        "name": "Fight Winner",
+        "options": [
+          { "name": "Alex Pereira", "odds": "2.10" },
+          { "name": "Jamal Hill", "odds": "1.80" }
         ]
       }
     ]
   }
 }
 
-export function ChatMessage({ role, content, isTyping, onNewMessage }: ChatMessageProps) {
+export function ChatMessage({ role, content, isTyping, onNewMessage, oddsType }: ChatMessageProps) {
   const showOdds = role === 'assistant' && !isTyping
   const showBetConfirmation = content.toLowerCase().includes('i\'ve placed your bet')
-  const oddsType = showBetConfirmation ? null : 'basketball'
 
   const handlePlaceBet = (bet: any) => {
     if (onNewMessage) {
@@ -114,6 +110,7 @@ export function ChatMessage({ role, content, isTyping, onNewMessage }: ChatMessa
           </div>
         </div>
       )}
+      <div className="h-8 md:hidden"></div> {/* Adjust height as needed */}
     </div>
   )
 }

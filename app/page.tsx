@@ -9,20 +9,20 @@ import { cn } from '@/lib/utils'
 import { useChatScroll } from '@/hooks/use-chat-scroll'
 
 const suggestions = [
-  { icon: Calendar, text: "Show me betting tips for Premier League this weekend" },
-  { icon: Trophy, text: "What are the odds for Lakers vs Warriors tonight?" },
-  { icon: TrendingUp, text: "Analyze Manchester City's recent performance" },
-  { icon: Zap, text: "Give me the best value bets for tomorrow's matches" }
+  { icon: TrendingUp, text: "What are the odds for Lakers vs Warriors?" },
+  { icon: Zap, text: "How do the odds look for Man City vs Real Madrid?" },
+  { icon: Trophy, text: "Who is the favorite in the Monaco Grand Prix?" },
+  { icon: Calendar, text: "What are the odds for UFC 312: Pereira vs Hill?" }
 ]
 
 export default function Home() {
-  const [messages, setMessages] = useState<Array<{ role: 'user' | 'assistant', content: string }>>([])
+  const [messages, setMessages] = useState<Array<{ role: 'user' | 'assistant', content: string, oddsType?: string | null }>>([])
   const [input, setInput] = useState('')
   const [showInitial, setShowInitial] = useState(true)
   const [isTyping, setIsTyping] = useState(false)
   const { messagesEndRef } = useChatScroll(messages, isTyping)
 
-  const handleNewMessage = (message: { role: 'user' | 'assistant', content: string }) => {
+  const handleNewMessage = (message: { role: 'user' | 'assistant', content: string, oddsType?: string | null }) => {
     setMessages(prev => [...prev, message])
     setShowInitial(false)
   }
@@ -30,6 +30,18 @@ export default function Home() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!input.trim()) return
+
+    // Determine the oddsType based on the input
+    let oddsType: string | null = null
+    if (input.toLowerCase().includes("lakers vs warriors")) {
+      oddsType = "basketball"
+    } else if (input.toLowerCase().includes("man city vs real madrid")) {
+      oddsType = "soccer"
+    } else if (input.toLowerCase().includes("monaco grand prix")) {
+      oddsType = "f1"
+    } else if (input.toLowerCase().includes("ufc 312") || input.toLowerCase().includes("pereira vs hill")) {
+      oddsType = "ufc"
+    }
 
     // Add user message immediately
     handleNewMessage({ role: 'user', content: input })
@@ -39,10 +51,11 @@ export default function Home() {
     setIsTyping(true)
     await new Promise(resolve => setTimeout(resolve, 1000))
 
-    // Add assistant response
+    // Add assistant response with oddsType
     handleNewMessage({ 
       role: 'assistant', 
-      content: `Based on the latest data and odds, here's what I found for "${input}". I've highlighted the best betting opportunities below.`
+      content: `Based on the latest data and odds, here's what I found for "${input}". I've highlighted the best betting opportunities below.`,
+      oddsType: oddsType
     })
     setIsTyping(false)
   }
