@@ -1,0 +1,144 @@
+{
+  "featured": {
+    "id": "featured-1",
+    "title": "Champions League Final Betting Preview",
+    "description": "In-depth analysis of Manchester City vs Real Madrid, including key statistics, player matchups, and betting value opportunities.",
+    "image": "https://images.unsplash.com/photo-1522778119026-d647f0596c20?q=80&w=2156&auto=format&fit=crop",
+    "author": "Michael Thompson",
+    "readTime": "8 min",
+    "category": "Football",
+    "date": "2024-03-21T08:00:00Z"
+  },
+  "articles": [
+    {
+      "id": "1",
+      "title": "NBA Playoff Race: Eastern Conference Betting Guide",
+      "description": "Breaking down the odds for the final playoff spots in the East, with focus on the Knicks, Heat, and 76ers' crucial matchups.",
+      "image": "https://images.unsplash.com/photo-1546519638-68e109498ffc?q=80&w=2156&auto=format&fit=crop",
+      "author": "James Wilson",
+      "readTime": "6 min",
+      "category": "Basketball",
+      "date": "2024-03-20T15:30:00Z"
+    },
+    {
+      "id": "2",
+      "title": "Australian Open 2024: Men's Singles Analysis",
+      "description": "Statistical deep dive into the top seeds' form and historical performance on hard courts.",
+      "image": "https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?q=80&w=2156&auto=format&fit=crop",
+      "author": "Sarah Chen",
+      "readTime": "5 min",
+      "category": "Tennis",
+      "date": "2024-03-20T09:15:00Z"
+    },
+    {
+      "id": "3",
+      "title": "Premier League Golden Boot Race",
+      "description": "Analyzing the top scorers' remaining fixtures and their odds of claiming the scoring title.",
+      "image": "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?q=80&w=2156&auto=format&fit=crop",
+      "author": "David Brooks",
+      "readTime": "7 min",
+      "category": "Football",
+      "date": "2024-03-19T16:45:00Z"
+    }
+  ],
+  "competitions": [
+    {
+      "id": "cl-final-2024",
+      "name": "UEFA Champions League Final",
+      "teams": ["Manchester City", "Real Madrid"],
+      "date": "2024-05-25T19:00:00Z",
+      "venue": "Wembley Stadium, London",
+      "odds": {
+        "homeWin": 1.95,
+        "draw": 3.50,
+        "awayWin": 3.80
+      },
+      "analysis": "Manchester City's recent form suggests they're favorites, but Real Madrid's Champions League experience can't be underestimated."
+    },
+    {
+      "id": "nba-ecf-2024",
+      "name": "NBA Eastern Conference Finals",
+      "teams": ["Boston Celtics", "Milwaukee Bucks"],
+      "date": "2024-05-15T23:00:00Z",
+      "venue": "TD Garden, Boston",
+      "odds": {
+        "homeSeries": 1.75,
+        "awaySeries": 2.15
+      },
+      "analysis": "Celtics' home court advantage and superior regular season record make them slight favorites."
+    },
+    {
+      "id": "aus-open-2024",
+      "name": "Australian Open Men's Final",
+      "teams": ["Novak Djokovic", "Carlos Alcaraz"],
+      "date": "2024-01-28T08:30:00Z",
+      "venue": "Rod Laver Arena, Melbourne",
+      "odds": {
+        "player1": 1.85,
+        "player2": 2.00
+      },
+      "analysis": "Djokovic's incredible Australian Open record versus Alcaraz's youth and recent form."
+    }
+  ],
+  "teams": [
+    {
+      "id": "man-city",
+      "name": "Manchester City",
+      "sport": "Football",
+      "currentForm": "WWDWW",
+      "keyStats": {
+        "goalsScored": 68,
+        "goalsConceded": 24,
+        "winRate": 0.76,
+        "cleanSheets": 14
+      },
+      "starPlayers": [
+        {
+          "name": "Erling Haaland",
+          "position": "Striker",
+          "stats": "28 goals in 27 games"
+        }
+      ],
+      "recentPerformance": "Top of the Premier League with strong Champions League campaign"
+    },
+    {
+      "id": "bos-celtics",
+      "name": "Boston Celtics",
+      "sport": "Basketball",
+      "currentForm": "WWWLW",
+      "keyStats": {
+        "pointsPerGame": 120.8,
+        "pointsAllowed": 109.2,
+        "winRate": 0.82,
+        "netRating": 11.6
+      },
+      "starPlayers": [
+        {
+          "name": "Jayson Tatum",
+          "position": "Forward",
+          "stats": "27.4 PPG, 8.5 RPG"
+        }
+      ],
+      "recentPerformance": "Leading the Eastern Conference with best NBA record"
+    },
+    {
+      "id": "ny-yankees",
+      "name": "New York Yankees",
+      "sport": "Baseball",
+      "currentForm": "LWLWW",
+      "keyStats": {
+        "homeRuns": 210,
+        "battingAverage": 0.275,
+        "winRate": 0.65
+      },
+      "starPlayers": [
+        {
+          "name": "Aaron Judge",
+          "position": "Outfielder",
+          "stats": "45 home runs, 102 RBIs"
+        }
+      ],
+      "recentPerformance": "Second in the AL East with a strong playoff push"
+    }
+  ]
+}
