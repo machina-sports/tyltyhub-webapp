@@ -5,16 +5,32 @@ import { BettingOddsBox } from './betting-odds-box'
 import { RelatedArticles } from './article/related-articles'
 import { Loader2 } from 'lucide-react'
 import { ChatBubble } from './chat/bubble'
+import { useChatState } from '@/hooks/use-chat-state'
 
 interface ChatMessageProps {
   role: 'user' | 'assistant'
   content: string
   isTyping?: boolean
-  onNewMessage?: (message: { role: 'user' | 'assistant', content: string }) => void
-  oddsType?: string | null // Add oddsType prop
+  onNewMessage?: (message: { role: 'user' | 'assistant', content: string, oddsType?: string | null }) => void
+  oddsType?: string | null
 }
 
-const SAMPLE_ODDS = {
+interface OddsData {
+  event: string;
+  markets: {
+    name: string;
+    options: {
+      name: string;
+      odds: string;
+    }[];
+  }[];
+}
+
+interface SampleOddsType {
+  [key: string]: OddsData;
+}
+
+const SAMPLE_ODDS: SampleOddsType = {
   "basketball": {
     "event": "Los Angeles Lakers vs Golden State Warriors",
     "markets": [
@@ -62,27 +78,76 @@ const SAMPLE_ODDS = {
         ]
       }
     ]
+  },
+  "cwc-group-a": {
+    "event": "Real Madrid vs Al Ahly",
+    "markets": [
+      {
+        "name": "Match Result",
+        "options": [
+          { "name": "Real Madrid", "odds": "1.45" },
+          { "name": "Al Ahly", "odds": "5.50" }
+        ]
+      }
+    ]
+  },
+  "cwc-group-b": {
+    "event": "Manchester City vs Flamengo",
+    "markets": [
+      {
+        "name": "Match Result",
+        "options": [
+          { "name": "Man City", "odds": "1.60" },
+          { "name": "Flamengo", "odds": "4.20" }
+        ]
+      }
+    ]
+  },
+  "cwc-general": {
+    "event": "FIFA Club World Cup 2025",
+    "markets": [
+      {
+        "name": "Tournament Winner",
+        "options": [
+          { "name": "Real Madrid", "odds": "2.10" },
+          { "name": "Man City", "odds": "2.35" }
+        ]
+      }
+    ]
+  },
+  "cwc-final": {
+    "event": "FIFA Club World Cup Final",
+    "markets": [
+      {
+        "name": "Final Winner",
+        "options": [
+          { "name": "Real Madrid", "odds": "2.10" },
+          { "name": "Man City", "odds": "2.35" }
+        ]
+      }
+    ]
   }
 }
 
 export function ChatMessage({ role, content, isTyping, onNewMessage, oddsType }: ChatMessageProps) {
+  const { addMessage } = useChatState()
   const showOdds = role === 'assistant' && !isTyping
   const showBetConfirmation = content.toLowerCase().includes('i\'ve placed your bet')
 
   const handlePlaceBet = (bet: any) => {
-    if (onNewMessage) {
-      // Add user message showing the bet details
-      onNewMessage({
-        role: 'user',
-        content: `Bet $${bet.stake} on ${bet.selection} (${bet.odds}) - ${bet.event}`
-      })
-      
-      // Add Bookie confirmation message
-      onNewMessage({
-        role: 'assistant',
-        content: `I've placed your bet: $${bet.stake} on ${bet.selection} at ${bet.odds} for the ${bet.event}. Good luck! 🍀\n\nIs there anything else you'd like to know about this match?`
-      })
-    }
+    const messageHandler = onNewMessage || addMessage
+    
+    // Add user message showing the bet details
+    messageHandler({
+      role: 'user',
+      content: `Bet $${bet.stake} on ${bet.selection} (${bet.odds}) - ${bet.event}`
+    })
+    
+    // Add Bookie confirmation message
+    messageHandler({
+      role: 'assistant',
+      content: `I've placed your bet: $${bet.stake} on ${bet.selection} at ${bet.odds} for the ${bet.event}. Good luck! 🍀\n\nIs there anything else you'd like to know about this match?`
+    })
   }
 
   return (
@@ -102,7 +167,7 @@ export function ChatMessage({ role, content, isTyping, onNewMessage, oddsType }:
         </div>
       </ChatBubble>
       
-      {showOdds && oddsType && !showBetConfirmation && (
+      {showOdds && oddsType && !showBetConfirmation && SAMPLE_ODDS[oddsType] && (
         <div className="mt-4 pl-14">
           <BettingOddsBox {...SAMPLE_ODDS[oddsType]} onPlaceBet={handlePlaceBet} />
           <div className="mt-6 -mx-4 md:mx-0">

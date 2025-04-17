@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { ChatMessage } from '@/components/chat-message'
 import { cn } from '@/lib/utils'
 import { useChatScroll } from '@/hooks/use-chat-scroll'
+import { useChatState } from '@/hooks/use-chat-state'
 
 const suggestions = [
   { icon: TrendingUp, text: "What are the odds for Real Madrid today?" },
@@ -16,16 +17,15 @@ const suggestions = [
 ]
 
 export default function Home() {
-  const [messages, setMessages] = useState<Array<{ role: 'user' | 'assistant', content: string, oddsType?: string | null }>>([])
   const [input, setInput] = useState('')
-  const [showInitial, setShowInitial] = useState(true)
-  const [isTyping, setIsTyping] = useState(false)
+  const { 
+    messages, 
+    showInitial, 
+    isTyping, 
+    addMessage, 
+    setIsTyping 
+  } = useChatState()
   const { messagesEndRef } = useChatScroll(messages, isTyping)
-
-  const handleNewMessage = (message: { role: 'user' | 'assistant', content: string, oddsType?: string | null }) => {
-    setMessages(prev => [...prev, message])
-    setShowInitial(false)
-  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -44,7 +44,7 @@ export default function Home() {
     }
 
     // Add user message immediately
-    handleNewMessage({ role: 'user', content: input })
+    addMessage({ role: 'user', content: input })
     setInput('')
 
     // Show typing indicator for assistant response
@@ -52,7 +52,7 @@ export default function Home() {
     await new Promise(resolve => setTimeout(resolve, 1000))
 
     // Add assistant response with oddsType
-    handleNewMessage({ 
+    addMessage({ 
       role: 'assistant', 
       content: `Based on the latest FIFA Club World Cup data and odds, here's what I found for "${input}". I've highlighted the best betting opportunities below.`,
       oddsType: oddsType
@@ -107,7 +107,7 @@ export default function Home() {
               <ChatMessage 
                 key={index} 
                 {...message} 
-                onNewMessage={handleNewMessage}
+                onNewMessage={addMessage}
                 isTyping={false}
               />
             ))}
@@ -116,7 +116,7 @@ export default function Home() {
                 role="assistant"
                 content=""
                 isTyping={true}
-                onNewMessage={handleNewMessage}
+                onNewMessage={addMessage}
               />
             )}
           </div>

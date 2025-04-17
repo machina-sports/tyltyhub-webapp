@@ -3,6 +3,7 @@
 import { ArrowLeft, Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { usePathname, useRouter } from "next/navigation"
+import { useChatState } from "@/hooks/use-chat-state"
 
 interface MobileHeaderProps {
   onMenuClick: () => void
@@ -11,12 +12,21 @@ interface MobileHeaderProps {
 export function MobileHeader({ onMenuClick }: MobileHeaderProps) {
   const pathname = usePathname()
   const router = useRouter()
+  const { resetChat } = useChatState()
   const isArticlePage = pathname.startsWith("/discover/") && pathname !== "/discover"
   
   const getPageTitle = () => {
     if (isArticlePage) return "Article"
     if (pathname === "/discover") return "Discover"
     return "Home"
+  }
+
+  const handleHomeNavigation = () => {
+    if (pathname === '/') {
+      resetChat()
+    } else {
+      router.push('/')
+    }
   }
 
   return (
@@ -31,7 +41,10 @@ export function MobileHeader({ onMenuClick }: MobileHeaderProps) {
           <Menu className="h-5 w-5" />
         </Button>
         
-        <h1 className="text-lg font-semibold">
+        <h1 
+          className="text-lg font-semibold cursor-pointer" 
+          onClick={handleHomeNavigation}
+        >
           {getPageTitle()}
         </h1>
 

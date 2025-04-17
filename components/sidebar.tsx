@@ -3,12 +3,13 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useTheme } from 'next-themes'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Home, Compass, History, Sun, Moon, X } from 'lucide-react'
 import { MobileHeader } from './mobile-header'
+import { useChatState } from '@/hooks/use-chat-state'
 
 interface Route {
   label: string
@@ -31,13 +32,22 @@ const routes: Route[] = [
 
 export function Sidebar() {
   const pathname = usePathname()
+  const router = useRouter()
   const { theme, setTheme } = useTheme()
+  const { resetChat } = useChatState()
   const [mounted, setMounted] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
 
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  const handleNavigation = (href: string) => {
+    if (href === '/') {
+      resetChat()
+    }
+    router.push(href)
+  }
 
   return (
     <>
@@ -49,7 +59,10 @@ export function Sidebar() {
         isOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="px-3 py-2 flex-1 flex flex-col">
-          <Link href="/" className="flex items-center justify-center pl-3 mb-6">
+          <div 
+            onClick={() => handleNavigation('/')} 
+            className="flex items-center justify-center pl-3 mb-6 cursor-pointer"
+          >
             <Image 
               src="/sb-logo.png" 
               alt="SportingBet Logo" 
@@ -57,8 +70,11 @@ export function Sidebar() {
               height={50}
               priority
             />
-          </Link>
-          <Link href="/" className="flex items-center justify-center pl-3 mb-14">
+          </div>
+          <div 
+            onClick={() => handleNavigation('/')} 
+            className="flex items-center justify-center pl-3 mb-14 cursor-pointer"
+          >
             <Image 
               src="/cwc-logo.png" 
               alt="FIFA Club World Cup Logo" 
@@ -66,7 +82,7 @@ export function Sidebar() {
               height={36}
               priority
             />
-          </Link>
+          </div>
           <div className="space-y-1">
             {routes.map((route) => (
               <Button
@@ -76,12 +92,10 @@ export function Sidebar() {
                   "w-full justify-start",
                   pathname === route.href && "bg-secondary"
                 )}
-                asChild
+                onClick={() => handleNavigation(route.href)}
               >
-                <Link href={route.href}>
-                  <route.icon className="h-5 w-5 mr-3" />
-                  {route.label}
-                </Link>
+                <route.icon className="h-5 w-5 mr-3" />
+                {route.label}
               </Button>
             ))}
           </div>
