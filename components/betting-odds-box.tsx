@@ -15,9 +15,34 @@ interface Market {
   }[]
 }
 
+// Dummy data for betting markets
+const DUMMY_MARKETS: Market[] = [
+  {
+    name: "Match Winner",
+    options: [
+      { name: "Home Team", odds: "+150" },
+      { name: "Away Team", odds: "-120" }
+    ]
+  },
+  {
+    name: "Total Points",
+    options: [
+      { name: "Over 2.5", odds: "-110" },
+      { name: "Under 2.5", odds: "+105" }
+    ]
+  },
+  {
+    name: "First Goal Scorer",
+    options: [
+      { name: "Player A", odds: "+500" },
+      { name: "Player B", odds: "+650" }
+    ]
+  }
+]
+
 interface BettingOddsBoxProps {
   event: string
-  markets: Market[]
+  markets?: Market[]
   onPlaceBet: (bet: {
     event: string
     market: string
@@ -27,7 +52,7 @@ interface BettingOddsBoxProps {
   }) => void
 }
 
-export function BettingOddsBox({ event, markets, onPlaceBet }: BettingOddsBoxProps) {
+export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: BettingOddsBoxProps) {
   const [selectedBet, setSelectedBet] = useState<{
     market: string
     selection: string
@@ -99,7 +124,7 @@ export function BettingOddsBox({ event, markets, onPlaceBet }: BettingOddsBoxPro
   
         {!showConfirmation ? (
           <div className="space-y-4">
-            {markets.map((market, index) => (
+            {markets && markets.length > 0 ? markets.map((market, index) => (
               <div key={index} className="space-y-3">
                 <p className="text-base text-gray-600">{market.name}</p>
                 <div className="grid grid-cols-2 gap-3">
@@ -124,7 +149,9 @@ export function BettingOddsBox({ event, markets, onPlaceBet }: BettingOddsBoxPro
                   ))}
                 </div>
               </div>
-            ))}
+            )) : (
+              <p className="text-gray-500 text-center py-4">No betting markets available</p>
+            )}
           </div>
         ) : (
           <div className="space-y-5">

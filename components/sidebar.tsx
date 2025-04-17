@@ -26,12 +26,7 @@ const routes: Route[] = [
     label: 'Discover',
     icon: Compass,
     href: '/discover',
-  },
-  {
-    label: 'My Bets',
-    icon: History,
-    href: '/my-bets',
-  },
+  }
 ]
 
 export function Sidebar() {
@@ -54,12 +49,21 @@ export function Sidebar() {
         isOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="px-3 py-2 flex-1 flex flex-col">
-          <Link href="/" className="flex items-center justify-center pl-3 mb-14">
+          <Link href="/" className="flex items-center justify-center pl-3 mb-6">
             <Image 
               src="/sb-logo.png" 
               alt="SportingBet Logo" 
               width={150} 
               height={50}
+              priority
+            />
+          </Link>
+          <Link href="/" className="flex items-center justify-center pl-3 mb-14">
+            <Image 
+              src="/cwc-logo.png" 
+              alt="FIFA Club World Cup Logo" 
+              width={110} 
+              height={36}
               priority
             />
           </Link>

@@ -9,10 +9,10 @@ import { cn } from '@/lib/utils'
 import { useChatScroll } from '@/hooks/use-chat-scroll'
 
 const suggestions = [
-  { icon: TrendingUp, text: "What are the odds for Lakers vs Warriors?" },
-  { icon: Zap, text: "How do the odds look for Man City vs Real Madrid?" },
-  { icon: Trophy, text: "Who is the favorite in the Monaco Grand Prix?" },
-  { icon: Calendar, text: "What are the odds for UFC 312: Pereira vs Hill?" }
+  { icon: TrendingUp, text: "What are the odds for Real Madrid today?" },
+  { icon: Zap, text: "Is Man City favored against Flamengo?" },
+  { icon: Trophy, text: "Who's likely to score in Bayern vs Inter?" },
+  { icon: Calendar, text: "Can Flamengo win their match?" }
 ]
 
 export default function Home() {
@@ -33,14 +33,14 @@ export default function Home() {
 
     // Determine the oddsType based on the input
     let oddsType: string | null = null
-    if (input.toLowerCase().includes("lakers vs warriors")) {
-      oddsType = "basketball"
-    } else if (input.toLowerCase().includes("man city vs real madrid")) {
-      oddsType = "soccer"
-    } else if (input.toLowerCase().includes("monaco grand prix")) {
-      oddsType = "f1"
-    } else if (input.toLowerCase().includes("ufc 312") || input.toLowerCase().includes("pereira vs hill")) {
-      oddsType = "ufc"
+    if (input.toLowerCase().includes("real madrid") || input.toLowerCase().includes("al ahly")) {
+      oddsType = "cwc-group-a"
+    } else if (input.toLowerCase().includes("manchester city") || input.toLowerCase().includes("flamengo")) {
+      oddsType = "cwc-group-b"
+    } else if (input.toLowerCase().includes("club world cup") || input.toLowerCase().includes("fifa cwc")) {
+      oddsType = "cwc-general"
+    } else if (input.toLowerCase().includes("final") || input.toLowerCase().includes("winner")) {
+      oddsType = "cwc-final"
     }
 
     // Add user message immediately
@@ -54,7 +54,7 @@ export default function Home() {
     // Add assistant response with oddsType
     handleNewMessage({ 
       role: 'assistant', 
-      content: `Based on the latest data and odds, here's what I found for "${input}". I've highlighted the best betting opportunities below.`,
+      content: `Based on the latest FIFA Club World Cup data and odds, here's what I found for "${input}". I've highlighted the best betting opportunities below.`,
       oddsType: oddsType
     })
     setIsTyping(false)
@@ -77,7 +77,7 @@ export default function Home() {
                 <Input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Search for matches, odds, or teams..."
+                  placeholder="Search for teams, matches, or Club World Cup odds..."
                   className="w-full h-12 pl-4 pr-12 rounded-lg bg-secondary/50 border-0"
                 />
                 <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
@@ -130,7 +130,7 @@ export default function Home() {
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask a follow-up question..."
+              placeholder="Ask about FIFA Club World Cup odds, teams, or matches..."
               className="w-full h-12 pl-4 pr-12 rounded-lg bg-secondary/50 border-0"
             />
             <div className="absolute right-2 top-1/2 -translate-y-1/2">

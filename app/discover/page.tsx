@@ -1,41 +1,42 @@
 "use client"
 
 import { useState } from "react"
-import { Newspaper, Users, Trophy } from "lucide-react"
+import { Newspaper, Users } from "lucide-react"
 import { 
   Tabs, 
   TabsContent, 
   TabsList, 
   TabsTrigger 
 } from "@/components/ui/tabs"
-import { SportFilter } from "@/components/discover/sport-filter"
+import { SportFilter, TeamFilter } from "@/components/discover/sport-filter"
 import { FeaturedArticle } from "@/components/discover/featured-article"
 import { ArticleGrid } from "@/components/discover/article-grid"
 import { TeamsGrid } from "@/components/discover/teams-grid"
-import { CompetitionsGrid } from "@/components/discover/competitions-grid"
 import discoverData from "@/data/discover.json"
+import teamsData from "@/data/teams.json"
+
+// Define Team type to match the interface in TeamsGrid
+interface Team {
+  id: string
+  name: string
+  logo: string
+  league: string
+}
 
 export default function DiscoverPage() {
-  const [selectedSport, setSelectedSport] = useState("all sports")
+  const [selectedTeam, setSelectedTeam] = useState("all-teams")
   const [activeTab, setActiveTab] = useState("news")
 
-  const filteredArticles = selectedSport === "all sports"
+  // Filter articles based on selected team
+  const filteredArticles = selectedTeam === "all-teams"
     ? discoverData.articles
-    : discoverData.articles.filter(article => 
-        article.category.toLowerCase() === selectedSport
-      )
-
-  const filteredTeams = selectedSport === "all sports"
-    ? discoverData.teams
-    : discoverData.teams.filter(team => 
-        team.sport.toLowerCase() === selectedSport
-      )
-
-  const filteredCompetitions = selectedSport === "all sports"
-    ? discoverData.competitions
-    : discoverData.competitions.filter(competition => 
-        competition.name.toLowerCase().includes(selectedSport)
-      )
+    : discoverData.articles.filter(article => {
+        // This is a simplified filter that looks for team name in title or description
+        // You could enhance this with better matching logic
+        const teamName = teamsData.teams.find(t => t.id === selectedTeam)?.name || ""
+        return article.title.includes(teamName) || 
+               article.description.includes(teamName)
+      })
 
   return (
     <div className="mobile-container pt-20 md:pt-4 pb-4 space-y-6">
@@ -50,18 +51,14 @@ export default function DiscoverPage() {
               <Users className="h-4 w-4" />
               Teams
             </TabsTrigger>
-            <TabsTrigger value="competitions" className="flex items-center gap-2">
-              <Trophy className="h-4 w-4" />
-              Competitions
-            </TabsTrigger>
           </TabsList>
         </div>
 
         <TabsContent value="news" className="space-y-8">
           <div className="flex justify-end px-4 sm:px-0">
-            <SportFilter 
-              value={selectedSport} 
-              onChange={setSelectedSport}
+            <TeamFilter 
+              value={selectedTeam} 
+              onChange={setSelectedTeam}
             />
           </div>
           <FeaturedArticle article={discoverData.featured} />
@@ -69,23 +66,10 @@ export default function DiscoverPage() {
         </TabsContent>
 
         <TabsContent value="teams">
-          <div className="flex justify-end mb-6 px-4 sm:px-0">
-            <SportFilter 
-              value={selectedSport} 
-              onChange={setSelectedSport}
-            />
+          {/* No filter here as requested */}
+          <div className="pt-2">
+            <TeamsGrid teams={teamsData.teams} />
           </div>
-          <TeamsGrid teams={filteredTeams} />
-        </TabsContent>
-
-        <TabsContent value="competitions">
-          <div className="flex justify-end mb-6 px-4 sm:px-0">
-            <SportFilter 
-              value={selectedSport} 
-              onChange={setSelectedSport}
-            />
-          </div>
-          <CompetitionsGrid competitions={filteredCompetitions} />
         </TabsContent>
       </Tabs>
     </div>

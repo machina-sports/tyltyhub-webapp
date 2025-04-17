@@ -12,11 +12,13 @@ GeniusBet is an AI-powered sports betting platform that provides users with insi
 
 ## Tech Stack
 
-- **Next.js**: A React framework for server-side rendering and static site generation.
-- **React**: A JavaScript library for building user interfaces.
-- **Tailwind CSS**: A utility-first CSS framework for rapid UI development.
+- **Next.js 14**: The latest version of the React framework for server-side rendering and static site generation.
+- **React 18**: A JavaScript library for building user interfaces.
+- **TypeScript 5**: Type-safe JavaScript for better developer experience.
+- **Tailwind CSS 3.4**: A utility-first CSS framework for rapid UI development.
 - **Lucide React**: Icon library for React.
 - **Radix UI**: Accessible UI components for React.
+- **shadcn/ui**: High-quality React components built with Radix UI and Tailwind CSS.
 
 ## Installation
 
@@ -41,15 +43,17 @@ GeniusBet is an AI-powered sports betting platform that provides users with insi
 ## Project Structure
 
 - **`components/`**: Contains reusable UI components.
-- **`app/`**: Main application directory with pages and layouts.
+- **`app/`**: Main application directory with pages and layouts using the Next.js App Router.
 - **`data/`**: JSON files for static data used in the application.
-- **`styles/`**: Global styles and Tailwind CSS configuration.
+- **`lib/`**: Utility functions and helpers.
+- **`hooks/`**: Custom React hooks.
 
 ## Configuration
 
 - **Next.js Configuration**: Located in `next.config.js`, includes settings for image optimization and TypeScript.
 - **Tailwind CSS**: Configured in `tailwind.config.ts` and `app/globals.css`.
 - **ESLint**: Configured in `.eslintrc.json` for code quality and consistency.
+- **shadcn/ui**: Component configuration in `components.json`.
 
 ## Development Guidelines
 

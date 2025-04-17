@@ -16,7 +16,6 @@ export function MobileHeader({ onMenuClick }: MobileHeaderProps) {
   const getPageTitle = () => {
     if (isArticlePage) return "Article"
     if (pathname === "/discover") return "Discover"
-    if (pathname === "/my-bets") return "My Bets"
     return "Home"
   }
 

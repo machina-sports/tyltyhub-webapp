@@ -6,8 +6,7 @@ import { cn } from "@/lib/utils"
 
 const tabs = [
   { label: "News", href: "/discover" },
-  { label: "Teams & Athletes", href: "/discover/teams" },
-  { label: "Competitions", href: "/discover/competitions" }
+  { label: "Teams & Athletes", href: "/discover/teams" }
 ]
 
 export function Tabs() {
