@@ -20,6 +20,18 @@ interface FeaturedArticleProps {
   }
 }
 
+// Helper function to extract a snippet from the full description
+const getDescriptionSnippet = (description: string, maxLength: number = 200) => {
+  // Extract the first paragraph or use the whole text if no paragraphs
+  const firstParagraph = description.split('\n\n')[0];
+  
+  // If the paragraph is already short enough, return it
+  if (firstParagraph.length <= maxLength) return firstParagraph;
+  
+  // Otherwise truncate it
+  return firstParagraph.slice(0, maxLength) + '...';
+};
+
 export function FeaturedArticle({ article }: FeaturedArticleProps) {
   return (
     <Card className="overflow-hidden">
@@ -47,7 +59,7 @@ export function FeaturedArticle({ article }: FeaturedArticleProps) {
               </div>
             </div>
             <h1 className="text-2xl font-bold mb-2 hover:text-primary transition-colors">{article.title}</h1>
-            <p className="text-muted-foreground mb-4">{article.description}</p>
+            <p className="text-muted-foreground mb-4">{getDescriptionSnippet(article.description)}</p>
             <div className="flex items-center gap-2">
               <div className="h-8 w-8 rounded-full bg-secondary" />
               <span className="text-sm text-muted-foreground">{article.author}</span>

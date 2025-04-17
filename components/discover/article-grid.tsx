@@ -22,6 +22,18 @@ interface ArticleGridProps {
   articles: Article[]
 }
 
+// Helper function to extract a snippet from the full description
+const getDescriptionSnippet = (description: string, maxLength: number = 150) => {
+  // Extract the first paragraph or use the whole text if no paragraphs
+  const firstParagraph = description.split('\n\n')[0];
+  
+  // If the paragraph is already short enough, return it
+  if (firstParagraph.length <= maxLength) return firstParagraph;
+  
+  // Otherwise truncate it
+  return firstParagraph.slice(0, maxLength) + '...';
+};
+
 export function ArticleGrid({ articles }: ArticleGridProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -46,7 +58,7 @@ export function ArticleGrid({ articles }: ArticleGridProps) {
                   </div>
                 </div>
                 <h2 className="text-xl font-semibold mb-2 hover:text-primary transition-colors">{article.title}</h2>
-                <p className="text-muted-foreground text-sm mb-4">{article.description}</p>
+                <p className="text-muted-foreground text-sm mb-4">{getDescriptionSnippet(article.description)}</p>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="h-6 w-6 rounded-full bg-secondary" />

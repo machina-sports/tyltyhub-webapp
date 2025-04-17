@@ -7,6 +7,7 @@ import { ArticleVoting } from "@/components/article/article-voting";
 import { RelatedArticles } from "@/components/article/related-articles";
 import discoverData from "@/data/discover.json";
 import FollowUpQuestionForm from "@/components/follow-up-question";
+import ReactMarkdown from 'react-markdown';
 
 export function generateStaticParams() {
   const articles = [discoverData.featured, ...discoverData.articles];
@@ -73,7 +74,9 @@ export default function ArticlePage({ params }: ArticlePageProps) {
       </div>
 
       <div className="prose prose-neutral dark:prose-invert max-w-none">
-        {article.description}
+        <ReactMarkdown>
+          {article.description}
+        </ReactMarkdown>
       </div>
 
       <Separator />
