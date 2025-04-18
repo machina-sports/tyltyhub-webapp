@@ -29,6 +29,39 @@
   }
 }
 
+/* Import Sportingbet fonts - you'll need to host these or use similar alternatives */
+@font-face {
+  font-family: 'Sportingbet Sans';
+  src: url('/fonts/SportingbetSans-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sportingbet Sans';
+  src: url('/fonts/SportingbetSans-Black.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sportingbet Sans';
+  src: url('/fonts/SportingbetSans-Italic.woff2') format('woff2');
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Frutiger alternative using system fonts */
+@font-face {
+  font-family: 'Frutiger LT';
+  src: local('Arial'), local('Helvetica Neue');
+  font-weight: normal;
+  font-style: normal;
+}
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -45,57 +78,75 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
+    /* Sportingbet Brand Colors - Marketing */
+    --sb-bright-deep-blue: 225 100% 38%;      /* #003DC4 */
+    --sb-bright-dark-blue: 218 83% 14%;       /* #061F3F */
+    --sb-bright-extra-light-blue: 206 100% 91%; /* #D3ECFF */
+    --sb-bright-light-blue: 196 100% 63%;     /* #45CAFF */
+    --sb-bright-blue: 217 93% 48%;            /* #0A5EEA */
+    --sb-bright-red: 0 87% 57%;               /* #F13131 */
+    --sb-white: 0 0% 100%;                    /* #FFFFFF */
+    --sb-light-grey: 220 8% 94%;              /* #EEEFF1 */
+
+    /* Map Sportingbet colors to shadcn variables */
+    --background: var(--sb-white);
+    --foreground: var(--sb-bright-dark-blue);
+    --card: var(--sb-white);
+    --card-foreground: var(--sb-bright-dark-blue);
+    --popover: var(--sb-white);
+    --popover-foreground: var(--sb-bright-dark-blue);
+    --primary: var(--sb-bright-blue);
+    --primary-foreground: var(--sb-white);
+    --secondary: var(--sb-bright-extra-light-blue);
+    --secondary-foreground: var(--sb-bright-dark-blue);
+    --muted: var(--sb-light-grey);
+    --muted-foreground: 218 40% 30%;
+    --accent: var(--sb-bright-light-blue);
+    --accent-foreground: var(--sb-bright-dark-blue);
+    --destructive: var(--sb-bright-red);
+    --destructive-foreground: var(--sb-white);
+    --border: var(--sb-light-grey);
+    --input: var(--sb-light-grey);
+    --ring: var(--sb-bright-blue);
+
+    /* Chart colors using Sportingbet palette */
+    --chart-1: var(--sb-bright-blue);
+    --chart-2: var(--sb-bright-deep-blue);
+    --chart-3: var(--sb-bright-dark-blue);
+    --chart-4: var(--sb-bright-light-blue);
+    --chart-5: var(--sb-bright-extra-light-blue);
+
+    /* Match rounded corners from Sportingbet guidelines */
+    --radius: 0.65rem;
   }
+
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --background: var(--sb-bright-dark-blue);
+    --foreground: var(--sb-white);
+    --card: 218 80% 18%;
+    --card-foreground: var(--sb-white);
+    --popover: 218 80% 18%;
+    --popover-foreground: var(--sb-white);
+    --primary: var(--sb-bright-blue);
+    --primary-foreground: var(--sb-white);
+    --secondary: 218 70% 25%;
+    --secondary-foreground: var(--sb-white);
+    --muted: 218 60% 20%;
+    --muted-foreground: 218 20% 70%;
+    --accent: 218 60% 20%;
+    --accent-foreground: var(--sb-white);
+    --destructive: 0 70% 45%;
+    --destructive-foreground: var(--sb-white);
+    --border: 218 50% 30%;
+    --input: 218 50% 30%;
+    --ring: var(--sb-bright-blue);
+    
+    /* Chart colors for dark mode */
+    --chart-1: var(--sb-bright-blue);
+    --chart-2: var(--sb-bright-light-blue);
+    --chart-3: var(--sb-bright-extra-light-blue);
+    --chart-4: var(--sb-bright-deep-blue);
+    --chart-5: 218 40% 60%;
   }
 }
 
@@ -111,6 +162,15 @@
     -webkit-text-size-adjust: 100%;
   }
   
+  /* Typography based on Sportingbet guidelines */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Sportingbet Sans', system-ui, sans-serif;
+  }
+  
+  body {
+    font-family: 'Frutiger LT', Arial, 'Helvetica Neue', sans-serif;
+  }
+  
   /* Base responsive typography */
   h1 {
     @apply text-2xl sm:text-4xl font-bold;
@@ -122,5 +182,17 @@
   
   h3 {
     @apply text-lg sm:text-xl font-semibold;
+  }
+
+  /* Add disclaimer styling per brand guidelines */
+  .sb-disclaimer {
+    @apply text-center text-sm text-muted-foreground mt-6 mb-4;
+    min-width: 130px;
+  }
+  
+  /* Call-to-action buttons styled per brand guidelines */
+  .sb-cta {
+    @apply rounded-lg bg-primary text-primary-foreground hover:brightness-110 transition-all;
+    padding: 0.75rem 1.5rem;
   }
 }

@@ -19,6 +19,10 @@ const config: Config = {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      fontFamily: {
+        'sportingbet': ['Sportingbet Sans', 'system-ui', 'sans-serif'],
+        'frutiger': ['Frutiger LT', 'Arial', 'Helvetica Neue', 'sans-serif'],
+      },
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
@@ -60,6 +64,16 @@ const config: Config = {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))',
         },
+        sportingbet: {
+          'bright-deep-blue': '#003DC4',
+          'bright-dark-blue': '#061F3F',
+          'bright-extra-light-blue': '#D3ECFF',
+          'bright-light-blue': '#45CAFF',
+          'bright-blue': '#0A5EEA',
+          'bright-red': '#F13131',
+          'white': '#FFFFFF',
+          'light-grey': '#EEEFF1',
+        }
       },
       keyframes: {
         'accordion-down': {
@@ -78,10 +92,19 @@ const config: Config = {
             height: '0',
           },
         },
+        'spin-slow': {
+          from: {
+            transform: 'rotate(0deg)',
+          },
+          to: {
+            transform: 'rotate(360deg)',
+          },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'spin-slow': 'spin-slow 8s linear infinite',
       },
     },
   },

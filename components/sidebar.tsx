@@ -2,12 +2,11 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useTheme } from 'next-themes'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { Home, Compass, History, Sun, Moon, X } from 'lucide-react'
+import { Home, Compass, History, X, Palette } from 'lucide-react'
 import { MobileHeader } from './mobile-header'
 import { useChatState } from '@/hooks/use-chat-state'
 
@@ -33,14 +32,8 @@ const routes: Route[] = [
 export function Sidebar() {
   const pathname = usePathname()
   const router = useRouter()
-  const { theme, setTheme } = useTheme()
   const { resetChat } = useChatState()
-  const [mounted, setMounted] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   const handleNavigation = (href: string) => {
     if (href === '/') {
@@ -55,19 +48,19 @@ export function Sidebar() {
 
       <div className={cn(
         "fixed inset-y-0 left-0 z-40 w-64 transform transition-transform duration-200 ease-in-out md:translate-x-0 md:static md:w-56",
-        "space-y-4 pt-16 md:pt-4 flex flex-col h-full bg-background/95 border-r",
+        "space-y-4 pt-16 md:pt-4 flex flex-col h-full bg-sportingbet-bright-deep-blue border-r",
         isOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="px-3 py-2 flex-1 flex flex-col">
           <div 
             onClick={() => handleNavigation('/')} 
-            className="flex items-center justify-center pl-3 mb-6 cursor-pointer"
+            className="flex items-center justify-center pl-3 mb-8 cursor-pointer"
           >
             <Image 
-              src="/sb-logo.png" 
+              src="/sb-logo_new.png" 
               alt="SportingBet Logo" 
               width={150} 
-              height={50}
+              height={45}
               priority
             />
           </div>
@@ -78,8 +71,8 @@ export function Sidebar() {
             <Image 
               src="/cwc-logo.png" 
               alt="FIFA Club World Cup Logo" 
-              width={110} 
-              height={36}
+              width={88}
+              height={29}
               priority
             />
           </div>
@@ -89,8 +82,10 @@ export function Sidebar() {
                 key={route.href}
                 variant={pathname === route.href ? "secondary" : "ghost"}
                 className={cn(
-                  "w-full justify-start",
-                  pathname === route.href && "bg-secondary"
+                  "w-full justify-start text-white hover:text-white rounded-lg",
+                  pathname === route.href 
+                    ? "bg-white/20 text-white hover:bg-white/30 font-medium" 
+                    : "hover:bg-white/10 transition-colors duration-200"
                 )}
                 onClick={() => handleNavigation(route.href)}
               >
@@ -99,26 +94,10 @@ export function Sidebar() {
               </Button>
             ))}
           </div>
-          <div className="mt-auto pt-4">
-            <Button
-              variant="ghost"
-              className="w-full justify-start"
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            >
-              {mounted && theme === 'dark' ? (
-                <>
-                  <Sun className="h-5 w-5 mr-3" />
-                  Light Mode
-                </>
-              ) : mounted ? (
-                <>
-                  <Moon className="h-5 w-5 mr-3" />
-                  Dark Mode
-                </>
-              ) : (
-                <span className="invisible">Loading...</span>
-              )}
-            </Button>
+        </div>
+        <div className="p-4 border-t border-[#D3ECFF]/20">
+          <div className="text-white/70 text-xs text-center">
+            © {new Date().getFullYear()} Sportingbet
           </div>
         </div>
       </div>

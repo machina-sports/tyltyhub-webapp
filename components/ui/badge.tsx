@@ -14,6 +14,8 @@ const badgeVariants = cva(
         destructive:
           "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
         outline: "text-foreground",
+        sportingbet: "border-transparent bg-[#0A5EEA] text-white hover:bg-[#003DC4]",
+        sportingbetOutline: "border-[#0A5EEA] text-[#0A5EEA] hover:bg-[#0A5EEA]/10"
       },
     },
     defaultVariants: {

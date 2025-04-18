@@ -1,0 +1,137 @@
+{
+  "brand_name": "Sportingbet",
+  "version": "2.2",
+  "date": "December 2024",
+  "logo": {
+    "concept": "Rounded shapes for a minimalist and modern look",
+    "clearspace": "Width of the 'S' in 'sportingbet'",
+    "minimum_size": "8mm or 30px",
+    "exceptions": {
+      "field_board": "Can crop edges for visibility as long as legibility is preserved",
+      "minimum_size_special_cases": "In special cases, if legibility and integrity are retained, the minimum size rule might not apply with prior consent from administration."
+    },
+    "color_usage": [
+      "Bright Dark Blue",
+      "Bright Deep Blue",
+      "Bright Blue",
+      "Bright Extra Light Blue"
+    ],
+    "monochrome": "Allowed on solid backgrounds ensuring contrast",
+    "photography_usage": {
+      "BET": {
+        "outline": true,
+        "filter_tone": "Same as background",
+        "opacity_range": "35%-65%",
+        "brightness_adjustments": true,
+        "blur_inside_BET": true
+      }
+    },
+    "avatar": {
+      "usage": "SB avatar for space-limited scenarios like social media",
+      "require_approval": true
+    },
+    "bug_positioning": "Within safe margins for screens and broadcasts",
+    "logo_donts": [
+      "Do not alter dot color",
+      "Do not distort",
+      "Do not overlay elements",
+      "No gradients",
+      "No rotations",
+      "Do not recreate or fill with imagery",
+      "Only approved one-color versions"
+    ]
+  },
+  "colors": {
+    "marketing": {
+      "bright_deep_blue": "#003DC4",
+      "bright_dark_blue": "#061F3F",
+      "bright_extra_light_blue": "#D3ECFF",
+      "bright_light_blue": "#45CAFF",
+      "white": "#FFFFFF",
+      "light_grey": "#EEEFF1",
+      "bright_red": "#F13131",
+      "bright_blue": "#0A5EEA"
+    },
+    "product": {
+      "deep_blue": "#035C8E",
+      "dark_blue": "#003350",
+      "extra_light_blue": "#BADEFB",
+      "blue": "#0573CD",
+      "light_blue": "#52ADF6",
+      "red": "#DD3636",
+      "light_grey": "#EEEFF1",
+      "white": "#FFFFFF"
+    },
+    "accessibility": {
+      "large_text": [
+        {
+          "bg": "WHITE",
+          "text": "BRIGHT BLUE"
+        },
+        {
+          "bg": "BRIGHT EXTRA LIGHT BLUE",
+          "text": "BRIGHT DARK BLUE"
+        }
+      ]
+    },
+    "gradients": {
+      "types": [
+        "linear",
+        "freeform"
+      ],
+      "usage_rules": [
+        "Only marketing colors",
+        "Avoid clutter",
+        "Not on text or small elements"
+      ]
+    }
+  },
+  "symbol": {
+    "name": "DOT",
+    "description": "Dot over the 'i', unique brand element",
+    "drawing": {
+      "base": "900x700 px",
+      "tilt": "12 degrees",
+      "corner_radius": "65 px"
+    },
+    "usage": "360-degree rotation allowed; no distortion"
+  },
+  "typography": {
+    "primary_font": "Sportingbet Sans (Medium, Black, Italic)",
+    "secondary_font": "Frutiger LT (Regular, Condensed, Italic)",
+    "usage_rules": {
+      "titles": "Sportingbet Sans",
+      "body_text": "Frutiger",
+      "emphasis": "Italics for selected words only",
+      "scale": "Ensure perceptible differences",
+      "alignment": "Left-aligned or centered only",
+      "donts": [
+        "No effects",
+        "No extreme tracking",
+        "No unauthorized fonts"
+      ]
+    }
+  },
+  "iconography": {
+    "types": [
+      "outline",
+      "2D",
+      "3D"
+    ],
+    "construction": "Based on 12\u00ba tilt from logo",
+    "accessibility": {
+      "white": "DARK BLUE",
+      "deep_blue": "WHITE"
+    }
+  },
+  "applications": {
+    "disclaimer": {
+      "text": "If it stops being fun, stop",
+      "positioning": "End of content, centered",
+      "horizontal_min_size": "130px"
+    },
+    "digital_media": {
+      "cta_button_spacing": "Equal to two periods from text"
+    }
+  }
+}

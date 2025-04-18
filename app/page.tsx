@@ -8,6 +8,7 @@ import { ChatMessage } from '@/components/chat-message'
 import { cn } from '@/lib/utils'
 import { useChatScroll } from '@/hooks/use-chat-scroll'
 import { useChatState } from '@/hooks/use-chat-state'
+import { Dot } from '@/components/ui/dot'
 
 const suggestions = [
   { icon: TrendingUp, text: "What are the odds for Real Madrid today?" },
@@ -69,8 +70,9 @@ export default function Home() {
       <div className="flex-1 overflow-auto">
         {showInitial ? (
           <div className="flex flex-col items-center justify-center min-h-[calc(100vh-12rem)] p-4">
-            <h1 className="text-center mb-6 sm:mb-8">
-              What would you like to bet on?
+            <h1 className="text-center mb-6 sm:mb-8 flex items-center gap-3 justify-center">
+              What would you like to bet on
+              <Dot size={28} color="#F13131" className="ml-1" />
             </h1>
             <div className="w-full max-w-xl mx-auto">
               <form onSubmit={handleSubmit} className="relative">
