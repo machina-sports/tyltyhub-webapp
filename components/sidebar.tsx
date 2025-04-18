@@ -18,12 +18,12 @@ interface Route {
 
 const routes: Route[] = [
   {
-    label: 'Home',
+    label: 'Início',
     icon: Home,
     href: '/',
   },
   {
-    label: 'Discover',
+    label: 'Descobrir',
     icon: Compass,
     href: '/discover',
   }
@@ -58,7 +58,7 @@ export function Sidebar() {
           >
             <Image 
               src="/sb-logo_new.png" 
-              alt="SportingBet Logo" 
+              alt="Logo Sportingbet" 
               width={150} 
               height={45}
               priority
@@ -70,7 +70,7 @@ export function Sidebar() {
           >
             <Image 
               src="/cwc-logo.png" 
-              alt="FIFA Club World Cup Logo" 
+              alt="Logo Copa do Mundo de Clubes da FIFA" 
               width={88}
               height={29}
               priority

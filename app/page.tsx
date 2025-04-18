@@ -11,10 +11,10 @@ import { useChatState } from '@/hooks/use-chat-state'
 import { Dot } from '@/components/ui/dot'
 
 const suggestions = [
-  { icon: TrendingUp, text: "What are the odds for Real Madrid today?" },
-  { icon: Zap, text: "Is Man City favored against Flamengo?" },
-  { icon: Trophy, text: "Who's likely to score in Bayern vs Inter?" },
-  { icon: Calendar, text: "Can Flamengo win their match?" }
+  { icon: TrendingUp, text: "Quais as odds pro Real Madrid hoje?" },
+  { icon: Zap, text: "O City é favorito contra o Flamengo?" },
+  { icon: Trophy, text: "Quem deve marcar em Bayern vs Inter?" },
+  { icon: Calendar, text: "Dá pra confiar na vitória do Flamengo?" }
 ]
 
 export default function Home() {
@@ -55,7 +55,7 @@ export default function Home() {
     // Add assistant response with oddsType
     addMessage({ 
       role: 'assistant', 
-      content: `Based on the latest FIFA Club World Cup data and odds, here's what I found for "${input}". I've highlighted the best betting opportunities below.`,
+      content: `Com base nos últimos dados e odds do Mundial de Clubes da FIFA, achei isso aqui pra "${input}". Destaquei as melhores oportunidades de aposta pra você.`,
       oddsType: oddsType
     })
     setIsTyping(false)
@@ -71,7 +71,7 @@ export default function Home() {
         {showInitial ? (
           <div className="flex flex-col items-center justify-center min-h-[calc(100vh-12rem)] p-4">
             <h1 className="text-center mb-6 sm:mb-8 flex items-center gap-3 justify-center">
-              What would you like to bet on
+              Qual vai ser a sua aposta?
               <Dot size={28} color="#F13131" className="ml-1" />
             </h1>
             <div className="w-full max-w-xl mx-auto">
@@ -79,7 +79,7 @@ export default function Home() {
                 <Input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Search for teams, matches, or Club World Cup odds..."
+                  placeholder="Busque por times, jogos ou odds do Mundial de Clubes..."
                   className="w-full h-12 pl-4 pr-12 rounded-lg bg-secondary/50 border-0"
                 />
                 <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
@@ -132,7 +132,7 @@ export default function Home() {
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask about FIFA Club World Cup odds, teams, or matches..."
+              placeholder="Pergunte sobre odds, times ou jogos do Mundial de Clubes da FIFA..."
               className="w-full h-12 pl-4 pr-12 rounded-lg bg-secondary/50 border-0"
             />
             <div className="absolute right-2 top-1/2 -translate-y-1/2">

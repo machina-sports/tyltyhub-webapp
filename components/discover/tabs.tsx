@@ -5,8 +5,8 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 
 const tabs = [
-  { label: "News", href: "/discover" },
-  { label: "Teams & Athletes", href: "/discover/teams" }
+  { label: "Notícias", href: "/discover" },
+  { label: "Times e Atletas", href: "/discover/teams" }
 ]
 
 export function Tabs() {

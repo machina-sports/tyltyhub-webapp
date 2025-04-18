@@ -35,7 +35,7 @@ const SAMPLE_ODDS: SampleOddsType = {
     "event": "Los Angeles Lakers vs Golden State Warriors",
     "markets": [
       {
-        "name": "Money Line",
+        "name": "Resultado Final",
         "options": [
           { "name": "Lakers", "odds": "1.67" },
           { "name": "Warriors", "odds": "2.30" }
@@ -47,7 +47,7 @@ const SAMPLE_ODDS: SampleOddsType = {
     "event": "Manchester City vs Real Madrid",
     "markets": [
       {
-        "name": "Match Result",
+        "name": "Resultado da Partida",
         "options": [
           { "name": "Man City", "odds": "1.83" },
           { "name": "Real Madrid", "odds": "3.80" }
@@ -59,7 +59,7 @@ const SAMPLE_ODDS: SampleOddsType = {
     "event": "Monaco Grand Prix",
     "markets": [
       {
-        "name": "Race Winner",
+        "name": "Vencedor da Corrida",
         "options": [
           { "name": "Lewis Hamilton", "odds": "2.50" },
           { "name": "Max Verstappen", "odds": "2.75" }
@@ -71,7 +71,7 @@ const SAMPLE_ODDS: SampleOddsType = {
     "event": "UFC 312: Alex Pereira vs Jamal Hill 2",
     "markets": [
       {
-        "name": "Fight Winner",
+        "name": "Vencedor da Luta",
         "options": [
           { "name": "Alex Pereira", "odds": "2.10" },
           { "name": "Jamal Hill", "odds": "1.80" }
@@ -83,7 +83,7 @@ const SAMPLE_ODDS: SampleOddsType = {
     "event": "Real Madrid vs Al Ahly",
     "markets": [
       {
-        "name": "Match Result",
+        "name": "Resultado da Partida",
         "options": [
           { "name": "Real Madrid", "odds": "1.45" },
           { "name": "Al Ahly", "odds": "5.50" }
@@ -95,7 +95,7 @@ const SAMPLE_ODDS: SampleOddsType = {
     "event": "Manchester City vs Flamengo",
     "markets": [
       {
-        "name": "Match Result",
+        "name": "Resultado da Partida",
         "options": [
           { "name": "Man City", "odds": "1.60" },
           { "name": "Flamengo", "odds": "4.20" }
@@ -104,10 +104,10 @@ const SAMPLE_ODDS: SampleOddsType = {
     ]
   },
   "cwc-general": {
-    "event": "FIFA Club World Cup 2025",
+    "event": "Mundial de Clubes da FIFA 2025",
     "markets": [
       {
-        "name": "Tournament Winner",
+        "name": "Vencedor do Torneio",
         "options": [
           { "name": "Real Madrid", "odds": "2.10" },
           { "name": "Man City", "odds": "2.35" }
@@ -116,10 +116,10 @@ const SAMPLE_ODDS: SampleOddsType = {
     ]
   },
   "cwc-final": {
-    "event": "FIFA Club World Cup Final",
+    "event": "Final do Mundial de Clubes da FIFA",
     "markets": [
       {
-        "name": "Final Winner",
+        "name": "Vencedor da Final",
         "options": [
           { "name": "Real Madrid", "odds": "2.10" },
           { "name": "Man City", "odds": "2.35" }
@@ -140,13 +140,13 @@ export function ChatMessage({ role, content, isTyping, onNewMessage, oddsType }:
     // Add user message showing the bet details
     messageHandler({
       role: 'user',
-      content: `Bet $${bet.stake} on ${bet.selection} (${bet.odds}) - ${bet.event}`
+      content: `Aposta: $${bet.stake} em ${bet.selection} (${bet.odds}) - ${bet.event}`
     })
     
     // Add Bookie confirmation message
     messageHandler({
       role: 'assistant',
-      content: `I've placed your bet: $${bet.stake} on ${bet.selection} at ${bet.odds} for the ${bet.event}. Good luck! 🍀\n\nIs there anything else you'd like to know about this match?`
+      content: `Sua aposta foi feita: $${bet.stake} em ${bet.selection} com odds ${bet.odds} para ${bet.event}. Boa sorte! 🍀\n\nQuer saber mais alguma coisa sobre esta partida?`
     })
   }
 
@@ -157,7 +157,7 @@ export function ChatMessage({ role, content, isTyping, onNewMessage, oddsType }:
           {isTyping ? (
             <div className="flex items-center gap-2 text-muted-foreground">
               <Loader2 className="h-4 w-4 animate-spin" />
-              <span className="text-sm">Thinking...</span>
+              <span className="text-sm">Pensando...</span>
             </div>
           ) : (
             content.split('\n').map((line, i) => (

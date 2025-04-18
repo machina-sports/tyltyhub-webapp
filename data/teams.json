@@ -27,13 +27,13 @@
     {
       "id": "al-ahly",
       "name": "Al Ahly",
-      "league": "Egyptian Premier League",
+      "league": "Premier League Egípcia",
       "logo": "/team-logos/al-ahly.png"
     },
     {
       "id": "espérance-de-tunis",
       "name": "Espérance de Tunis",
-      "league": "Tunisian Ligue Professionnelle 1",
+      "league": "Ligue Professionnelle 1 Tunisiana",
       "logo": "/team-logos/espérance-de-tunis.png"
     },
     {

@@ -6,6 +6,7 @@ import { CalendarDays, Clock } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { formatDistanceToNow } from "date-fns"
+import { ptBR } from 'date-fns/locale'
 
 interface Article {
   id: string
@@ -66,7 +67,7 @@ export function ArticleGrid({ articles }: ArticleGridProps) {
                   </div>
                   <div className="flex items-center text-sm text-muted-foreground">
                     <CalendarDays className="h-4 w-4 mr-1" />
-                    {formatDistanceToNow(new Date(article.date), { addSuffix: true })}
+                    {formatDistanceToNow(new Date(article.date), { addSuffix: true, locale: ptBR })}
                   </div>
                 </div>
               </div>

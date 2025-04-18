@@ -6,7 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 
 export const metadata: Metadata = {
   title: 'Sportingbet AI',
-  description: 'AI-Powered Sports Betting Platform',
+  description: 'Sua Aposta Inteligente com IA',
 }
 
 export default function RootLayout({
@@ -15,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="pt-BR" suppressHydrationWarning>
       <body className="antialiased">
         <ThemeProvider
           attribute="class"

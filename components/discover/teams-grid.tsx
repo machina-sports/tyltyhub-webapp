@@ -19,10 +19,10 @@ interface TeamsGridProps {
 // Generate a sample AI insight paragraph for a team
 const generateAIInsights = (team: Team): string => {
   const insights = [
-    `${team.name} has been showing impressive form in the ${team.league} this season, with strong defensive performances and efficient attacking play. Their tactical discipline and team chemistry have been key factors in their recent success.`,
-    `Analysis of ${team.name}'s recent matches in the ${team.league} reveals a consistent playing style with emphasis on possession and quick transitions. Their ability to adapt to different opponents has been noteworthy.`,
-    `${team.name} has demonstrated remarkable resilience in the ${team.league}, bouncing back from setbacks with determination. Their strategic approach to matches and player development pipeline continue to yield positive results.`,
-    `Statistical analysis shows ${team.name} is among the top performers in the ${team.league} in terms of expected goals (xG) and defensive solidity. Their balanced approach to offense and defense makes them a formidable opponent.`
+    `${team.name} vem mostrando uma forma impressionante na ${team.league} nesta temporada, com atuações defensivas sólidas e um ataque eficiente. Sua disciplina tática e química de equipe têm sido fatores chave para o sucesso recente.`,
+    `A análise das partidas recentes do ${team.name} na ${team.league} revela um estilo de jogo consistente, com ênfase na posse de bola e transições rápidas. Sua capacidade de adaptação a diferentes adversários tem sido notável.`,
+    `${team.name} demonstrou uma resiliência notável na ${team.league}, superando obstáculos com determinação. Sua abordagem estratégica para as partidas e o desenvolvimento de jogadores continuam a gerar resultados positivos.`,
+    `A análise estatística mostra que o ${team.name} está entre os melhores desempenhos na ${team.league} em termos de gols esperados (xG) e solidez defensiva. Sua abordagem equilibrada entre ataque e defesa os torna um adversário formidável.`
   ];
   
   // Return a random insight from the array
@@ -57,7 +57,7 @@ export function TeamsGrid({ teams }: TeamsGridProps) {
             </div>
             
             <div className="mt-4">
-              <h4 className="text-sm font-medium text-muted-foreground mb-2">AI Insights</h4>
+              <h4 className="text-sm font-medium text-muted-foreground mb-2">Insights da IA</h4>
               <div className="bg-secondary/50 p-3 rounded-md text-sm">
                 {team.aiInsights || generateAIInsights(team)}
               </div>

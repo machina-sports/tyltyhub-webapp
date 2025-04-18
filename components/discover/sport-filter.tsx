@@ -12,7 +12,7 @@ import teamsData from "@/data/teams.json"
 
 // Convert to array of team objects with name and id for filtering
 const TEAMS = [
-  { id: "all-teams", name: "All Teams", logo: null },
+  { id: "all-teams", name: "Todos os Times", logo: null },
   ...teamsData.teams
 ]
 
@@ -26,11 +26,11 @@ export function TeamFilter({ value, onChange }: TeamFilterProps) {
     <div className="w-[180px]">
       <Select value={value} onValueChange={onChange}>
         <SelectTrigger className="bg-background">
-          <SelectValue placeholder="All Teams">
+          <SelectValue placeholder="Todos os Times">
             {value !== "all-teams" && (
               <div className="flex items-center gap-2">
                 {TEAMS.find(team => team.id === value)?.logo && (
-                  <div className="h-5 w-5 relative overflow-hidden rounded-full">
+                  <div className="h-5 w-5 relative overflow-hidden">
                     <Image 
                       src={TEAMS.find(team => team.id === value)?.logo || ""}
                       alt={TEAMS.find(team => team.id === value)?.name || ""}
@@ -42,7 +42,7 @@ export function TeamFilter({ value, onChange }: TeamFilterProps) {
                 {TEAMS.find(team => team.id === value)?.name}
               </div>
             )}
-            {value === "all-teams" && "All Teams"}
+            {value === "all-teams" && "Todos os Times"}
           </SelectValue>
         </SelectTrigger>
         <SelectContent>
@@ -50,7 +50,7 @@ export function TeamFilter({ value, onChange }: TeamFilterProps) {
             <SelectItem key={team.id} value={team.id}>
               <div className="flex items-center gap-2">
                 {team.logo && (
-                  <div className="h-5 w-5 relative overflow-hidden rounded-full flex-shrink-0">
+                  <div className="h-5 w-5 relative overflow-hidden flex-shrink-0">
                     <Image 
                       src={team.logo}
                       alt={team.name}
@@ -71,14 +71,14 @@ export function TeamFilter({ value, onChange }: TeamFilterProps) {
 
 // Keep the original SportFilter for backward compatibility
 const SPORTS = [
-  "All Sports",
-  "Football",
-  "Basketball",
-  "Tennis",
-  "Baseball",
-  "Formula 1",
+  "Todos os Esportes",
+  "Futebol",
+  "Basquete",
+  "Tênis",
+  "Beisebol",
+  "Fórmula 1",
   "MMA",
-  "Boxing"
+  "Boxe"
 ]
 
 interface SportFilterProps {
@@ -91,7 +91,7 @@ export function SportFilter({ value, onChange }: SportFilterProps) {
     <div className="w-[180px]">
       <Select value={value} onValueChange={onChange}>
         <SelectTrigger className="bg-background">
-          <SelectValue placeholder="Select Sport" />
+          <SelectValue placeholder="Selecionar Esporte" />
         </SelectTrigger>
         <SelectContent>
           {SPORTS.map((sport) => (

@@ -21,7 +21,7 @@ export default function FollowUpQuestionForm() {
         <Input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask a follow-up question..."
+          placeholder="Pergunte mais..."
           className="w-full h-12 pl-4 pr-12 rounded-lg bg-secondary/50 border-0 focus-visible:ring-0"
         />
         <div className="absolute right-2 top-1/2 -translate-y-1/2">

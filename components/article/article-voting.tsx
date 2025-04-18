@@ -17,7 +17,7 @@ export function ArticleVoting({ articleId }: ArticleVotingProps) {
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold">Was this analysis helpful?</h3>
+      <h3 className="text-lg font-semibold">Esta análise foi útil?</h3>
       <div className="flex gap-4">
         <Button
           variant="outline"
@@ -25,7 +25,7 @@ export function ArticleVoting({ articleId }: ArticleVotingProps) {
           onClick={() => handleVote("useful")}
         >
           <ThumbsUp className="h-4 w-4 mr-2" />
-          Useful ({votes.useful})
+          Útil ({votes.useful})
         </Button>
         <Button
           variant="outline"
@@ -33,7 +33,7 @@ export function ArticleVoting({ articleId }: ArticleVotingProps) {
           onClick={() => handleVote("improvement")}
         >
           <ThumbsDown className="h-4 w-4 mr-2" />
-          Needs Improvement ({votes.improvement})
+          Precisa Melhorar ({votes.improvement})
         </Button>
       </div>
     </div>

@@ -2,12 +2,18 @@ import { ThumbsUp, ThumbsDown, Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { formatDistanceToNow } from "date-fns";
+import { ptBR } from 'date-fns/locale';
 import Image from "next/image";
 import { ArticleVoting } from "@/components/article/article-voting";
 import { RelatedArticles } from "@/components/article/related-articles";
 import discoverData from "@/data/discover.json";
 import FollowUpQuestionForm from "@/components/follow-up-question";
 import ReactMarkdown from 'react-markdown';
+
+// Helper function to unescape common sequences in the JSON string
+const unescapeMarkdown = (text: string): string => {
+  return text.replace(/\\n/g, '\n').replace(/\\"/g, '"');
+};
 
 export function generateStaticParams() {
   const articles = [discoverData.featured, ...discoverData.articles];
@@ -32,10 +38,13 @@ export default function ArticlePage({ params }: ArticlePageProps) {
   if (!article) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <h1 className="text-2xl font-bold">Article not found</h1>
+        <h1 className="text-2xl font-bold">Artigo não encontrado</h1>
       </div>
     );
   }
+
+  // Unescape the description before rendering
+  const unescapedDescription = unescapeMarkdown(article.description);
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 pt-20 md:pt-6 pb-20 sm:pb-24 space-y-6 sm:space-y-8">
@@ -61,21 +70,21 @@ export default function ArticlePage({ params }: ArticlePageProps) {
           </div>
           <span>·</span>
           <span>
-            {formatDistanceToNow(new Date(article.date), { addSuffix: true })}
+            {formatDistanceToNow(new Date(article.date), { addSuffix: true, locale: ptBR })}
           </span>
           <span>·</span>
           <span>{article.readTime}</span>
           <span>·</span>
           <div className="flex items-center gap-1">
             <Eye className="h-4 w-4" />
-            <span>1.2k views</span>
+            <span>1,2k visualizações</span>
           </div>
         </div>
       </div>
 
       <div className="prose prose-neutral dark:prose-invert max-w-none">
         <ReactMarkdown>
-          {article.description}
+          {unescapedDescription}
         </ReactMarkdown>
       </div>
 

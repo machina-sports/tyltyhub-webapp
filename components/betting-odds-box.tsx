@@ -18,24 +18,24 @@ interface Market {
 // Dummy data for betting markets
 const DUMMY_MARKETS: Market[] = [
   {
-    name: "Match Winner",
+    name: "Vencedor da Partida",
     options: [
-      { name: "Home Team", odds: "+150" },
-      { name: "Away Team", odds: "-120" }
+      { name: "Time da Casa", odds: "+150" },
+      { name: "Time Visitante", odds: "-120" }
     ]
   },
   {
-    name: "Total Points",
+    name: "Total de Pontos",
     options: [
-      { name: "Over 2.5", odds: "-110" },
-      { name: "Under 2.5", odds: "+105" }
+      { name: "Mais de 2.5", odds: "-110" },
+      { name: "Menos de 2.5", odds: "+105" }
     ]
   },
   {
-    name: "First Goal Scorer",
+    name: "Primeiro a Marcar",
     options: [
-      { name: "Player A", odds: "+500" },
-      { name: "Player B", odds: "+650" }
+      { name: "Jogador A", odds: "+500" },
+      { name: "Jogador B", odds: "+650" }
     ]
   }
 ]
@@ -102,7 +102,7 @@ export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: B
       )}>
         {isCompleted && (
           <div className="absolute inset-0 bg-gray-100/70 backdrop-blur-sm rounded-lg flex items-center justify-center">
-            <p className="text-base font-semibold text-gray-800">Bet Placed Successfully</p>
+            <p className="text-base font-semibold text-gray-800">Aposta Feita com Sucesso!</p>
           </div>
         )}
         <div className="flex items-center justify-between border-b pb-3">
@@ -117,7 +117,7 @@ export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: B
               }}
               className="text-gray-500 hover:text-gray-700"
             >
-              Close
+              Fechar
             </Button>
           )}
         </div>
@@ -150,14 +150,14 @@ export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: B
                 </div>
               </div>
             )) : (
-              <p className="text-gray-500 text-center py-4">No betting markets available</p>
+              <p className="text-gray-500 text-center py-4">Nenhum mercado de aposta disponível</p>
             )}
           </div>
         ) : (
           <div className="space-y-5">
             <div className="bg-blue-50 p-4 rounded-lg space-y-3">
               <div className="flex justify-between text-base">
-                <span className="text-gray-600">Selection:</span>
+                <span className="text-gray-600">Seleção:</span>
                 <span className="font-semibold text-gray-800">{selectedBet?.selection}</span>
               </div>
               <div className="flex justify-between text-base">
@@ -167,7 +167,7 @@ export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: B
             </div>
   
             <div className="space-y-3">
-              <label className="text-base text-gray-600">Stake Amount</label>
+              <label className="text-base text-gray-600">Valor da Aposta</label>
               <div className="relative">
                 <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
                 <Input
@@ -176,11 +176,11 @@ export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: B
                   value={stake}
                   onChange={(e) => setStake(e.target.value)}
                   className="pl-10 border-gray-300 focus:border-blue-500"
-                  placeholder="Enter stake amount"
+                  placeholder="Digite o valor da aposta"
                 />
               </div>
               <div className="flex justify-between text-base">
-                <span className="text-gray-600">Potential Win:</span>
+                <span className="text-gray-600">Ganho Potencial:</span>
                 <span className="font-mono text-gray-800">${potentialWinnings}</span>
               </div>
             </div>
@@ -198,7 +198,7 @@ export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: B
               ) : (
                 <>
                   <Check className="mr-2 h-5 w-5" />
-                  Place Bet
+                  Fazer Aposta
                 </>
               )}
             </Button>
