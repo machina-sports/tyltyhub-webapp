@@ -57,7 +57,7 @@ export function Sidebar() {
             className="flex items-center justify-center pl-3 mb-8 cursor-pointer"
           >
             <Image 
-              src="/sb-logo_new.png" 
+              src="/sb-logo-novo.svg" 
               alt="Logo Sportingbet" 
               width={150} 
               height={45}
