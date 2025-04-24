@@ -2,11 +2,12 @@
 
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { CalendarDays, Clock } from "lucide-react"
+import { CalendarDays } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { formatDistanceToNow } from "date-fns"
 import { ptBR } from 'date-fns/locale'
+import ReactMarkdown from 'react-markdown'
 
 interface Article {
   id: string
@@ -23,10 +24,18 @@ interface ArticleGridProps {
   articles: Article[]
 }
 
+// Helper function to unescape common sequences in the JSON string
+const unescapeMarkdown = (text: string): string => {
+  return text.replace(/\\n/g, '\n').replace(/\\"/g, '"');
+};
+
 // Helper function to extract a snippet from the full description
 const getDescriptionSnippet = (description: string, maxLength: number = 150) => {
+  // Unescape the description first
+  const unescapedDescription = unescapeMarkdown(description);
+  
   // Extract the first paragraph or use the whole text if no paragraphs
-  const firstParagraph = description.split('\n\n')[0];
+  const firstParagraph = unescapedDescription.split('\n\n')[0];
   
   // If the paragraph is already short enough, return it
   if (firstParagraph.length <= maxLength) return firstParagraph;
@@ -53,13 +62,13 @@ export function ArticleGrid({ articles }: ArticleGridProps) {
               <div className="p-6">
                 <div className="flex items-center gap-2 mb-4">
                   <Badge variant="secondary">{article.category}</Badge>
-                  <div className="flex items-center text-sm text-muted-foreground">
-                    <Clock className="h-4 w-4 mr-1" />
-                    {article.readTime}
-                  </div>
                 </div>
                 <h2 className="text-xl font-semibold mb-2 hover:text-primary transition-colors">{article.title}</h2>
-                <p className="text-muted-foreground text-sm mb-4">{getDescriptionSnippet(article.description)}</p>
+                <div className="text-muted-foreground text-sm mb-4 prose prose-sm prose-neutral dark:prose-invert max-w-none">
+                  <ReactMarkdown>
+                    {getDescriptionSnippet(article.description)}
+                  </ReactMarkdown>
+                </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="h-6 w-6 rounded-full bg-secondary" />

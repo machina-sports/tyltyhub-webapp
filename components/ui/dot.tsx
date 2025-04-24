@@ -78,5 +78,5 @@ export function SportingbetDot(props: Omit<DotProps, 'color'>) {
   return <Dot color="#0A5EEA" {...props} />;
 }
 export function SportingbetDarkDot(props: Omit<DotProps, 'color'>) {
-  return <Dot color="#061F3F" {...props} />;
+  return <Dot color="#001F3F" {...props} />;
 } 

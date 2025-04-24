@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { Home, Compass, History, X, Palette } from 'lucide-react'
+import { MessageSquare, Compass, History, X, Palette } from 'lucide-react'
 import { MobileHeader } from './mobile-header'
 import { useChatState } from '@/hooks/use-chat-state'
 
@@ -18,8 +18,8 @@ interface Route {
 
 const routes: Route[] = [
   {
-    label: 'Início',
-    icon: Home,
+    label: 'Chat',
+    icon: MessageSquare,
     href: '/',
   },
   {
@@ -94,6 +94,16 @@ export function Sidebar() {
               </Button>
             ))}
           </div>
+        </div>
+        <div className="px-4 pb-2">
+          <a 
+            href="https://www.sportingbet.bet.br/pt-br/sports" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="block w-full py-3 bg-[#061F3F] hover:bg-[#061F3F]/90 text-white font-semibold rounded-lg text-center shadow-md transition-colors duration-200"
+          >
+            Registre-se Agora
+          </a>
         </div>
         <div className="p-4 border-t border-[#D3ECFF]/20">
           <div className="text-white/70 text-xs text-center">

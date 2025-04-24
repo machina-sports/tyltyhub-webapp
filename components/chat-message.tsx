@@ -31,54 +31,6 @@ interface SampleOddsType {
 }
 
 const SAMPLE_ODDS: SampleOddsType = {
-  "basketball": {
-    "event": "Los Angeles Lakers vs Golden State Warriors",
-    "markets": [
-      {
-        "name": "Resultado Final",
-        "options": [
-          { "name": "Lakers", "odds": "1.67" },
-          { "name": "Warriors", "odds": "2.30" }
-        ]
-      }
-    ]
-  },
-  "soccer": {
-    "event": "Manchester City vs Real Madrid",
-    "markets": [
-      {
-        "name": "Resultado da Partida",
-        "options": [
-          { "name": "Man City", "odds": "1.83" },
-          { "name": "Real Madrid", "odds": "3.80" }
-        ]
-      }
-    ]
-  },
-  "f1": {
-    "event": "Monaco Grand Prix",
-    "markets": [
-      {
-        "name": "Vencedor da Corrida",
-        "options": [
-          { "name": "Lewis Hamilton", "odds": "2.50" },
-          { "name": "Max Verstappen", "odds": "2.75" }
-        ]
-      }
-    ]
-  },
-  "ufc": {
-    "event": "UFC 312: Alex Pereira vs Jamal Hill 2",
-    "markets": [
-      {
-        "name": "Vencedor da Luta",
-        "options": [
-          { "name": "Alex Pereira", "odds": "2.10" },
-          { "name": "Jamal Hill", "odds": "1.80" }
-        ]
-      }
-    ]
-  },
   "cwc-group-a": {
     "event": "Real Madrid vs Al Ahly",
     "markets": [

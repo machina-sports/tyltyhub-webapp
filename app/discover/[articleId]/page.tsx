@@ -1,4 +1,4 @@
-import { ThumbsUp, ThumbsDown, Eye } from "lucide-react";
+import { ThumbsUp, ThumbsDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { formatDistanceToNow } from "date-fns";
@@ -72,13 +72,6 @@ export default function ArticlePage({ params }: ArticlePageProps) {
           <span>
             {formatDistanceToNow(new Date(article.date), { addSuffix: true, locale: ptBR })}
           </span>
-          <span>·</span>
-          <span>{article.readTime}</span>
-          <span>·</span>
-          <div className="flex items-center gap-1">
-            <Eye className="h-4 w-4" />
-            <span>1,2k visualizações</span>
-          </div>
         </div>
       </div>
 
