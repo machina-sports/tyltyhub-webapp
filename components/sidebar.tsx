@@ -40,6 +40,7 @@ export function Sidebar() {
       resetChat()
     }
     router.push(href)
+    setIsOpen(false)
   }
 
   return (
@@ -100,6 +101,7 @@ export function Sidebar() {
             href="https://www.sportingbet.bet.br/pt-br/sports" 
             target="_blank" 
             rel="noopener noreferrer" 
+            onClick={() => setIsOpen(false)}
             className="block w-full py-3 bg-[#061F3F] hover:bg-[#061F3F]/90 text-white font-semibold rounded-lg text-center shadow-md transition-colors duration-200"
           >
             Registre-se Agora
