@@ -24,7 +24,7 @@ export default function FollowUpQuestionForm() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Curtiu? Quer saber mais? Fala aí!"
-            className="w-full py-6 pl-4 pr-12 rounded-lg bg-white shadow-sm border-0"
+            className="w-full py-6 pl-4 pr-12 rounded-lg bg-white shadow-sm border-0 text-base"
           />
           <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
             <motion.div whileTap={{ scale: 0.95 }}>

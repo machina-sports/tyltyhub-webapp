@@ -47,7 +47,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
   const unescapedDescription = unescapeMarkdown(article.description);
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 pt-20 md:pt-6 pb-20 sm:pb-24 space-y-6 sm:space-y-8">
+    <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 pt-20 md:pt-6 pb-32 sm:pb-36 space-y-6 sm:space-y-8">
       <div className="relative h-[200px] sm:h-[400px] w-full overflow-hidden rounded-lg">
         <Image
           src={article.image}

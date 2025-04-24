@@ -352,7 +352,7 @@ export default function Home() {
       </div>
 
       {!showInitial && (
-        <div className="fixed bottom-0 left-0 right-0 border-t bg-secondary/30 backdrop-blur-sm">
+        <div className="fixed bottom-0 left-0 right-0 border-t bg-secondary/30 backdrop-blur-sm pb-safe z-10">
           <div className="mx-auto max-w-2xl px-4 py-2 md:py-4">
             <form onSubmit={handleSubmit} className="relative">
               <Input
