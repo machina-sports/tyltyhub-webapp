@@ -192,7 +192,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col h-screen bg-background pt-16 md:pt-0">
-      <div className="flex-1 overflow-auto hide-scrollbar momentum-scroll">
+      <div className="flex-1 overflow-auto hide-scrollbar momentum-scroll pb-32 pt-4 md:pb-24">
         {showInitial ? (
           <div className="flex flex-col items-center justify-center min-h-[calc(100vh-12rem)] p-4">
             <h1 className="text-center mb-4 sm:mb-6 flex items-center gap-3 justify-center">
@@ -205,7 +205,7 @@ export default function Home() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Busque por times, jogos ou odds..."
-                  className="w-full h-10 md:h-12 pl-4 pr-12 rounded-lg bg-secondary/50 border-0 shadow-sm"
+                  className="w-full h-10 md:h-12 pl-4 pr-12 rounded-lg bg-secondary/50 border-0 shadow-sm text-base"
                 />
                 <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
                   <Button type="submit" size="icon" variant="ghost" className="h-8 w-8">
@@ -329,7 +329,7 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          <div className="pb-32 pt-4 mx-auto w-full max-w-2xl overflow-x-hidden">
+          <div className="mx-auto w-full max-w-2xl overflow-x-hidden pb-8">
             <div className="flex flex-col space-y-4 px-4 w-full">
               {messages.map((message, index) => (
                 <ChatMessage 
@@ -359,7 +359,7 @@ export default function Home() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Pergunte sobre times, jogos ou odds..."
-                className="w-full py-6 pl-4 pr-12 rounded-lg bg-white shadow-sm border-0"
+                className="w-full py-6 pl-4 pr-12 rounded-lg bg-white shadow-sm border-0 text-base"
               />
               <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
                 <Button 

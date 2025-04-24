@@ -11,7 +11,7 @@ interface ChatBubbleProps {
 export function ChatBubble({ role, children }: ChatBubbleProps) {
   return (
     <div className={cn(
-      "flex items-start gap-3 px-4 w-full max-w-full overflow-hidden",
+      "flex items-start gap-3 px-4 py-2 w-full max-w-full overflow-hidden",
       role === 'user' && "flex-row-reverse"
     )}>
       <ChatAvatar role={role} />

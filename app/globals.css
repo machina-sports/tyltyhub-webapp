@@ -182,9 +182,7 @@
     --chart-4: var(--sb-bright-deep-blue);
     --chart-5: 218 40% 60%;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
@@ -196,6 +194,11 @@
   
   html {
     -webkit-text-size-adjust: 100%;
+  }
+  
+  /* Prevent iOS Safari auto-zoom on input focus */
+  input, textarea, select {
+    font-size: 16px; /* Minimum font size to prevent auto-zoom on iOS */
   }
   
   /* Typography based on Sportingbet guidelines */

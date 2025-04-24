@@ -129,8 +129,7 @@ export function ChatMessage({ role, content, isTyping, onNewMessage, oddsType, m
           </div>
         </div>
       )}
-      <div className="h-8 md:hidden"></div> {/* Adjust height as needed */}
-      {messagesEndRef && <div ref={messagesEndRef} />}
+      {messagesEndRef && <div ref={messagesEndRef} className="h-2" />}
     </div>
   )
 }
