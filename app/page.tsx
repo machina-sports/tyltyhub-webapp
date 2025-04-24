@@ -329,8 +329,8 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          <div className="pb-32 pt-4 mx-auto w-full max-w-2xl">
-            <div className="flex flex-col space-y-4 px-4">
+          <div className="pb-32 pt-4 mx-auto w-full max-w-2xl overflow-x-hidden">
+            <div className="flex flex-col space-y-4 px-4 w-full">
               {messages.map((message, index) => (
                 <ChatMessage 
                   key={index} 

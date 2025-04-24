@@ -105,7 +105,7 @@ export function ChatMessage({ role, content, isTyping, onNewMessage, oddsType, m
   }
 
   return (
-    <div className="mb-4 last:mb-0">
+    <div className="mb-4 last:mb-0 w-full overflow-x-hidden">
       <ChatBubble role={role}>
         <div className="space-y-2">
           {isTyping ? (
@@ -122,9 +122,9 @@ export function ChatMessage({ role, content, isTyping, onNewMessage, oddsType, m
       </ChatBubble>
       
       {showOdds && oddsType && !showBetConfirmation && SAMPLE_ODDS[oddsType] && (
-        <div className="mt-4 pl-14">
+        <div className="mt-4 pl-14 w-full overflow-x-hidden">
           <BettingOddsBox {...SAMPLE_ODDS[oddsType]} onPlaceBet={handlePlaceBet} />
-          <div className="mt-6 -mx-4 md:mx-0">
+          <div className="mt-6 -mx-0">
             <RelatedArticles currentArticleId="" />
           </div>
         </div>
