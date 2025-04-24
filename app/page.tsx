@@ -227,8 +227,7 @@ export default function Home() {
                         {suggestions.slice(0, 6).map((suggestion, index) => (
                           <motion.button
                             key={index}
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
+                            whileTap={{ scale: 0.99 }}
                             className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 transition-colors rounded-lg flex items-center group"
                             onClick={() => handleSampleQuery(suggestion.text)}
                           >
@@ -248,8 +247,7 @@ export default function Home() {
                         {suggestions.slice(0, 6).map((suggestion, index) => (
                           <motion.button
                             key={`dup1-${index}`}
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
+                            whileTap={{ scale: 0.99 }}
                             className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 transition-colors rounded-lg flex items-center group"
                             onClick={() => handleSampleQuery(suggestion.text)}
                           >
@@ -269,8 +267,7 @@ export default function Home() {
                         {suggestions.slice(0, 6).map((suggestion, index) => (
                           <motion.button
                             key={`dup2-${index}`}
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
+                            whileTap={{ scale: 0.99 }}
                             className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 transition-colors rounded-lg flex items-center group"
                             onClick={() => handleSampleQuery(suggestion.text)}
                           >
@@ -305,8 +302,7 @@ export default function Home() {
                         {[...suggestions.slice(6, 12), ...suggestions.slice(0, 6)].map((suggestion, index) => (
                           <motion.button
                             key={`orig-${index}`}
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
+                            whileTap={{ scale: 0.99 }}
                             className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 transition-colors rounded-lg flex items-center group"
                             onClick={() => handleSampleQuery(suggestion.text)}
                           >
@@ -328,8 +324,7 @@ export default function Home() {
                         {[...suggestions.slice(6, 12), ...suggestions.slice(0, 6)].map((suggestion, index) => (
                           <motion.button
                             key={`dup1-${index}`}
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
+                            whileTap={{ scale: 0.99 }}
                             className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 transition-colors rounded-lg flex items-center group"
                             onClick={() => handleSampleQuery(suggestion.text)}
                           >
@@ -351,8 +346,7 @@ export default function Home() {
                         {[...suggestions.slice(6, 12), ...suggestions.slice(0, 6)].map((suggestion, index) => (
                           <motion.button
                             key={`dup2-${index}`}
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
+                            whileTap={{ scale: 0.99 }}
                             className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 transition-colors rounded-lg flex items-center group"
                             onClick={() => handleSampleQuery(suggestion.text)}
                           >
