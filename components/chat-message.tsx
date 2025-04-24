@@ -6,6 +6,7 @@ import { RelatedArticles } from './article/related-articles'
 import { Loader2 } from 'lucide-react'
 import { ChatBubble } from './chat/bubble'
 import { useChatState } from '@/hooks/use-chat-state'
+import { RefObject } from 'react'
 
 interface ChatMessageProps {
   role: 'user' | 'assistant'
@@ -13,6 +14,7 @@ interface ChatMessageProps {
   isTyping?: boolean
   onNewMessage?: (message: { role: 'user' | 'assistant', content: string, oddsType?: string | null }) => void
   oddsType?: string | null
+  messagesEndRef?: RefObject<HTMLDivElement>
 }
 
 interface OddsData {
@@ -81,7 +83,7 @@ const SAMPLE_ODDS: SampleOddsType = {
   }
 }
 
-export function ChatMessage({ role, content, isTyping, onNewMessage, oddsType }: ChatMessageProps) {
+export function ChatMessage({ role, content, isTyping, onNewMessage, oddsType, messagesEndRef }: ChatMessageProps) {
   const { addMessage } = useChatState()
   const showOdds = role === 'assistant' && !isTyping
   const showBetConfirmation = content.toLowerCase().includes('i\'ve placed your bet')
@@ -128,6 +130,7 @@ export function ChatMessage({ role, content, isTyping, onNewMessage, oddsType }:
         </div>
       )}
       <div className="h-8 md:hidden"></div> {/* Adjust height as needed */}
+      {messagesEndRef && <div ref={messagesEndRef} />}
     </div>
   )
 }

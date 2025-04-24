@@ -43,19 +43,50 @@ export function Sidebar() {
     setIsOpen(false)
   }
 
+  useEffect(() => {
+    // Close sidebar when route changes (mobile)
+    setIsOpen(false)
+  }, [pathname])
+
+  // Lock body scroll when sidebar is open on mobile
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isOpen])
+
   return (
     <>
       <MobileHeader onMenuClick={() => setIsOpen(true)} />
 
       <div className={cn(
-        "fixed inset-y-0 left-0 z-40 w-64 transform transition-transform duration-200 ease-in-out md:translate-x-0 md:static md:w-56",
+        "fixed inset-y-0 left-0 z-50 w-72 transform transition-transform duration-200 ease-in-out md:translate-x-0 md:static md:w-56",
         "space-y-4 pt-16 md:pt-4 flex flex-col h-full bg-sportingbet-bright-deep-blue border-r",
         isOpen ? "translate-x-0" : "-translate-x-full"
       )}>
+        <div className="pr-4 pl-2 absolute top-4 right-0 md:hidden">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsOpen(false)}
+            className="h-10 w-10 text-white hover:bg-white/20 active:bg-white/30"
+            aria-label="Close menu"
+          >
+            <X className="h-5 w-5" />
+          </Button>
+        </div>
+        
         <div className="px-3 py-2 flex-1 flex flex-col">
           <div 
             onClick={() => handleNavigation('/')} 
             className="flex items-center justify-center pl-3 mb-8 cursor-pointer"
+            role="button"
+            aria-label="Go to home"
           >
             <Image 
               src="/sb-logo-novo.svg" 
@@ -68,6 +99,8 @@ export function Sidebar() {
           <div 
             onClick={() => handleNavigation('/')} 
             className="flex items-center justify-center pl-3 mb-14 cursor-pointer"
+            role="button"
+            aria-label="Go to home"
           >
             <Image 
               src="/cwc-logo.png" 
@@ -77,16 +110,16 @@ export function Sidebar() {
               priority
             />
           </div>
-          <div className="space-y-1">
+          <div className="space-y-2">
             {routes.map((route) => (
               <Button
                 key={route.href}
                 variant={pathname === route.href ? "secondary" : "ghost"}
                 className={cn(
-                  "w-full justify-start text-white hover:text-white rounded-lg",
+                  "w-full justify-start text-white hover:text-white rounded-lg h-12 px-4",
                   pathname === route.href 
                     ? "bg-white/20 text-white hover:bg-white/30 font-medium" 
-                    : "hover:bg-white/10 transition-colors duration-200"
+                    : "hover:bg-white/10 active:bg-white/15 transition-colors duration-200"
                 )}
                 onClick={() => handleNavigation(route.href)}
               >
@@ -96,13 +129,13 @@ export function Sidebar() {
             ))}
           </div>
         </div>
-        <div className="px-4 pb-2">
+        <div className="px-4 pb-4 pt-2">
           <a 
             href="https://www.sportingbet.bet.br/pt-br/sports" 
             target="_blank" 
             rel="noopener noreferrer" 
             onClick={() => setIsOpen(false)}
-            className="block w-full py-3 bg-[#061F3F] hover:bg-[#061F3F]/90 text-white font-semibold rounded-lg text-center shadow-md transition-colors duration-200"
+            className="block w-full py-4 bg-[#061F3F] hover:bg-[#061F3F]/90 active:bg-[#061F3F]/80 text-white font-semibold rounded-lg text-center shadow-md transition-colors duration-200"
           >
             Registre-se Agora
           </a>
@@ -116,8 +149,9 @@ export function Sidebar() {
 
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-30 md:hidden"
+          className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm"
           onClick={() => setIsOpen(false)}
+          aria-hidden="true"
         />
       )}
     </>

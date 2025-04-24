@@ -103,9 +103,11 @@ export default function Home() {
       const contentWidth = secondRowContentRef.current.offsetWidth;
       
       // Reset position when content has fully entered from the left
-      if (secondRowPositionRef.current > 0 && secondRowPositionRef.current >= contentWidth) {
-        // Jump back to negative position to create continuous appearance
-        secondRowPositionRef.current = -contentWidth;
+      if (secondRowPositionRef.current >= 0) {
+        // If position has reached the end of first set, loop back
+        if (secondRowPositionRef.current >= contentWidth) {
+          secondRowPositionRef.current = -contentWidth;
+        }
       }
       
       if (secondRowRef.current) { 
@@ -140,7 +142,7 @@ export default function Home() {
     // Initialize second row at negative position to create illusion of infinite scroll
     if (secondRowContentRef.current && secondRowRef.current) {
       const width = secondRowContentRef.current.offsetWidth;
-      secondRowPositionRef.current = -width; // Start off-screen to the left
+      secondRowPositionRef.current = -width; // Start completely off-screen to the left
       secondRowRef.current.style.transform = `translateX(${secondRowPositionRef.current}px)`;
     }
   }, []);
@@ -190,10 +192,10 @@ export default function Home() {
 
   return (
     <div className="flex flex-col h-screen bg-background pt-16 md:pt-0">
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-auto hide-scrollbar momentum-scroll">
         {showInitial ? (
           <div className="flex flex-col items-center justify-center min-h-[calc(100vh-12rem)] p-4">
-            <h1 className="text-center mb-6 sm:mb-8 flex items-center gap-3 justify-center">
+            <h1 className="text-center mb-4 sm:mb-6 flex items-center gap-3 justify-center">
               Qual vai ser a sua aposta?
               <SportingbetDot size={28} className="ml-1" />
             </h1>
@@ -202,8 +204,8 @@ export default function Home() {
                 <Input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Busque por times, jogos ou odds do Mundial de Clubes..."
-                  className="w-full h-12 pl-4 pr-12 rounded-lg bg-secondary/50 border-0"
+                  placeholder="Busque por times, jogos ou odds..."
+                  className="w-full h-10 md:h-12 pl-4 pr-12 rounded-lg bg-secondary/50 border-0 shadow-sm"
                 />
                 <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
                   <Button type="submit" size="icon" variant="ghost" className="h-8 w-8">
@@ -212,23 +214,25 @@ export default function Home() {
                 </div>
               </form>
             </div>
-            <div className="mt-6 sm:mt-8 w-full max-w-xl mx-auto">
-              <div className="w-full relative flex flex-col gap-3">
+            <div className="mt-4 sm:mt-6 w-full max-w-xl mx-auto px-1">
+              <div className="w-full relative flex flex-col gap-2 md:gap-3">
                 <div 
-                  className="relative overflow-hidden"
+                  className="relative overflow-hidden rounded-lg"
                   onMouseEnter={pauseFirstRow}
                   onMouseLeave={resumeFirstRow}
+                  onTouchStart={pauseFirstRow}
+                  onTouchEnd={resumeFirstRow}
                 >
                   <div className="absolute left-0 top-0 h-full w-12 bg-gradient-to-r from-background to-transparent z-10"></div>
                   <div className="absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-background to-transparent z-10"></div>
                   <div className="flex overflow-hidden">
-                    <div ref={firstRowRef} className="flex w-full"> 
+                    <div ref={firstRowRef} className="flex w-full touch-action-pan-y"> 
                       <div ref={firstRowContentRef} className="flex gap-2 py-1">
                         {suggestions.slice(0, 6).map((suggestion, index) => (
                           <motion.button
                             key={index}
-                            whileTap={{ scale: 0.99 }}
-                            className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 transition-colors rounded-lg flex items-center group"
+                            whileTap={{ scale: 0.97 }}
+                            className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2.5 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 active:bg-secondary/60 transition-colors rounded-lg flex items-center group"
                             onClick={() => handleSampleQuery(suggestion.text)}
                           >
                             {suggestion.isLabIcon && suggestion.iconNode ? (
@@ -247,28 +251,8 @@ export default function Home() {
                         {suggestions.slice(0, 6).map((suggestion, index) => (
                           <motion.button
                             key={`dup1-${index}`}
-                            whileTap={{ scale: 0.99 }}
-                            className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 transition-colors rounded-lg flex items-center group"
-                            onClick={() => handleSampleQuery(suggestion.text)}
-                          >
-                            {suggestion.isLabIcon && suggestion.iconNode ? (
-                              <Icon 
-                                iconNode={suggestion.iconNode} 
-                                className="h-4 w-4 mr-3 flex-shrink-0 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" 
-                              />
-                            ) : suggestion.icon ? (
-                              <suggestion.icon className="h-4 w-4 mr-3 flex-shrink-0 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" />
-                            ) : null}
-                            {suggestion.text}
-                          </motion.button>
-                        ))}
-                      </div>
-                      <div className="flex gap-2 py-1">
-                        {suggestions.slice(0, 6).map((suggestion, index) => (
-                          <motion.button
-                            key={`dup2-${index}`}
-                            whileTap={{ scale: 0.99 }}
-                            className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 transition-colors rounded-lg flex items-center group"
+                            whileTap={{ scale: 0.97 }}
+                            className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2.5 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 active:bg-secondary/60 transition-colors rounded-lg flex items-center group"
                             onClick={() => handleSampleQuery(suggestion.text)}
                           >
                             {suggestion.isLabIcon && suggestion.iconNode ? (
@@ -286,24 +270,24 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-                
+
                 <div 
-                  className="relative overflow-hidden"
+                  className="relative overflow-hidden rounded-lg"
                   onMouseEnter={pauseSecondRow}
                   onMouseLeave={resumeSecondRow}
+                  onTouchStart={pauseSecondRow}
+                  onTouchEnd={resumeSecondRow}
                 >
                   <div className="absolute left-0 top-0 h-full w-12 bg-gradient-to-r from-background to-transparent z-10"></div>
                   <div className="absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-background to-transparent z-10"></div>
                   <div className="flex overflow-hidden">
-                    <div ref={secondRowRef} className="flex w-full"> 
-                      {/* Initial set - Full rotation of all 12 suggestions for continuous flow */}
+                    <div ref={secondRowRef} className="flex w-full touch-action-pan-y"> 
                       <div ref={secondRowContentRef} className="flex gap-2 py-1">
-                        {/* Use full suggestions array - second half first */}
-                        {[...suggestions.slice(6, 12), ...suggestions.slice(0, 6)].map((suggestion, index) => (
+                        {suggestions.slice(6).map((suggestion, index) => (
                           <motion.button
-                            key={`orig-${index}`}
-                            whileTap={{ scale: 0.99 }}
-                            className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 transition-colors rounded-lg flex items-center group"
+                            key={index}
+                            whileTap={{ scale: 0.97 }}
+                            className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2.5 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 active:bg-secondary/60 transition-colors rounded-lg flex items-center group"
                             onClick={() => handleSampleQuery(suggestion.text)}
                           >
                             {suggestion.isLabIcon && suggestion.iconNode ? (
@@ -318,36 +302,12 @@ export default function Home() {
                           </motion.button>
                         ))}
                       </div>
-                      
-                      {/* First duplicate - repeat the same pattern */}
                       <div className="flex gap-2 py-1">
-                        {[...suggestions.slice(6, 12), ...suggestions.slice(0, 6)].map((suggestion, index) => (
-                          <motion.button
-                            key={`dup1-${index}`}
-                            whileTap={{ scale: 0.99 }}
-                            className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 transition-colors rounded-lg flex items-center group"
-                            onClick={() => handleSampleQuery(suggestion.text)}
-                          >
-                            {suggestion.isLabIcon && suggestion.iconNode ? (
-                              <Icon 
-                                iconNode={suggestion.iconNode} 
-                                className="h-4 w-4 mr-3 flex-shrink-0 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" 
-                              />
-                            ) : suggestion.icon ? (
-                              <suggestion.icon className="h-4 w-4 mr-3 flex-shrink-0 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" />
-                            ) : null}
-                            {suggestion.text}
-                          </motion.button>
-                        ))}
-                      </div>
-                      
-                      {/* Second duplicate */}
-                      <div className="flex gap-2 py-1">
-                        {[...suggestions.slice(6, 12), ...suggestions.slice(0, 6)].map((suggestion, index) => (
+                        {suggestions.slice(6).map((suggestion, index) => (
                           <motion.button
                             key={`dup2-${index}`}
-                            whileTap={{ scale: 0.99 }}
-                            className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 transition-colors rounded-lg flex items-center group"
+                            whileTap={{ scale: 0.97 }}
+                            className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2.5 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 active:bg-secondary/60 transition-colors rounded-lg flex items-center group"
                             onClick={() => handleSampleQuery(suggestion.text)}
                           >
                             {suggestion.isLabIcon && suggestion.iconNode ? (
@@ -369,49 +329,51 @@ export default function Home() {
             </div>
           </div>
         ) : (
-        <div className="max-w-3xl mx-auto px-4 py-4 sm:py-6 space-y-6">
-          <div className="space-y-6">
-            {messages.map((message, index) => (
-              <ChatMessage 
-                key={index} 
-                {...message} 
-                onNewMessage={addMessage}
-                isTyping={false}
-              />
-            ))}
-            {isTyping && (
-              <ChatMessage
-                role="assistant"
-                content=""
-                isTyping={true}
-                onNewMessage={addMessage}
-              />
-            )}
+          <div className="pb-32 pt-4 mx-auto w-full max-w-2xl">
+            <div className="flex flex-col space-y-4 px-4">
+              {messages.map((message, index) => (
+                <ChatMessage 
+                  key={index} 
+                  role={message.role}
+                  content={message.content}
+                  oddsType={message.oddsType}
+                  messagesEndRef={index === messages.length - 1 ? messagesEndRef : undefined} 
+                />
+              ))}
+              {isTyping && (
+                <div className="flex items-center space-x-2 text-muted-foreground animate-pulse">
+                  <SportingbetDot size={16} className="text-foreground" />
+                  <span className="text-sm">Digitando...</span>
+                </div>
+              )}
+            </div>
           </div>
-          <div ref={messagesEndRef} />
-        </div>
         )}
       </div>
+
       {!showInitial && (
-        <div className="fixed md:sticky bottom-0 left-0 right-0 bg-background/80 backdrop-blur-sm border-t p-4 mobile-safe-bottom">
-          <form onSubmit={handleSubmit} className="max-w-3xl mx-auto relative tap-highlight-none">
-            <div className="relative flex items-center">
-              <div className="absolute left-3 top-1/2 -translate-y-1/2 z-10">
-                <SportingbetDot size={16} />
-              </div>
+        <div className="fixed bottom-0 left-0 right-0 border-t bg-secondary/30 backdrop-blur-sm">
+          <div className="mx-auto max-w-2xl px-4 py-2 md:py-4">
+            <form onSubmit={handleSubmit} className="relative">
               <Input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Pergunte sobre odds, times ou jogos do Mundial de Clubes da FIFA..."
-                className="w-full h-12 pl-10 pr-12 rounded-lg bg-secondary/50 border-0"
+                placeholder="Pergunte sobre times, jogos ou odds..."
+                className="w-full py-6 pl-4 pr-12 rounded-lg bg-white shadow-sm border-0"
               />
-              <div className="absolute right-2 top-1/2 -translate-y-1/2">
-                <Button type="submit" size="icon" variant="ghost" className="h-8 w-8">
+              <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                <Button 
+                  type="submit" 
+                  size="icon" 
+                  variant="ghost" 
+                  className="h-9 w-9 hover:bg-secondary active:bg-secondary/80"
+                  disabled={!input.trim()}
+                >
                   <Search className="h-4 w-4" />
                 </Button>
               </div>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
       )}
     </div>

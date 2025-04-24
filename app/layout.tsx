@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 export const metadata: Metadata = {
   title: 'Sportingbet AI',
   description: 'Sua Aposta Inteligente com IA',
+  viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0',
 }
 
 export default function RootLayout({
@@ -16,15 +17,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
-      <body className="antialiased">
+      <body className="antialiased overflow-hidden">
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
           enableSystem={false}
         >
-          <div className="flex h-screen">
+          <div className="flex h-screen flex-col md:flex-row">
             <Sidebar />
-            <main className="flex-1 overflow-auto">
+            <main className="flex-1 overflow-auto pb-safe">
               {children}
             </main>
           </div>

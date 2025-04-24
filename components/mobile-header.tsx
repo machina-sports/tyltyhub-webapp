@@ -36,14 +36,17 @@ export function MobileHeader({ onMenuClick }: MobileHeaderProps) {
           variant="ghost"
           size="icon"
           onClick={onMenuClick}
-          className="h-10 w-10 text-white hover:bg-white/20 hover:text-white"
+          className="h-12 w-12 text-white hover:bg-white/20 active:bg-white/30 hover:text-white transition-colors"
+          aria-label="Open menu"
         >
           <Menu className="h-5 w-5" />
         </Button>
         
         <h1 
-          className="text-lg font-semibold cursor-pointer text-white" 
+          className="text-lg font-semibold cursor-pointer text-white py-2 px-4 -mx-4 flex-1 text-center" 
           onClick={handleHomeNavigation}
+          role="button"
+          aria-label="Go to home"
         >
           {getPageTitle()}
         </h1>
@@ -53,12 +56,13 @@ export function MobileHeader({ onMenuClick }: MobileHeaderProps) {
             variant="ghost"
             size="icon"
             onClick={() => router.back()}
-            className="h-10 w-10 ml-auto text-white hover:bg-white/20 hover:text-white"
+            className="h-12 w-12 ml-auto text-white hover:bg-white/20 active:bg-white/30 hover:text-white transition-colors"
+            aria-label="Go back"
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
         ) : (
-          <div className="w-10 ml-auto" />
+          <div className="w-12 ml-auto" />
         )}
       </div>
     </div>
