@@ -5,6 +5,7 @@ import { formatDistanceToNow } from "date-fns";
 import { ptBR } from 'date-fns/locale';
 import Image from "next/image";
 import { ArticleVoting } from "@/components/article/article-voting";
+import { ArticleSharing } from "@/components/article/article-sharing";
 import { RelatedArticles } from "@/components/article/related-articles";
 import discoverData from "@/data/discover.json";
 import FollowUpQuestionForm from "@/components/follow-up-question";
@@ -63,18 +64,28 @@ export default function ArticlePage({ params }: ArticlePageProps) {
 
         <h1 className="text-2xl sm:text-4xl font-bold">{article.title}</h1>
 
-        <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm text-muted-foreground">
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-full bg-secondary" />
-            <span>{article.author}</span>
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <div className="h-8 w-8 rounded-full bg-secondary" />
+              <span>{article.author}</span>
+            </div>
+            <span>·</span>
+            <span>
+              {formatDistanceToNow(new Date(article.date), { addSuffix: true, locale: ptBR })}
+            </span>
           </div>
-          <span>·</span>
-          <span>
-            {formatDistanceToNow(new Date(article.date), { addSuffix: true, locale: ptBR })}
-          </span>
+          
+          <div className="mt-2 sm:mt-0">
+            <ArticleSharing 
+              articleId={article.id} 
+              title={article.title} 
+              url={`${typeof window !== 'undefined' ? window.location.origin : ''}/discover/${article.id}`} 
+            />
+          </div>
         </div>
       </div>
-
+      
       <div className="prose prose-neutral dark:prose-invert max-w-none">
         <ReactMarkdown>
           {unescapedDescription}

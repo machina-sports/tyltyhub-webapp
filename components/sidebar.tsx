@@ -131,13 +131,22 @@ export function Sidebar() {
         </div>
         <div className="px-4 pb-4 pt-2">
           <a 
-            href="https://www.sportingbet.bet.br/pt-br/sports" 
+            href="https://www.sportingbet.bet.br/pt-br/mobileportal/register" 
             target="_blank" 
             rel="noopener noreferrer" 
             onClick={() => setIsOpen(false)}
-            className="block w-full py-4 bg-[#061F3F] hover:bg-[#061F3F]/90 active:bg-[#061F3F]/80 text-white font-semibold rounded-lg text-center shadow-md transition-colors duration-200"
+            className="block w-full py-3 bg-[#061F3F] hover:bg-[#0A2950] active:bg-[#041A33] text-white font-medium rounded-md text-sm text-center shadow-sm transition-colors duration-200 mb-2"
           >
             Registre-se Agora
+          </a>
+          <a 
+            href="https://www.sportingbet.bet.br/pt-br/labelhost/login" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            onClick={() => setIsOpen(false)}
+            className="block w-full py-3 bg-white/10 hover:bg-white/15 active:bg-white/20 text-white font-medium rounded-md text-sm text-center border border-white/20 transition-colors duration-200"
+          >
+            Entrar
           </a>
         </div>
         <div className="p-4 border-t border-[#D3ECFF]/20">

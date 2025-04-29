@@ -1,19 +1,84 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
+import { Search, Send, Mic } from "lucide-react";
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 export default function FollowUpQuestionForm() {
   const [input, setInput] = useState("");
+  const [isRecording, setIsRecording] = useState(false);
+  const [isPreparing, setIsPreparing] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
+  const prepareTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Ref for the preparation timeout
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (!input.trim()) return;
     console.log("Follow-up question submitted:", input);
     setInput(""); // Clear the input field
+  };
+
+  // Add microphone handling functions
+  const handleMicPress = () => {
+    setIsPreparing(true);
+    
+    // Clear any existing timer just in case
+    if (prepareTimeoutRef.current) {
+      clearTimeout(prepareTimeoutRef.current);
+    }
+
+    // Start a timer for the preparation phase
+    prepareTimeoutRef.current = setTimeout(() => {
+      // If this timer completes, transition to recording state
+      setIsPreparing(false);
+      setIsRecording(true);
+      // Here you would add the actual microphone recording logic
+      console.log("Started recording");
+      prepareTimeoutRef.current = null; // Clear the ref after execution
+    }, 500);
+  };
+  
+  const handleMicRelease = () => {
+    // If there's an active preparation timer, clear it
+    if (prepareTimeoutRef.current) {
+      clearTimeout(prepareTimeoutRef.current);
+      prepareTimeoutRef.current = null;
+    }
+
+    // If released during preparation phase, just reset state
+    if (isPreparing) {
+      setIsPreparing(false);
+      return;
+    }
+    
+    // If we were actually recording, stop and start transcription
+    if (isRecording) {
+      setIsRecording(false);
+      // Here you would stop recording and process the audio
+      console.log("Stopped recording");
+      
+      // Show transcribing state
+      setIsTranscribing(true);
+      
+      // Simulate speech-to-text processing after a delay
+      setTimeout(() => {
+        // Mock result from speech-to-text
+        const mockTranscription = "Como faço pra apostar no próximo jogo do Flamengo?";
+        setInput(mockTranscription);
+        setIsTranscribing(false);
+      }, 1500);
+    }
+  };
+
+  // Get placeholder text based on recording state
+  const getInputPlaceholder = () => {
+    if (isPreparing) return "Preparando...";
+    if (isRecording) return "Gravando...";
+    if (isTranscribing) return "Transcrevendo...";
+    return "Curtiu? Quer saber mais? Fala aí!";
   };
 
   return (
@@ -23,21 +88,60 @@ export default function FollowUpQuestionForm() {
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Curtiu? Quer saber mais? Fala aí!"
-            className="w-full py-6 pl-4 pr-12 rounded-lg bg-white shadow-sm border-0 text-base"
+            placeholder={getInputPlaceholder()}
+            className={cn(
+              "w-full py-6 pl-4 pr-12 rounded-lg bg-white shadow-sm border-0 text-base",
+              isPreparing && "animate-pulse text-amber-600",
+              isRecording && "animate-pulse text-red-600",
+              isTranscribing && "animate-pulse"
+            )}
+            readOnly={isPreparing || isRecording || isTranscribing}
           />
           <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-            <motion.div whileTap={{ scale: 0.95 }}>
-              <Button 
-                type="submit" 
-                size="icon" 
-                variant="ghost" 
-                className="h-9 w-9 hover:bg-secondary active:bg-secondary/80"
-                disabled={!input.trim()}
-              >
-                <Search className="h-4 w-4" />
-              </Button>
-            </motion.div>
+            {input.trim() ? (
+              <motion.div whileTap={{ scale: 0.95 }}>
+                <Button 
+                  type="submit" 
+                  size="icon" 
+                  variant="ghost" 
+                  className="h-9 w-9 hover:bg-secondary active:bg-secondary/80 transition-colors"
+                >
+                  <Send className="h-4 w-4" />
+                </Button>
+              </motion.div>
+            ) : isTranscribing ? (
+              <motion.div>
+                <Button 
+                  type="button" 
+                  size="icon" 
+                  variant="ghost" 
+                  className="h-9 w-9 hover:bg-secondary active:bg-secondary/80 transition-colors opacity-50"
+                  disabled
+                >
+                  <span className="h-4 w-4 block rounded-full bg-muted-foreground/30 animate-pulse"></span>
+                </Button>
+              </motion.div>
+            ) : (
+              <motion.div whileTap={{ scale: 0.95 }}>
+                <Button 
+                  type="button" 
+                  size="icon" 
+                  variant="ghost" 
+                  className={cn(
+                    "h-9 w-9 hover:bg-secondary active:bg-secondary/80 transition-colors",
+                    isPreparing && "bg-amber-500/20 text-amber-500 hover:bg-amber-500/30 hover:text-amber-600",
+                    isRecording && "bg-red-500/20 text-red-500 hover:bg-red-500/30 hover:text-red-600"
+                  )}
+                  onMouseDown={handleMicPress}
+                  onMouseUp={handleMicRelease}
+                  onTouchStart={handleMicPress}
+                  onTouchEnd={handleMicRelease}
+                  aria-label="Hold to record voice message"
+                >
+                  <Mic className="h-4 w-4" />
+                </Button>
+              </motion.div>
+            )}
           </div>
         </form>
       </div>
