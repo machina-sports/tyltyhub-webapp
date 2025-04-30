@@ -94,9 +94,9 @@ export default function DiscoverPage() {
         {/* Sticky header wrapper with fixed position - accounts for mobile top bar */}
         <div 
           ref={headerRef}
-          className={`sticky z-50 bg-background transition-shadow duration-200 ${
+          className={`sticky z-20 bg-background transition-shadow duration-200 ${
             isScrolled ? 'shadow-md shadow-black/5' : 'shadow-none'
-          } top-[65px] md:top-0`}
+          } top-[64px] md:top-0`}
           style={{ position: 'sticky' }}
         >
           {/* Tabs */}
@@ -126,10 +126,10 @@ export default function DiscoverPage() {
           )}
         </div>
 
-        {/* Add spacing to prevent content from hiding behind the sticky header */}
-        <div className="h-4"></div>
+        {/* Enhanced spacing to prevent content from hiding behind the sticky header - taller on mobile */}
+        <div className="h-8 md:h-4"></div>
 
-        <TabsContent value="news" className="space-y-6 pt-4">          
+        <TabsContent value="news" className="space-y-6 pt-6 md:pt-4">          
           {/* Content layout */}
           <div className="space-y-8">
             {filteredArticles.length > 0 ? (
