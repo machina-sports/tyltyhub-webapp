@@ -1,22 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
-  trailingSlash: true,
   eslint: {
     ignoreDuringBuilds: true,
   },
-  images: { 
+  images: {
     unoptimized: true,
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-        pathname: '/**'
-      }
-    ]
-  },
-  typescript: {
-    ignoreBuildErrors: true
+        protocol: "https",
+        hostname: "machina.gg",
+      },
+    ],
   }
 };
 
