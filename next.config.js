@@ -10,6 +10,11 @@ const nextConfig = {
         protocol: "https",
         hostname: "machina.gg",
       },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        pathname: "/**",
+      },
     ],
   }
 };

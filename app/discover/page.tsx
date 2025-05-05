@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { Newspaper, Users } from "lucide-react"
+import { Newspaper, Users, Search, Table2 } from "lucide-react"
 import { 
   Tabs, 
   TabsContent, 
@@ -11,6 +11,7 @@ import {
 import { SportFilter, TeamFilter } from "@/components/discover/sport-filter"
 import { ArticleGrid } from "@/components/discover/article-grid"
 import { FifaCwcSchedule } from "@/components/discover/fifa-cwc-schedule"
+import { Input } from "@/components/ui/input"
 import discoverData from "@/data/discover.json"
 import teamsData from "@/data/teams.json"
 
@@ -24,6 +25,7 @@ interface Team {
 
 export default function DiscoverPage() {
   const [selectedTeam, setSelectedTeam] = useState("all-teams")
+  const [searchQuery, setSearchQuery] = useState("")
   const [activeTab, setActiveTab] = useState("news")
   const [isScrolled, setIsScrolled] = useState(false)
   const headerRef = useRef<HTMLDivElement>(null)
@@ -44,16 +46,22 @@ export default function DiscoverPage() {
     }
   }, [])
 
-  // Filter articles based on selected team
-  const filteredArticles = selectedTeam === "all-teams"
-    ? discoverData.articles
-    : discoverData.articles.filter(article => {
-        // This is a simplified filter that looks for team name in title or description
-        // You could enhance this with better matching logic
-        const teamName = teamsData.teams.find((t: Team) => t.id === selectedTeam)?.name || ""
-        return article.title.includes(teamName) || 
-               article.description.includes(teamName)
-      })
+  // Filter articles based on selected team and search query
+  const filteredArticles = discoverData.articles.filter(article => {
+    // Team filter
+    const teamFilter = selectedTeam === "all-teams" || (() => {
+      const teamName = teamsData.teams.find((t: Team) => t.id === selectedTeam)?.name || ""
+      return article.title.includes(teamName) || 
+             article.description.includes(teamName)
+    })()
+
+    // Search filter
+    const searchFilter = !searchQuery || 
+      article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      article.description.toLowerCase().includes(searchQuery.toLowerCase())
+
+    return teamFilter && searchFilter
+  })
 
   // Function to chunk the articles into sections
   const chunkArticles = (articles: any[]) => {
@@ -107,8 +115,8 @@ export default function DiscoverPage() {
                 Notícias
               </TabsTrigger>
               <TabsTrigger value="teams" className="flex items-center gap-2">
-                <Users className="h-4 w-4" />
-                Times
+                <Table2 className="h-4 w-4" />
+                Tabela
               </TabsTrigger>
             </TabsList>
           </div>
@@ -116,11 +124,23 @@ export default function DiscoverPage() {
           {/* Team filter - only shows for News tab */}
           {activeTab === "news" && (
             <div className="py-2 px-4 sm:px-0 bg-background">
-              <div className="flex justify-end">
+              <div className="flex justify-between items-center gap-4">
                 <TeamFilter 
                   value={selectedTeam} 
                   onChange={setSelectedTeam}
                 />
+                <div className="relative w-[220px]">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <Search className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                  <Input
+                    type="text"
+                    placeholder="Buscar"
+                    className="pl-10 bg-background"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
               </div>
             </div>
           )}
