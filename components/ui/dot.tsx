@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/libs/utils';
 
 export interface DotProps extends React.SVGProps<SVGSVGElement> {
   size?: number | string; // Represents the desired visual width of the unskewed base rectangle part

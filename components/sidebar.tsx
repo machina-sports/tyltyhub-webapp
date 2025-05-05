@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/libs/utils'
 import { Button } from '@/components/ui/button'
 import { MessageSquare, Compass, History, X, Palette } from 'lucide-react'
 import { MobileHeader } from './mobile-header'
@@ -107,6 +107,7 @@ export function Sidebar() {
               alt="Logo Copa do Mundo de Clubes da FIFA" 
               width={88}
               height={29}
+              style={{ width: 'auto', height: '29px' }}
               priority
             />
           </div>
