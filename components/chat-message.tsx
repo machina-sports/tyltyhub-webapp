@@ -1,6 +1,5 @@
 "use client"
 
-import { cn } from '@/libs/utils'
 import { BettingOddsBox } from './betting-odds-box'
 import { RelatedArticles } from './article/related-articles'
 import { Loader2 } from 'lucide-react'
