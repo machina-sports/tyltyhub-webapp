@@ -84,3 +84,35 @@ This project is licensed under the MIT License.
 ## Contact
 
 For any inquiries, please contact the project maintainers.
+
+## Docker Setup
+
+### Prerequisites
+- Docker installed on your machine
+- Docker daemon running
+
+### Building the Application
+To build the Docker image:
+```bash
+docker build -t sportingbet-cwc .
+```
+
+### Running the Application
+To run the container:
+```bash
+docker run -p 3000:3000 sportingbet-cwc
+```
+
+The application will be available at `http://localhost:3000`
+
+### Development Mode
+For development with hot-reload, you can mount your local directory:
+```bash
+docker run -p 3000:3000 -v $(pwd):/usr/src/app sportingbet-cwc npm run dev
+```
+
+### Docker Commands Reference
+- Stop the container: `docker stop sportingbet-cwc`
+- Remove the container: `docker rm sportingbet-cwc`
+- List running containers: `docker ps`
+- View container logs: `docker logs sportingbet-cwc`

@@ -6,17 +6,24 @@ WORKDIR /usr/src/app
 
 RUN chmod -R 755 /usr/src/app
 
-# Copy the current directory contents into the container at /usr/src/app
+# Copy package files first to leverage Docker cache
+COPY package*.json ./
+
+# Install all dependencies including dev dependencies
+RUN npm install
+RUN npm install @tailwindcss/typography
+
+# Copy the rest of the application
 COPY . .
 
 # Copy the .env file to the container (if you need it at build time)
 # Ensure that your .env file is in the root directory of your project
 COPY .env .env
 
-# Install all dependencies
-RUN npm install
+# Remove devDependencies to reduce image size (after build)
+RUN npm run build
 
-# Remove devDependencies to reduce image size
+# Prune dev dependencies
 RUN npm prune --production
 
 # Make port 3000 available to the world outside this container
@@ -24,9 +31,6 @@ EXPOSE 3000
 
 # Define environment variable
 ENV NODE_ENV production
-
-# Add this after the build step to verify the `.next` directory exists
-RUN npm run build
 
 # Run the app when the container launches
 CMD ["npm", "start"]
