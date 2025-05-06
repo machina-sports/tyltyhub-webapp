@@ -1,26 +1,35 @@
-import { ThumbsUp, ThumbsDown } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { formatDistanceToNow } from "date-fns";
-import { ptBR } from 'date-fns/locale';
-import Image from "next/image";
-import { ArticleVoting } from "@/components/article/article-voting";
-import { ArticleSharing } from "@/components/article/article-sharing";
-import { RelatedArticles } from "@/components/article/related-articles";
-import discoverData from "@/data/discover.json";
-import FollowUpQuestionForm from "@/components/follow-up-question";
-import ReactMarkdown from 'react-markdown';
+import ArticleContent from "./article-content";
 
-// Helper function to unescape common sequences in the JSON string
-const unescapeMarkdown = (text: string): string => {
-  return text.replace(/\\n/g, '\n').replace(/\\"/g, '"');
-};
-
-export function generateStaticParams() {
-  const articles = [discoverData.featured, ...discoverData.articles];
-  return articles.map((article) => ({
-    articleId: article.id,
-  }));
+export async function generateStaticParams() {
+  try {
+    const response = await fetch(`${process.env.MACHINA_CLIENT_URL?.replace(/\/$/, '')}/document/search`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Api-Token': process.env.MACHINA_API_KEY || ''
+      },
+      body: JSON.stringify({
+        filters: {
+          "name": "content-article"
+        },
+        page: 1,
+        page_size: 100
+      })
+    });
+    
+    const data = await response.json();
+    
+    if (data.status === true && Array.isArray(data.data)) {
+      return data.data.map((item: any) => ({
+        articleId: (item.value && item.value.slug) ? item.value.slug : (item._id || item.id)
+      }));
+    }
+    
+    return [{ articleId: "placeholder" }];
+  } catch (error) {
+    console.error("Error in generateStaticParams:", error);
+    return [{ articleId: "placeholder" }];
+  }
 }
 
 interface ArticlePageProps {
@@ -30,77 +39,5 @@ interface ArticlePageProps {
 }
 
 export default function ArticlePage({ params }: ArticlePageProps) {
-  const article =
-    discoverData.articles.find((a) => a.id === params.articleId) ||
-    (discoverData.featured.id === params.articleId
-      ? discoverData.featured
-      : null);
-
-  if (!article) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <h1 className="text-2xl font-bold">Artigo não encontrado</h1>
-      </div>
-    );
-  }
-
-  // Unescape the description before rendering
-  const unescapedDescription = unescapeMarkdown(article.description);
-
-  return (
-    <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 pt-20 md:pt-6 pb-32 sm:pb-36 space-y-6 sm:space-y-8">
-      <div className="relative h-[200px] sm:h-[400px] w-full overflow-hidden rounded-lg">
-        <Image
-          src={article.image}
-          alt={article.title}
-          fill
-          className="object-cover object-center"
-          priority
-        />
-      </div>
-
-      <div className="space-y-6">
-        <Badge variant="secondary">{article.category}</Badge>
-
-        <h1 className="text-2xl sm:text-4xl font-bold">{article.title}</h1>
-
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-full bg-secondary" />
-              <span>{article.author}</span>
-            </div>
-            <span>·</span>
-            <span>
-              {formatDistanceToNow(new Date(article.date), { addSuffix: true, locale: ptBR })}
-            </span>
-          </div>
-          
-          <div className="mt-2 sm:mt-0">
-            <ArticleSharing 
-              articleId={article.id} 
-              title={article.title} 
-              url={`${typeof window !== 'undefined' ? window.location.origin : ''}/discover/${article.id}`} 
-            />
-          </div>
-        </div>
-      </div>
-      
-      <div className="prose prose-neutral dark:prose-invert max-w-none">
-        <ReactMarkdown>
-          {unescapedDescription}
-        </ReactMarkdown>
-      </div>
-
-      <Separator />
-
-      <ArticleVoting articleId={article.id} />
-
-      <Separator />
-
-      <RelatedArticles currentArticleId={article.id} />
-
-      <FollowUpQuestionForm />
-    </div>
-  );
+  return <ArticleContent articleParam={params.articleId} />;
 }

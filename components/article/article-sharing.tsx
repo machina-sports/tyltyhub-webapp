@@ -15,7 +15,7 @@ import { toast } from "@/hooks/use-toast"
 interface ArticleSharingProps {
   articleId: string
   title: string
-  url: string
+  url?: string
 }
 
 export function ArticleSharing({ articleId, title, url }: ArticleSharingProps) {
@@ -38,11 +38,18 @@ export function ArticleSharing({ articleId, title, url }: ArticleSharingProps) {
         break
       case 'instagram':
         // Instagram doesn't have a direct share URL so we'll copy to clipboard
-        navigator.clipboard.writeText(`${shareText} ${fullUrl}`)
-        toast({
-          title: "Link copiado!",
-          description: "Cole o link no Instagram para compartilhar."
-        })
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(`${shareText} ${fullUrl}`)
+          toast({
+            title: "Link copiado!",
+            description: "Cole o link no Instagram para compartilhar."
+          })
+        } else {
+          toast({
+            title: "Erro ao copiar",
+            description: "Não foi possível copiar o link automaticamente."
+          })
+        }
         return
       default:
         // Native share API if supported

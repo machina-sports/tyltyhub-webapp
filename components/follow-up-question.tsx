@@ -5,67 +5,52 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Send, Mic } from "lucide-react";
 import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
 
 export default function FollowUpQuestionForm() {
   const [input, setInput] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const [isPreparing, setIsPreparing] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
-  const prepareTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Ref for the preparation timeout
+  const prepareTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (!input.trim()) return;
-    console.log("Follow-up question submitted:", input);
-    setInput(""); // Clear the input field
+    setInput("");
   };
 
-  // Add microphone handling functions
   const handleMicPress = () => {
     setIsPreparing(true);
     
-    // Clear any existing timer just in case
     if (prepareTimeoutRef.current) {
       clearTimeout(prepareTimeoutRef.current);
     }
 
-    // Start a timer for the preparation phase
     prepareTimeoutRef.current = setTimeout(() => {
-      // If this timer completes, transition to recording state
       setIsPreparing(false);
       setIsRecording(true);
-      // Here you would add the actual microphone recording logic
-      console.log("Started recording");
-      prepareTimeoutRef.current = null; // Clear the ref after execution
+      prepareTimeoutRef.current = null;
     }, 500);
   };
   
   const handleMicRelease = () => {
-    // If there's an active preparation timer, clear it
     if (prepareTimeoutRef.current) {
       clearTimeout(prepareTimeoutRef.current);
       prepareTimeoutRef.current = null;
     }
 
-    // If released during preparation phase, just reset state
     if (isPreparing) {
       setIsPreparing(false);
       return;
     }
     
-    // If we were actually recording, stop and start transcription
     if (isRecording) {
       setIsRecording(false);
-      // Here you would stop recording and process the audio
-      console.log("Stopped recording");
       
-      // Show transcribing state
       setIsTranscribing(true);
       
-      // Simulate speech-to-text processing after a delay
       setTimeout(() => {
-        // Mock result from speech-to-text
         const mockTranscription = "Como faço pra apostar no próximo jogo do Flamengo?";
         setInput(mockTranscription);
         setIsTranscribing(false);
@@ -73,7 +58,6 @@ export default function FollowUpQuestionForm() {
     }
   };
 
-  // Get placeholder text based on recording state
   const getInputPlaceholder = () => {
     if (isPreparing) return "Preparando...";
     if (isRecording) return "Gravando...";

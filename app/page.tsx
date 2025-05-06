@@ -88,14 +88,6 @@ export default function Home() {
       firstAnimationFrameIdRef.current = requestAnimationFrame(firstRowAnimation);
     };
 
-    // Start/Stop first row animation based on its state
-    if (isFirstRowScrolling) {
-      if (firstAnimationFrameIdRef.current) cancelAnimationFrame(firstAnimationFrameIdRef.current);
-      firstAnimationFrameIdRef.current = requestAnimationFrame(firstRowAnimation);
-    } else {
-       if (firstAnimationFrameIdRef.current) cancelAnimationFrame(firstAnimationFrameIdRef.current);
-    }
-    
     // --- Second Row Animation --- 
     const secondRowAnimation = () => {
       if (!isSecondRowScrolling || !secondRowRef.current || !secondRowContentRef.current) {
@@ -121,25 +113,42 @@ export default function Home() {
       secondAnimationFrameIdRef.current = requestAnimationFrame(secondRowAnimation);
     };
     
-    // Start/Stop second row animation based on its state
+    // Handle first row animation
+    if (isFirstRowScrolling) {
+      // Cancel any existing animation before starting a new one
+      if (firstAnimationFrameIdRef.current !== null) {
+        cancelAnimationFrame(firstAnimationFrameIdRef.current);
+      }
+      firstAnimationFrameIdRef.current = requestAnimationFrame(firstRowAnimation);
+    } else if (firstAnimationFrameIdRef.current !== null) {
+      cancelAnimationFrame(firstAnimationFrameIdRef.current);
+      firstAnimationFrameIdRef.current = null;
+    }
+    
+    // Handle second row animation
     if (isSecondRowScrolling) {
-       if (secondAnimationFrameIdRef.current) cancelAnimationFrame(secondAnimationFrameIdRef.current);
-       secondAnimationFrameIdRef.current = requestAnimationFrame(secondRowAnimation);
-    } else {
-       if (secondAnimationFrameIdRef.current) cancelAnimationFrame(secondAnimationFrameIdRef.current);
+      // Cancel any existing animation before starting a new one
+      if (secondAnimationFrameIdRef.current !== null) {
+        cancelAnimationFrame(secondAnimationFrameIdRef.current);
+      }
+      secondAnimationFrameIdRef.current = requestAnimationFrame(secondRowAnimation);
+    } else if (secondAnimationFrameIdRef.current !== null) {
+      cancelAnimationFrame(secondAnimationFrameIdRef.current);
+      secondAnimationFrameIdRef.current = null;
     }
 
     // Cleanup: Cancel animation frames when component unmounts
     return () => {
-      if (firstAnimationFrameIdRef.current) {
+      if (firstAnimationFrameIdRef.current !== null) {
         cancelAnimationFrame(firstAnimationFrameIdRef.current);
+        firstAnimationFrameIdRef.current = null;
       }
-      if (secondAnimationFrameIdRef.current) {
+      if (secondAnimationFrameIdRef.current !== null) {
         cancelAnimationFrame(secondAnimationFrameIdRef.current);
+        secondAnimationFrameIdRef.current = null;
       }
     };
-    // Rerun effect if either scrolling state changes
-  }, [isFirstRowScrolling, isSecondRowScrolling]); 
+  }, [isFirstRowScrolling, isSecondRowScrolling]); // Only depend on these two state variables
 
   // Initialize second row position when component mounts
   useEffect(() => {

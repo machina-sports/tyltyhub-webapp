@@ -107,6 +107,7 @@ export function Sidebar() {
               alt="Logo Copa do Mundo de Clubes da FIFA" 
               width={88}
               height={29}
+              style={{ width: 'auto', height: '29px' }}
               priority
             />
           </div>

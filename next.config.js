@@ -16,6 +16,11 @@ const nextConfig = {
         pathname: "/**",
       },
     ],
+  },
+  env: {
+    MACHINA_API_KEY: process.env.MACHINA_API_KEY,
+    MACHINA_CLIENT_URL: process.env.MACHINA_CLIENT_URL,
+    IMAGE_CONTAINER_URL: process.env.IMAGE_CONTAINER_URL,
   }
 };
 
