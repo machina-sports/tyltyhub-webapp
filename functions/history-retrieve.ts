@@ -1,12 +1,11 @@
-import { config } from "@/libs/config"
 
 export async function fetchHistoryRetrieve() {
   try {
-    const post_url = `${config.MACHINA_CLIENT_URL?.replace(/\/$/, '')}/document/search`
+    const post_url = `${process.env.MACHINA_CLIENT_URL?.replace(/\/$/, '')}/document/search`
 
     const response = await fetch(post_url, {
       headers: {
-        "X-Api-Token": config.MACHINA_API_KEY || '',
+        "X-Api-Token": process.env.MACHINA_API_KEY || '',
         "Content-Type": "application/json",
       },
       method: "POST",

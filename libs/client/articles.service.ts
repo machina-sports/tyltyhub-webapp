@@ -1,5 +1,4 @@
 import ClientBaseService from "@/libs/client/base.service"
-import { config } from "@/libs/config"
 
 interface ArticleData {
   _id?: string
@@ -20,7 +19,7 @@ interface ArticleData {
 class ArticlesService extends ClientBaseService {
   constructor() {
     super()
-    this.prefix = `${config.MACHINA_CLIENT_URL?.replace(/\/$/, '')}/document/search`
+    this.prefix = `${process.env.MACHINA_CLIENT_URL?.replace(/\/$/, '')}/document/search`
   }
 
   mapArticleData(article: ArticleData): ArticleData {
@@ -29,7 +28,7 @@ class ArticlesService extends ClientBaseService {
     if (article.image) {
       imageUrl = article.image;
     } else if (article.image_url) {
-      imageUrl = `${config.IMAGE_CONTAINER_ADDRESS}/${article.image_url}`;
+      imageUrl = `${process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS}/${article.image_url}`;
     } else {
       const title = article.title || 'Article';
       imageUrl = `https://placehold.co/800x450/2A9D8F/FFFFFF?text=${encodeURIComponent(title)}`;
@@ -56,14 +55,15 @@ class ArticlesService extends ClientBaseService {
     try {
       const options = {
         headers: {
-          "X-Api-Token": config.MACHINA_API_KEY || '',
+          "X-Api-Token": process.env.MACHINA_API_KEY || '',
           "Content-Type": "application/json",
         }
       }
 
       const body = {
         "filters": {
-          "name": "content-article"
+          "name": "content-article",
+          "metadata.language": "br"
         },
         "sorters": [
           "_id",
@@ -91,7 +91,7 @@ class ArticlesService extends ClientBaseService {
     try {
       const options = {
         headers: {
-          "X-Api-Token": config.MACHINA_API_KEY,
+          "X-Api-Token": process.env.MACHINA_API_KEY,
           "Content-Type": "application/json",
         }
       }

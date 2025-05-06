@@ -8,6 +8,6 @@ export const getRuntimeConfig = async (): Promise<RuntimeConfig> => {
   if (cachedConfig) return cachedConfig
 
   return {
-    imageContainerAddress: process.env.IMAGE_CONTAINER_ADDRESS || 'https://github.com/machina-sports/machina-agentics.git'
+    imageContainerAddress: process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS || 'https://github.com/machina-sports/machina-agentics.git'
   }
 } 

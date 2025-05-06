@@ -9,7 +9,7 @@ function getAuthCookie(cookies: any) {
 
 class BaseController {
 
-  url = process.env.NEXT_PUBLIC_WEBAPP_API_ADDRESS
+  url = process.env.MACHINA_CLIENT_URL
 
   async fetch(url: string, options: any) {
     const token = getAuthCookie(window.document.cookie)
