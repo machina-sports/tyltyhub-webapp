@@ -55,7 +55,6 @@ class ArticlesService extends ClientBaseService {
 
   async getArticles() {
     try {
-      
       const options = {
         headers: {
           "X-Api-Token": config.MACHINA_API_KEY,
@@ -75,16 +74,11 @@ class ArticlesService extends ClientBaseService {
         "page_size": 100,
       }
 
-
       const result = await this.post(body, this.prefix, options)
       
-      
       if (result && result.status === true) {
-        const mappedData = Array.isArray(result.data) 
-          ? result.data.map((article: ArticleData) => this.mapArticleData(article)) 
-          : [];
-          
-        return { error: false, data: mappedData }
+        // Return the original data structure from the API
+        return { error: false, data: result.data || [] }
       }
       
       console.error("API request failed:", result);
@@ -95,10 +89,9 @@ class ArticlesService extends ClientBaseService {
     }
   }
 
-  // should by SLUG
-  async getArticleById(id: string) {
+  // Get article by ID or slug
+  async getArticleById(idOrSlug: string) {
     try {
-      
       const options = {
         headers: {
           "X-Api-Token": config.MACHINA_API_KEY,
@@ -106,10 +99,21 @@ class ArticlesService extends ClientBaseService {
         }
       }
 
+      // Try to determine if this is an ID or a slug
+      const isObjectId = /^[0-9a-f]{24}$/i.test(idOrSlug);
+      
+      let filters = {};
+      
+      if (isObjectId) {
+        // If it looks like a MongoDB ObjectId, search by _id
+        filters = { "_id": idOrSlug };
+      } else {
+        // Otherwise, assume it's a slug and search in the value.slug field
+        filters = { "value.slug": idOrSlug };
+      }
+
       const body = {
-        "filters": {
-          "_id": id
-        },
+        "filters": filters,
         "page": 1,
         "page_size": 1
       }
@@ -117,14 +121,30 @@ class ArticlesService extends ClientBaseService {
       const result = await this.post(body, this.prefix, options)
       
       if (result && result.status === true && result.data && result.data.length > 0) {
-        const mappedData = this.mapArticleData(result.data[0])
-        return { error: false, data: mappedData }
+        // Return the original article data structure
+        return { error: false, data: result.data[0] }
       }
       
-      console.error(`Article ${id} not found in API response:`, result);
+      // If not found with the initial approach, try the opposite approach
+      if (isObjectId) {
+        // If we tried _id first and failed, try slug
+        const bodyWithSlug = {
+          "filters": { "value.slug": idOrSlug },
+          "page": 1,
+          "page_size": 1
+        }
+        
+        const resultWithSlug = await this.post(bodyWithSlug, this.prefix, options)
+        
+        if (resultWithSlug && resultWithSlug.status === true && resultWithSlug.data && resultWithSlug.data.length > 0) {
+          return { error: false, data: resultWithSlug.data[0] }
+        }
+      }
+      
+      console.error(`Article ${idOrSlug} not found in API response:`, result);
       return { error: true, data: null }
     } catch (error) {
-      console.error(`Error fetching article ${id}:`, error)
+      console.error(`Error fetching article ${idOrSlug}:`, error)
       return { error: true, data: null }
     }
   }

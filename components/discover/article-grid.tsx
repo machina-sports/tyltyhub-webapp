@@ -9,20 +9,7 @@ import { formatDistanceToNow } from "date-fns"
 import { ptBR } from 'date-fns/locale'
 import ReactMarkdown from 'react-markdown'
 import { config } from "@/libs/config"
-
-interface Article {
-  _id?: string
-  id?: string
-  title: string
-  description: string
-  image?: string
-  image_url?: string
-  author: string
-  readTime?: string
-  category: string
-  date: string | Date
-  createdAt?: string | Date
-}
+import { Article } from "@/store/slices/articlesSlice"
 
 interface ArticleGridProps {
   articles: Article[]
@@ -52,36 +39,101 @@ const getDescriptionSnippet = (description: string | undefined | null, maxLength
   return firstParagraph.slice(0, maxLength) + '...';
 };
 
-// Helper to get a valid image URL
+// Helper to get an image URL based on the article data
 const getImageUrl = (article: Article): string => {
   if (!article) return '';
   
-  if (article.image) {
-    return article.image;
+  // For demonstration purposes only - use match name for image content 
+  // In real implementation, you'd use actual image URLs from your API
+  if (article.value?.["event-details"]?.match) {
+    const match = article.value["event-details"].match;
+    return `https://placehold.co/800x450/2A9D8F/FFFFFF?text=${encodeURIComponent(match)}`;
   }
   
-  if (article.image_url) {
-    return `${config.IMAGE_CONTAINER_ADDRESS}/${article.image_url}`;
+  // Fallback to using title if available
+  return `https://placehold.co/800x450/2A9D8F/FFFFFF?text=${encodeURIComponent(article.value?.title || 'Article')}`;
+};
+
+// Get event type from metadata or default to "Notícias"
+const getEventType = (article: Article): string => {
+  if (!article || !article.metadata) return 'Notícias';
+  
+  // For soccer games, return "Futebol"
+  if (article.metadata.event_type === 'soccer-game') {
+    return 'Futebol';
   }
   
-  // Create placeholder if no image
-  const title = article.title || 'Article';
-  return `https://placehold.co/800x450/2A9D8F/FFFFFF?text=${encodeURIComponent(title)}`;
+  // For competition names, make them more readable
+  if (article.metadata.competition) {
+    switch (article.metadata.competition) {
+      case 'sr:competition:17':
+        return 'Premier League';
+      case 'sr:competition:384':
+        return 'Libertadores';
+      case 'sr:competition:390':
+        return 'Brasileiro Série B';
+      default:
+        return article.metadata.competition;
+    }
+  }
+  
+  return 'Notícias';
+};
+
+// Get description from section content
+const getDescription = (article: Article): string => {
+  if (!article || !article.value) return '';
+  
+  // Try to get content from any of the sections
+  return article.value.section_1_content || 
+         article.value.subtitle || 
+         article.value.section_2_content || 
+         '';
+};
+
+// Get the article title
+const getTitle = (article: Article): string => {
+  if (!article || !article.value) return 'Sem título';
+  return article.value.title || 'Sem título';
+};
+
+// Get author (placeholder for now)
+const getAuthor = (article: Article): string => {
+  return 'Machina Sports';
+};
+
+// Get article URL using slug if available
+const getArticleUrl = (article: Article): string => {
+  if (!article) return '/discover';
+  
+  // Use slug if available
+  if (article.value?.slug) {
+    return `/discover/${article.value.slug}`;
+  }
+  
+  // Fallback to ID
+  return `/discover/${article._id || article.id}`;
 };
 
 // Render a single article card
 const ArticleCard = ({ article }: { article: Article }) => {
+  if (!article) return null;
   
   const articleId = article._id || article.id;
-  const articleDate = article.createdAt || article.date;
-  const imageUrl = article.image || getImageUrl(article);
-  
   if (!articleId) return null;
   
+  const articleUrl = getArticleUrl(article);
+  const articleDate = article.created || article.date;
+  const imageUrl = getImageUrl(article);
+  const eventType = getEventType(article);
+  const description = getDescription(article);
+  const author = getAuthor(article);
+  const title = getTitle(article);
+  
   return (
-    <Card key={articleId} className="overflow-hidden h-full border">
+    <Card className="overflow-hidden h-full border">
       <Link 
-        href={`/discover/${articleId}`} 
+        href={articleUrl} 
         className="h-full block"
         prefetch={false}
       >
@@ -90,7 +142,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
             {imageUrl && (
               <Image
                 src={imageUrl}
-                alt={article.title || 'Article Image'}
+                alt={title}
                 fill
                 className="object-cover"
               />
@@ -98,20 +150,20 @@ const ArticleCard = ({ article }: { article: Article }) => {
           </div>
           <div className="p-3 flex flex-col flex-grow">
             <div className="mb-2">
-              <Badge variant="secondary" className="text-xs">{article.category || 'Notícias'}</Badge>
+              <Badge variant="secondary" className="text-xs">{eventType}</Badge>
             </div>
-            <h3 className="text-sm md:text-base font-semibold mb-2 hover:text-primary transition-colors line-clamp-2">{article.title || 'Sem título'}</h3>
+            <h3 className="text-sm md:text-base font-semibold mb-2 hover:text-primary transition-colors line-clamp-2">{title}</h3>
             <div className="text-muted-foreground text-xs mb-auto">
               <p className="line-clamp-2">
-                {getDescriptionSnippet(article.description, 80) || 'Sem descrição'}
+                {getDescriptionSnippet(description, 80) || 'Sem descrição'}
               </p>
             </div>
             <div className="flex items-center justify-between mt-2 pt-2 border-t text-xs">
               <div className="flex items-center gap-1">
                 <div className="h-4 w-4 rounded-full bg-secondary overflow-hidden flex items-center justify-center text-[10px] font-medium">
-                  {article.author ? article.author.charAt(0).toUpperCase() : 'A'}
+                  {author ? author.charAt(0).toUpperCase() : 'M'}
                 </div>
-                <span className="text-muted-foreground truncate max-w-[85px]">{article.author || 'Autor'}</span>
+                <span className="text-muted-foreground truncate max-w-[85px]">{author}</span>
               </div>
               <div className="flex items-center text-muted-foreground whitespace-nowrap">
                 <CalendarDays className="h-3 w-3 mr-1" />
@@ -126,24 +178,29 @@ const ArticleCard = ({ article }: { article: Article }) => {
 };
 
 export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProps) {
-  
   if (!articles || articles.length === 0) {
     return <div className="py-8 text-center text-muted-foreground">Nenhum artigo encontrado</div>;
   }
 
   if (layout === 'fullWidth' && articles.length > 0) {
     const article = articles[0];
+    if (!article) return null;
     
     const articleId = article._id || article.id;
-    const articleDate = article.createdAt || article.date;
-    const imageUrl = article.image || getImageUrl(article);
-    
     if (!articleId) return null;
+    
+    const articleUrl = getArticleUrl(article);
+    const articleDate = article.created || article.date;
+    const imageUrl = getImageUrl(article);
+    const eventType = getEventType(article);
+    const description = getDescription(article);
+    const author = getAuthor(article);
+    const title = getTitle(article);
     
     return (
       <Card className="overflow-hidden border">
         <Link 
-          href={`/discover/${articleId}`}
+          href={articleUrl}
           prefetch={false}
         >
           <CardContent className="p-0">
@@ -153,7 +210,7 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
                   {imageUrl && (
                     <Image
                       src={imageUrl}
-                      alt={article.title || 'Article Image'}
+                      alt={title}
                       fill
                       className="object-cover"
                       priority
@@ -164,14 +221,14 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
               <div className="md:col-span-5 p-4 md:p-5 flex flex-col">
                 <div className="space-y-3">
                   <div>
-                    <Badge variant="secondary">{article.category || 'Notícias'}</Badge>
+                    <Badge variant="secondary">{eventType}</Badge>
                   </div>
                   
-                  <h1 className="text-lg md:text-xl font-bold line-clamp-3 hover:text-primary transition-colors">{article.title || 'Sem título'}</h1>
+                  <h1 className="text-lg md:text-xl font-bold line-clamp-3 hover:text-primary transition-colors">{title}</h1>
                   
                   <div className="text-muted-foreground prose prose-sm prose-neutral dark:prose-invert max-w-none md:line-clamp-4">
                     <ReactMarkdown>
-                      {getDescriptionSnippet(article.description, 180) || 'Sem descrição'}
+                      {getDescriptionSnippet(description, 180) || 'Sem descrição'}
                     </ReactMarkdown>
                   </div>
                 </div>
@@ -179,9 +236,9 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
                 <div className="flex items-center justify-between mt-3 pt-3 border-t">
                   <div className="flex items-center gap-2">
                     <div className="h-5 w-5 rounded-full bg-secondary overflow-hidden flex items-center justify-center text-xs font-medium">
-                      {article.author ? article.author.charAt(0).toUpperCase() : 'A'}
+                      {author ? author.charAt(0).toUpperCase() : 'M'}
                     </div>
-                    <span className="text-xs md:text-sm text-muted-foreground">{article.author || 'Autor'}</span>
+                    <span className="text-xs md:text-sm text-muted-foreground">{author}</span>
                   </div>
                   <div className="flex items-center text-xs md:text-sm text-muted-foreground">
                     <CalendarDays className="h-3 w-3 md:h-4 md:w-4 mr-1" />
@@ -195,6 +252,7 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
       </Card>
     );
   }
+  
   const gridCols = articles.length === 1 ? 'md:grid-cols-1' : 
                    articles.length === 2 ? 'md:grid-cols-2' : 
                    'md:grid-cols-3';

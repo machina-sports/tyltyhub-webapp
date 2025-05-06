@@ -62,14 +62,16 @@ export default function DiscoverPage() {
     if (!team) return articles.articles;
     
     // Filter articles that mention the team name
-    return articles.articles.filter((article: any) => {
-      if (!article.title) return false;
+    return articles.articles.filter((article: Article) => {
+      if (!article.value?.title) return false;
       
-      const titleIncludes = article.title.includes(team.name);
-      const descriptionIncludes = article.description ? 
-        article.description.includes(team.name) : false;
+      const titleIncludes = article.value.title.includes(team.name);
+      const subtitleIncludes = article.value?.subtitle ? 
+        article.value.subtitle.includes(team.name) : false;
+      const eventMatch = article.value?.["event-details"]?.match ?
+        article.value["event-details"].match.includes(team.name) : false;
       
-      return titleIncludes || descriptionIncludes;
+      return titleIncludes || subtitleIncludes || eventMatch;
     });
   };
 
@@ -77,7 +79,7 @@ export default function DiscoverPage() {
   const filteredArticles = getFilteredArticles();
 
   // Function to chunk the articles into sections
-  const chunkArticles = (articles: any[]) => {
+  const chunkArticles = (articles: Article[]) => {
     if (!articles || !articles.length) return [];
     
     const result = [];

@@ -12,7 +12,9 @@ export async function generateStaticParams() {
         'X-Api-Token': config.MACHINA_API_KEY
       },
       body: JSON.stringify({
-        filters: {},
+        filters: {
+          "name": "content-article"
+        },
         page: 1,
         page_size: 100
       })
@@ -22,7 +24,8 @@ export async function generateStaticParams() {
     
     if (data.status === true && Array.isArray(data.data)) {
       return data.data.map((item: any) => ({
-        articleId: item._id || item.id
+        // Use the slug if available, otherwise use ID
+        articleId: (item.value && item.value.slug) ? item.value.slug : (item._id || item.id)
       }));
     }
     
@@ -42,5 +45,6 @@ interface ArticlePageProps {
 }
 
 export default function ArticlePage({ params }: ArticlePageProps) {
-  return <ArticleContent articleId={params.articleId} />;
+  // The articleId param could be either a slug or an ID
+  return <ArticleContent articleParam={params.articleId} />;
 }
