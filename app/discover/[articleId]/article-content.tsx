@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useRef, useMemo, useCallback } from "react";
+import { useEffect, useState, useRef, useMemo, useCallback, Suspense } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { formatDistanceToNow } from "date-fns";
@@ -8,13 +8,20 @@ import Image from "next/image";
 import { ArticleVoting } from "@/components/article/article-voting";
 import { ArticleSharing } from "@/components/article/article-sharing";
 import { RelatedArticles } from "@/components/article/related-articles";
+import { ArticleSkeleton } from "@/components/article/article-skeleton";
 import FollowUpQuestionForm from "@/components/follow-up-question";
 import ReactMarkdown from 'react-markdown';
 import { useGlobalState } from "@/store/useState";
 import { useAppDispatch } from "@/store/dispatch";
 import { fetchArticleById, fetchRelatedArticles, incrementViews } from "@/store/slices/articlesSlice";
 import { Clock, Eye } from "lucide-react";
-import WidgetEmbed from "@/components/article/widget-embed";
+import dynamic from "next/dynamic";
+
+// Dynamically import the WidgetEmbed component to improve initial load time
+const WidgetEmbed = dynamic(() => import("@/components/article/widget-embed"), {
+  loading: () => <div className="h-60 w-full bg-muted/30 rounded-md animate-pulse"></div>,
+  ssr: false // Disable server-side rendering for this component
+});
 
 const unescapeMarkdown = (text: string | undefined | null): string => {
   if (!text) return '';
@@ -95,10 +102,18 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
   const [views, setViews] = useState<number>(0);
   const hasIncrementedViews = useRef(false);
   const hasLoadedArticle = useRef(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (articleParam && !hasLoadedArticle.current) {
-      dispatch(fetchArticleById(articleParam));
+      setIsLoading(true);
+      dispatch(fetchArticleById(articleParam))
+        .then(() => {
+          setIsLoading(false);
+        })
+        .catch(() => {
+          setIsLoading(false);
+        });
       hasLoadedArticle.current = true;
     }
   }, [dispatch, articleParam]);
@@ -122,11 +137,12 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
         hasIncrementedViews.current = true;
       }
     }
-  }, [dispatch]);
+  }, [article, dispatch]);
 
   useEffect(() => {
     hasIncrementedViews.current = false;
     hasLoadedArticle.current = false;
+    setIsLoading(true);
   }, [articleParam]);
 
   const articleData = useMemo(() => {
@@ -152,12 +168,9 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
     };
   }, [article]);
 
-  if (articles.loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <h1 className="text-xl font-medium">Carregando artigo...</h1>
-      </div>
-    );
+  // Show skeleton during initial load
+  if (isLoading || articles.loading) {
+    return <ArticleSkeleton />;
   }
 
   if (!article || !articleData) {
@@ -178,6 +191,8 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
             fill
             className="object-cover object-center"
             priority
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1000px"
+            loading="eager"
           />
         </div>
       )}
@@ -257,7 +272,9 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
         ))}
         
         {articleData.widgetEmbed && (
-          <WidgetEmbed embedCode={articleData.widgetEmbed} />
+          <Suspense fallback={<div className="h-60 w-full bg-muted/30 rounded-md animate-pulse"></div>}>
+            <WidgetEmbed embedCode={articleData.widgetEmbed} />
+          </Suspense>
         )}
       </div>
 

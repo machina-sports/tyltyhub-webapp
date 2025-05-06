@@ -9,9 +9,11 @@ import {
 } from "@/components/ui/tabs"
 import { TeamFilter } from "@/components/discover/sport-filter"
 import { ArticleGrid } from "@/components/discover/article-grid"
+import { ArticleSkeleton } from "@/components/discover/article-skeleton"
 import { FifaCwcSchedule } from "@/components/discover/fifa-cwc-schedule"
 import { useGlobalState } from "@/store/useState"
-import { Article } from "@/store/slices/articlesSlice"
+import { useAppDispatch } from "@/store/dispatch"
+import { Article, fetchArticles } from "@/store/slices/articlesSlice"
 import { Input } from "@/components/ui/input"
 import teamsData from "@/data/teams.json"
 
@@ -28,7 +30,10 @@ export default function DiscoverPage() {
   const [activeTab, setActiveTab] = useState("news")
   const [isScrolled, setIsScrolled] = useState(false)
   const headerRef = useRef<HTMLDivElement>(null)
+  const loadMoreRef = useRef<HTMLDivElement>(null)
   const { articles } = useGlobalState()
+  const dispatch = useAppDispatch()
+  const pageSize = 6 // Number of articles to load at once
   
   const teams = useMemo(() => teamsData.teams || [], []);
   
@@ -45,6 +50,38 @@ export default function DiscoverPage() {
       window.removeEventListener('scroll', handleScroll)
     }
   }, [handleScroll])
+
+  useEffect(() => {
+    // Initial data load
+    dispatch(fetchArticles({ page: 1, pageSize }))
+  }, [dispatch])
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const target = entries[0]
+        if (target.isIntersecting && !articles.loading && articles.hasMore) {
+          const nextPage = articles.page + 1
+          dispatch(fetchArticles({ 
+            page: nextPage, 
+            pageSize,
+            append: true 
+          }))
+        }
+      },
+      { threshold: 0.1 }
+    )
+
+    if (loadMoreRef.current) {
+      observer.observe(loadMoreRef.current)
+    }
+
+    return () => {
+      if (loadMoreRef.current) {
+        observer.unobserve(loadMoreRef.current)
+      }
+    }
+  }, [articles.loading, articles.hasMore, articles.page, dispatch])
 
   // Filter articles based on selected team and search query
   const filteredArticles = articles.articles.filter((article: Article) => {
@@ -151,7 +188,12 @@ export default function DiscoverPage() {
 
         <TabsContent value="news" className="space-y-6 pt-6 md:pt-4">          
           <div className="space-y-8">
-            {articleSections && articleSections.length > 0 ? (
+            {articles.loading && !articles.articles.length ? (
+              <>
+                <ArticleSkeleton layout="fullWidth" count={1} />
+                <ArticleSkeleton layout="threeCards" count={3} />
+              </>
+            ) : articleSections && articleSections.length > 0 ? (
               <>
                 {articleSections.map((section, index) => (
                   <div key={index} className="space-y-4">
@@ -168,6 +210,20 @@ export default function DiscoverPage() {
                     )}
                   </div>
                 ))}
+                {/* Load more indicator */}
+                <div ref={loadMoreRef} className="py-4 flex justify-center">
+                  {articles.loading && articles.articles.length > 0 && (
+                    <ArticleSkeleton 
+                      layout="threeCards" 
+                      count={3} 
+                    />
+                  )}
+                  {!articles.loading && !articles.hasMore && articles.articles.length > 0 && (
+                    <p className="text-sm text-muted-foreground py-2">
+                      Não há mais artigos para carregar
+                    </p>
+                  )}
+                </div>
               </>
             ) : (
               <div className="py-8 text-center text-muted-foreground">
