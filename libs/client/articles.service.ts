@@ -31,7 +31,6 @@ class ArticlesService extends ClientBaseService {
     } else if (article.image_url) {
       imageUrl = `${config.IMAGE_CONTAINER_ADDRESS}/${article.image_url}`;
     } else {
-      // Create placeholder if no image
       const title = article.title || 'Article';
       imageUrl = `https://placehold.co/800x450/2A9D8F/FFFFFF?text=${encodeURIComponent(title)}`;
     }
@@ -77,7 +76,6 @@ class ArticlesService extends ClientBaseService {
       const result = await this.post(body, this.prefix, options)
       
       if (result && result.status === true) {
-        // Return the original data structure from the API
         return { error: false, data: result.data || [] }
       }
       
@@ -89,7 +87,6 @@ class ArticlesService extends ClientBaseService {
     }
   }
 
-  // Get article by ID or slug
   async getArticleById(idOrSlug: string) {
     try {
       const options = {
@@ -99,16 +96,13 @@ class ArticlesService extends ClientBaseService {
         }
       }
 
-      // Try to determine if this is an ID or a slug
       const isObjectId = /^[0-9a-f]{24}$/i.test(idOrSlug);
       
       let filters = {};
       
       if (isObjectId) {
-        // If it looks like a MongoDB ObjectId, search by _id
         filters = { "_id": idOrSlug };
       } else {
-        // Otherwise, assume it's a slug and search in the value.slug field
         filters = { "value.slug": idOrSlug };
       }
 
@@ -121,13 +115,10 @@ class ArticlesService extends ClientBaseService {
       const result = await this.post(body, this.prefix, options)
       
       if (result && result.status === true && result.data && result.data.length > 0) {
-        // Return the original article data structure
         return { error: false, data: result.data[0] }
       }
       
-      // If not found with the initial approach, try the opposite approach
       if (isObjectId) {
-        // If we tried _id first and failed, try slug
         const bodyWithSlug = {
           "filters": { "value.slug": idOrSlug },
           "page": 1,

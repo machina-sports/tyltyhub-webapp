@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { formatDistanceToNow } from "date-fns";
@@ -15,32 +15,27 @@ import { useAppDispatch } from "@/store/dispatch";
 import { fetchArticleById, fetchRelatedArticles, incrementViews } from "@/store/slices/articlesSlice";
 import { config } from "@/libs/config";
 import { Clock, Eye } from "lucide-react";
+import WidgetEmbed from "@/components/article/widget-embed";
 
-// Helper function to unescape common sequences in the JSON string
 const unescapeMarkdown = (text: string | undefined | null): string => {
   if (!text) return '';
   return text.replace(/\\n/g, '\n').replace(/\\"/g, '"');
 };
 
-// Helper to get an image URL based on the article data
 const getImageUrl = (article: any): string => {
   if (!article) return '';
   
-  // Get image address from config
   const imageAddress = config.IMAGE_CONTAINER_ADDRESS;
   
-  // Check if we have event_code in metadata
   if (article.metadata?.event_code) {
     // For articles, we use the event_code to construct the image URL
     return `${imageAddress}/image-preview-${article.metadata.event_code}.webp`;
   }
   
-  // Fallback to placeholder if no event_code
   const title = article.value?.title || 'Article';
   return `https://placehold.co/1200x600/2A9D8F/FFFFFF?text=${encodeURIComponent(title)}`;
 };
 
-// Get event type from metadata or default to "Notícias"
 const getEventType = (article: any): string => {
   if (!article || !article.metadata) return 'Notícias';
   
@@ -66,7 +61,6 @@ const getEventType = (article: any): string => {
   return 'Notícias';
 };
 
-// Helper to get read time
 const getReadTime = (article: any): string => {
   if (!article) return '3 min';
   if (article.readTime) return article.readTime;
@@ -92,7 +86,7 @@ const getReadTime = (article: any): string => {
 };
 
 interface ArticleContentProps {
-  articleParam: string; // Can be either a slug or an ID
+  articleParam: string;
 }
 
 export default function ArticleContent({ articleParam }: ArticleContentProps) {
@@ -101,22 +95,21 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
   const article = articles.currentArticle;
   const [views, setViews] = useState<number>(0);
   const hasIncrementedViews = useRef(false);
+  const hasLoadedArticle = useRef(false);
 
   useEffect(() => {
-    if (articleParam) {
+    if (articleParam && !hasLoadedArticle.current) {
       dispatch(fetchArticleById(articleParam));
+      hasLoadedArticle.current = true;
     }
   }, [dispatch, articleParam]);
 
   useEffect(() => {
     if (article && !hasIncrementedViews.current) {
-      // Get current article ID
       const articleId = article._id || article.id;
       
-      // Set the local views state
       setViews(article.views || 0);
       
-      // Fetch related articles only once when article loads
       if (article.metadata) {
         dispatch(fetchRelatedArticles({
           eventType: article.metadata.event_type,
@@ -125,18 +118,40 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
         }));
       }
       
-      // Increment views only once per article load
       if (articleId) {
         dispatch(incrementViews(articleId));
         hasIncrementedViews.current = true;
       }
     }
-  }, [article, dispatch]);
+  }, [dispatch]);
 
-  // Reset the view increment flag when article param changes
   useEffect(() => {
     hasIncrementedViews.current = false;
+    hasLoadedArticle.current = false;
   }, [articleParam]);
+
+  const articleData = useMemo(() => {
+    if (!article) return null;
+    
+    return {
+      imageUrl: getImageUrl(article),
+      eventType: getEventType(article),
+      readTime: getReadTime(article),
+      title: article.value?.title || 'Sem título',
+      subtitle: article.value?.subtitle || '',
+      sections: Array.from({length: 5}, (_, i) => {
+        const index = i + 1;
+        const title = article.value?.[`section_${index}_title`];
+        const content = article.value?.[`section_${index}_content`];
+        return title && content ? { title, content } : null;
+      }).filter(Boolean),
+      createdDate: article.created || article.date,
+      articleId: (article._id || article.id || '').toString(),
+      eventDetails: article.value?.["event-details"],
+      widgetEmbed: article.value?.["widget-match-embed"],
+      slug: article.value?.slug
+    };
+  }, [article]);
 
   if (articles.loading) {
     return (
@@ -146,7 +161,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
     );
   }
 
-  if (!article) {
+  if (!article || !articleData) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <h1 className="text-2xl font-bold">Artigo não encontrado</h1>
@@ -154,30 +169,13 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
     );
   }
   
-  const imageUrl = getImageUrl(article);
-  const eventType = getEventType(article);
-  const readTime = getReadTime(article);
-  const title = article.value?.title || 'Sem título';
-  const subtitle = article.value?.subtitle || '';
-  
-  // Format article content from sections
-  const sections = [];
-  for (let i = 1; i <= 5; i++) {
-    const sectionTitle = article.value?.[`section_${i}_title`];
-    const sectionContent = article.value?.[`section_${i}_content`];
-    
-    if (sectionTitle && sectionContent) {
-      sections.push({ title: sectionTitle, content: sectionContent });
-    }
-  }
-
   return (
     <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 pt-20 md:pt-6 pb-32 sm:pb-36 space-y-6 sm:space-y-8">
-      {imageUrl && (
+      {articleData.imageUrl && (
         <div className="relative h-[200px] sm:h-[400px] w-full overflow-hidden rounded-lg">
           <Image
-            src={imageUrl}
-            alt={title}
+            src={articleData.imageUrl}
+            alt={articleData.title}
             fill
             className="object-cover object-center"
             priority
@@ -186,12 +184,12 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
       )}
 
       <div className="space-y-6">
-        <Badge variant="secondary">{eventType}</Badge>
+        <Badge variant="secondary">{articleData.eventType}</Badge>
 
-        <h1 className="text-2xl sm:text-4xl font-bold">{title}</h1>
+        <h1 className="text-2xl sm:text-4xl font-bold">{articleData.title}</h1>
         
-        {subtitle && (
-          <p className="text-lg text-muted-foreground">{subtitle}</p>
+        {articleData.subtitle && (
+          <p className="text-lg text-muted-foreground">{articleData.subtitle}</p>
         )}
 
         <div className="flex flex-wrap items-center justify-between gap-4">
@@ -204,15 +202,15 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
             </div>
             <span>·</span>
             <span>
-              {article.created || article.date ? 
-                formatDistanceToNow(new Date(article.created || article.date || new Date()), { addSuffix: true, locale: ptBR }) : 
+              {articleData.createdDate ? 
+                formatDistanceToNow(new Date(articleData.createdDate), { addSuffix: true, locale: ptBR }) : 
                 'Recente'
               }
             </span>
             <span>·</span>
             <span className="flex items-center">
               <Clock className="h-4 w-4 mr-1" />
-              {readTime}
+              {articleData.readTime}
             </span>
             <span>·</span>
             <span className="flex items-center">
@@ -223,9 +221,9 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           
           <div className="mt-2 sm:mt-0">
             <ArticleSharing 
-              articleId={(article._id || article.id || '').toString()}
-              title={title} 
-              url={`${typeof window !== 'undefined' ? window.location.origin : ''}/discover/${article.value?.slug || article._id || article.id || ''}`} 
+              articleId={articleData.articleId}
+              title={articleData.title} 
+              url={`${typeof window !== 'undefined' ? window.location.origin : ''}/discover/${articleData.slug || articleData.articleId}`} 
             />
           </div>
         </div>
@@ -233,25 +231,24 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
       
       <div className="prose prose-neutral dark:prose-invert max-w-none">
         {/* Event Details if available */}
-        {article.value?.["event-details"] && (
+        {articleData.eventDetails && (
           <div className="bg-secondary/20 p-4 rounded-lg mb-6">
             <h3>Detalhes do Evento</h3>
             <ul>
-              {article.value["event-details"].match && (
-                <li><strong>Partida:</strong> {article.value["event-details"].match}</li>
+              {articleData.eventDetails.match && (
+                <li><strong>Partida:</strong> {articleData.eventDetails.match}</li>
               )}
-              {article.value["event-details"].venue && (
-                <li><strong>Local:</strong> {article.value["event-details"].venue}</li>
+              {articleData.eventDetails.venue && (
+                <li><strong>Local:</strong> {articleData.eventDetails.venue}</li>
               )}
-              {article.value["event-details"].when && (
-                <li><strong>Data:</strong> {article.value["event-details"].when}</li>
+              {articleData.eventDetails.when && (
+                <li><strong>Data:</strong> {articleData.eventDetails.when}</li>
               )}
             </ul>
           </div>
         )}
         
-        {/* Article sections */}
-        {sections.map((section, index) => (
+        {articleData.sections.map((section: any, index: number) => (
           <div key={index} className="mb-6">
             <h2>{section.title}</h2>
             <ReactMarkdown>
@@ -260,21 +257,18 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           </div>
         ))}
         
-        {/* Widget embed if available */}
-        {article.value?.["widget-match-embed"] && (
-          <div className="my-8" dangerouslySetInnerHTML={{ 
-            __html: JSON.parse(article.value["widget-match-embed"])[0]?.embed || ''
-          }} />
+        {articleData.widgetEmbed && (
+          <WidgetEmbed embedCode={articleData.widgetEmbed} />
         )}
       </div>
 
       <Separator />
 
-      <ArticleVoting articleId={(article._id || article.id || '').toString()} />
+      <ArticleVoting articleId={articleData.articleId} />
 
       <Separator />
 
-      <RelatedArticles currentArticleId={(article._id || article.id || '').toString()} />
+      <RelatedArticles currentArticleId={articleData.articleId} />
 
       <FollowUpQuestionForm />
     </div>

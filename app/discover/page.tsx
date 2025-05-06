@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useMemo, useCallback } from "react"
 import { Newspaper, Users } from "lucide-react"
 import { 
   Tabs, 
@@ -14,7 +14,6 @@ import { useGlobalState } from "@/store/useState"
 import { Article } from "@/store/slices/articlesSlice"
 import teamsData from "@/data/teams.json"
 
-// Define Team type to match the interface in TeamsGrid
 interface Team {
   id: string
   name: string
@@ -28,27 +27,24 @@ export default function DiscoverPage() {
   const [isScrolled, setIsScrolled] = useState(false)
   const headerRef = useRef<HTMLDivElement>(null)
   const { articles } = useGlobalState()
-  const teams = teamsData.teams || []
   
+  const teams = useMemo(() => teamsData.teams || [], []);
   
-  // Add scroll event listener to show shadow only when scrolled
-  useEffect(() => {
-    const handleScroll = () => {
-      if (headerRef.current) {
-        const scrollPosition = window.scrollY
-        // Set isScrolled to true if scrolled past a threshold (e.g., 10px)
-        setIsScrolled(scrollPosition > 10)
-      }
+  const handleScroll = useCallback(() => {
+    if (headerRef.current) {
+      const scrollPosition = window.scrollY
+      setIsScrolled(scrollPosition > 10)
     }
-
+  }, []);
+  
+  useEffect(() => {
     window.addEventListener('scroll', handleScroll)
     return () => {
       window.removeEventListener('scroll', handleScroll)
     }
-  }, [])
+  }, [handleScroll])
 
-  // Get filtered articles based on selected team
-  const getFilteredArticles = () => {
+  const filteredArticles = useMemo(() => {
     if (!articles.articles || articles.articles.length === 0) {
       return [];
     }
@@ -57,11 +53,9 @@ export default function DiscoverPage() {
       return articles.articles;
     }
     
-    // Find the team by id
     const team = teams.find((t: Team) => t.id === selectedTeam);
     if (!team) return articles.articles;
     
-    // Filter articles that mention the team name
     return articles.articles.filter((article: Article) => {
       if (!article.value?.title) return false;
       
@@ -73,20 +67,16 @@ export default function DiscoverPage() {
       
       return titleIncludes || subtitleIncludes || eventMatch;
     });
-  };
+  }, [articles.articles, selectedTeam, teams]);
 
-  // Get filtered articles
-  const filteredArticles = getFilteredArticles();
-
-  // Function to chunk the articles into sections
-  const chunkArticles = (articles: Article[]) => {
+  const articleSections = useMemo(() => {
+    const articles = filteredArticles;
     if (!articles || !articles.length) return [];
     
     const result = [];
     let i = 0;
     
     while (i < articles.length) {
-      // Add a full-width article section
       if (i < articles.length) {
         result.push({
           type: 'fullWidth',
@@ -95,7 +85,6 @@ export default function DiscoverPage() {
         i++;
       }
       
-      // Add a three-card section
       const threeCardChunk = articles.slice(i, i + 3);
       if (threeCardChunk.length) {
         result.push({
@@ -107,14 +96,19 @@ export default function DiscoverPage() {
     }
     
     return result;
-  };
+  }, [filteredArticles]);
 
-  const articleSections = chunkArticles(filteredArticles);
+  const handleTeamChange = useCallback((value: string) => {
+    setSelectedTeam(value);
+  }, []);
+
+  const handleTabChange = useCallback((value: string) => {
+    setActiveTab(value);
+  }, []);
 
   return (
     <div className="mobile-container pb-4 space-y-6 max-w-5xl mx-auto">
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full relative">
-        {/* Sticky header wrapper with fixed position - accounts for mobile top bar */}
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full relative">
         <div 
           ref={headerRef}
           className={`sticky z-20 bg-background transition-shadow duration-200 ${
@@ -122,7 +116,6 @@ export default function DiscoverPage() {
           } top-[64px] md:top-0`}
           style={{ position: 'sticky' }}
         >
-          {/* Tabs */}
           <div className="border-b pb-2 pt-2">
             <TabsList className="bg-background w-full justify-start overflow-x-auto">
               <TabsTrigger value="news" className="flex items-center gap-2">
@@ -136,24 +129,21 @@ export default function DiscoverPage() {
             </TabsList>
           </div>
           
-          {/* Team filter - only shows for News tab */}
           {activeTab === "news" && (
             <div className="py-2 px-4 sm:px-0 bg-background">
               <div className="flex justify-end">
                 <TeamFilter 
                   value={selectedTeam} 
-                  onChange={setSelectedTeam}
+                  onChange={handleTeamChange}
                 />
               </div>
             </div>
           )}
         </div>
 
-        {/* Enhanced spacing to prevent content from hiding behind the sticky header - taller on mobile */}
         <div className="h-8 md:h-4"></div>
 
         <TabsContent value="news" className="space-y-6 pt-6 md:pt-4">          
-          {/* Content layout */}
           <div className="space-y-8">
             {filteredArticles && filteredArticles.length > 0 ? (
               <>
@@ -182,7 +172,6 @@ export default function DiscoverPage() {
         </TabsContent>
 
         <TabsContent value="teams" className="pt-4">
-          {/* No filter here as requested */}
           <div className="pt-2">
             <FifaCwcSchedule />
           </div>

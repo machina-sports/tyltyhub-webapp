@@ -16,30 +16,23 @@ interface ArticleGridProps {
   layout?: 'fullWidth' | 'threeCards'
 }
 
-// Helper function to unescape common sequences in the JSON string
 const unescapeMarkdown = (text: string | undefined | null): string => {
   if (!text) return '';
   return text.replace(/\\n/g, '\n').replace(/\\"/g, '"');
 };
 
-// Helper function to extract a snippet from the full description
 const getDescriptionSnippet = (description: string | undefined | null, maxLength: number = 150) => {
   if (!description) return '';
   
-  // Unescape the description first
   const unescapedDescription = unescapeMarkdown(description);
   
-  // Extract the first paragraph or use the whole text if no paragraphs
   const firstParagraph = unescapedDescription.split('\n\n')[0];
   
-  // If the paragraph is already short enough, return it
   if (firstParagraph.length <= maxLength) return firstParagraph;
   
-  // Otherwise truncate it
   return firstParagraph.slice(0, maxLength) + '...';
 };
 
-// Helper to get an image URL based on the article data
 const getImageUrl = (article: Article): string => {
   if (!article) return '';
   
@@ -57,7 +50,6 @@ const getImageUrl = (article: Article): string => {
   return `https://placehold.co/800x450/2A9D8F/FFFFFF?text=${encodeURIComponent(title)}`;
 };
 
-// Get event type from metadata or default to "Notícias"
 const getEventType = (article: Article): string => {
   if (!article || !article.metadata) return 'Notícias';
   
@@ -83,7 +75,6 @@ const getEventType = (article: Article): string => {
   return 'Notícias';
 };
 
-// Get description from section content
 const getDescription = (article: Article): string => {
   if (!article || !article.value) return '';
   
@@ -94,31 +85,25 @@ const getDescription = (article: Article): string => {
          '';
 };
 
-// Get the article title
 const getTitle = (article: Article): string => {
   if (!article || !article.value) return 'Sem título';
   return article.value.title || 'Sem título';
 };
 
-// Get author (placeholder for now)
 const getAuthor = (article: Article): string => {
   return 'Machina Sports';
 };
 
-// Get article URL using slug if available
 const getArticleUrl = (article: Article): string => {
   if (!article) return '/discover';
   
-  // Use slug if available
   if (article.value?.slug) {
     return `/discover/${article.value.slug}`;
   }
   
-  // Fallback to ID
   return `/discover/${article._id || article.id}`;
 };
 
-// Render a single article card
 const ArticleCard = ({ article }: { article: Article }) => {
   if (!article) return null;
   
