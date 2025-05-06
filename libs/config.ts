@@ -1,6 +1,6 @@
 // Client-side configuration
 export const config = {
-  MACHINA_API_KEY: "tzDkqVqXvPSBX_UFFY5UzJYc4CEwFmhHqkz8qfW5uaXw1fCWQA-p05i4jWsJFCROnyzoLxxY1x0Ur8XACa9VhQ",
-  MACHINA_CLIENT_URL: "https://entain-organization-sportingbet-blog-trainin.org.machina.gg",
-  IMAGE_CONTAINER_ADDRESS: "https://geniusbetaistorage.blob.core.windows.net/gb-blob-images"
+  MACHINA_API_KEY: process.env.MACHINA_API_KEY,
+  MACHINA_CLIENT_URL: process.env.MACHINA_CLIENT_URL,
+  IMAGE_CONTAINER_ADDRESS: process.env.IMAGE_CONTAINER_ADDRESS
 } 

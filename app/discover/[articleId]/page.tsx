@@ -3,11 +3,11 @@ import ArticleContent from "./article-content";
 
 export async function generateStaticParams() {
   try {
-    const response = await fetch(`${config.MACHINA_CLIENT_URL.replace(/\/$/, '')}/document/search`, {
+    const response = await fetch(`${config.MACHINA_CLIENT_URL?.replace(/\/$/, '')}/document/search`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Api-Token': config.MACHINA_API_KEY
+        'X-Api-Token': config.MACHINA_API_KEY || ''
       },
       body: JSON.stringify({
         filters: {

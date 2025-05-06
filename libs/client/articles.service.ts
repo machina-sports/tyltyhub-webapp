@@ -20,7 +20,7 @@ interface ArticleData {
 class ArticlesService extends ClientBaseService {
   constructor() {
     super()
-    this.prefix = `${config.MACHINA_CLIENT_URL.replace(/\/$/, '')}/document/search`
+    this.prefix = `${config.MACHINA_CLIENT_URL?.replace(/\/$/, '')}/document/search`
   }
 
   mapArticleData(article: ArticleData): ArticleData {
@@ -56,7 +56,7 @@ class ArticlesService extends ClientBaseService {
     try {
       const options = {
         headers: {
-          "X-Api-Token": config.MACHINA_API_KEY,
+          "X-Api-Token": config.MACHINA_API_KEY || '',
           "Content-Type": "application/json",
         }
       }
