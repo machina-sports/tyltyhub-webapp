@@ -13,7 +13,6 @@ import ReactMarkdown from 'react-markdown';
 import { useGlobalState } from "@/store/useState";
 import { useAppDispatch } from "@/store/dispatch";
 import { fetchArticleById, fetchRelatedArticles, incrementViews } from "@/store/slices/articlesSlice";
-import { config } from "@/libs/config";
 import { Clock, Eye } from "lucide-react";
 import WidgetEmbed from "@/components/article/widget-embed";
 
@@ -25,7 +24,7 @@ const unescapeMarkdown = (text: string | undefined | null): string => {
 const getImageUrl = (article: any): string => {
   if (!article) return '';
   
-  const imageAddress = config.IMAGE_CONTAINER_ADDRESS;
+  const imageAddress = process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS;
   
   if (article.metadata?.event_code) {
     // For articles, we use the event_code to construct the image URL

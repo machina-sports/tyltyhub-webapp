@@ -7,7 +7,6 @@ import Image from "next/image"
 import Link from "next/link"
 import { useGlobalState } from "@/store/useState"
 import { Article } from "@/store/slices/articlesSlice"
-import { config } from "@/libs/config"
 
 interface RelatedArticlesProps {
   currentArticleId: string
@@ -22,7 +21,7 @@ const getImageUrl = (article: any): string => {
   }
   
   if (article.image_url) {
-    return `${config.IMAGE_CONTAINER_ADDRESS}/${article.image_url}`;
+    return `${process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS}/${article.image_url}`;
   }
   
   return '';

@@ -8,7 +8,6 @@ import Link from "next/link"
 import { formatDistanceToNow } from "date-fns"
 import { ptBR } from 'date-fns/locale'
 import ReactMarkdown from 'react-markdown'
-import { config } from "@/libs/config"
 import { Article } from "@/store/slices/articlesSlice"
 
 interface ArticleGridProps {
@@ -37,7 +36,7 @@ const getImageUrl = (article: Article): string => {
   if (!article) return '';
   
   // Get image address from config
-  const imageAddress = config.IMAGE_CONTAINER_ADDRESS;
+  const imageAddress = process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS;
   
   // Check if we have event_code in metadata
   if (article.metadata?.event_code) {
