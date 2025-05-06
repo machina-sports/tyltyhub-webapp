@@ -1,5 +1,4 @@
 "use client"
-
 import { useState, useEffect, useRef } from "react"
 import { Newspaper, Users } from "lucide-react"
 import { 
@@ -8,10 +7,11 @@ import {
   TabsList, 
   TabsTrigger 
 } from "@/components/ui/tabs"
-import { SportFilter, TeamFilter } from "@/components/discover/sport-filter"
+import { TeamFilter } from "@/components/discover/sport-filter"
 import { ArticleGrid } from "@/components/discover/article-grid"
 import { FifaCwcSchedule } from "@/components/discover/fifa-cwc-schedule"
-import discoverData from "@/data/discover.json"
+import { useGlobalState } from "@/store/useState"
+import { Article } from "@/store/slices/articlesSlice"
 import teamsData from "@/data/teams.json"
 
 // Define Team type to match the interface in TeamsGrid
@@ -27,7 +27,10 @@ export default function DiscoverPage() {
   const [activeTab, setActiveTab] = useState("news")
   const [isScrolled, setIsScrolled] = useState(false)
   const headerRef = useRef<HTMLDivElement>(null)
-
+  const { articles } = useGlobalState()
+  const teams = teamsData.teams || []
+  
+  
   // Add scroll event listener to show shadow only when scrolled
   useEffect(() => {
     const handleScroll = () => {
@@ -44,20 +47,38 @@ export default function DiscoverPage() {
     }
   }, [])
 
-  // Filter articles based on selected team
-  const filteredArticles = selectedTeam === "all-teams"
-    ? discoverData.articles
-    : discoverData.articles.filter(article => {
-        // This is a simplified filter that looks for team name in title or description
-        // You could enhance this with better matching logic
-        const teamName = teamsData.teams.find((t: Team) => t.id === selectedTeam)?.name || ""
-        return article.title.includes(teamName) || 
-               article.description.includes(teamName)
-      })
+  // Get filtered articles based on selected team
+  const getFilteredArticles = () => {
+    if (!articles.articles || articles.articles.length === 0) {
+      return [];
+    }
+    
+    if (selectedTeam === "all-teams") {
+      return articles.articles;
+    }
+    
+    // Find the team by id
+    const team = teams.find((t: Team) => t.id === selectedTeam);
+    if (!team) return articles.articles;
+    
+    // Filter articles that mention the team name
+    return articles.articles.filter((article: any) => {
+      if (!article.title) return false;
+      
+      const titleIncludes = article.title.includes(team.name);
+      const descriptionIncludes = article.description ? 
+        article.description.includes(team.name) : false;
+      
+      return titleIncludes || descriptionIncludes;
+    });
+  };
+
+  // Get filtered articles
+  const filteredArticles = getFilteredArticles();
 
   // Function to chunk the articles into sections
   const chunkArticles = (articles: any[]) => {
-    if (!articles.length) return [];
+    if (!articles || !articles.length) return [];
     
     const result = [];
     let i = 0;
@@ -132,7 +153,7 @@ export default function DiscoverPage() {
         <TabsContent value="news" className="space-y-6 pt-6 md:pt-4">          
           {/* Content layout */}
           <div className="space-y-8">
-            {filteredArticles.length > 0 ? (
+            {filteredArticles && filteredArticles.length > 0 ? (
               <>
                 {articleSections.map((section, index) => (
                   <div key={index} className="space-y-4">
@@ -152,7 +173,7 @@ export default function DiscoverPage() {
               </>
             ) : (
               <div className="py-8 text-center text-muted-foreground">
-                Nenhum artigo encontrado
+                {articles.loading ? 'Carregando artigos...' : 'Nenhum artigo encontrado'}
               </div>
             )}
           </div>

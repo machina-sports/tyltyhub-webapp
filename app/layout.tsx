@@ -1,8 +1,10 @@
+
 import './globals.css'
 import type { Metadata } from 'next'
 import { Sidebar } from '@/components/sidebar'
 import { Toaster } from '@/components/ui/toaster'
 import { ThemeProvider } from "@/components/theme-provider"
+import DataProvider from '@/providers/DataProvider'
 
 export const metadata: Metadata = {
   title: 'Sportingbet AI',
@@ -18,10 +20,11 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <body className="antialiased overflow-hidden">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem={false}
+        <DataProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem={false}
         >
           <div className="flex h-screen flex-col md:flex-row">
             <Sidebar />
@@ -31,6 +34,7 @@ export default function RootLayout({
           </div>
           <Toaster />
         </ThemeProvider>
+        </DataProvider>
       </body>
     </html>
   )
