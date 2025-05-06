@@ -1,0 +1,102 @@
+name: Deploy to Stage
+
+on:
+  workflow_dispatch:
+
+env:
+  NAMESPACE: tenant-entain-organization
+  DOMAIN: org.machina.gg
+  AKS_CLUSTER_NAME: mks-community-cluster
+  AKS_RESOURCE_GROUP: mks-community-group
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Get AKS Credentials
+        uses: azure/aks-set-context@v3
+        with:
+          cluster-name: ${{ env.AKS_CLUSTER_NAME }}
+          resource-group: ${{ env.AKS_RESOURCE_GROUP }}
+
+      - name: Create namespace
+        run: |
+          kubectl create namespace ${{ env.NAMESPACE }} --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Create Deployment
+        run: |
+          cat <<EOF | kubectl apply -f -
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: sportingbet-cwc
+            namespace: ${{ env.NAMESPACE }}
+          spec:
+            replicas: 1
+            selector:
+              matchLabels:
+                app: ${{ env.NAMESPACE }}-sportingbet-cwc
+            template:
+              metadata:
+                labels:
+                  app: ${{ env.NAMESPACE }}-sportingbet-cwc
+              spec:
+                containers:
+                - name: ${{ env.NAMESPACE }}-sportingbet-cwc
+                  image: machinasports/machina-sportsblog:latest
+                  ports:
+                  - containerPort: 3000
+          EOF
+
+      - name: Create Service
+        run: |
+          cat <<EOF | kubectl apply -f -
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: ${{ env.NAMESPACE }}-sportingbet-cwc
+            namespace: ${{ env.NAMESPACE }}
+          spec:
+            selector:
+              app: ${{ env.NAMESPACE }}-sportingbet-cwc
+            ports:
+            - port: 80
+              targetPort: 3000
+          EOF
+
+      - name: Create Ingress
+        run: |
+          cat <<EOF | kubectl apply -f -
+          apiVersion: networking.k8s.io/v1
+          kind: Ingress
+          metadata:
+            name: ${{ env.NAMESPACE }}-ingress-sportingbet-cwc
+            namespace: ${{ env.NAMESPACE }}
+            annotations:
+              kubernetes.io/ingress.class: nginx
+              nginx.ingress.kubernetes.io/ssl-redirect: "true"
+          spec:
+            rules:
+            - host: cwc-staging-entain-organization.${{ env.DOMAIN }}
+              http:
+                paths:
+                - path: /
+                  pathType: Prefix
+                  backend:
+                    service:
+                      name: ${{ env.NAMESPACE }}-sportingbet-cwc
+                      port:
+                        number: 80
+            tls:
+            - hosts:
+              - cwc-staging-entain-organization.${{ env.DOMAIN }}
+              secretName: ${{ env.NAMESPACE }}-tls
+          EOF

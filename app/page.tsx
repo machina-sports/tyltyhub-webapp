@@ -312,7 +312,7 @@ export default function Home() {
                       size="icon" 
                       variant="ghost" 
                       className={cn(
-                        "h-8 w-8 hover:bg-secondary/80 transition-colors",
+                        "h-8 w-8 hover:bg-secondary/80 transition-colors hidden",
                         isPreparing && "bg-amber-500/20 text-amber-500 hover:bg-amber-500/30 hover:text-amber-600",
                         isRecording && "bg-red-500/20 text-red-500 hover:bg-red-500/30 hover:text-red-600"
                       )}
@@ -339,7 +339,7 @@ export default function Home() {
                 >
                   <div className="absolute left-0 top-0 h-full w-12 bg-gradient-to-r from-background to-transparent z-10"></div>
                   <div className="absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-background to-transparent z-10"></div>
-                  <div className="flex overflow-hidden">
+                  <div className="flex overflow-hidden scrolling-row">
                     <div ref={firstRowRef} className="flex w-full touch-action-pan-y"> 
                       <div ref={firstRowContentRef} className="flex gap-2 py-1">
                         {suggestions.slice(0, 6).map((suggestion, index) => (
@@ -394,7 +394,7 @@ export default function Home() {
                 >
                   <div className="absolute left-0 top-0 h-full w-12 bg-gradient-to-r from-background to-transparent z-10"></div>
                   <div className="absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-background to-transparent z-10"></div>
-                  <div className="flex overflow-hidden">
+                  <div className="flex overflow-hidden scrolling-row">
                     <div ref={secondRowRef} className="flex w-full touch-action-pan-y"> 
                       <div ref={secondRowContentRef} className="flex gap-2 py-1">
                         {suggestions.slice(6).map((suggestion, index) => (
@@ -507,7 +507,7 @@ export default function Home() {
                     size="icon" 
                     variant="ghost" 
                     className={cn(
-                      "h-9 w-9 hover:bg-secondary active:bg-secondary/80 transition-colors",
+                      "h-9 w-9 hover:bg-secondary active:bg-secondary/80 transition-colors hidden",
                       isPreparing && "bg-amber-500/20 text-amber-500 hover:bg-amber-500/30 hover:text-amber-600",
                       isRecording && "bg-red-500/20 text-red-500 hover:bg-red-500/30 hover:text-red-600"
                     )}

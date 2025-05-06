@@ -32,6 +32,13 @@ const findTeamLeague = (teamName: string): string | undefined => {
   return team?.league
 }
 
+// Helper to find team abbreviation
+const findTeamAbbreviation = (teamName: string): string | undefined => {
+  const normalizedName = teamName.toLowerCase().replace(/ /g, '-')
+  const team = teamsData.teams.find(t => t.id === normalizedName)
+  return team?.abbreviation
+}
+
 // Function to generate AI insights for each team
 const generateTeamInsight = (teamName: string): string => {
   const insights: Record<string, string> = {
@@ -342,24 +349,71 @@ export function FifaCwcSchedule() {
 
       <Tabs defaultValue="teams-view" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="teams-view">Clubes</TabsTrigger>
-          <TabsTrigger value="matches-view">Partidas</TabsTrigger>
+          <TabsTrigger value="teams-view">Classificação</TabsTrigger>
+          <TabsTrigger value="matches-view">Calendário</TabsTrigger>
         </TabsList>
 
         <TabsContent value="teams-view" className="mt-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
             {fifaCwcData.groups.map((group) => (
-              <Card key={`team-${group.name}`} className="overflow-hidden">
+              <Card key={`team-${group.name}`} className="overflow-hidden h-full flex flex-col">
                 <CardHeader className="bg-muted/50 pb-2">
                   <CardTitle className="text-xl font-semibold">
                     {group.name.replace('Group', 'Grupo')}
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="pt-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {group.teams.map((teamName) => (
-                      <TeamCard key={teamName} teamName={teamName} />
-                    ))}
+                <CardContent className="pt-4 flex-1 px-2 sm:px-6">
+                  {/* Tabela de classificação para o grupo */}
+                  <div className="overflow-x-auto w-full">
+                    <Table className="w-full table-fixed">
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-[10%] text-center text-xs sm:text-sm px-1 sm:px-4">Pos</TableHead>
+                          <TableHead className="w-[35%] text-xs sm:text-sm px-1 sm:px-4">Time</TableHead>
+                          <TableHead className="w-[8%] text-center text-xs sm:text-sm px-1 sm:px-4">J</TableHead>
+                          <TableHead className="w-[8%] text-center text-xs sm:text-sm px-1 sm:px-4">V</TableHead>
+                          <TableHead className="w-[8%] text-center text-xs sm:text-sm px-1 sm:px-4">E</TableHead>
+                          <TableHead className="w-[8%] text-center text-xs sm:text-sm px-1 sm:px-4">D</TableHead>
+                          <TableHead className="w-[8%] text-center text-xs sm:text-sm px-1 sm:px-4">SG</TableHead>
+                          <TableHead className="w-[15%] text-center text-xs sm:text-sm px-1 sm:px-4">Pts</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {group.teams.map((teamName, index) => (
+                          <TableRow key={teamName}>
+                            <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4">{index + 1}</TableCell>
+                            <TableCell className="text-xs sm:text-sm px-1 sm:px-4">
+                              <div className="flex items-center gap-1 sm:gap-2 min-w-0">
+                                {findTeamLogo(teamName) && (
+                                  <div className="relative h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0">
+                                    <Image
+                                      src={findTeamLogo(teamName)!}
+                                      alt={teamName}
+                                      fill
+                                      className="object-contain"
+                                      sizes="24px"
+                                    />
+                                  </div>
+                                )}
+                                <span 
+                                  title={teamName} 
+                                  className="truncate"
+                                >
+                                  {findTeamAbbreviation(teamName) || teamName}
+                                </span>
+                              </div>
+                            </TableCell>
+                            {/* Estatísticas iniciais zeradas */}
+                            <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4">0</TableCell>
+                            <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4">0</TableCell>
+                            <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4">0</TableCell>
+                            <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4">0</TableCell>
+                            <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4">0</TableCell>
+                            <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4">0</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
                   </div>
                 </CardContent>
               </Card>

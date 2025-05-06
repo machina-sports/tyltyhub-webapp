@@ -23,6 +23,12 @@ const config: Config = {
         'sportingbet': ['Sportingbet Sans', 'system-ui', 'sans-serif'],
         'frutiger': ['Frutiger LT', 'Arial', 'Helvetica Neue', 'sans-serif'],
       },
+      spacing: {
+        'safe-top': 'env(safe-area-inset-top)',
+        'safe-right': 'env(safe-area-inset-right)',
+        'safe-bottom': 'env(safe-area-inset-bottom)',
+        'safe-left': 'env(safe-area-inset-left)',
+      },
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',

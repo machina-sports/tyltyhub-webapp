@@ -1,33 +1,21 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Only use export mode in production
-  output: process.env.NODE_ENV === 'production' ? 'export' : undefined,
-  trailingSlash: true,
   eslint: {
     ignoreDuringBuilds: true,
   },
-  images: { 
+  images: {
     unoptimized: true,
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-        pathname: '/**'
+        protocol: "https",
+        hostname: "machina.gg",
       },
       {
-        protocol: 'https',
-        hostname: 'geniusbetaistorage.blob.core.windows.net',
-        pathname: '/**'
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        pathname: "/**",
       },
-      {
-        protocol: 'https',
-        hostname: '*.machina.gg',
-        pathname: '/**'
-      }
-    ]
-  },
-  typescript: {
-    ignoreBuildErrors: true
+    ],
   },
   env: {
     MACHINA_API_KEY: process.env.MACHINA_API_KEY,

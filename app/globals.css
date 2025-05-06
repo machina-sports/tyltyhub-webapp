@@ -2,9 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  /* Make all images fluid */
+  img {
+    @apply max-w-full h-auto object-contain;
+  }
+}
+
 @layer utilities {
   .tap-highlight-none {
     -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Touch-action helpers used in carousels/rows */
+  .touch-action-pan-y { touch-action: pan-y; }
+  .touch-action-pan-x { touch-action: pan-x; }
+
+  /* Hint to browser for smoother transforms */
+  .scrolling-row { will-change: transform; }
+
+  /* Respect user's reduce-motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
@@ -257,10 +280,6 @@
 @layer utilities {
   .touch-action-none {
     touch-action: none;
-  }
-  
-  .touch-action-pan-y {
-    touch-action: pan-y;
   }
   
   .no-tap-highlight {

@@ -1,6 +1,6 @@
 "use client"
 import { useState, useEffect, useRef, useMemo, useCallback } from "react"
-import { Newspaper, Users } from "lucide-react"
+import { Newspaper, Users, Search, Table2 } from "lucide-react"
 import { 
   Tabs, 
   TabsContent, 
@@ -12,6 +12,7 @@ import { ArticleGrid } from "@/components/discover/article-grid"
 import { FifaCwcSchedule } from "@/components/discover/fifa-cwc-schedule"
 import { useGlobalState } from "@/store/useState"
 import { Article } from "@/store/slices/articlesSlice"
+import { Input } from "@/components/ui/input"
 import teamsData from "@/data/teams.json"
 
 interface Team {
@@ -23,6 +24,7 @@ interface Team {
 
 export default function DiscoverPage() {
   const [selectedTeam, setSelectedTeam] = useState("all-teams")
+  const [searchQuery, setSearchQuery] = useState("")
   const [activeTab, setActiveTab] = useState("news")
   const [isScrolled, setIsScrolled] = useState(false)
   const headerRef = useRef<HTMLDivElement>(null)
@@ -44,48 +46,40 @@ export default function DiscoverPage() {
     }
   }, [handleScroll])
 
-  const filteredArticles = useMemo(() => {
-    if (!articles.articles || articles.articles.length === 0) {
-      return [];
-    }
-    
-    if (selectedTeam === "all-teams") {
-      return articles.articles;
-    }
-    
-    const team = teams.find((t: Team) => t.id === selectedTeam);
-    if (!team) return articles.articles;
-    
-    return articles.articles.filter((article: Article) => {
-      if (!article.value?.title) return false;
-      
-      const titleIncludes = article.value.title.includes(team.name);
-      const subtitleIncludes = article.value?.subtitle ? 
-        article.value.subtitle.includes(team.name) : false;
-      const eventMatch = article.value?.["event-details"]?.match ?
-        article.value["event-details"].match.includes(team.name) : false;
-      
-      return titleIncludes || subtitleIncludes || eventMatch;
-    });
-  }, [articles.articles, selectedTeam, teams]);
+  // Filter articles based on selected team and search query
+  const filteredArticles = articles.articles.filter((article: Article) => {
+    // Team filter
+    const teamFilter = selectedTeam === "all-teams" || (() => {
+      const teamName = teamsData.teams.find((t: Team) => t.id === selectedTeam)?.name || ""
+      return (article.title?.includes(teamName) || 
+              article.description?.includes(teamName))
+    })()
 
+    // Search filter
+    const searchFilter = !searchQuery || 
+      (article.title?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
+      (article.description?.toLowerCase() || "").includes(searchQuery.toLowerCase())
+
+    return teamFilter && searchFilter
+  })
+
+  // Function to chunk the articles into sections
   const articleSections = useMemo(() => {
-    const articles = filteredArticles;
-    if (!articles || !articles.length) return [];
+    if (!filteredArticles.length) return [];
     
     const result = [];
     let i = 0;
     
-    while (i < articles.length) {
-      if (i < articles.length) {
+    while (i < filteredArticles.length) {
+      if (i < filteredArticles.length) {
         result.push({
           type: 'fullWidth',
-          articles: [articles[i]]
+          articles: [filteredArticles[i]]
         });
         i++;
       }
       
-      const threeCardChunk = articles.slice(i, i + 3);
+      const threeCardChunk = filteredArticles.slice(i, i + 3);
       if (threeCardChunk.length) {
         result.push({
           type: 'threeCards',
@@ -123,19 +117,31 @@ export default function DiscoverPage() {
                 Notícias
               </TabsTrigger>
               <TabsTrigger value="teams" className="flex items-center gap-2">
-                <Users className="h-4 w-4" />
-                Times
+                <Table2 className="h-4 w-4" />
+                Tabela
               </TabsTrigger>
             </TabsList>
           </div>
           
           {activeTab === "news" && (
             <div className="py-2 px-4 sm:px-0 bg-background">
-              <div className="flex justify-end">
+              <div className="flex justify-between items-center gap-4">
                 <TeamFilter 
                   value={selectedTeam} 
                   onChange={handleTeamChange}
                 />
+                <div className="relative w-[220px]">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <Search className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                  <Input
+                    type="text"
+                    placeholder="Buscar"
+                    className="pl-10 bg-background"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
               </div>
             </div>
           )}
@@ -145,7 +151,7 @@ export default function DiscoverPage() {
 
         <TabsContent value="news" className="space-y-6 pt-6 md:pt-4">          
           <div className="space-y-8">
-            {filteredArticles && filteredArticles.length > 0 ? (
+            {articleSections && articleSections.length > 0 ? (
               <>
                 {articleSections.map((section, index) => (
                   <div key={index} className="space-y-4">

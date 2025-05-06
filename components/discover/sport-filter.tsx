@@ -1,6 +1,8 @@
 "use client"
 
 import Image from "next/image"
+import { useState } from "react"
+import { X, ChevronDown } from "lucide-react"
 import {
   Select,
   SelectContent,
@@ -8,7 +10,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import * as SelectPrimitive from "@radix-ui/react-select"
 import teamsData from "@/data/teams.json"
+import fifaCwcData from "@/data/fifa-cwc-2025.json"
+import { cn } from "@/lib/utils"
 
 // Convert to array of team objects with name and id for filtering
 const TEAMS = [
@@ -16,53 +21,141 @@ const TEAMS = [
   ...teamsData.teams
 ]
 
+// Find team details from teams.json based on team name from fifa-cwc-2025.json
+const getTeamDetails = (teamName: string) => {
+  // Find the team by normalizing and comparing names
+  const team = teamsData.teams.find(t => 
+    t.name.toLowerCase() === teamName.toLowerCase() ||
+    t.name.toLowerCase().includes(teamName.toLowerCase()) ||
+    teamName.toLowerCase().includes(t.name.toLowerCase())
+  )
+  return team || { id: "unknown", name: teamName, logo: null }
+}
+
+// Process FIFA CWC groups data for the filter component
+const CWC_GROUPS = fifaCwcData.groups.map(group => {
+  return {
+    name: group.name,
+    teams: group.teams.map(teamName => getTeamDetails(teamName))
+  }
+})
+
+// Additional option for "All Teams"
+const ALL_TEAMS_OPTION = { id: "all-teams", name: "Todos os Times", logo: null }
+
 interface TeamFilterProps {
   value: string
   onChange: (value: string) => void
 }
 
 export function TeamFilter({ value, onChange }: TeamFilterProps) {
+  const [activeGroup, setActiveGroup] = useState(CWC_GROUPS[0].name)
+  const [open, setOpen] = useState(false)
+
+  // Selected team details for the dropdown trigger
+  const selectedTeam = TEAMS.find(team => team.id === value) || ALL_TEAMS_OPTION
+
+  // Helper to get what to display in the top bar
+  const getDisplayValue = () => {
+    if (value === "all-teams") return "Todos os Times"
+    const team = TEAMS.find(t => t.id === value)
+    return team?.name || "Todos os Times"
+  }
+
+  // Handle reset separately to avoid dropdown opening
+  const handleReset = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onChange("all-teams");
+  };
+
   return (
-    <div className="w-[180px]">
-      <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="bg-background">
-          <SelectValue placeholder="Todos os Times">
-            {value !== "all-teams" && (
-              <div className="flex items-center gap-2">
-                {TEAMS.find(team => team.id === value)?.logo && (
-                  <div className="h-5 w-5 relative overflow-hidden">
-                    <Image 
-                      src={TEAMS.find(team => team.id === value)?.logo || ""}
-                      alt={TEAMS.find(team => team.id === value)?.name || ""}
-                      fill
-                      className="object-contain"
-                    />
-                  </div>
+    <div className="relative w-[220px]">
+      <Select 
+        value={value} 
+        onValueChange={onChange}
+        open={open}
+        onOpenChange={setOpen}
+      >
+        <div className="relative">
+          <SelectTrigger className="bg-background hover:bg-accent hover:text-accent-foreground cursor-pointer pr-10 flex [&>span]:flex-grow [&>span]:mr-0 [&>svg]:hidden">
+            <div className="flex items-center gap-2 overflow-hidden w-full">
+              {selectedTeam.logo && value !== 'all-teams' && (
+                <div className="h-5 w-5 relative overflow-hidden flex-shrink-0">
+                  <Image 
+                    src={selectedTeam.logo}
+                    alt={selectedTeam.name}
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+              )}
+              <span className="truncate">{getDisplayValue()}</span>
+            </div>
+            <div className="absolute right-3 top-0 bottom-0 flex items-center pointer-events-none">
+              <ChevronDown className="h-4 w-4 opacity-50" />
+            </div>
+          </SelectTrigger>
+          
+          {/* X button positioned absolutely to avoid event conflicts */}
+          {value !== 'all-teams' && (
+            <button 
+              onClick={handleReset}
+              className="absolute right-8 top-0 bottom-0 flex items-center justify-center w-6 h-full opacity-70 hover:opacity-100 z-10"
+              aria-label="Reset filter"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+        
+        <SelectContent className="p-0 w-[380px]">
+          <div className="flex flex-wrap p-3 border-b gap-2 justify-center">
+            {CWC_GROUPS.map((group, index) => (
+              <button
+                key={group.name}
+                className={cn(
+                  "w-8 h-8 rounded-md text-xs font-medium transition-colors flex items-center justify-center",
+                  activeGroup === group.name
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
                 )}
-                {TEAMS.find(team => team.id === value)?.name}
-              </div>
-            )}
-            {value === "all-teams" && "Todos os Times"}
-          </SelectValue>
-        </SelectTrigger>
-        <SelectContent>
-          {TEAMS.map((team) => (
-            <SelectItem key={team.id} value={team.id}>
-              <div className="flex items-center gap-2">
-                {team.logo && (
-                  <div className="h-5 w-5 relative overflow-hidden flex-shrink-0">
-                    <Image 
-                      src={team.logo}
-                      alt={team.name}
-                      fill
-                      className="object-contain"
-                    />
+                onClick={() => setActiveGroup(group.name)}
+              >
+                {String.fromCharCode(65 + index)} 
+              </button>
+            ))}
+          </div>
+          
+          <div className="grid grid-cols-4 gap-3 p-4 max-h-[280px] overflow-y-auto">
+            {CWC_GROUPS.find(g => g.name === activeGroup)?.teams.map((team) => (
+              <SelectItem 
+                key={team.id} 
+                value={team.id} 
+                className="flex justify-center items-center w-full h-[80px] p-1 cursor-pointer rounded-md hover:bg-accent transition-colors"
+              >
+                <div className="flex flex-col items-center justify-center text-center h-full">
+                  {team.logo ? (
+                    <div className="h-10 w-10 relative overflow-hidden mb-2 flex-shrink-0">
+                      <Image 
+                        src={team.logo}
+                        alt={team.name}
+                        fill
+                        className="object-contain"
+                      />
+                    </div>
+                  ) : (
+                    <div className="h-10 w-10 bg-muted rounded-full mb-2 flex items-center justify-center flex-shrink-0">
+                      <span className="text-xs font-medium">{team.name.substring(0, 2)}</span>
+                    </div>
+                  )}
+                  <div className="min-h-[2.5em] flex items-center">
+                    <span className="text-[11px] line-clamp-2 w-full font-medium">{team.name}</span>
                   </div>
-                )}
-                <span>{team.name}</span>
-              </div>
-            </SelectItem>
-          ))}
+                </div>
+              </SelectItem>
+            ))}
+          </div>
         </SelectContent>
       </Select>
     </div>
@@ -88,7 +181,7 @@ interface SportFilterProps {
 
 export function SportFilter({ value, onChange }: SportFilterProps) {
   return (
-    <div className="w-[180px]">
+    <div className="w-[220px]">
       <Select value={value} onValueChange={onChange}>
         <SelectTrigger className="bg-background">
           <SelectValue placeholder="Selecionar Esporte" />

@@ -112,7 +112,7 @@ export default function FollowUpQuestionForm() {
                   size="icon" 
                   variant="ghost" 
                   className={cn(
-                    "h-9 w-9 hover:bg-secondary active:bg-secondary/80 transition-colors",
+                    "h-9 w-9 hover:bg-secondary active:bg-secondary/80 transition-colors hidden",
                     isPreparing && "bg-amber-500/20 text-amber-500 hover:bg-amber-500/30 hover:text-amber-600",
                     isRecording && "bg-red-500/20 text-red-500 hover:bg-red-500/30 hover:text-red-600"
                   )}

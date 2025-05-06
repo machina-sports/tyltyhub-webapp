@@ -4,193 +4,225 @@
       "id": "al-ain",
       "name": "Al Ain",
       "league": "UAE Pro League",
-      "logo": "/team-logos/al-ain.png"
+      "logo": "/team-logos/al-ain.png",
+      "abbreviation": "AIN"
     },
     {
       "id": "al-hilal",
       "name": "Al Hilal",
       "league": "Saudi Pro League",
-      "logo": "/team-logos/al-hilal.png"
+      "logo": "/team-logos/al-hilal.png",
+      "abbreviation": "HIL"
     },
     {
       "id": "ulsan-hd",
       "name": "Ulsan HD",
       "league": "K League 1",
-      "logo": "/team-logos/ulsan-hd.png"
+      "logo": "/team-logos/ulsan-hd.png",
+      "abbreviation": "UHD"
     },
     {
       "id": "urawa-red-diamonds",
       "name": "Urawa Red Diamonds",
       "league": "J1 League",
-      "logo": "/team-logos/urawa-red-diamonds.png"
+      "logo": "/team-logos/urawa-red-diamonds.png",
+      "abbreviation": "URD"
     },
     {
       "id": "al-ahly",
       "name": "Al Ahly",
       "league": "Premier League Egípcia",
-      "logo": "/team-logos/al-ahly.png"
+      "logo": "/team-logos/al-ahly.png",
+      "abbreviation": "AHL"
     },
     {
       "id": "espérance-de-tunis",
       "name": "Espérance de Tunis",
       "league": "Ligue Professionnelle 1 Tunisiana",
-      "logo": "/team-logos/espérance-de-tunis.png"
+      "logo": "/team-logos/espérance-de-tunis.png",
+      "abbreviation": "EST"
     },
     {
       "id": "mamelodi-sundowns",
       "name": "Mamelodi Sundowns",
       "league": "Betway Premiership",
-      "logo": "/team-logos/mamelodi-sundowns.png"
+      "logo": "/team-logos/mamelodi-sundowns.png",
+      "abbreviation": "MSU"
     },
     {
       "id": "wydad-ac",
       "name": "Wydad AC",
       "league": "Botola",
-      "logo": "/team-logos/wydad-ac.png"
+      "logo": "/team-logos/wydad-ac.png",
+      "abbreviation": "WAC"
     },
     {
       "id": "inter-miami",
       "name": "Inter Miami",
       "league": "MLS",
-      "logo": "/team-logos/inter-miami.png"
+      "logo": "/team-logos/inter-miami.png",
+      "abbreviation": "MIA"
     },
     {
       "id": "leon",
       "name": "Leon",
       "league": "Liga MX",
-      "logo": "/team-logos/leon.png"
+      "logo": "/team-logos/leon.png",
+      "abbreviation": "LEO"
     },
     {
       "id": "monterrey",
       "name": "Monterrey",
       "league": "Liga MX",
-      "logo": "/team-logos/monterrey.png"
+      "logo": "/team-logos/monterrey.png",
+      "abbreviation": "CFM"
     },
     {
       "id": "pachuca",
       "name": "Pachuca",
       "league": "Liga MX",
-      "logo": "/team-logos/pachuca.png"
+      "logo": "/team-logos/pachuca.png",
+      "abbreviation": "PAC"
     },
     {
       "id": "seattle-sounders",
       "name": "Seattle Sounders",
       "league": "MLS",
-      "logo": "/team-logos/seattle-sounders.png"
+      "logo": "/team-logos/seattle-sounders.png",
+      "abbreviation": "SEA"
     },
     {
       "id": "boca-juniors",
       "name": "Boca Juniors",
       "league": "Primera División",
-      "logo": "/team-logos/boca-juniors.png"
+      "logo": "/team-logos/boca-juniors.png",
+      "abbreviation": "BOC"
     },
     {
       "id": "botafogo",
       "name": "Botafogo",
       "league": "Campeonato Brasileiro Série A",
-      "logo": "/team-logos/botafogo.png"
+      "logo": "/team-logos/botafogo.png",
+      "abbreviation": "BOT"
     },
     {
       "id": "flamengo",
       "name": "Flamengo",
       "league": "Campeonato Brasileiro Série A",
-      "logo": "/team-logos/flamengo.png"
+      "logo": "/team-logos/flamengo.png",
+      "abbreviation": "FLA"
     },
     {
       "id": "fluminense",
       "name": "Fluminense",
       "league": "Campeonato Brasileiro Série A",
-      "logo": "/team-logos/fluminense.png"
+      "logo": "/team-logos/fluminense.png",
+      "abbreviation": "FLU"
     },
     {
       "id": "palmeiras",
       "name": "Palmeiras",
       "league": "Campeonato Brasileiro Série A",
-      "logo": "/team-logos/palmeiras.png"
+      "logo": "/team-logos/palmeiras.png",
+      "abbreviation": "SEP"
     },
     {
       "id": "river-plate",
       "name": "River Plate",
       "league": "Primera División",
-      "logo": "/team-logos/river-plate.png"
+      "logo": "/team-logos/river-plate.png",
+      "abbreviation": "RIV"
     },
     {
       "id": "auckland-city",
       "name": "Auckland City",
       "league": "National League/Northern League",
-      "logo": "/team-logos/auckland-city.png"
+      "logo": "/team-logos/auckland-city.png",
+      "abbreviation": "AKL"
     },
     {
       "id": "atletico-madrid",
       "name": "Atletico Madrid",
       "league": "LaLiga",
-      "logo": "/team-logos/atletico-madrid.png"
+      "logo": "/team-logos/atletico-madrid.png",
+      "abbreviation": "ATM"
     },
     {
       "id": "bayern-munich",
       "name": "Bayern Munich",
       "league": "Bundesliga",
-      "logo": "/team-logos/bayern-munich.png"
+      "logo": "/team-logos/bayern-munich.png",
+      "abbreviation": "BAY"
     },
     {
       "id": "benfica",
       "name": "Benfica",
       "league": "Primeira Liga",
-      "logo": "/team-logos/benfica.png"
+      "logo": "/team-logos/benfica.png",
+      "abbreviation": "SLB"
     },
     {
       "id": "borussia-dortmund",
       "name": "Borussia Dortmund",
       "league": "Bundesliga",
-      "logo": "/team-logos/borussia-dortmund.png"
+      "logo": "/team-logos/borussia-dortmund.png",
+      "abbreviation": "BVB"
     },
     {
       "id": "chelsea",
       "name": "Chelsea",
       "league": "Premier League",
-      "logo": "/team-logos/chelsea.png"
+      "logo": "/team-logos/chelsea.png",
+      "abbreviation": "CHE"
     },
     {
       "id": "inter-milan",
       "name": "Inter Milan",
       "league": "Serie A",
-      "logo": "/team-logos/inter-milan.png"
+      "logo": "/team-logos/inter-milan.png",
+      "abbreviation": "INT"
     },
     {
       "id": "juventus",
       "name": "Juventus",
       "league": "Serie A",
-      "logo": "/team-logos/juventus.png"
+      "logo": "/team-logos/juventus.png",
+      "abbreviation": "JUV"
     },
     {
       "id": "manchester-city",
       "name": "Manchester City",
       "league": "Premier League",
-      "logo": "/team-logos/manchester-city.png"
+      "logo": "/team-logos/manchester-city.png",
+      "abbreviation": "MCI"
     },
     {
       "id": "paris-saint-germain",
       "name": "Paris Saint-Germain",
       "league": "Ligue 1",
-      "logo": "/team-logos/paris-saint-germain.png"
+      "logo": "/team-logos/paris-saint-germain.png",
+      "abbreviation": "PSG"
     },
     {
       "id": "porto",
       "name": "Porto",
       "league": "Primeira Liga",
-      "logo": "/team-logos/porto.png"
+      "logo": "/team-logos/porto.png",
+      "abbreviation": "POR"
     },
     {
       "id": "real-madrid",
       "name": "Real Madrid",
       "league": "LaLiga",
-      "logo": "/team-logos/real-madrid.png"
+      "logo": "/team-logos/real-madrid.png",
+      "abbreviation": "RMA"
     },
     {
       "id": "red-bull-salzburg",
       "name": "Red Bull Salzburg",
       "league": "Bundesliga",
-      "logo": "/team-logos/red-bull-salzburg.png"
+      "logo": "/team-logos/red-bull-salzburg.png",
+      "abbreviation": "SAL"
     }
   ]
 }
