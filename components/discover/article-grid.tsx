@@ -43,15 +43,18 @@ const getDescriptionSnippet = (description: string | undefined | null, maxLength
 const getImageUrl = (article: Article): string => {
   if (!article) return '';
   
-  // For demonstration purposes only - use match name for image content 
-  // In real implementation, you'd use actual image URLs from your API
-  if (article.value?.["event-details"]?.match) {
-    const match = article.value["event-details"].match;
-    return `https://placehold.co/800x450/2A9D8F/FFFFFF?text=${encodeURIComponent(match)}`;
+  // Get image address from config
+  const imageAddress = config.IMAGE_CONTAINER_ADDRESS;
+  
+  // Check if we have event_code in metadata
+  if (article.metadata?.event_code) {
+    // For articles, we use the event_code to construct the image URL
+    return `${imageAddress}/image-preview-${article.metadata.event_code}.webp`;
   }
   
-  // Fallback to using title if available
-  return `https://placehold.co/800x450/2A9D8F/FFFFFF?text=${encodeURIComponent(article.value?.title || 'Article')}`;
+  // Fallback to placeholder if no event_code
+  const title = article.value?.title || 'Article';
+  return `https://placehold.co/800x450/2A9D8F/FFFFFF?text=${encodeURIComponent(title)}`;
 };
 
 // Get event type from metadata or default to "Notícias"
