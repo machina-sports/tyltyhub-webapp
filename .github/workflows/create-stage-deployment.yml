@@ -56,14 +56,6 @@ jobs:
 
       - name: Create Deployment
         run: |
-          # Create image pull secret
-          kubectl create secret docker-registry regcred \
-            --docker-server=${{ secrets.REGISTRY_URL }} \
-            --docker-username=${{ secrets.DOCKER_USERNAME }} \
-            --docker-password=${{ secrets.DOCKER_PASSWORD }} \
-            --namespace=${{ env.NAMESPACE }} \
-            --dry-run=client -o yaml | kubectl apply -f -
-
           cat <<EOF | kubectl apply -f -
           apiVersion: apps/v1
           kind: Deployment
@@ -81,11 +73,18 @@ jobs:
                 labels:
                   app: ${{ env.NAMESPACE }}-sportingbet-cwc
               spec:
-                imagePullSecrets:
-                - name: regcred
+                volumes:
+                - name: machina-core-keys-volume
+                  secret:
+                    secretName: machina-core-key
+                    defaultMode: 420
                 containers:
                 - name: ${{ env.NAMESPACE }}-sportingbet-cwc
                   image: ${{ secrets.REGISTRY_URL }}/sportingbet-cwc:latest
+                  volumeMounts:
+                  - name: machina-core-keys-volume
+                    mountPath: /app/keys
+                    readOnly: true
                   ports:
                   - containerPort: 3000
                   readinessProbe:
