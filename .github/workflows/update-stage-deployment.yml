@@ -1,4 +1,4 @@
-name: Update Stage Deployment
+name: Update Stage Deployment Image
 
 on:
   workflow_dispatch:
@@ -31,13 +31,22 @@ jobs:
 
       - name: Update Deployment Image
         run: |
+          # Update the deployment image
           kubectl set image deployment/sportingbet-cwc \
             ${{ env.NAMESPACE }}-sportingbet-cwc=${{ secrets.REGISTRY_URL }}/machina-sportingbet-cwc:latest \
             -n ${{ env.NAMESPACE }}
-
-      - name: Verify rollout
-        run: |
-          kubectl rollout status deployment/sportingbet-cwc -n ${{ env.NAMESPACE }}
+          
+          # Wait for rollout with increased timeout
+          kubectl rollout status deployment/sportingbet-cwc -n ${{ env.NAMESPACE }} --timeout=300s
+          
+          # If rollout fails, get debugging information
+          if [ $? -ne 0 ]; then
+            echo "Deployment failed. Gathering debug information..."
+            kubectl describe deployment sportingbet-cwc -n ${{ env.NAMESPACE }}
+            kubectl get pods -n ${{ env.NAMESPACE }} -l app=${{ env.NAMESPACE }}-sportingbet-cwc
+            kubectl describe pods -n ${{ env.NAMESPACE }} -l app=${{ env.NAMESPACE }}-sportingbet-cwc
+            exit 1
+          fi
 
       - name: Notify Slack - Update Success
         uses: rtCamp/action-slack-notify@v2
@@ -59,6 +68,6 @@ jobs:
           SLACK_USERNAME: GitHub Actions
           SLACK_COLOR: 'danger'
           SLACK_TITLE: 'Stage Deployment Update Failed'
-          SLACK_MESSAGE: 'Failed to update stage deployment image.'
+          SLACK_MESSAGE: 'Failed to update stage deployment image. Check the action logs for details.'
           SLACK_ICON: ':x:'
         if: failure()

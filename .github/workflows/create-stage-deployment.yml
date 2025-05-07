@@ -50,6 +50,14 @@ jobs:
 
       - name: Create Deployment
         run: |
+          # Create image pull secret
+          kubectl create secret docker-registry regcred \
+            --docker-server=${{ secrets.REGISTRY_URL }} \
+            --docker-username=${{ secrets.DOCKER_USERNAME }} \
+            --docker-password=${{ secrets.DOCKER_PASSWORD }} \
+            --namespace=${{ env.NAMESPACE }} \
+            --dry-run=client -o yaml | kubectl apply -f -
+
           cat <<EOF | kubectl apply -f -
           apiVersion: apps/v1
           kind: Deployment
@@ -57,6 +65,7 @@ jobs:
             name: sportingbet-cwc
             namespace: ${{ env.NAMESPACE }}
           spec:
+            progressDeadlineSeconds: 600
             replicas: 1
             selector:
               matchLabels:
@@ -66,11 +75,32 @@ jobs:
                 labels:
                   app: ${{ env.NAMESPACE }}-sportingbet-cwc
               spec:
+                imagePullSecrets:
+                - name: regcred
                 containers:
                 - name: ${{ env.NAMESPACE }}-sportingbet-cwc
-                  image: machinasports/machina-sportingbet-cwc:latest
+                  image: ${{ secrets.REGISTRY_URL }}/machina-sportingbet-cwc:latest
                   ports:
                   - containerPort: 3000
+                  readinessProbe:
+                    httpGet:
+                      path: /
+                      port: 3000
+                    initialDelaySeconds: 10
+                    periodSeconds: 5
+                  livenessProbe:
+                    httpGet:
+                      path: /
+                      port: 3000
+                    initialDelaySeconds: 15
+                    periodSeconds: 10
+                  resources:
+                    requests:
+                      memory: "256Mi"
+                      cpu: "100m"
+                    limits:
+                      memory: "512Mi"
+                      cpu: "200m"
           EOF
 
       - name: Create Service
