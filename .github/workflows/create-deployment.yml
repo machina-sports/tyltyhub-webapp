@@ -2,12 +2,23 @@ name: Create Stage Deployment
 
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target Environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - development
+          - production
 
 env:
   NAMESPACE: tenant-entain-organization
   DOMAIN: org.machina.gg
   AKS_CLUSTER_NAME: mks-community-cluster
   AKS_RESOURCE_GROUP: mks-community-group
+  ENV_PREFIX: ${{ github.event.inputs.environment }}
 
 jobs:
   deploy:
@@ -43,12 +54,12 @@ jobs:
           apiVersion: cert-manager.io/v1
           kind: Certificate
           metadata:
-            name: sportingbet-cwc-cert
+            name: sportingbet-cwc-cert-${{ env.ENV_PREFIX }}
             namespace: ${{ env.NAMESPACE }}
           spec:
-            secretName: sportingbet-cwc-tls
+            secretName: sportingbet-cwc-tls-${{ env.ENV_PREFIX }}
             dnsNames:
-            - cwc-staging-entain-organization.${{ env.DOMAIN }}
+            - cwc-${{ env.ENV_PREFIX }}-entain-organization.${{ env.DOMAIN }}
             issuerRef:
               name: letsencrypt-prod
               kind: ClusterIssuer
@@ -60,18 +71,18 @@ jobs:
           apiVersion: apps/v1
           kind: Deployment
           metadata:
-            name: sportingbet-cwc
+            name: sportingbet-cwc-${{ env.ENV_PREFIX }}
             namespace: ${{ env.NAMESPACE }}
           spec:
             progressDeadlineSeconds: 600
             replicas: 1
             selector:
               matchLabels:
-                app: ${{ env.NAMESPACE }}-sportingbet-cwc
+                app: ${{ env.NAMESPACE }}-sportingbet-cwc-${{ env.ENV_PREFIX }}
             template:
               metadata:
                 labels:
-                  app: ${{ env.NAMESPACE }}-sportingbet-cwc
+                  app: ${{ env.NAMESPACE }}-sportingbet-cwc-${{ env.ENV_PREFIX }}
               spec:
                 imagePullSecrets:
                   - name: dockerhub-secret
@@ -86,7 +97,7 @@ jobs:
                     secretName: machina-core-key
                     defaultMode: 420
                 containers:
-                - name: ${{ env.NAMESPACE }}-sportingbet-cwc
+                - name: ${{ env.NAMESPACE }}-sportingbet-cwc-${{ env.ENV_PREFIX }}
                   image: ${{ secrets.REGISTRY_URL }}/sportingbet-cwc:latest
                   volumeMounts:
                   - name: machina-core-keys-volume
@@ -121,11 +132,11 @@ jobs:
           apiVersion: v1
           kind: Service
           metadata:
-            name: ${{ env.NAMESPACE }}-sportingbet-cwc
+            name: ${{ env.NAMESPACE }}-sportingbet-cwc-${{ env.ENV_PREFIX }}
             namespace: ${{ env.NAMESPACE }}
           spec:
             selector:
-              app: ${{ env.NAMESPACE }}-sportingbet-cwc
+              app: ${{ env.NAMESPACE }}-sportingbet-cwc-${{ env.ENV_PREFIX }}
             ports:
             - port: 80
               targetPort: 3000
@@ -137,7 +148,7 @@ jobs:
           apiVersion: networking.k8s.io/v1
           kind: Ingress
           metadata:
-            name: ${{ env.NAMESPACE }}-ingress-sportingbet-cwc
+            name: ${{ env.NAMESPACE }}-ingress-sportingbet-cwc-${{ env.ENV_PREFIX }}
             namespace: ${{ env.NAMESPACE }}
             annotations:
               kubernetes.io/ingress.class: nginx
@@ -149,18 +160,18 @@ jobs:
               nginx.ingress.kubernetes.io/proxy-connect-timeout: "30"
           spec:
             rules:
-            - host: cwc-staging-entain-organization.${{ env.DOMAIN }}
+            - host: cwc-${{ env.ENV_PREFIX }}-entain-organization.${{ env.DOMAIN }}
               http:
                 paths:
                 - path: /
                   pathType: Prefix
                   backend:
                     service:
-                      name: ${{ env.NAMESPACE }}-sportingbet-cwc
+                      name: ${{ env.NAMESPACE }}-sportingbet-cwc-${{ env.ENV_PREFIX }}
                       port:
                         number: 80
             tls:
             - hosts:
-              - cwc-staging-entain-organization.${{ env.DOMAIN }}
-              secretName: sportingbet-cwc-tls
+              - cwc-${{ env.ENV_PREFIX }}-entain-organization.${{ env.DOMAIN }}
+              secretName: sportingbet-cwc-tls-${{ env.ENV_PREFIX }}
           EOF

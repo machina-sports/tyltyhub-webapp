@@ -3,6 +3,15 @@ name: Update Stage Deployment
 on:
   workflow_dispatch:
     inputs:
+      environment:
+        description: 'Target Environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - development
+          - production
       tag:
         description: 'Image tag to deploy (e.g. latest, develop, v1.0.0)'
         required: true
@@ -13,6 +22,7 @@ env:
   NAMESPACE: tenant-entain-organization
   AKS_CLUSTER_NAME: mks-community-cluster
   AKS_RESOURCE_GROUP: mks-community-group
+  ENV_PREFIX: ${{ github.event.inputs.environment }}
 
 jobs:
   update-image:
@@ -38,19 +48,19 @@ jobs:
       - name: Update Deployment Image
         run: |
           # Update the deployment image
-          kubectl set image deployment/sportingbet-cwc \
+          kubectl set image deployment/sportingbet-cwc-${{ env.ENV_PREFIX }} \
             ${{ env.NAMESPACE }}-sportingbet-cwc=${{ secrets.REGISTRY_URL }}/sportingbet-cwc:${{ github.event.inputs.tag }} \
             -n ${{ env.NAMESPACE }}
           
           # Wait for rollout with increased timeout
-          kubectl rollout status deployment/sportingbet-cwc -n ${{ env.NAMESPACE }} --timeout=300s
+          kubectl rollout status deployment/sportingbet-cwc-${{ env.ENV_PREFIX }} -n ${{ env.NAMESPACE }} --timeout=300s
           
           # If rollout fails, get debugging information
           if [ $? -ne 0 ]; then
             echo "Deployment failed. Gathering debug information..."
-            kubectl describe deployment sportingbet-cwc -n ${{ env.NAMESPACE }}
-            kubectl get pods -n ${{ env.NAMESPACE }} -l app=${{ env.NAMESPACE }}-sportingbet-cwc
-            kubectl describe pods -n ${{ env.NAMESPACE }} -l app=${{ env.NAMESPACE }}-sportingbet-cwc
+            kubectl describe deployment sportingbet-cwc-${{ env.ENV_PREFIX }} -n ${{ env.NAMESPACE }}
+            kubectl get pods -n ${{ env.NAMESPACE }} -l app=${{ env.NAMESPACE }}-sportingbet-cwc-${{ env.ENV_PREFIX }}
+            kubectl describe pods -n ${{ env.NAMESPACE }} -l app=${{ env.NAMESPACE }}-sportingbet-cwc-${{ env.ENV_PREFIX }}
             exit 1
           fi
 
@@ -61,8 +71,8 @@ jobs:
           SLACK_CHANNEL: your-slack-channel
           SLACK_USERNAME: GitHub Actions
           SLACK_COLOR: 'good'
-          SLACK_TITLE: 'Stage Deployment Update Successful'
-          SLACK_MESSAGE: 'Updated stage deployment to ${{ github.event.inputs.tag }} image successfully.'
+          SLACK_TITLE: '${{ github.event.inputs.environment }} Deployment Update Successful'
+          SLACK_MESSAGE: 'Updated ${{ github.event.inputs.environment }} deployment to ${{ github.event.inputs.tag }} image successfully.'
           SLACK_ICON: ':heavy_check_mark:'
         if: success()
 
@@ -73,7 +83,7 @@ jobs:
           SLACK_CHANNEL: your-slack-channel
           SLACK_USERNAME: GitHub Actions
           SLACK_COLOR: 'danger'
-          SLACK_TITLE: 'Stage Deployment Update Failed'
-          SLACK_MESSAGE: 'Failed to update stage deployment to ${{ github.event.inputs.tag }} image. Check the action logs for details.'
+          SLACK_TITLE: '${{ github.event.inputs.environment }} Deployment Update Failed'
+          SLACK_MESSAGE: 'Failed to update ${{ github.event.inputs.environment }} deployment to ${{ github.event.inputs.tag }} image. Check the action logs for details.'
           SLACK_ICON: ':x:'
         if: failure()
