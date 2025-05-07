@@ -1,0 +1,58 @@
+name: Update Stage Deployment Image
+
+on:
+  workflow_dispatch:
+
+env:
+  NAMESPACE: tenant-entain-organization
+  AKS_CLUSTER_NAME: mks-community-cluster
+  AKS_RESOURCE_GROUP: mks-community-group
+
+jobs:
+  update-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Get AKS Credentials
+        uses: azure/aks-set-context@v3
+        with:
+          cluster-name: ${{ env.AKS_CLUSTER_NAME }}
+          resource-group: ${{ env.AKS_RESOURCE_GROUP }}
+
+      - name: Update Deployment Image
+        run: |
+          kubectl set image deployment/sportingbet-cwc \
+            ${{ env.NAMESPACE }}-sportingbet-cwc=machinasports/machina-sportingbet-cwc:latest \
+            -n ${{ env.NAMESPACE }}
+
+      - name: Verify rollout
+        run: |
+          kubectl rollout status deployment/sportingbet-cwc -n ${{ env.NAMESPACE }}
+
+      - name: Notify Slack - Update Success
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: your-slack-channel
+          SLACK_USERNAME: GitHub Actions
+          SLACK_COLOR: 'good'
+          SLACK_TITLE: 'Stage Deployment Update Successful'
+          SLACK_MESSAGE: 'Updated stage deployment to latest image successfully.'
+          SLACK_ICON: ':heavy_check_mark:'
+        if: success()
+
+      - name: Notify Slack - Update Failed
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: your-slack-channel
+          SLACK_USERNAME: GitHub Actions
+          SLACK_COLOR: 'danger'
+          SLACK_TITLE: 'Stage Deployment Update Failed'
+          SLACK_MESSAGE: 'Failed to update stage deployment image.'
+          SLACK_ICON: ':x:'
+        if: failure()

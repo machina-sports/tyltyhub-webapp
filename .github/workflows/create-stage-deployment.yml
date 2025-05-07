@@ -51,7 +51,7 @@ jobs:
               spec:
                 containers:
                 - name: ${{ env.NAMESPACE }}-sportingbet-cwc
-                  image: machinasports/machina-sportsblog:latest
+                  image: machinasports/machina-sportingbet-cwc:latest
                   ports:
                   - containerPort: 3000
           EOF
