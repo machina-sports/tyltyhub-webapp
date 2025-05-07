@@ -1,15 +1,31 @@
-import { configureStore } from '@reduxjs/toolkit'
-import articlesReducer from './slices/articlesSlice'
+import {
+  Action,
+  configureStore,
+  ThunkAction
+} from "@reduxjs/toolkit"
 
-export const store = configureStore({
-  reducer: {
-    articles: articlesReducer,
-  },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: false,
-    }),
-})
+import DiscoverReducer from "@/providers/discover/reducer"
 
-export type RootState = ReturnType<typeof store.getState>
-export type AppDispatch = typeof store.dispatch 
+export function makeStore() {
+  return configureStore({
+    reducer: {
+      discover: DiscoverReducer.reducer,
+    },
+    middleware: (getDefaultMiddlewares) => getDefaultMiddlewares().concat()
+  })
+}
+
+const store = makeStore()
+
+export type AppState = ReturnType<typeof store.getState>
+
+export type AppDispatch = typeof store.dispatch
+
+export type AppThunk<ReturnType = void> = ThunkAction<
+  ReturnType,
+  AppState,
+  unknown,
+  Action<string>
+>
+
+export default store
