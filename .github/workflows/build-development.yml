@@ -1,4 +1,5 @@
 name: Build Development
+run-name: Build ${{ github.ref_name }}
 
 on:
   workflow_dispatch:
@@ -32,6 +33,10 @@ jobs:
         id: package_version
         run: echo "PACKAGE_VERSION=$(jq -r '.version' package.json)" >> $GITHUB_ENV
 
+      - name: Set branch name
+        id: branch_name
+        run: echo "BRANCH_NAME=${{ github.ref_name }}" >> $GITHUB_ENV
+
       - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:
@@ -45,30 +50,31 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ${{ secrets.REGISTRY_URL }}/sportingbet-cwc:${{ env.PACKAGE_VERSION }}
+            ${{ secrets.REGISTRY_URL }}/sportingbet-cwc:${{ env.PACKAGE_VERSION }}-${{ env.BRANCH_NAME }}
+            ${{ secrets.REGISTRY_URL }}/sportingbet-cwc:${{ env.BRANCH_NAME }}
             ${{ secrets.REGISTRY_URL }}/sportingbet-cwc:latest
 
-      # - name: Notify Slack - Build Success
-      #   uses: rtCamp/action-slack-notify@v2
-      #   env:
-      #     SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-      #     SLACK_CHANNEL: your-slack-channel
-      #     SLACK_USERNAME: GitHub Actions
-      #     SLACK_COLOR: 'good'
-      #     SLACK_TITLE: 'Build Successful'
-      #     SLACK_MESSAGE: 'Build of sportingbet-cwc:prod-${{ env.PACKAGE_VERSION }} finished successfully.'
-      #     SLACK_ICON: ':heavy_check_mark:'
-      #   if: success()
+      - name: Notify Slack - Build Success
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: your-slack-channel
+          SLACK_USERNAME: GitHub Actions
+          SLACK_COLOR: 'good'
+          SLACK_TITLE: 'Build Successful'
+          SLACK_MESSAGE: 'Build of sportingbet-cwc:${{ env.PACKAGE_VERSION }}-${{ env.BRANCH_NAME }} finished successfully.'
+          SLACK_ICON: ':heavy_check_mark:'
+        if: success()
   
-      # - name: Notify Slack - Build Failed
-      #   uses: rtCamp/action-slack-notify@v2
-      #   env:
-      #     SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-      #     SLACK_CHANNEL: your-slack-channel
-      #     SLACK_USERNAME: GitHub Actions
-      #     SLACK_COLOR: 'danger'
-      #     SLACK_TITLE: 'Build Failed'
-      #     SLACK_MESSAGE: 'Build of sportingbet-cwc:prod-${{ env.PACKAGE_VERSION }} finished with errors.'
-      #     SLACK_ICON: ':x:'
-      #   if: failure()
+      - name: Notify Slack - Build Failed
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: your-slack-channel
+          SLACK_USERNAME: GitHub Actions
+          SLACK_COLOR: 'danger'
+          SLACK_TITLE: 'Build Failed'
+          SLACK_MESSAGE: 'Build of sportingbet-cwc:${{ env.PACKAGE_VERSION }}-${{ env.BRANCH_NAME }} finished with errors.'
+          SLACK_ICON: ':x:'
+        if: failure()
       

@@ -2,6 +2,12 @@ name: Update Stage Deployment
 
 on:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Image tag to deploy (e.g. latest, develop, v1.0.0)'
+        required: true
+        type: string
+        default: 'latest'
 
 env:
   NAMESPACE: tenant-entain-organization
@@ -33,7 +39,7 @@ jobs:
         run: |
           # Update the deployment image
           kubectl set image deployment/sportingbet-cwc \
-            ${{ env.NAMESPACE }}-sportingbet-cwc=${{ secrets.REGISTRY_URL }}/sportingbet-cwc:latest \
+            ${{ env.NAMESPACE }}-sportingbet-cwc=${{ secrets.REGISTRY_URL }}/sportingbet-cwc:${{ github.event.inputs.tag }} \
             -n ${{ env.NAMESPACE }}
           
           # Wait for rollout with increased timeout
@@ -48,26 +54,26 @@ jobs:
             exit 1
           fi
 
-      # - name: Notify Slack - Update Success
-      #   uses: rtCamp/action-slack-notify@v2
-      #   env:
-      #     SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-      #     SLACK_CHANNEL: your-slack-channel
-      #     SLACK_USERNAME: GitHub Actions
-      #     SLACK_COLOR: 'good'
-      #     SLACK_TITLE: 'Stage Deployment Update Successful'
-      #     SLACK_MESSAGE: 'Updated stage deployment to latest image successfully.'
-      #     SLACK_ICON: ':heavy_check_mark:'
-      #   if: success()
+      - name: Notify Slack - Update Success
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: your-slack-channel
+          SLACK_USERNAME: GitHub Actions
+          SLACK_COLOR: 'good'
+          SLACK_TITLE: 'Stage Deployment Update Successful'
+          SLACK_MESSAGE: 'Updated stage deployment to ${{ github.event.inputs.tag }} image successfully.'
+          SLACK_ICON: ':heavy_check_mark:'
+        if: success()
 
-      # - name: Notify Slack - Update Failed
-      #   uses: rtCamp/action-slack-notify@v2
-      #   env:
-      #     SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-      #     SLACK_CHANNEL: your-slack-channel
-      #     SLACK_USERNAME: GitHub Actions
-      #     SLACK_COLOR: 'danger'
-      #     SLACK_TITLE: 'Stage Deployment Update Failed'
-      #     SLACK_MESSAGE: 'Failed to update stage deployment image. Check the action logs for details.'
-      #     SLACK_ICON: ':x:'
-      #   if: failure()
+      - name: Notify Slack - Update Failed
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: your-slack-channel
+          SLACK_USERNAME: GitHub Actions
+          SLACK_COLOR: 'danger'
+          SLACK_TITLE: 'Stage Deployment Update Failed'
+          SLACK_MESSAGE: 'Failed to update stage deployment to ${{ github.event.inputs.tag }} image. Check the action logs for details.'
+          SLACK_ICON: ':x:'
+        if: failure()
