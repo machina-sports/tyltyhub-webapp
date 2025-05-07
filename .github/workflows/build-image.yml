@@ -1,4 +1,4 @@
-name: Build Development
+name: Build Image
 run-name: Build ${{ github.ref_name }}
 
 on:
