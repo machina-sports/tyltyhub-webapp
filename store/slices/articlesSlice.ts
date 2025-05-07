@@ -50,12 +50,15 @@ export interface Article {
   [key: string]: any
 }
 
-interface ArticlesState {
+export interface ArticlesState {
   articles: Article[]
   currentArticle: Article | null
   loading: boolean
   error: string | null
   relatedArticles?: Article[] // For storing related articles
+  page: number
+  hasMore: boolean
+  totalDocuments: number
 }
 
 const initialState: ArticlesState = {
@@ -63,14 +66,32 @@ const initialState: ArticlesState = {
   currentArticle: null,
   loading: false,
   error: null,
-  relatedArticles: []
+  relatedArticles: [],
+  page: 1,
+  hasMore: true,
+  totalDocuments: 0
+}
+
+export interface FetchArticlesParams {
+  page?: number
+  pageSize?: number
+  append?: boolean
+  language?: string
+  filters?: Record<string, any>
 }
 
 export const fetchArticles = createAsyncThunk(
   'articles/fetchArticles',
-  async (_, { rejectWithValue }) => {
+  async (params: FetchArticlesParams = {}, { rejectWithValue }) => {
     try {
-      const response = await articlesService.getArticles()
+      const { page = 1, pageSize = 10, language = 'br', filters = {} } = params
+      
+      const response = await articlesService.getArticles({
+        page,
+        pageSize,
+        language,
+        filters
+      })
       
       if (response.error) {
         console.error('Error fetching articles:', response);
@@ -78,7 +99,12 @@ export const fetchArticles = createAsyncThunk(
       }
       
       const articlesData = Array.isArray(response.data) ? response.data : [];
-      return articlesData;
+      return {
+        articles: articlesData,
+        page,
+        append: params.append || false,
+        totalDocuments: response.total_documents || 0
+      };
     } catch (error) {
       console.error('Error in fetchArticles thunk:', error);
       return rejectWithValue('An error occurred while fetching articles')
@@ -110,18 +136,30 @@ export const fetchRelatedArticles = createAsyncThunk(
   'articles/fetchRelatedArticles',
   async (params: { eventType?: string, competition?: string, language?: string }, { rejectWithValue }) => {
     try {
-      // This would be a call to a service method that gets related articles
-      // For now we'll assume it uses the same getArticles method
-      const response = await articlesService.getArticles()
+      const filters: Record<string, any> = {};
+      
+      if (params.eventType) {
+        filters['metadata.event_type'] = params.eventType;
+      }
+      
+      if (params.competition) {
+        filters['metadata.competition'] = params.competition;
+      }
+      
+      // Call getArticles with our params
+      const response = await articlesService.getArticles({
+        page: 1,
+        pageSize: 3,
+        language: params.language || 'br',
+        filters
+      })
       
       if (response.error) {
         console.error('Error fetching related articles:', response);
         return rejectWithValue('Failed to fetch related articles')
       }
       
-      // Filter here by event type, competition, or language if needed
-      const articlesData = Array.isArray(response.data) ? response.data : [];
-      return articlesData.slice(0, 3); // Return just the first 3 for related articles
+      return response.data || [];
     } catch (error) {
       console.error('Error in fetchRelatedArticles thunk:', error);
       return rejectWithValue('An error occurred while fetching related articles')
@@ -142,6 +180,11 @@ const articlesSlice = createSlice({
       if (state.currentArticle && state.currentArticle._id === articleId) {
         state.currentArticle.views = (state.currentArticle.views || 0) + 1;
       }
+    },
+    resetArticles: (state) => {
+      state.articles = [];
+      state.page = 1;
+      state.hasMore = true;
     }
   },
   extraReducers: (builder) => {
@@ -151,14 +194,29 @@ const articlesSlice = createSlice({
         state.loading = true
         state.error = null
       })
-      .addCase(fetchArticles.fulfilled, (state, action: PayloadAction<Article[]>) => {
+      .addCase(fetchArticles.fulfilled, (state, action: PayloadAction<{
+        articles: Article[],
+        page: number,
+        append: boolean,
+        totalDocuments: number
+      }>) => {
         state.loading = false
-        state.articles = action.payload || []
+        
+        // If append is true, add to existing articles, otherwise replace
+        if (action.payload.append) {
+          state.articles = [...state.articles, ...action.payload.articles]
+        } else {
+          state.articles = action.payload.articles
+        }
+        
+        state.page = action.payload.page
+        state.totalDocuments = action.payload.totalDocuments
+        state.hasMore = state.articles.length < state.totalDocuments
       })
       .addCase(fetchArticles.rejected, (state, action) => {
         state.loading = false
         state.error = action.payload as string
-        state.articles = []
+        // Don't clear articles on error to maintain previous state
       })
       // Handle fetchArticleById
       .addCase(fetchArticleById.pending, (state) => {
@@ -208,5 +266,5 @@ const articlesSlice = createSlice({
   }
 })
 
-export const { clearCurrentArticle, incrementViews } = articlesSlice.actions
+export const { clearCurrentArticle, incrementViews, resetArticles } = articlesSlice.actions
 export default articlesSlice.reducer 
