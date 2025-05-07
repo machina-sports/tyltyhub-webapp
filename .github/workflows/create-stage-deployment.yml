@@ -73,6 +73,13 @@ jobs:
                 labels:
                   app: ${{ env.NAMESPACE }}-sportingbet-cwc
               spec:
+                imagePullSecrets:
+                  - name: dockerhub-secret
+                schedulerName: default-scheduler
+                tolerations:
+                  - key: user
+                    operator: Exists
+                    effect: NoSchedule
                 volumes:
                 - name: machina-core-keys-volume
                   secret:
