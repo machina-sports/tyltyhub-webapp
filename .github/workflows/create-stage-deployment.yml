@@ -43,10 +43,10 @@ jobs:
           apiVersion: cert-manager.io/v1
           kind: Certificate
           metadata:
-            name: ${{ env.NAMESPACE }}-cert
+            name: sportingbet-cwc-cert
             namespace: ${{ env.NAMESPACE }}
           spec:
-            secretName: ${{ env.NAMESPACE }}-tls
+            secretName: sportingbet-cwc-tls
             dnsNames:
             - cwc-staging-entain-organization.${{ env.DOMAIN }}
             issuerRef:
@@ -162,5 +162,5 @@ jobs:
             tls:
             - hosts:
               - cwc-staging-entain-organization.${{ env.DOMAIN }}
-              secretName: ${{ env.NAMESPACE }}-tls
+              secretName: sportingbet-cwc-tls
           EOF
