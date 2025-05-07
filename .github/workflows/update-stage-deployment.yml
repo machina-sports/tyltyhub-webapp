@@ -33,7 +33,7 @@ jobs:
         run: |
           # Update the deployment image
           kubectl set image deployment/sportingbet-cwc \
-            ${{ env.NAMESPACE }}-sportingbet-cwc=${{ secrets.REGISTRY_URL }}/machina-sportingbet-cwc:latest \
+            ${{ env.NAMESPACE }}-sportingbet-cwc=${{ secrets.REGISTRY_URL }}/sportingbet-cwc:latest \
             -n ${{ env.NAMESPACE }}
           
           # Wait for rollout with increased timeout

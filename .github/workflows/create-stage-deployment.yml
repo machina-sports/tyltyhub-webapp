@@ -85,7 +85,7 @@ jobs:
                 - name: regcred
                 containers:
                 - name: ${{ env.NAMESPACE }}-sportingbet-cwc
-                  image: ${{ secrets.REGISTRY_URL }}/machina-sportingbet-cwc:latest
+                  image: ${{ secrets.REGISTRY_URL }}/sportingbet-cwc:latest
                   ports:
                   - containerPort: 3000
                   readinessProbe:
