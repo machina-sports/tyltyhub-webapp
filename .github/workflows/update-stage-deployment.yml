@@ -1,4 +1,4 @@
-name: Update Stage Deployment Image
+name: Update Stage Deployment
 
 on:
   workflow_dispatch:

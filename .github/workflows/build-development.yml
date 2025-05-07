@@ -1,4 +1,4 @@
-name: Machina sportingbet-cwc Build
+name: Build Development
 
 on:
   workflow_dispatch:
