@@ -1,11 +1,11 @@
 "use client"
 import { useState, useEffect, useRef, useMemo, useCallback } from "react"
 import { Newspaper, Users, Search, Table2 } from "lucide-react"
-import { 
-  Tabs, 
-  TabsContent, 
-  TabsList, 
-  TabsTrigger 
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger
 } from "@/components/ui/tabs"
 import { TeamFilter } from "@/components/discover/sport-filter"
 import { ArticleGrid } from "@/components/discover/article-grid"
@@ -13,9 +13,10 @@ import { ArticleSkeleton } from "@/components/discover/article-skeleton"
 import { FifaCwcSchedule } from "@/components/discover/fifa-cwc-schedule"
 import { useGlobalState } from "@/store/useState"
 import { useAppDispatch } from "@/store/dispatch"
-import { Article, fetchArticles } from "@/store/slices/articlesSlice"
 import { Input } from "@/components/ui/input"
 import teamsData from "@/data/teams.json"
+
+import * as discoverReducer from "@/providers/discover/reducer"
 
 interface Team {
   id: string
@@ -31,19 +32,21 @@ export default function DiscoverPage() {
   const [isScrolled, setIsScrolled] = useState(false)
   const headerRef = useRef<HTMLDivElement>(null)
   const loadMoreRef = useRef<HTMLDivElement>(null)
-  const { articles } = useGlobalState()
   const dispatch = useAppDispatch()
-  const pageSize = 6 // Number of articles to load at once
-  
+
+  const discoveryState = useGlobalState((state: any) => state.discover)
+
+  const { articles } = discoveryState
+
   const teams = useMemo(() => teamsData.teams || [], []);
-  
+
   const handleScroll = useCallback(() => {
     if (headerRef.current) {
       const scrollPosition = window.scrollY
       setIsScrolled(scrollPosition > 10)
     }
   }, []);
-  
+
   useEffect(() => {
     window.addEventListener('scroll', handleScroll)
     return () => {
@@ -52,48 +55,46 @@ export default function DiscoverPage() {
   }, [handleScroll])
 
   useEffect(() => {
-    // Initial data load
-    dispatch(fetchArticles({ page: 1, pageSize }))
-  }, [dispatch])
-
-  useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         const target = entries[0]
-        if (target.isIntersecting && !articles.loading && articles.hasMore) {
-          const nextPage = articles.page + 1
-          dispatch(fetchArticles({ 
-            page: nextPage, 
-            pageSize,
-            append: true 
-          }))
+        if (target.isIntersecting && articles.status !== "loading" && articles.pagination.hasMore) {
+          const nextPage = articles.pagination.page + 1
+          dispatch(discoverReducer.setPagination({ ...articles.pagination, page: nextPage }))
         }
       },
       { threshold: 0.1 }
     )
 
-    if (loadMoreRef.current) {
-      observer.observe(loadMoreRef.current)
+    const currentRef = loadMoreRef.current
+    if (currentRef) {
+      observer.observe(currentRef)
     }
 
     return () => {
-      if (loadMoreRef.current) {
-        observer.unobserve(loadMoreRef.current)
+      if (currentRef) {
+        observer.unobserve(currentRef)
       }
     }
-  }, [articles.loading, articles.hasMore, articles.page, dispatch])
+  }, [
+    articles.status,
+    articles.pagination,
+    articles.pagination.hasMore,
+    articles.pagination.page,
+    dispatch
+  ])
 
   // Filter articles based on selected team and search query
-  const filteredArticles = articles.articles.filter((article: Article) => {
+  const filteredArticles = articles.data.filter((article: any) => {
     // Team filter
     const teamFilter = selectedTeam === "all-teams" || (() => {
       const teamName = teamsData.teams.find((t: Team) => t.id === selectedTeam)?.name || ""
-      return (article.title?.includes(teamName) || 
-              article.description?.includes(teamName))
+      return (article.title?.includes(teamName) ||
+        article.description?.includes(teamName))
     })()
 
     // Search filter
-    const searchFilter = !searchQuery || 
+    const searchFilter = !searchQuery ||
       (article.title?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
       (article.description?.toLowerCase() || "").includes(searchQuery.toLowerCase())
 
@@ -103,10 +104,10 @@ export default function DiscoverPage() {
   // Function to chunk the articles into sections
   const articleSections = useMemo(() => {
     if (!filteredArticles.length) return [];
-    
+
     const result = [];
     let i = 0;
-    
+
     while (i < filteredArticles.length) {
       if (i < filteredArticles.length) {
         result.push({
@@ -115,7 +116,7 @@ export default function DiscoverPage() {
         });
         i++;
       }
-      
+
       const threeCardChunk = filteredArticles.slice(i, i + 3);
       if (threeCardChunk.length) {
         result.push({
@@ -125,7 +126,7 @@ export default function DiscoverPage() {
         i += threeCardChunk.length;
       }
     }
-    
+
     return result;
   }, [filteredArticles]);
 
@@ -140,11 +141,10 @@ export default function DiscoverPage() {
   return (
     <div className="mobile-container pb-4 space-y-6 max-w-5xl mx-auto">
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full relative">
-        <div 
+        <div
           ref={headerRef}
-          className={`sticky z-20 bg-background transition-shadow duration-200 ${
-            isScrolled ? 'shadow-md shadow-black/5' : 'shadow-none'
-          } top-[64px] md:top-0`}
+          className={`sticky z-20 bg-background transition-shadow duration-200 ${isScrolled ? 'shadow-md shadow-black/5' : 'shadow-none'
+            } top-[64px] md:top-0`}
           style={{ position: 'sticky' }}
         >
           <div className="border-b pb-2 pt-2">
@@ -159,12 +159,12 @@ export default function DiscoverPage() {
               </TabsTrigger>
             </TabsList>
           </div>
-          
+
           {activeTab === "news" && (
             <div className="py-2 px-4 sm:px-0 bg-background">
               <div className="flex justify-between items-center gap-4">
-                <TeamFilter 
-                  value={selectedTeam} 
+                <TeamFilter
+                  value={selectedTeam}
                   onChange={handleTeamChange}
                 />
                 <div className="relative w-[220px]">
@@ -186,9 +186,9 @@ export default function DiscoverPage() {
 
         <div className="h-8 md:h-4"></div>
 
-        <TabsContent value="news" className="space-y-6 pt-6 md:pt-4">          
+        <TabsContent value="news" className="space-y-6 pt-6 md:pt-4">
           <div className="space-y-8">
-            {articles.loading && !articles.articles.length ? (
+            {articles.status === "loading" && !articles.data.length ? (
               <>
                 <ArticleSkeleton layout="fullWidth" count={1} />
                 <ArticleSkeleton layout="threeCards" count={3} />
@@ -198,13 +198,13 @@ export default function DiscoverPage() {
                 {articleSections.map((section, index) => (
                   <div key={index} className="space-y-4">
                     {section.type === 'fullWidth' ? (
-                      <ArticleGrid 
-                        articles={section.articles} 
+                      <ArticleGrid
+                        articles={section.articles}
                         layout="fullWidth"
                       />
                     ) : (
-                      <ArticleGrid 
-                        articles={section.articles} 
+                      <ArticleGrid
+                        articles={section.articles}
                         layout="threeCards"
                       />
                     )}
@@ -212,13 +212,13 @@ export default function DiscoverPage() {
                 ))}
                 {/* Load more indicator */}
                 <div ref={loadMoreRef} className="py-4 flex justify-center">
-                  {articles.loading && articles.articles.length > 0 && (
-                    <ArticleSkeleton 
-                      layout="threeCards" 
-                      count={3} 
+                  {articles.status === "loading" && articles.data.length > 0 && (
+                    <ArticleSkeleton
+                      layout="threeCards"
+                      count={3}
                     />
                   )}
-                  {!articles.loading && !articles.hasMore && articles.articles.length > 0 && (
+                  {articles.status !== "loading" && !articles.hasMore && articles.data.length > 0 && (
                     <p className="text-sm text-muted-foreground py-2">
                       Não há mais artigos para carregar
                     </p>
@@ -227,7 +227,7 @@ export default function DiscoverPage() {
               </>
             ) : (
               <div className="py-8 text-center text-muted-foreground">
-                {articles.loading ? 'Carregando artigos...' : 'Nenhum artigo encontrado'}
+                {articles.status === "loading" ? 'Carregando artigos...' : 'Nenhum artigo encontrado'}
               </div>
             )}
           </div>
