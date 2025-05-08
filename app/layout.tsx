@@ -4,7 +4,8 @@ import type { Metadata } from 'next'
 import { Sidebar } from '@/components/sidebar'
 import { Toaster } from '@/components/ui/toaster'
 import { ThemeProvider } from "@/components/theme-provider"
-import DataProvider from '@/providers/DataProvider'
+import DiscoveryProvider from '@/providers/discover/provider'
+import { MainProvider } from '@/components/use-provider'
 
 export const metadata: Metadata = {
   title: 'Sportingbet AI',
@@ -20,21 +21,23 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <body className="antialiased overflow-hidden">
-        <DataProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem={false}
-        >
-          <div className="flex h-screen flex-col md:flex-row">
-            <Sidebar />
-            <main className="flex-1 overflow-auto pb-safe">
-              {children}
-            </main>
-          </div>
-          <Toaster />
-        </ThemeProvider>
-        </DataProvider>
+        <MainProvider>
+          <DiscoveryProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="light"
+              enableSystem={false}
+            >
+              <div className="flex h-screen flex-col md:flex-row">
+                <Sidebar />
+                <main className="flex-1 overflow-auto pb-safe">
+                  {children}
+                </main>
+              </div>
+              <Toaster />
+            </ThemeProvider>
+          </DiscoveryProvider>
+        </MainProvider>
       </body>
     </html>
   )
