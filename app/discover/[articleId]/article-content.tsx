@@ -13,7 +13,7 @@ import FollowUpQuestionForm from "@/components/follow-up-question";
 import ReactMarkdown from 'react-markdown';
 import { useGlobalState } from "@/store/useState";
 import { useAppDispatch } from "@/store/dispatch";
-import { fetchArticleById, fetchRelatedArticles, incrementViews } from "@/store/slices/articlesSlice";
+import { doFetchArticle, doFetchRelatedArticles, doIncrementArticleViews } from "@/providers/article/actions";
 import { Clock, Eye } from "lucide-react";
 import dynamic from "next/dynamic";
 
@@ -97,7 +97,7 @@ interface ArticleContentProps {
 
 export default function ArticleContent({ articleParam }: ArticleContentProps) {
   const dispatch = useAppDispatch();
-  const { articles } = useGlobalState();
+  const articles = useGlobalState((state: any) => state.article);
   const article = articles.currentArticle;
   const [views, setViews] = useState<number>(0);
   const hasIncrementedViews = useRef(false);
@@ -107,7 +107,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
   useEffect(() => {
     if (articleParam && !hasLoadedArticle.current) {
       setIsLoading(true);
-      dispatch(fetchArticleById(articleParam))
+      dispatch(doFetchArticle(articleParam))
         .then(() => {
           setIsLoading(false);
         })
@@ -121,21 +121,15 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
   useEffect(() => {
     if (article && !hasIncrementedViews.current) {
       const articleId = article._id || article.id;
-      
       setViews(article.views || 0);
-      
       if (article.metadata) {
-        dispatch(fetchRelatedArticles({
+        dispatch(doFetchRelatedArticles({
           eventType: article.metadata.event_type,
           competition: article.metadata.competition,
           language: article.metadata.language
         }));
       }
-      
-      if (articleId) {
-        dispatch(incrementViews(articleId));
-        hasIncrementedViews.current = true;
-      }
+      hasIncrementedViews.current = true;
     }
   }, [article, dispatch]);
 
