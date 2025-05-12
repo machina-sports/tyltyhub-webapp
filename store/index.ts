@@ -5,12 +5,14 @@ import {
 } from "@reduxjs/toolkit"
 
 import DiscoverReducer from "@/providers/discover/reducer"
+import ArticleReducer from "@/providers/article/reducer"
 
 import ThreadsReducer from "@/providers/threads/reducer"
 
 export function makeStore() {
   return configureStore({
     reducer: {
+      article: ArticleReducer.reducer,
       discover: DiscoverReducer.reducer,
       threads: ThreadsReducer.reducer,
     },
