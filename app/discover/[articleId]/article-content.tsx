@@ -13,7 +13,7 @@ import FollowUpQuestionForm from "@/components/follow-up-question";
 import ReactMarkdown from 'react-markdown';
 import { useGlobalState } from "@/store/useState";
 import { useAppDispatch } from "@/store/dispatch";
-import { doFetchArticle, doFetchRelatedArticles, doIncrementArticleViews } from "@/providers/article/actions";
+import { doFetchArticle, doFetchRelatedArticles } from "@/providers/article/actions";
 import { Clock, Eye } from "lucide-react";
 import dynamic from "next/dynamic";
 

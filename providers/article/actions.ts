@@ -31,4 +31,3 @@ export const incrementArticleViews = async (id: string, thunkAPI: any) => {
 
 export const doFetchArticle = createAsyncThunk('article/fetchArticle', fetchArticle)
 export const doFetchRelatedArticles = createAsyncThunk('article/fetchRelatedArticles', fetchRelatedArticles)
-export const doIncrementArticleViews = createAsyncThunk('article/incrementViews', incrementArticleViews) 

@@ -32,9 +32,6 @@ const ArticleProvider = ({
         const { event_type, competition, language } = article.metadata
         dispatch(actions.doFetchRelatedArticles({ eventType: event_type, competition, language }))
       }
-      if (article._id) {
-        dispatch(actions.doIncrementArticleViews(article._id))
-      }
     }
   }, [dispatch, articleState.currentArticle])
 
