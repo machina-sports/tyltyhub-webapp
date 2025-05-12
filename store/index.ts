@@ -5,11 +5,12 @@ import {
 } from "@reduxjs/toolkit"
 
 import DiscoverReducer from "@/providers/discover/reducer"
-
+import ArticleReducer from "@/providers/article/reducer"
 export function makeStore() {
   return configureStore({
     reducer: {
       discover: DiscoverReducer.reducer,
+      article: ArticleReducer.reducer
     },
     middleware: (getDefaultMiddlewares) => getDefaultMiddlewares().concat()
   })

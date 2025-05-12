@@ -8,8 +8,7 @@ import Link from "next/link"
 import { formatDistanceToNow } from "date-fns"
 import { ptBR } from 'date-fns/locale'
 import ReactMarkdown from 'react-markdown'
-import { Article } from "@/store/slices/articlesSlice"
-
+import { Article } from "@/providers/article/reducer"
 interface ArticleGridProps {
   articles: Article[]
   layout?: 'fullWidth' | 'threeCards'

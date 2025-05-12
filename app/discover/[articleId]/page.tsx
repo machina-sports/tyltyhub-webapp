@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import ArticleProvider from "@/providers/article/provider";
 import ArticleContent from "./article-content";
 
 export async function generateMetadata({ params }: { params: { articleId: string } }): Promise<Metadata> {
@@ -106,5 +107,9 @@ interface ArticlePageProps {
 }
 
 export default function ArticlePage({ params }: ArticlePageProps) {
-  return <ArticleContent articleParam={params.articleId} />;
+  return (
+    <ArticleProvider articleId={params.articleId}>
+      <ArticleContent articleParam={params.articleId} />
+    </ArticleProvider>
+  );
 }
