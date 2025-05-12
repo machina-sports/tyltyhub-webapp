@@ -1,4 +1,4 @@
-name: Sportingbet CWC Pull Request
+name: Create Pull Request
 
 on:
   pull_request:
