@@ -117,13 +117,6 @@ const ArticleReducer = createSlice({
       .addCase(actions.doFetchRelatedArticles.rejected, (state) => {
         state.relatedArticles = []
       })
-
-      // Handle incrementArticleViews
-      .addCase(actions.doIncrementArticleViews.fulfilled, (state, action: PayloadAction<string>) => {
-        if (state.currentArticle && (state.currentArticle._id === action.payload || state.currentArticle.id === action.payload)) {
-          state.currentArticle.views = (state.currentArticle.views || 0) + 1
-        }
-      })
   }
 })
 

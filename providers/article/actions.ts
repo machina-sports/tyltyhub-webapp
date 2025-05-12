@@ -20,15 +20,5 @@ export const fetchRelatedArticles = async (params: { eventType?: string, competi
   }
 }
 
-export const incrementArticleViews = async (id: string, thunkAPI: any) => {
-  try {
-    const response = await ArticleService.incrementViews(id)
-    return response
-  } catch (error: any) {
-    return thunkAPI.rejectWithValue({ error: error?.error || error?.message || error })
-  }
-}
-
 export const doFetchArticle = createAsyncThunk('article/fetchArticle', fetchArticle)
 export const doFetchRelatedArticles = createAsyncThunk('article/fetchRelatedArticles', fetchRelatedArticles)
-export const doIncrementArticleViews = createAsyncThunk('article/incrementViews', incrementArticleViews) 
