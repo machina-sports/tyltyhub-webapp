@@ -20,5 +20,27 @@ export const fetchRelatedArticles = async (params: { eventType?: string, competi
   }
 }
 
+export const fetchArticles = async (
+  params: { page: number; pageSize: number; language: string; filters?: any; search?: string },
+  thunkAPI: any
+) => {
+  try {
+    const response = await ArticleService.searchArticles({
+      page: params.page,
+      pageSize: params.pageSize,
+      language: params.language,
+      filters: params.filters || {},
+      search: params.search || ""
+    });
+    if (response.error) {
+      return thunkAPI.rejectWithValue("Error fetching articles");
+    }
+    return response;
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error.message);
+  }
+};
+
 export const doFetchArticle = createAsyncThunk('article/fetchArticle', fetchArticle)
 export const doFetchRelatedArticles = createAsyncThunk('article/fetchRelatedArticles', fetchRelatedArticles)
+export const doSearchArticles = createAsyncThunk("article/searchArticles", fetchArticles)
