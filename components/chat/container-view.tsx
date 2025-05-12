@@ -1,0 +1,60 @@
+"use client"
+
+import { useGlobalState } from "@/store/useState"
+
+import { ContainerChat } from "./container-chat"
+
+import { actionRetrieve, silentRetrieve } from "@/providers/threads/actions"
+
+import { clear } from "@/providers/threads/reducer"
+
+import { useAppDispatch } from "@/store/dispatch"
+
+import { useEffect } from "react"
+
+// import NavbarHeader from "@/components/navbar-header"
+
+export default function ContainerView({ threadId }: { threadId: string }) {
+
+  const state = useGlobalState((state: any) => state.threads)
+
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    if (threadId) {
+      dispatch(actionRetrieve({ thread_id: threadId }))
+    }
+
+    return () => {
+      dispatch(clear())
+    }
+  }, [threadId])
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      if (state.item.data?.value?.status === "waiting" || state.item.data?.value?.status === "processing") {
+        try {
+          dispatch(silentRetrieve({ thread_id: threadId }))
+        } catch (error) {
+          console.error('Error fetching thread updates:', error)
+        }
+      }
+    }, 500)
+
+    if (state.item.data?.value?.status === "idle") {
+      clearInterval(interval)
+    }
+
+    return () => clearInterval(interval)
+
+  }, [threadId, state.item.data?.value?.status])
+
+  return (
+    <div className="mobile-container md:pt-4 pb-4 space-y-6 md:max-w-[1200px] mx-auto">
+      <div className="flex flex-col h-[calc(100vh-13rem)] bg-background md:pt-0">
+        <ContainerChat />
+      </div>
+    </div>
+  )
+}
+

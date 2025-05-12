@@ -6,10 +6,13 @@ import {
 
 import DiscoverReducer from "@/providers/discover/reducer"
 
+import ThreadsReducer from "@/providers/threads/reducer"
+
 export function makeStore() {
   return configureStore({
     reducer: {
       discover: DiscoverReducer.reducer,
+      threads: ThreadsReducer.reducer,
     },
     middleware: (getDefaultMiddlewares) => getDefaultMiddlewares().concat()
   })
