@@ -49,7 +49,7 @@ jobs:
         run: |
           # Update the deployment image
           kubectl set image deployment/sportingbet-cwc-${{ env.ENV_PREFIX }} \
-            sportingbet-cwc-${{ env.ENV_PREFIX }}=${{ secrets.REGISTRY_URL }}/sportingbet-cwc:${{ github.event.inputs.tag }} \
+            ${{ env.NAMESPACE }}-sportingbet-cwc-${{ env.ENV_PREFIX }}=${{ secrets.REGISTRY_URL }}/sportingbet-cwc:${{ github.event.inputs.tag }} \
             -n ${{ env.NAMESPACE }}
           
           # Wait for rollout with increased timeout
@@ -59,8 +59,8 @@ jobs:
           if [ $? -ne 0 ]; then
             echo "Deployment failed. Gathering debug information..."
             kubectl describe deployment sportingbet-cwc-${{ env.ENV_PREFIX }} -n ${{ env.NAMESPACE }}
-            kubectl get pods -n ${{ env.NAMESPACE }} -l app=sportingbet-cwc-${{ env.ENV_PREFIX }}
-            kubectl describe pods -n ${{ env.NAMESPACE }} -l app=sportingbet-cwc-${{ env.ENV_PREFIX }}
+            kubectl get pods -n ${{ env.NAMESPACE }} -l app=${{ env.NAMESPACE }}-sportingbet-cwc-${{ env.ENV_PREFIX }}
+            kubectl describe pods -n ${{ env.NAMESPACE }} -l app=${{ env.NAMESPACE }}-sportingbet-cwc-${{ env.ENV_PREFIX }}
             exit 1
           fi
 
