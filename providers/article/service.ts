@@ -20,10 +20,6 @@ class ArticleService extends ClientBaseService {
 
     return this.get(`${this.prefix}/article/related?${queryParams.toString()}`, {})
   }
-
-  async incrementViews(id: string) {
-    return this.post({}, `${this.prefix}/article/views?id=${encodeURIComponent(id)}`, {})
-  }
 }
 
 const articleService = new ArticleService()

@@ -9,8 +9,8 @@ import ArticleReducer from "@/providers/article/reducer"
 export function makeStore() {
   return configureStore({
     reducer: {
-      discover: DiscoverReducer.reducer,
-      article: ArticleReducer.reducer
+      article: ArticleReducer.reducer,
+      discover: DiscoverReducer.reducer
     },
     middleware: (getDefaultMiddlewares) => getDefaultMiddlewares().concat()
   })
