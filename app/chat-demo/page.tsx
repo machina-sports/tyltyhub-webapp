@@ -5,7 +5,7 @@ import { Search, TrendingUp, Trophy, Calendar, Zap, Users, Star, Globe, Target, 
 import { soccerBall } from '@lucide/lab'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { ChatMessage } from '@/components/chat-message'
+import { ChatMessage } from '@/components/chat-demo'
 import { cn } from '@/lib/utils'
 import { useChatScroll } from '@/hooks/use-chat-scroll'
 import { useChatState } from '@/hooks/use-chat-state'

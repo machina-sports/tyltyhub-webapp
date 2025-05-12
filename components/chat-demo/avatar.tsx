@@ -11,19 +11,12 @@ export function ChatAvatar({ role }: ChatAvatarProps) {
   return (
     <div className={cn(
       "flex items-center justify-center w-10 h-10 rounded-full",
-      role === 'assistant'
-        ? "bg-primary/10 text-primary"
+      role === 'assistant' 
+        ? "bg-primary/10 text-primary" 
         : "bg-blue-500/10 text-blue-500"
     )}>
       {role === 'assistant' ? (
         <Bot className="w-5 h-5" />
-        // <Image 
-        //   src="/sb-logo-novo.jpg"
-        //   alt="Assistant Logo"
-        //   width={40}
-        //   height={40}
-        //   className="object-cover rounded-full"
-        // />
       ) : (
         <User className="w-5 h-5" />
       )}
