@@ -18,7 +18,7 @@ import { Clock, Eye } from "lucide-react";
 import dynamic from "next/dynamic";
 
 // Dynamically import the WidgetEmbed component to improve initial load time
-const WidgetEmbed = dynamic(() => import("@/components/article/widget-embed"), {
+const WidgetEmbed = dynamic(() => import("../../../components/article/widget-embed"), {
   loading: () => <div className="h-60 w-full bg-muted/30 rounded-md animate-pulse"></div>,
   ssr: false // Disable server-side rendering for this component
 });
