@@ -6,7 +6,7 @@ import { ptBR } from 'date-fns/locale'
 import Image from "next/image"
 import Link from "next/link"
 import { useGlobalState } from "@/store/useState"
-import { Article } from "@/store/slices/articlesSlice"
+import { Article } from "@/providers/article/reducer"
 
 interface RelatedArticlesProps {
   currentArticleId: string
@@ -28,10 +28,10 @@ const getImageUrl = (article: any): string => {
 };
 
 export function RelatedArticles({ currentArticleId }: RelatedArticlesProps) {
-  const { articles } = useGlobalState();
+  const articles = useGlobalState((state: any) => state.article);
   
   // Filter out the current article and limit to 4 related articles
-  const relatedArticles = articles.articles
+  const relatedArticles = articles.relatedArticles
     ?.filter((article: Article) => {
       const id = article._id || article.id;
       return id !== currentArticleId;
