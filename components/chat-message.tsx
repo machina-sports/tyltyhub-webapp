@@ -7,6 +7,7 @@ import { ChatBubble } from "./chat/bubble"
 import { MarkdownChat } from "./markdown-content"
 
 import React, { useMemo } from "react"
+import Link from "next/link"
 
 
 interface ChatMessageProps {
@@ -25,7 +26,7 @@ WidgetEmbed.displayName = 'WidgetEmbed'
 
 export function ChatMessage({ role, content, date, isTyping, onNewMessage }: ChatMessageProps) {
 
-  const currentMessage = content?.["speech_to_avatar"] || (typeof content === 'string' ? content : JSON.stringify(content))
+  const currentMessage = content?.["question_answer"] || (typeof content === 'string' ? content : JSON.stringify(content))
 
   const relatedQuestions = content?.["related_questions"] || []
 
@@ -77,9 +78,9 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
             ))}
           </div>
         </div>
-      )}
+      )} */}
 
-      {!isRelatedBettingsEnabled && relatedQuestions.length > 0 && (
+      {relatedQuestions.length > 0 && (
         <div className="mt-4 pl-14">
           <div className="mt-2 space-y-2 text-sm text-muted-foreground">
             {relatedQuestions.slice(0, 2).map((question: any, index: number) => (
@@ -92,7 +93,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
             ))}
           </div>
         </div>
-      )} */}
+      )}
 
       {/* <RelatedArticles currentArticle="" /> */}
       <div className="h-8 md:hidden"></div> {/* Adjust height as needed */}
