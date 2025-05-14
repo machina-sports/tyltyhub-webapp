@@ -13,23 +13,6 @@ const DiscoverProvider = ({
 }: {
   children: React.ReactNode
 }) => {
-  const dispatch = useAppDispatch()
-  const discoverState = useGlobalState((state: any) => state.discover)
-
-  useEffect(() => {
-    dispatch(searchArticles({
-      filters: {
-        name: "content-article",
-        "metadata.language": "br"
-      },
-      pagination: {
-        page: 1,
-        page_size: 10
-      },
-      sorters: ["_id", -1]
-    }))
-  }, [dispatch])
-
   return children
 }
 

@@ -45,12 +45,7 @@ const buildSearchFilters = (
   if (searchQuery) {
     filters = {
       ...filters,
-      $or: [
-        { "value.title": { $regex: searchQuery, $options: "i" } },
-        { "value.subtitle": { $regex: searchQuery, $options: "i" } },
-        { "value.section_1_content": { $regex: searchQuery, $options: "i" } },
-        { "value.section_2_content": { $regex: searchQuery, $options: "i" } }
-      ]
+      "value.title": { $regex: searchQuery, $options: "i" }
     };
   }
 
@@ -102,15 +97,15 @@ export default function DiscoverPage() {
     };
   }, [handleScroll]);
 
+  // Initial load of articles
   useEffect(() => {
-    const filters = buildSearchFilters(selectedTeam, teams, debouncedSearchQuery);
-    
+    const filters = buildSearchFilters(selectedTeam, teams, "");
     dispatch(searchArticles({ 
       filters,
       pagination: { page: 1, page_size: pageSize },
       sorters: ["_id", -1]
     }));
-  }, [debouncedSearchQuery, selectedTeam, dispatch, teams]);
+  }, [selectedTeam, dispatch, teams]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -173,9 +168,34 @@ export default function DiscoverPage() {
 
   const handleSearchChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchQuery(e.target.value);
+      const newValue = e.target.value;
+      setSearchQuery(newValue);
+      
+      // If input is cleared, return to initial discover state
+      if (!newValue) {
+        const filters = buildSearchFilters(selectedTeam, teams, "");
+        dispatch(searchArticles({ 
+          filters,
+          pagination: { page: 1, page_size: pageSize },
+          sorters: ["_id", -1]
+        }));
+      }
     },
-    []
+    [selectedTeam, teams, dispatch]
+  );
+
+  const handleSearchKeyPress = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter' && searchQuery.trim()) {
+        const filters = buildSearchFilters(selectedTeam, teams, searchQuery);
+        dispatch(searchArticles({ 
+          filters,
+          pagination: { page: 1, page_size: pageSize },
+          sorters: ["_id", -1]
+        }));
+      }
+    },
+    [searchQuery, selectedTeam, teams, dispatch]
   );
 
   const handleTeamChange = useCallback((value: string) => {
@@ -217,16 +237,14 @@ export default function DiscoverPage() {
             <div className="py-2 px-4 sm:px-0 bg-background">
               <div className="flex justify-between items-center gap-4">
                 <TeamFilter value={selectedTeam} onChange={handleTeamChange} />
-                <div className="relative w-[220px]">
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <Search className="h-4 w-4 text-muted-foreground" />
-                  </div>
+                <div className="relative w-full max-w-sm">
+                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                   <Input
-                    type="text"
-                    placeholder="Buscar"
-                    className="pl-10 bg-background"
+                    placeholder="Buscar artigos..."
+                    className="pl-8"
                     value={searchQuery}
                     onChange={handleSearchChange}
+                    onKeyPress={handleSearchKeyPress}
                   />
                 </div>
               </div>
