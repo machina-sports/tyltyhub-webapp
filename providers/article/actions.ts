@@ -1,5 +1,4 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
-
 import ArticleService from "@/providers/article/service"
 
 export const fetchArticle = async (id: string, thunkAPI: any) => {

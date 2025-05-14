@@ -6,33 +6,14 @@ import { useAppDispatch } from "@/store/dispatch"
 
 import { useGlobalState } from "@/store/useState"
 
-import * as actions from "@/providers/discover/actions"
+import { searchArticles } from "./actions"
 
-const DiscoveryProvider = ({
+const DiscoverProvider = ({
   children,
-
 }: {
-  children: React.ReactNode,
+  children: React.ReactNode
 }) => {
-
-  const dispatch = useAppDispatch()
-
-  const discoveryState = useGlobalState((state: any) => state.discover)
-
-  useEffect(() => {
-    dispatch(actions.doSearchArticles({
-      filters: discoveryState.articles.filters,
-      pagination: discoveryState.articles.pagination,
-      sorters: [discoveryState.articles.sorters.field, discoveryState.articles.sorters.order]
-    }))
-  }, [
-    dispatch,
-    discoveryState.articles.filters,
-    discoveryState.articles.pagination,
-    discoveryState.articles.sorters
-  ])
-
   return children
 }
 
-export default DiscoveryProvider
+export default DiscoverProvider
