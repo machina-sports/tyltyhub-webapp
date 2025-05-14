@@ -1,83 +1,91 @@
 import { createSlice } from "@reduxjs/toolkit"
+import { searchArticles } from "./actions"
 
-import * as actions from "@/providers/discover/actions"
+interface Article {
+  _id?: string;
+  id?: string;
+  created?: string;
+  date?: string | Date;
+  updated?: string;
+  metadata?: {
+    language?: string;
+    [key: string]: any;
+  };
+  name?: string;
+  status?: string | null;
+  value?: {
+    title?: string;
+    subtitle?: string;
+    [key: string]: any;
+  };
+  readTime?: string;
+  views?: number;
+  [key: string]: any;
+}
 
-export interface InitialStateProps {
-  articles: {
-    data: []
-    filters: any,
+interface DiscoverState {
+  searchResults: {
+    data: Article[];
     pagination: {
-      page: number,
-      page_size: number,
-      total: number,
-      hasMore: boolean
-    },
-    sorters: {
-      field: string,
-      order: number
-    },
-    status: "idle" | "loading" | "failed"
+      page: number;
+      page_size: number;
+      total: number;
+      hasMore: boolean;
+    };
+    status: string;
+    error: string | null;
   }
 }
 
-const initialState: InitialStateProps = {
-  articles: {
+const initialState: DiscoverState = {
+  searchResults: {
     data: [],
-    filters: {
-      "name": {
-        "$in": ["content-article"],
-      },
-      "metadata.language": "br"
-    },
     pagination: {
       page: 1,
       page_size: 10,
       total: 0,
-      hasMore: true
+      hasMore: false
     },
-    sorters: {
-      field: "_id",
-      order: -1
-    },
-    status: "idle"
+    status: "idle",
+    error: null
   }
 }
 
 const DiscoverReducer = createSlice({
-  name: "discover",
-  initialState: initialState,
-  reducers: {
-    setFilters: (state, action) => {
-      state.articles.filters = action.payload
-    },
-    setPagination: (state, action) => {
-      state.articles.pagination = action.payload
-    },
-    setSorters: (state, action) => {
-      state.articles.sorters = action.payload
-    }
-  },
+  name: 'discover',
+  initialState,
+  reducers: {},
   extraReducers: (builder) => {
     builder
-      // User Profile
-      .addCase(actions.doSearchArticles.pending, (state) => {
-        state.articles.status = "loading"
+      .addCase(searchArticles.pending, (state) => {
+        state.searchResults.status = "loading";
+        state.searchResults.error = null;
       })
-      .addCase(actions.doSearchArticles.fulfilled, (state: any, action) => {
-        state.articles.data = [
-          ...state.articles.data,
-          ...action.payload?.data || []
-        ]
-        state.articles.pagination.total = action.payload?.total_documents || 0
-        state.articles.pagination.hasMore = action.payload?.total_documents > state.articles.pagination.page * state.articles.pagination.page_size
-        state.articles.status = "idle"
-      })
-      .addCase(actions.doSearchArticles.rejected, (state) => {
-        state.articles.status = "failed"
-      })
-  },
-})
+      .addCase(searchArticles.fulfilled, (state, action) => {
+        const meta = action.meta || {};
+        const arg = meta.arg || {};
+        const page = arg.pagination?.page || 1;
+        const pageSize = arg.pagination?.page_size || state.searchResults.pagination.page_size;
 
-export const { setFilters, setPagination, setSorters } = DiscoverReducer.actions
+        if (page === 1) {
+          state.searchResults.data = action.payload.data || [];
+        } else {
+          state.searchResults.data = [
+            ...state.searchResults.data,
+            ...(action.payload.data || [])
+          ];
+        }
 
-export default DiscoverReducer
+        state.searchResults.pagination.total = action.payload.total_documents || 0;
+        state.searchResults.pagination.page = page;
+        state.searchResults.pagination.hasMore = action.payload.total_documents > page * pageSize;
+        state.searchResults.status = "idle";
+      })
+      .addCase(searchArticles.rejected, (state, action) => {
+        state.searchResults.status = "failed";
+        state.searchResults.error = action.payload as string;
+      });
+  }
+});
+
+export default DiscoverReducer;

@@ -55,35 +55,13 @@ interface ArticleState {
   relatedArticles: Article[]
   loading: boolean
   error: string | null
-  searchResults: {
-    data: Article[];
-    pagination: {
-      page: number;
-      page_size: number;
-      total: number;
-      hasMore: boolean;
-    };
-    status: string;
-    error: string | null;
-  }
 }
 
 const initialState: ArticleState = {
   currentArticle: null,
   relatedArticles: [],
   loading: false,
-  error: null,
-  searchResults: {
-    data: [],
-    pagination: {
-      page: 1,
-      page_size: 10,
-      total: 0,
-      hasMore: false
-    },
-    status: "idle",
-    error: null
-  }
+  error: null
 }
 
 const ArticleReducer = createSlice({
@@ -138,36 +116,6 @@ const ArticleReducer = createSlice({
       })
       .addCase(actions.doFetchRelatedArticles.rejected, (state) => {
         state.relatedArticles = []
-      })
-
-      // Handle searchArticles
-      .addCase(actions.doSearchArticles.pending, (state) => {
-        state.searchResults.status = "loading";
-        state.searchResults.error = null;
-      })
-      .addCase(actions.doSearchArticles.fulfilled, (state, action: PayloadAction<any>) => {
-        const meta = (action as any).meta || {};
-        const arg = meta.arg || {};
-        const page = arg.page !== undefined ? arg.page : 1;
-        const pageSize = arg.pageSize !== undefined ? arg.pageSize : state.searchResults.pagination.page_size;
-
-        if (page === 1) {
-          state.searchResults.data = action.payload.data || [];
-        } else {
-          state.searchResults.data = [
-            ...state.searchResults.data,
-            ...(action.payload.data || [])
-          ];
-        }
-
-        state.searchResults.pagination.total = action.payload.total_documents || 0;
-        state.searchResults.pagination.page = page;
-        state.searchResults.pagination.hasMore = action.payload.total_documents > page * pageSize;
-        state.searchResults.status = "idle";
-      })
-      .addCase(actions.doSearchArticles.rejected, (state, action) => {
-        state.searchResults.status = "failed";
-        state.searchResults.error = action.payload as string;
       })
   }
 })

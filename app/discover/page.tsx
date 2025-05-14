@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import { Newspaper, Users, Search, Table2 } from "lucide-react";
+import { Newspaper, Table2, Search } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TeamFilter } from "@/components/discover/sport-filter";
 import { ArticleGrid } from "@/components/discover/article-grid";
@@ -10,15 +10,18 @@ import { useGlobalState } from "@/store/useState";
 import { useAppDispatch } from "@/store/dispatch";
 import { Input } from "@/components/ui/input";
 import teamsData from "@/data/teams.json";
-import { doSearchArticles } from "@/providers/article/actions";
-
-import * as discoverReducer from "@/providers/discover/reducer";
+import { searchArticles } from "@/providers/discover/actions";
 
 interface Team {
   id: string;
   name: string;
   logo: string;
   league: string;
+}
+
+interface SearchFilters extends Record<string, any> {
+  name: string;
+  "metadata.language": string;
 }
 
 // Custom hook for debounced value
@@ -46,11 +49,10 @@ export default function DiscoverPage() {
   const headerRef = useRef<HTMLDivElement>(null);
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
-  const pageSize = 6; // Number of articles to load at once
+  const pageSize = 6;
 
-  const articleState = useGlobalState((state: any) => state.article);
+  const searchResults = useGlobalState((state: any) => state.discover.searchResults);
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
-  const { searchResults, currentArticle } = articleState;
   const teams = useMemo(() => teamsData.teams || [], []);
 
   const handleScroll = useCallback(() => {
@@ -68,15 +70,36 @@ export default function DiscoverPage() {
   }, [handleScroll]);
 
   useEffect(() => {
-    let filters = {};
+    let filters: SearchFilters = {
+      name: "content-article",
+      "metadata.language": "br"
+    };
+    
     if (selectedTeam !== "all-teams") {
       const teamName = teams.find((t: Team) => t.id === selectedTeam)?.name || "";
       if (teamName) {
-        filters = { team: teamName };
+        filters = { ...filters, team: teamName };
       }
     }
-    dispatch(doSearchArticles({ page: 1, pageSize: 10, language: 'br', filters, search: searchQuery }));
-  }, [searchQuery, selectedTeam, dispatch, teams]);
+
+    if (debouncedSearchQuery) {
+      filters = {
+        ...filters,
+        $or: [
+          { "value.title": { $regex: debouncedSearchQuery, $options: "i" } },
+          { "value.subtitle": { $regex: debouncedSearchQuery, $options: "i" } },
+          { "value.section_1_content": { $regex: debouncedSearchQuery, $options: "i" } },
+          { "value.section_2_content": { $regex: debouncedSearchQuery, $options: "i" } }
+        ]
+      };
+    }
+
+    dispatch(searchArticles({ 
+      filters,
+      pagination: { page: 1, page_size: pageSize },
+      sorters: ["_id", -1]
+    }));
+  }, [debouncedSearchQuery, selectedTeam, dispatch, teams]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -84,14 +107,35 @@ export default function DiscoverPage() {
         const target = entries[0];
         if (target.isIntersecting && searchResults.status !== "loading" && searchResults.pagination.hasMore) {
           const nextPage = searchResults.pagination.page + 1;
-          let filters = {};
+          let filters: SearchFilters = {
+            name: "content-article",
+            "metadata.language": "br"
+          };
+          
           if (selectedTeam !== "all-teams") {
             const teamName = teams.find((t: Team) => t.id === selectedTeam)?.name || "";
             if (teamName) {
-              filters = { team: teamName };
+              filters = { ...filters, team: teamName };
             }
           }
-          dispatch(doSearchArticles({ page: nextPage, pageSize: 10, language: 'br', filters, search: searchQuery }));
+
+          if (debouncedSearchQuery) {
+            filters = {
+              ...filters,
+              $or: [
+                { "value.title": { $regex: debouncedSearchQuery, $options: "i" } },
+                { "value.subtitle": { $regex: debouncedSearchQuery, $options: "i" } },
+                { "value.section_1_content": { $regex: debouncedSearchQuery, $options: "i" } },
+                { "value.section_2_content": { $regex: debouncedSearchQuery, $options: "i" } }
+              ]
+            };
+          }
+
+          dispatch(searchArticles({ 
+            filters,
+            pagination: { page: nextPage, page_size: pageSize },
+            sorters: ["_id", -1]
+          }));
         }
       },
       { threshold: 0.1 }
@@ -107,7 +151,7 @@ export default function DiscoverPage() {
         observer.unobserve(currentRef);
       }
     };
-  }, [searchResults.status, searchResults.pagination, searchResults.pagination.hasMore, searchResults.pagination.page, dispatch, searchQuery, selectedTeam, teams]);
+  }, [searchResults.status, searchResults.pagination, searchResults.pagination.hasMore, searchResults.pagination.page, dispatch, debouncedSearchQuery, selectedTeam, teams]);
 
   const displayedArticles = searchResults.data;
 
@@ -261,3 +305,4 @@ export default function DiscoverPage() {
     </div>
   );
 }
+
