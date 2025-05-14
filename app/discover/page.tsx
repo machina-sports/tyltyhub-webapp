@@ -24,6 +24,39 @@ interface SearchFilters extends Record<string, any> {
   "metadata.language": string;
 }
 
+// Utility function to build search filters
+const buildSearchFilters = (
+  selectedTeam: string,
+  teams: Team[],
+  searchQuery: string
+): SearchFilters => {
+  let filters: SearchFilters = {
+    name: "content-article",
+    "metadata.language": "br"
+  };
+  
+  if (selectedTeam !== "all-teams") {
+    const teamName = teams.find((t: Team) => t.id === selectedTeam)?.name || "";
+    if (teamName) {
+      filters = { ...filters, team: teamName };
+    }
+  }
+
+  if (searchQuery) {
+    filters = {
+      ...filters,
+      $or: [
+        { "value.title": { $regex: searchQuery, $options: "i" } },
+        { "value.subtitle": { $regex: searchQuery, $options: "i" } },
+        { "value.section_1_content": { $regex: searchQuery, $options: "i" } },
+        { "value.section_2_content": { $regex: searchQuery, $options: "i" } }
+      ]
+    };
+  }
+
+  return filters;
+};
+
 // Custom hook for debounced value
 function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
@@ -70,30 +103,8 @@ export default function DiscoverPage() {
   }, [handleScroll]);
 
   useEffect(() => {
-    let filters: SearchFilters = {
-      name: "content-article",
-      "metadata.language": "br"
-    };
+    const filters = buildSearchFilters(selectedTeam, teams, debouncedSearchQuery);
     
-    if (selectedTeam !== "all-teams") {
-      const teamName = teams.find((t: Team) => t.id === selectedTeam)?.name || "";
-      if (teamName) {
-        filters = { ...filters, team: teamName };
-      }
-    }
-
-    if (debouncedSearchQuery) {
-      filters = {
-        ...filters,
-        $or: [
-          { "value.title": { $regex: debouncedSearchQuery, $options: "i" } },
-          { "value.subtitle": { $regex: debouncedSearchQuery, $options: "i" } },
-          { "value.section_1_content": { $regex: debouncedSearchQuery, $options: "i" } },
-          { "value.section_2_content": { $regex: debouncedSearchQuery, $options: "i" } }
-        ]
-      };
-    }
-
     dispatch(searchArticles({ 
       filters,
       pagination: { page: 1, page_size: pageSize },
@@ -107,29 +118,7 @@ export default function DiscoverPage() {
         const target = entries[0];
         if (target.isIntersecting && searchResults.status !== "loading" && searchResults.pagination.hasMore) {
           const nextPage = searchResults.pagination.page + 1;
-          let filters: SearchFilters = {
-            name: "content-article",
-            "metadata.language": "br"
-          };
-          
-          if (selectedTeam !== "all-teams") {
-            const teamName = teams.find((t: Team) => t.id === selectedTeam)?.name || "";
-            if (teamName) {
-              filters = { ...filters, team: teamName };
-            }
-          }
-
-          if (debouncedSearchQuery) {
-            filters = {
-              ...filters,
-              $or: [
-                { "value.title": { $regex: debouncedSearchQuery, $options: "i" } },
-                { "value.subtitle": { $regex: debouncedSearchQuery, $options: "i" } },
-                { "value.section_1_content": { $regex: debouncedSearchQuery, $options: "i" } },
-                { "value.section_2_content": { $regex: debouncedSearchQuery, $options: "i" } }
-              ]
-            };
-          }
+          const filters = buildSearchFilters(selectedTeam, teams, debouncedSearchQuery);
 
           dispatch(searchArticles({ 
             filters,
