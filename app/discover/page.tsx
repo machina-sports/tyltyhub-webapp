@@ -11,6 +11,7 @@ import { useAppDispatch } from "@/store/dispatch";
 import { Input } from "@/components/ui/input";
 import teamsData from "@/data/teams.json";
 import { searchArticles } from "@/providers/discover/actions";
+import { Loading } from "@/components/ui/loading";
 
 interface Team {
   id: string;
@@ -22,37 +23,72 @@ interface Team {
 interface SearchFilters extends Record<string, any> {
   name: string;
   "metadata.language": string;
+  team?: string;
+  "value.title"?: { 
+    $regex: string; 
+    $options: string; 
+  };
 }
 
-// Utility function to build search filters
+interface SearchResults {
+  data: Article[];
+  pagination: {
+    page: number;
+    page_size: number;
+    total: number;
+    hasMore: boolean;
+  };
+  status: "idle" | "loading" | "failed";
+  error: string | null;
+}
+
+interface Article {
+  _id?: string;
+  id?: string;
+  value?: {
+    title?: string;
+    subtitle?: string;
+    [key: string]: any;
+  };
+  metadata?: {
+    language?: string;
+    [key: string]: any;
+  };
+  [key: string]: any;
+}
+
+interface ArticleSection {
+  type: 'fullWidth' | 'threeCards';
+  articles: Article[];
+}
+
 const buildSearchFilters = (
   selectedTeam: string,
   teams: Team[],
   searchQuery: string
 ): SearchFilters => {
-  let filters: SearchFilters = {
+  const baseFilters: SearchFilters = {
     name: "content-article",
     "metadata.language": "br"
   };
   
   if (selectedTeam !== "all-teams") {
-    const teamName = teams.find((t: Team) => t.id === selectedTeam)?.name || "";
+    const teamName = teams.find((t: Team) => t.id === selectedTeam)?.name;
     if (teamName) {
-      filters = { ...filters, team: teamName };
+      return { ...baseFilters, team: teamName };
     }
   }
 
   if (searchQuery) {
-    filters = {
-      ...filters,
+    return {
+      ...baseFilters,
       "value.title": { $regex: searchQuery, $options: "i" }
     };
   }
 
-  return filters;
+  return baseFilters;
 };
 
-// Custom hook for debounced value
 function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
 
@@ -74,14 +110,16 @@ export default function DiscoverPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("news");
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+
   const headerRef = useRef<HTMLDivElement>(null);
   const loadMoreRef = useRef<HTMLDivElement>(null);
-  const dispatch = useAppDispatch();
-  const pageSize = 6;
 
-  const searchResults = useGlobalState((state: any) => state.discover.searchResults);
+  const dispatch = useAppDispatch();
+  const searchResults = useGlobalState((state: any) => state.discover.searchResults) as SearchResults;
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const teams = useMemo(() => teamsData.teams || [], []);
+  const pageSize = 6;
 
   const handleScroll = useCallback(() => {
     if (headerRef.current) {
@@ -90,14 +128,52 @@ export default function DiscoverPage() {
     }
   }, []);
 
+  const handleSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newValue = e.target.value;
+      setSearchQuery(newValue);
+      
+      if (!newValue) {
+        setIsSearching(true);
+        const filters = buildSearchFilters(selectedTeam, teams, "");
+        dispatch(searchArticles({ 
+          filters,
+          pagination: { page: 1, page_size: pageSize },
+          sorters: ["_id", -1]
+        })).finally(() => setIsSearching(false));
+      }
+    },
+    [selectedTeam, teams, dispatch, pageSize]
+  );
+
+  const handleSearchKeyPress = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter' && searchQuery.trim()) {
+        setIsSearching(true);
+        const filters = buildSearchFilters(selectedTeam, teams, searchQuery);
+        dispatch(searchArticles({ 
+          filters,
+          pagination: { page: 1, page_size: pageSize },
+          sorters: ["_id", -1]
+        })).finally(() => setIsSearching(false));
+      }
+    },
+    [searchQuery, selectedTeam, teams, dispatch, pageSize]
+  );
+
+  const handleTeamChange = useCallback((value: string) => {
+    setSelectedTeam(value);
+  }, []);
+
+  const handleTabChange = useCallback((value: string) => {
+    setActiveTab(value);
+  }, []);
+
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
-  // Initial load of articles
   useEffect(() => {
     const filters = buildSearchFilters(selectedTeam, teams, "");
     dispatch(searchArticles({ 
@@ -105,7 +181,7 @@ export default function DiscoverPage() {
       pagination: { page: 1, page_size: pageSize },
       sorters: ["_id", -1]
     }));
-  }, [selectedTeam, dispatch, teams]);
+  }, [selectedTeam, dispatch, teams, pageSize]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -135,13 +211,21 @@ export default function DiscoverPage() {
         observer.unobserve(currentRef);
       }
     };
-  }, [searchResults.status, searchResults.pagination, searchResults.pagination.hasMore, searchResults.pagination.page, dispatch, debouncedSearchQuery, selectedTeam, teams]);
+  }, [
+    searchResults.status,
+    searchResults.pagination,
+    dispatch,
+    debouncedSearchQuery,
+    selectedTeam,
+    teams,
+    pageSize
+  ]);
 
   const displayedArticles = searchResults.data;
 
   const articleSections = useMemo(() => {
     if (!displayedArticles.length) return [];
-    const result = [];
+    const result: ArticleSection[] = [];
     let i = 0;
 
     while (i < displayedArticles.length) {
@@ -165,46 +249,6 @@ export default function DiscoverPage() {
 
     return result;
   }, [displayedArticles]);
-
-  const handleSearchChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newValue = e.target.value;
-      setSearchQuery(newValue);
-      
-      // If input is cleared, return to initial discover state
-      if (!newValue) {
-        const filters = buildSearchFilters(selectedTeam, teams, "");
-        dispatch(searchArticles({ 
-          filters,
-          pagination: { page: 1, page_size: pageSize },
-          sorters: ["_id", -1]
-        }));
-      }
-    },
-    [selectedTeam, teams, dispatch]
-  );
-
-  const handleSearchKeyPress = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Enter' && searchQuery.trim()) {
-        const filters = buildSearchFilters(selectedTeam, teams, searchQuery);
-        dispatch(searchArticles({ 
-          filters,
-          pagination: { page: 1, page_size: pageSize },
-          sorters: ["_id", -1]
-        }));
-      }
-    },
-    [searchQuery, selectedTeam, teams, dispatch]
-  );
-
-  const handleTeamChange = useCallback((value: string) => {
-    setSelectedTeam(value);
-  }, []);
-
-  const handleTabChange = useCallback((value: string) => {
-    setActiveTab(value);
-  }, []);
 
   return (
     <div className="mobile-container pb-4 space-y-6 max-w-5xl mx-auto">
@@ -237,7 +281,7 @@ export default function DiscoverPage() {
             <div className="py-2 px-4 sm:px-0 bg-background">
               <div className="flex justify-between items-center gap-4">
                 <TeamFilter value={selectedTeam} onChange={handleTeamChange} />
-                <div className="relative w-full max-w-sm">
+                <div className="relative w-full md:w-[232px]">
                   <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                   <Input
                     placeholder="Buscar artigos..."
@@ -246,6 +290,11 @@ export default function DiscoverPage() {
                     onChange={handleSearchChange}
                     onKeyPress={handleSearchKeyPress}
                   />
+                  {isSearching && (
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                      <Loading width={20} height={20} />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -257,10 +306,9 @@ export default function DiscoverPage() {
         <TabsContent value="news" className="space-y-6 pt-6 md:pt-4">
           <div className="space-y-8">
             {searchResults.status === "loading" && !searchResults.data.length ? (
-              <>
-                <ArticleSkeleton layout="fullWidth" count={1} />
-                <ArticleSkeleton layout="threeCards" count={3} />
-              </>
+              <div className="flex items-center justify-center min-h-[300px]">
+                <Loading />
+              </div>
             ) : articleSections && articleSections.length > 0 ? (
               <>
                 {articleSections.map((section, index) => (
@@ -281,8 +329,9 @@ export default function DiscoverPage() {
                 {/* Load more indicator */}
                 <div ref={loadMoreRef} className="py-4 flex justify-center">
                   {searchResults.status === "loading" &&
+                    !isSearching &&
                     searchResults.data.length > 0 && (
-                      <ArticleSkeleton layout="threeCards" count={3} />
+                      <Loading />
                     )}
                   {searchResults.status !== "loading" &&
                     !searchResults.pagination.hasMore &&
