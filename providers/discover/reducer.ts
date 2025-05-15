@@ -46,7 +46,7 @@ const initialState: DiscoverState = {
       total: 0,
       hasMore: false
     },
-    status: "idle",
+    status: "loading",
     error: null
   }
 }
