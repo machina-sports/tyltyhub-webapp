@@ -307,7 +307,7 @@ export default function DiscoverPage() {
           <div className="space-y-8">
             {searchResults.status === "loading" && !searchResults.data.length ? (
               <div className="flex items-center justify-center min-h-[300px]">
-                <Loading />
+                <Loading width={100} height={100} />
               </div>
             ) : articleSections && articleSections.length > 0 ? (
               <>
@@ -331,7 +331,7 @@ export default function DiscoverPage() {
                   {searchResults.status === "loading" &&
                     !isSearching &&
                     searchResults.data.length > 0 && (
-                      <Loading />
+                      <Loading width={100} height={100} />
                     )}
                   {searchResults.status !== "loading" &&
                     !searchResults.pagination.hasMore &&
