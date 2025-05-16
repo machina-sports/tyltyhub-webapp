@@ -14,6 +14,7 @@ import * as SelectPrimitive from "@radix-ui/react-select"
 import teamsData from "@/data/teams.json"
 import fifaCwcData from "@/data/fifa-cwc-2025.json"
 import { cn } from "@/lib/utils"
+import { useTheme } from "@/components/theme-provider"
 
 // Convert to array of team objects with name and id for filtering
 const TEAMS = [
@@ -51,6 +52,7 @@ interface TeamFilterProps {
 export function TeamFilter({ value, onChange }: TeamFilterProps) {
   const [activeGroup, setActiveGroup] = useState(CWC_GROUPS[0].name)
   const [open, setOpen] = useState(false)
+  const { isPalmeirasTheme } = useTheme();
 
   // Selected team details for the dropdown trigger
   const selectedTeam = TEAMS.find(team => team.id === value) || ALL_TEAMS_OPTION
@@ -117,7 +119,9 @@ export function TeamFilter({ value, onChange }: TeamFilterProps) {
                 className={cn(
                   "w-8 h-8 rounded-md text-xs font-medium transition-colors flex items-center justify-center",
                   activeGroup === group.name
-                    ? "bg-primary text-primary-foreground shadow-sm"
+                    ? isPalmeirasTheme 
+                      ? "bg-[#006B3D] text-white shadow-sm" 
+                      : "bg-primary text-primary-foreground shadow-sm"
                     : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
                 )}
                 onClick={() => setActiveGroup(group.name)}
@@ -132,7 +136,15 @@ export function TeamFilter({ value, onChange }: TeamFilterProps) {
               <SelectItem 
                 key={team.id} 
                 value={team.id} 
-                className="flex justify-center items-center w-full h-[80px] p-1 cursor-pointer rounded-md hover:bg-accent transition-colors"
+                className={cn(
+                  "flex justify-center items-center w-full h-[80px] p-1 cursor-pointer rounded-md transition-colors",
+                  isPalmeirasTheme 
+                    ? "hover:bg-[#E8F5EE]" 
+                    : "hover:bg-accent",
+                  team.name.includes("Palmeiras") && isPalmeirasTheme
+                    ? "bg-[#E8F5EE]/50" 
+                    : ""
+                )}
               >
                 <div className="flex flex-col items-center justify-center text-center h-full">
                   {team.logo ? (
@@ -150,7 +162,14 @@ export function TeamFilter({ value, onChange }: TeamFilterProps) {
                     </div>
                   )}
                   <div className="min-h-[2.5em] flex items-center">
-                    <span className="text-[11px] line-clamp-2 w-full font-medium">{team.name}</span>
+                    <span className={cn(
+                      "text-[11px] line-clamp-2 w-full font-medium",
+                      team.name.includes("Palmeiras") && isPalmeirasTheme
+                        ? "text-[#006B3D]" 
+                        : ""
+                    )}>
+                      {team.name}
+                    </span>
                   </div>
                 </div>
               </SelectItem>

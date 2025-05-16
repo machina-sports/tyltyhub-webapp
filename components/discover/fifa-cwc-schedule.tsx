@@ -11,6 +11,7 @@ import { useState, useMemo } from "react"
 import { ChevronDown, Calendar, Clock, MapPin, Users, Sparkles } from "lucide-react"
 import { useGlobalState } from "@/store/useState"
 import { cn } from "@/lib/utils"
+import { useTheme } from "@/components/theme-provider"
 
 type Fixture = {
   date: string;
@@ -224,31 +225,57 @@ interface TeamMatchProps {
 }
 
 // Component for team in match
-const TeamMatch = ({ teamName, logo, isSecond }: TeamMatchProps) => (
-  <div className={`flex items-center gap-2 ${isSecond ? 'justify-start' : 'justify-end'}`}>
-    {!isSecond && <span className="font-medium text-sm overflow-wrap-normal word-break-normal">{teamName}</span>}
-    {logo && (
-      <div className="relative h-7 w-7 flex-shrink-0">
-        <Image 
-          src={logo} 
-          alt={teamName} 
-          fill 
-          className="object-contain"
-          sizes="28px"
-        />
-      </div>
-    )}
-    {isSecond && <span className="font-medium text-sm overflow-wrap-normal word-break-normal">{teamName}</span>}
-  </div>
-);
+const TeamMatch = ({ teamName, logo, isSecond }: TeamMatchProps) => {
+  const { isPalmeirasTheme } = useTheme();
+  const isPalmeiras = teamName.includes("Palmeiras");
+  
+  return (
+    <div className={`flex items-center gap-2 ${isSecond ? 'justify-start' : 'justify-end'}`}>
+      {!isSecond && (
+        <span className={cn(
+          "font-medium text-sm overflow-wrap-normal word-break-normal",
+          isPalmeirasTheme && isPalmeiras ? "text-[#006B3D] font-semibold" : ""
+        )}>
+          {teamName}
+        </span>
+      )}
+      {logo && (
+        <div className="relative h-7 w-7 flex-shrink-0">
+          <Image 
+            src={logo} 
+            alt={teamName} 
+            fill 
+            className="object-contain"
+            sizes="28px"
+          />
+        </div>
+      )}
+      {isSecond && (
+        <span className={cn(
+          "font-medium text-sm overflow-wrap-normal word-break-normal",
+          isPalmeirasTheme && isPalmeiras ? "text-[#006B3D] font-semibold" : ""
+        )}>
+          {teamName}
+        </span>
+      )}
+    </div>
+  );
+};
 
 // Match Card Component for both mobile and desktop
 const MatchCard = ({ fixture }: { fixture: Fixture }) => {
+  const { isPalmeirasTheme } = useTheme();
   const teams = fixture.match.split(" x ").map(t => t.trim());
   const teamLogos = teams.map(t => findTeamLogo(t));
   
+  // Check if this is a Palmeiras match
+  const isPalmeirasMatch = teams.some(team => team.includes("Palmeiras"));
+  
   return (
-    <div className="border rounded-md p-4 bg-card hover:bg-muted/10 transition-colors h-full">
+    <div className={cn(
+      "border rounded-md p-4 bg-card hover:bg-muted/10 transition-colors h-full",
+      isPalmeirasTheme && isPalmeirasMatch ? "border-[#006B3D]/30" : ""
+    )}>
       <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 mb-3">
         <TeamMatch teamName={teams[0]} logo={teamLogos[0]} />
         <span className="text-base font-bold px-2 text-muted-foreground">x</span>
@@ -256,14 +283,19 @@ const MatchCard = ({ fixture }: { fixture: Fixture }) => {
       </div>
       
       <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 text-sm text-muted-foreground border-t pt-3">
-        <Clock className="h-4 w-4 flex-shrink-0 text-blue-500" />
+        <Clock className={cn("h-4 w-4 flex-shrink-0", isPalmeirasTheme ? "text-[#006B3D]" : "text-blue-500")} />
         <span className="overflow-wrap-normal word-break-normal">{fixture.ko}</span>
         
-        <MapPin className="h-4 w-4 flex-shrink-0 text-blue-500" />
+        <MapPin className={cn("h-4 w-4 flex-shrink-0", isPalmeirasTheme ? "text-[#006B3D]" : "text-blue-500")} />
         <span className="overflow-wrap-normal word-break-normal">{fixture.venue}</span>
         
-        <Users className="h-4 w-4 flex-shrink-0 text-blue-500" />
-        <span className="overflow-wrap-normal word-break-normal">{fixture.groupName.replace('Group', 'Grupo')}</span>
+        <Users className={cn("h-4 w-4 flex-shrink-0", isPalmeirasTheme ? "text-[#006B3D]" : "text-blue-500")} />
+        <span className={cn(
+          "overflow-wrap-normal word-break-normal",
+          isPalmeirasTheme && fixture.groupName.includes("A") ? "text-[#006B3D] font-medium" : ""
+        )}>
+          {fixture.groupName.replace('Group', 'Grupo')}
+        </span>
       </div>
     </div>
   );
@@ -271,6 +303,7 @@ const MatchCard = ({ fixture }: { fixture: Fixture }) => {
 
 // Team Card Component with AI insights
 const TeamCard = ({ teamName }: { teamName: string }) => {
+  const { isPalmeirasTheme } = useTheme();
   const logo = findTeamLogo(teamName);
   const league = findTeamLeague(teamName);
   const insight = generateTeamInsight(teamName);
@@ -302,7 +335,9 @@ const TeamCard = ({ teamName }: { teamName: string }) => {
       </div>
       
       <div className="mt-1 pt-3 border-t text-sm flex-1">
-        <div className="flex items-center gap-1.5 text-blue-600 mb-2">
+        <div className={cn("flex items-center gap-1.5 mb-2", 
+          isPalmeirasTheme ? "text-[#006B3D]" : "text-blue-600"
+        )}>
           <Sparkles className="h-3.5 w-3.5" />
           <span className="text-xs font-medium">Análise IA</span>
         </div>
@@ -324,6 +359,7 @@ const TeamCard = ({ teamName }: { teamName: string }) => {
 const DateSection = ({ date, fixtures }: { date: string; fixtures: Fixture[] }) => {
   const [isOpen, setIsOpen] = useState(true);
   const translatedDate = translateDate(date);
+  const { isPalmeirasTheme } = useTheme();
   
   return (
     <div className="mb-6">
@@ -332,7 +368,7 @@ const DateSection = ({ date, fixtures }: { date: string; fixtures: Fixture[] }) 
         onClick={() => setIsOpen(!isOpen)}
       >
         <h3 className="font-bold text-lg flex items-center">
-          <Calendar className="h-5 w-5 mr-2" />
+          <Calendar className={cn("h-5 w-5 mr-2", isPalmeirasTheme ? "text-[#006B3D]" : "")} />
           {translatedDate}
         </h3>
         <Badge>{fixtures.length} partidas</Badge>
@@ -351,6 +387,7 @@ const DateSection = ({ date, fixtures }: { date: string; fixtures: Fixture[] }) 
 
 export function FifaCwcSchedule() {
   const { data: standingsData, status } = useGlobalState(state => state.standings)
+  const { isPalmeirasTheme } = useTheme()
   const groups = standingsData?.value?.data[0]?.groups || []
 
   // Combine and sort all fixtures by date and time
@@ -421,7 +458,7 @@ export function FifaCwcSchedule() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
               {groups.map((group) => (
                 <Card key={`team-${group.id}`} className="overflow-hidden h-full flex flex-col">
-                  <CardHeader className="bg-muted/50 pb-2">
+                  <CardHeader className={cn("pb-2", isPalmeirasTheme ? "bg-[#E8F5EE]" : "bg-muted/50")}>
                     <CardTitle className="text-xl font-semibold">
                       Grupo {group.group_name}
                     </CardTitle>
@@ -447,22 +484,14 @@ export function FifaCwcSchedule() {
                             <TableRow 
                               key={standing.competitor.id}
                               className={cn(
-                                standing.current_outcome === "Playoffs" && "bg-green-500/10",
-                                standing.current_outcome === "Copa Sudamericana" && "bg-yellow-500/10"
+                                "transition-colors",
+                                standing.competitor.name.includes("Palmeiras") && isPalmeirasTheme
+                                  ? "bg-[#E8F5EE]/30"
+                                  : ""
                               )}
                             >
-                              <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4">
-                                <div className="flex items-center justify-center gap-1">
-                                  {standing.rank}
-                                  {standing.change !== 0 && standing.change !== undefined && (
-                                    <span className={cn(
-                                      "text-xs",
-                                      standing.change > 0 ? "text-green-500" : "text-red-500"
-                                    )}>
-                                      {standing.change > 0 ? "↑" : "↓"}
-                                    </span>
-                                  )}
-                                </div>
+                              <TableCell className="text-center font-medium text-xs sm:text-sm px-1 sm:px-4">
+                                {standing.rank}
                               </TableCell>
                               <TableCell className="text-xs sm:text-sm px-1 sm:px-4">
                                 <div className="flex items-center gap-1 sm:gap-2 min-w-0">
@@ -481,7 +510,12 @@ export function FifaCwcSchedule() {
                                   </div>
                                   <span 
                                     title={standing.competitor.name} 
-                                    className="truncate"
+                                    className={cn(
+                                      "truncate", 
+                                      standing.competitor.name.includes("Palmeiras") && isPalmeirasTheme
+                                        ? "font-semibold text-[#006B3D]"
+                                        : ""
+                                    )}
                                   >
                                     {standing.competitor.abbreviation || standing.competitor.name}
                                   </span>
@@ -492,7 +526,14 @@ export function FifaCwcSchedule() {
                               <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4">{standing.draw}</TableCell>
                               <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4">{standing.loss}</TableCell>
                               <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4">{standing.goals_diff}</TableCell>
-                              <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4 font-semibold">{standing.points}</TableCell>
+                              <TableCell className={cn(
+                                "text-center font-semibold text-xs sm:text-sm px-1 sm:px-4",
+                                standing.competitor.name.includes("Palmeiras") && isPalmeirasTheme
+                                  ? "text-[#006B3D]"
+                                  : ""
+                              )}>
+                                {standing.points}
+                              </TableCell>
                             </TableRow>
                           ))}
                         </TableBody>
@@ -512,7 +553,7 @@ export function FifaCwcSchedule() {
               <div key={date} className="mb-8">
                 <div className="sticky top-0 z-10 bg-background mb-4 py-3 border-b">
                   <h2 className="text-xl font-bold flex items-center">
-                    <Calendar className="h-5 w-5 mr-2 text-primary" />
+                    <Calendar className={cn("h-5 w-5 mr-2", isPalmeirasTheme ? "text-[#006B3D]" : "text-primary")} />
                     {translateDate(date)}
                     <Badge variant="outline" className="ml-2">
                       {fixturesByDate[date].length} partidas

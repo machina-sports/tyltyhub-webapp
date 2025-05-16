@@ -7,6 +7,8 @@ import Image from "next/image"
 import Link from "next/link"
 import { useGlobalState } from "@/store/useState"
 import { Article } from "@/providers/article/reducer"
+import { useTheme } from "@/components/theme-provider"
+import { cn } from "@/lib/utils"
 
 interface RelatedArticlesProps {
   currentArticleId: string
@@ -29,6 +31,7 @@ const getImageUrl = (article: any): string => {
 
 export function RelatedArticles({ currentArticleId }: RelatedArticlesProps) {
   const articles = useGlobalState((state: any) => state.article);
+  const { isPalmeirasTheme } = useTheme();
   
   // Filter out the current article and limit to 4 related articles
   const relatedArticles = articles.relatedArticles
@@ -43,18 +46,18 @@ export function RelatedArticles({ currentArticleId }: RelatedArticlesProps) {
   }
 
   return (
-    <div className="space-y-6 w-full overflow-hidden">
-      <h3 className="text-lg font-semibold">Artigos Relacionados</h3>
-      <div className="flex overflow-x-auto pb-6 -mx-4 px-4 space-x-4 snap-x scroll-smooth">
+    <div className="space-y-4">
+      <h3 className="text-lg font-semibold mb-2">Artigos Relacionados</h3>
+      <div className="flex overflow-x-auto gap-4 pb-4 snap-x">
         {relatedArticles.map((article: Article) => {
           const articleId = article._id || article.id;
-          const articleDate = article.createdAt || article.date;
-          const imageUrl = getImageUrl(article);
-          
-          if (!articleId) return null;
+          const imageUrl = article.image || 'https://placehold.co/600x400?text=Artigo';
+          const articleDate = article.date || article.createdAt;
           
           return (
-            <Card key={articleId} className="overflow-hidden flex-none first:ml-0 last:mr-4 min-w-[280px] max-w-[280px]">
+            <Card key={articleId} className={cn("overflow-hidden flex-none first:ml-0 last:mr-4 min-w-[280px] max-w-[280px]", 
+              isPalmeirasTheme ? "hover:border-[#006B3D]/30" : "hover:border-primary/30"
+            )}>
               <Link 
                 href={`/discover/${articleId}`}
                 prefetch={false}
@@ -71,9 +74,15 @@ export function RelatedArticles({ currentArticleId }: RelatedArticlesProps) {
                   )}
                 </div>
                 <div className="p-4 w-full">
-                  <h4 className="font-semibold line-clamp-2 mb-2 text-base">{article.title}</h4>
+                  <h4 className={cn("font-semibold line-clamp-2 mb-2 text-base", 
+                    isPalmeirasTheme ? "hover:text-[#006B3D]" : "hover:text-primary"
+                  )}>
+                    {article.title}
+                  </h4>
                   <p className="text-sm text-muted-foreground flex items-center gap-2">
-                    <span className="inline-block w-2 h-2 rounded-full bg-muted" />
+                    <span className={cn("inline-block w-2 h-2 rounded-full", 
+                      isPalmeirasTheme ? "bg-[#006B3D]/20" : "bg-muted"
+                    )} />
                     {articleDate ? 
                       formatDistanceToNow(new Date(articleDate), { addSuffix: true, locale: ptBR }) : 
                       'Recente'
