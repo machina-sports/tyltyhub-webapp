@@ -9,6 +9,8 @@ import Image from "next/image"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useState, useMemo } from "react"
 import { ChevronDown, Calendar, Clock, MapPin, Users, Sparkles } from "lucide-react"
+import { useGlobalState } from "@/store/useState"
+import { cn } from "@/lib/utils"
 
 type Fixture = {
   date: string;
@@ -18,10 +20,56 @@ type Fixture = {
   groupName: string;
 };
 
+// Helper function to normalize team names for logo lookup
+const normalizeTeamName = (name: string): string => {
+  const nameMap: Record<string, string> = {
+    // Mapeamento de abreviações para nomes de arquivo
+    "UCH": "placeholder",
+    "ELP": "placeholder",
+    "BOT": "botafogo",
+    "CFC": "placeholder",
+    "RIV": "river-plate",
+    "UNI": "placeholder",
+    "IND": "placeholder",
+    "BSC": "placeholder",
+    "CC": "placeholder",
+    "LDU": "placeholder",
+    "FLA": "flamengo",
+    "SPA": "placeholder",
+    "LIB": "placeholder",
+    "PAL": "palmeiras",
+
+    // Nomes completos
+    "Botafogo FR RJ": "botafogo",
+    "CR Flamengo RJ": "flamengo",
+    "SE Palmeiras SP": "palmeiras",
+    "CA River Plate (ARG)": "river-plate"
+  };
+
+  // Check if we have a direct mapping
+  if (nameMap[name]) {
+    return nameMap[name];
+  }
+
+  // Try to find a partial match
+  const lowerName = name.toLowerCase();
+  for (const [key, value] of Object.entries(nameMap)) {
+    if (lowerName.includes(key.toLowerCase())) {
+      return value;
+    }
+  }
+
+  // If no match is found, return a placeholder
+  return "placeholder";
+};
+
 // Helper function to find team logo by name
 const findTeamLogo = (teamName: string): string | undefined => {
   const normalizedName = teamName.toLowerCase().replace(/ /g, '-')
-  const team = teamsData.teams.find(t => t.id === normalizedName)
+  const team = teamsData.teams.find(t => 
+    t.name.toLowerCase() === teamName.toLowerCase() || 
+    t.abbreviation === teamName
+  )
   return team?.logo
 }
 
@@ -302,6 +350,9 @@ const DateSection = ({ date, fixtures }: { date: string; fixtures: Fixture[] }) 
 };
 
 export function FifaCwcSchedule() {
+  const { data: standingsData, status } = useGlobalState(state => state.standings)
+  const groups = standingsData?.value?.data[0]?.groups || []
+
   // Combine and sort all fixtures by date and time
   const allFixtures = useMemo(() => {
     const fixtures: Fixture[] = [];
@@ -354,71 +405,104 @@ export function FifaCwcSchedule() {
         </TabsList>
 
         <TabsContent value="teams-view" className="mt-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
-            {fifaCwcData.groups.map((group) => (
-              <Card key={`team-${group.name}`} className="overflow-hidden h-full flex flex-col">
-                <CardHeader className="bg-muted/50 pb-2">
-                  <CardTitle className="text-xl font-semibold">
-                    {group.name.replace('Group', 'Grupo')}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-4 flex-1 px-2 sm:px-6">
-                  {/* Tabela de classificação para o grupo */}
-                  <div className="overflow-x-auto w-full">
-                    <Table className="w-full table-fixed">
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead className="w-[10%] text-center text-xs sm:text-sm px-1 sm:px-4">Pos</TableHead>
-                          <TableHead className="w-[35%] text-xs sm:text-sm px-1 sm:px-4">Time</TableHead>
-                          <TableHead className="w-[8%] text-center text-xs sm:text-sm px-1 sm:px-4">J</TableHead>
-                          <TableHead className="w-[8%] text-center text-xs sm:text-sm px-1 sm:px-4">V</TableHead>
-                          <TableHead className="w-[8%] text-center text-xs sm:text-sm px-1 sm:px-4">E</TableHead>
-                          <TableHead className="w-[8%] text-center text-xs sm:text-sm px-1 sm:px-4">D</TableHead>
-                          <TableHead className="w-[8%] text-center text-xs sm:text-sm px-1 sm:px-4">SG</TableHead>
-                          <TableHead className="w-[15%] text-center text-xs sm:text-sm px-1 sm:px-4">Pts</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {group.teams.map((teamName, index) => (
-                          <TableRow key={teamName}>
-                            <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4">{index + 1}</TableCell>
-                            <TableCell className="text-xs sm:text-sm px-1 sm:px-4">
-                              <div className="flex items-center gap-1 sm:gap-2 min-w-0">
-                                {findTeamLogo(teamName) && (
-                                  <div className="relative h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0">
-                                    <Image
-                                      src={findTeamLogo(teamName)!}
-                                      alt={teamName}
-                                      fill
-                                      className="object-contain"
-                                      sizes="24px"
-                                    />
-                                  </div>
-                                )}
-                                <span 
-                                  title={teamName} 
-                                  className="truncate"
-                                >
-                                  {findTeamAbbreviation(teamName) || teamName}
-                                </span>
-                              </div>
-                            </TableCell>
-                            {/* Estatísticas iniciais zeradas */}
-                            <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4">0</TableCell>
-                            <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4">0</TableCell>
-                            <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4">0</TableCell>
-                            <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4">0</TableCell>
-                            <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4">0</TableCell>
-                            <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4">0</TableCell>
+          {status === "loading" && (
+            <div className="flex justify-center items-center min-h-[200px]">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+            </div>
+          )}
+
+          {status === "failed" && (
+            <div className="flex justify-center items-center min-h-[200px] text-red-500">
+              Erro ao carregar os dados da classificação
+            </div>
+          )}
+
+          {status === "idle" && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+              {groups.map((group) => (
+                <Card key={`team-${group.id}`} className="overflow-hidden h-full flex flex-col">
+                  <CardHeader className="bg-muted/50 pb-2">
+                    <CardTitle className="text-xl font-semibold">
+                      Grupo {group.group_name}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-4 flex-1 px-2 sm:px-6">
+                    {/* Tabela de classificação para o grupo */}
+                    <div className="overflow-x-auto w-full">
+                      <Table className="w-full table-fixed">
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead className="w-[10%] text-center text-xs sm:text-sm px-1 sm:px-4">Pos</TableHead>
+                            <TableHead className="w-[35%] text-xs sm:text-sm px-1 sm:px-4">Time</TableHead>
+                            <TableHead className="w-[8%] text-center text-xs sm:text-sm px-1 sm:px-4">J</TableHead>
+                            <TableHead className="w-[8%] text-center text-xs sm:text-sm px-1 sm:px-4">V</TableHead>
+                            <TableHead className="w-[8%] text-center text-xs sm:text-sm px-1 sm:px-4">E</TableHead>
+                            <TableHead className="w-[8%] text-center text-xs sm:text-sm px-1 sm:px-4">D</TableHead>
+                            <TableHead className="w-[8%] text-center text-xs sm:text-sm px-1 sm:px-4">SG</TableHead>
+                            <TableHead className="w-[15%] text-center text-xs sm:text-sm px-1 sm:px-4">Pts</TableHead>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                        </TableHeader>
+                        <TableBody>
+                          {group.standings.map((standing) => (
+                            <TableRow 
+                              key={standing.competitor.id}
+                              className={cn(
+                                standing.current_outcome === "Playoffs" && "bg-green-500/10",
+                                standing.current_outcome === "Copa Sudamericana" && "bg-yellow-500/10"
+                              )}
+                            >
+                              <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4">
+                                <div className="flex items-center justify-center gap-1">
+                                  {standing.rank}
+                                  {standing.change !== 0 && standing.change !== undefined && (
+                                    <span className={cn(
+                                      "text-xs",
+                                      standing.change > 0 ? "text-green-500" : "text-red-500"
+                                    )}>
+                                      {standing.change > 0 ? "↑" : "↓"}
+                                    </span>
+                                  )}
+                                </div>
+                              </TableCell>
+                              <TableCell className="text-xs sm:text-sm px-1 sm:px-4">
+                                <div className="flex items-center gap-1 sm:gap-2 min-w-0">
+                                  <div className="relative h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0 bg-muted/30 rounded-full flex items-center justify-center">
+                                    {findTeamLogo(standing.competitor.name) ? (
+                                      <Image
+                                        src={findTeamLogo(standing.competitor.name) || ''}
+                                        alt={standing.competitor.name}
+                                        fill
+                                        className="object-contain"
+                                        sizes="24px"
+                                      />
+                                    ) : (
+                                      <span className="text-xs font-medium">{standing.competitor.abbreviation}</span>
+                                    )}
+                                  </div>
+                                  <span 
+                                    title={standing.competitor.name} 
+                                    className="truncate"
+                                  >
+                                    {standing.competitor.abbreviation || standing.competitor.name}
+                                  </span>
+                                </div>
+                              </TableCell>
+                              <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4">{standing.played}</TableCell>
+                              <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4">{standing.win}</TableCell>
+                              <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4">{standing.draw}</TableCell>
+                              <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4">{standing.loss}</TableCell>
+                              <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4">{standing.goals_diff}</TableCell>
+                              <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4 font-semibold">{standing.points}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="matches-view" className="mt-4">

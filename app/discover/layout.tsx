@@ -1,13 +1,19 @@
+"use client"
+
+import StandingsProvider from "@/providers/standings/provider"
+
 export default function DiscoverLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
-    <div className="flex flex-col h-full overflow-hidden">
-      <div className="flex-1 overflow-y-scroll">
-        {children}
+    <StandingsProvider>
+      <div className="flex flex-col h-full overflow-hidden">
+        <div className="flex-1 overflow-y-scroll">
+          {children}
+        </div>
       </div>
-    </div>
+    </StandingsProvider>
   )
 }
