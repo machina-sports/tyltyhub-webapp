@@ -6,7 +6,7 @@ import {
 
 import DiscoverReducer from "@/providers/discover/reducer"
 import ArticleReducer from "@/providers/article/reducer"
-
+import StandingsReducer from "@/providers/standings/reducer"
 import ThreadsReducer from "@/providers/threads/reducer"
 
 export function makeStore() {
@@ -15,6 +15,7 @@ export function makeStore() {
       article: ArticleReducer.reducer,
       discover: DiscoverReducer.reducer,
       threads: ThreadsReducer.reducer,
+      standings: StandingsReducer.reducer,
     },
     middleware: (getDefaultMiddlewares) => getDefaultMiddlewares().concat()
   })
