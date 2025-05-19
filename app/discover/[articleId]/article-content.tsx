@@ -182,7 +182,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
   return (
     <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 pt-20 md:pt-6 pb-32 sm:pb-36 space-y-6 sm:space-y-8">
       {articleData.imageUrl && (
-        <div className="relative w-full overflow-hidden rounded-lg aspect-[14/9]">
+        <div className="relative w-full overflow-hidden rounded-lg aspect-[3/2]">
           <Image
             src={articleData.imageUrl}
             alt={articleData.title}

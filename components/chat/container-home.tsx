@@ -204,7 +204,7 @@ const ContainerHome = ({ query }: { query: string }) => {
       <div className="flex-1 overflow-auto hide-scrollbar momentum-scroll pb-32 pt-4 md:pb-24">
         <div className="flex flex-col items-center justify-center min-h-[calc(100vh-12rem)] p-4">
           {trendingArticle?.image_path && (
-            <div className="relative w-full overflow-hidden rounded-lg aspect-[12/9] max-w-[520px] mb-8">
+            <div className="relative w-full overflow-hidden rounded-lg aspect-[3/2] max-w-[420px] mb-12">
               <Image
                 src={getImageUrl(trendingArticle)}
                 alt={trendingArticle?.title}
