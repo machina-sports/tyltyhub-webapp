@@ -4,15 +4,18 @@ import { ArrowLeft, Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { usePathname, useRouter } from "next/navigation"
 import { useChatState } from "@/hooks/use-chat-state"
+import { useTheme } from "@/components/theme-provider"
+import { cn } from "@/lib/utils"
 
 interface MobileHeaderProps {
   onMenuClick: () => void
 }
 
 export function MobileHeader({ onMenuClick }: MobileHeaderProps) {
-  const pathname = usePathname()
+  const pathname = usePathname() || ''
   const router = useRouter()
   const { resetChat } = useChatState()
+  const { isPalmeirasTheme } = useTheme()
   const isArticlePage = pathname.startsWith("/discover/") && pathname !== "/discover"
   
   const getPageTitle = () => {
@@ -30,7 +33,10 @@ export function MobileHeader({ onMenuClick }: MobileHeaderProps) {
   }
 
   return (
-    <div className="fixed top-0 left-0 right-0 h-16 bg-[#0A5EEA] backdrop-blur-sm border-b z-40 md:hidden">
+    <div className={cn(
+      "fixed top-0 left-0 right-0 h-16 backdrop-blur-sm border-b z-40 md:hidden",
+      isPalmeirasTheme ? "bg-[#006B3D]" : "bg-[#0A5EEA]"
+    )}>
       <div className="flex items-center justify-between h-full px-4">
         <Button
           variant="ghost"

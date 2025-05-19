@@ -3,10 +3,9 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Sidebar } from '@/components/sidebar'
 import { Toaster } from '@/components/ui/toaster'
-import { ThemeProvider } from "@/components/theme-provider"
+import { Providers } from '@/providers/provider'
 import DiscoveryProvider from '@/providers/discover/provider'
 import { MainProvider } from '@/components/use-provider'
-import { Providers } from '@/providers/provider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -22,24 +21,18 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="pt-BR" className="light">
+    <html lang="pt-BR">
       <body className={inter.className}>
         <Providers>
           <MainProvider>
             <DiscoveryProvider>
-              <ThemeProvider
-                attribute="class"
-                defaultTheme="light"
-                enableSystem={false}
-              >
-                <div className="flex h-screen flex-col md:flex-row">
-                  <Sidebar />
-                  <main className="flex-1 overflow-auto pb-safe">
-                    {children}
-                  </main>
-                </div>
-                <Toaster />
-              </ThemeProvider>
+              <div className="flex h-screen flex-col md:flex-row">
+                <Sidebar />
+                <main className="flex-1 overflow-auto pb-safe">
+                  {children}
+                </main>
+              </div>
+              <Toaster />
             </DiscoveryProvider>
           </MainProvider>
         </Providers>

@@ -9,6 +9,9 @@ import { formatDistanceToNow } from "date-fns"
 import { ptBR } from 'date-fns/locale'
 import ReactMarkdown from 'react-markdown'
 import { Article } from "@/providers/article/reducer"
+import { useTheme } from "@/components/theme-provider"
+import { cn } from "@/lib/utils"
+
 interface ArticleGridProps {
   articles: Article[]
   layout?: 'fullWidth' | 'threeCards'
@@ -103,6 +106,7 @@ const getArticleUrl = (article: Article): string => {
 };
 
 const ArticleCard = ({ article }: { article: Article }) => {
+  const { isPalmeirasTheme } = useTheme();
   if (!article) return null;
   
   const articleId = article._id || article.id;
@@ -117,20 +121,22 @@ const ArticleCard = ({ article }: { article: Article }) => {
   const title = getTitle(article);
   
   return (
-    <Card className="overflow-hidden h-full border">
+    <Card className={cn("overflow-hidden border", isPalmeirasTheme ? "hover:border-[#006B3D]/30" : "hover:border-primary/30")}>
       <Link 
         href={articleUrl} 
         className="h-full block"
         prefetch={false}
       >
         <CardContent className="p-0 flex flex-col h-full">
-          <div className="relative aspect-[16/9] w-full">
+          <div className="relative aspect-video w-full">
             {imageUrl && (
               <Image
                 src={imageUrl}
                 alt={title}
                 fill
                 className="object-cover"
+                priority={false}
+                sizes="(max-width: 768px) 100vw, 33vw"
               />
             )}
           </div>
@@ -138,7 +144,13 @@ const ArticleCard = ({ article }: { article: Article }) => {
             <div className="mb-2">
               <Badge variant="secondary" className="text-xs">{eventType}</Badge>
             </div>
-            <h3 className="text-sm md:text-base font-semibold mb-2 hover:text-primary transition-colors line-clamp-2">{title}</h3>
+            <h3 className={cn("text-sm md:text-base font-semibold mb-2 transition-colors line-clamp-2", 
+              isPalmeirasTheme 
+                ? "hover:text-[#006B3D]" 
+                : "hover:text-primary"
+            )}>
+              {title}
+            </h3>
             <div className="text-muted-foreground text-xs mb-auto">
               <p className="line-clamp-2">
                 {getDescriptionSnippet(description, 80) || 'Sem descrição'}
@@ -146,7 +158,9 @@ const ArticleCard = ({ article }: { article: Article }) => {
             </div>
             <div className="flex items-center justify-between mt-2 pt-2 border-t text-xs">
               <div className="flex items-center gap-1">
-                <div className="h-4 w-4 rounded-full bg-secondary overflow-hidden flex items-center justify-center text-[10px] font-medium">
+                <div className={cn("h-4 w-4 rounded-full overflow-hidden flex items-center justify-center text-[10px] font-medium", 
+                  isPalmeirasTheme ? "bg-[#E8F5EE]" : "bg-secondary"
+                )}>
                   {author ? author.charAt(0).toUpperCase() : 'M'}
                 </div>
                 <span className="text-muted-foreground truncate max-w-[85px]">{author}</span>
@@ -164,6 +178,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
 };
 
 export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProps) {
+  const { isPalmeirasTheme } = useTheme();
   if (!articles || articles.length === 0) {
     return <div className="py-8 text-center text-muted-foreground">Nenhum artigo encontrado</div>;
   }
@@ -184,7 +199,7 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
     const title = getTitle(article);
     
     return (
-      <Card className="overflow-hidden border">
+      <Card className={cn("overflow-hidden border", isPalmeirasTheme ? "hover:border-[#006B3D]/30" : "hover:border-primary/30")}>
         <Link 
           href={articleUrl}
           prefetch={false}
@@ -210,7 +225,13 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
                     <Badge variant="secondary">{eventType}</Badge>
                   </div>
                   
-                  <h1 className="text-lg md:text-xl font-bold line-clamp-3 hover:text-primary transition-colors">{title}</h1>
+                  <h1 className={cn("text-lg md:text-xl font-bold line-clamp-3 transition-colors", 
+                    isPalmeirasTheme 
+                      ? "hover:text-[#006B3D]" 
+                      : "hover:text-primary"
+                  )}>
+                    {title}
+                  </h1>
                   
                   <div className="text-muted-foreground prose prose-sm prose-neutral dark:prose-invert max-w-none md:line-clamp-4">
                     <ReactMarkdown>
@@ -219,9 +240,11 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
                   </div>
                 </div>
                 
-                <div className="flex items-center justify-between mt-3 pt-3 border-t">
+                <div className="mt-auto flex flex-col gap-1 pt-4">
                   <div className="flex items-center gap-2">
-                    <div className="h-5 w-5 rounded-full bg-secondary overflow-hidden flex items-center justify-center text-xs font-medium">
+                    <div className={cn("h-5 w-5 rounded-full overflow-hidden flex items-center justify-center text-xs font-medium", 
+                      isPalmeirasTheme ? "bg-[#E8F5EE]" : "bg-secondary"
+                    )}>
                       {author ? author.charAt(0).toUpperCase() : 'M'}
                     </div>
                     <span className="text-xs md:text-sm text-muted-foreground">{author}</span>

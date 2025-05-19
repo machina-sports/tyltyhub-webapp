@@ -6,9 +6,11 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { MessageSquare, Compass, History, X, Palette } from 'lucide-react'
+import { MessageSquare, Compass, History, X } from 'lucide-react'
 import { MobileHeader } from './mobile-header'
 import { useChatState } from '@/hooks/use-chat-state'
+import { ThemeToggle } from './theme-toggle'
+import { useTheme } from './theme-provider'
 
 interface Route {
   label: string
@@ -34,6 +36,7 @@ export function Sidebar() {
   const router = useRouter()
   const { resetChat } = useChatState()
   const [isOpen, setIsOpen] = useState(false)
+  const { isPalmeirasTheme } = useTheme()
 
   const handleNavigation = (href: string) => {
     if (href === '/') {
@@ -67,6 +70,7 @@ export function Sidebar() {
       <div className={cn(
         "fixed inset-y-0 left-0 z-50 w-72 transform transition-transform duration-200 ease-in-out md:translate-x-0 md:static md:w-56",
         "space-y-4 pt-16 md:pt-4 flex flex-col h-full bg-sportingbet-bright-deep-blue border-r",
+        isPalmeirasTheme ? "bg-[#006B3D]" : "bg-sportingbet-bright-deep-blue",
         isOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="pr-4 pl-2 absolute top-4 right-0 md:hidden">
@@ -82,35 +86,35 @@ export function Sidebar() {
         </div>
         
         <div className="px-3 py-2 flex-1 flex flex-col">
-          <div 
-            onClick={() => handleNavigation('/')} 
-            className="flex items-center justify-center pl-3 mb-8 cursor-pointer"
-            role="button"
-            aria-label="Go to home"
-          >
-            <Image 
-              src="/sb-logo-novo.svg" 
-              alt="Logo Sportingbet" 
-              width={150} 
-              height={45}
-              priority
-            />
+          {/* Fixed height logo container */}
+          <div className="h-[110px] min-h-[110px] flex items-center justify-center mb-8">
+            <div 
+              onClick={() => handleNavigation('/')} 
+              className="flex items-center justify-center pl-3 cursor-pointer"
+              role="button"
+              aria-label="Go to home"
+            >
+              {isPalmeirasTheme ? (
+                <Image 
+                  src="/team-logos/palmeiras.png" 
+                  alt="Logo Palmeiras" 
+                  width={90} 
+                  height={90}
+                  style={{ width: 'auto', height: '90px' }}
+                  priority
+                />
+              ) : (
+                <Image 
+                  src="/sb-logo-novo.svg" 
+                  alt="Logo Sportingbet" 
+                  width={150} 
+                  height={45}
+                  priority
+                />
+              )}
+            </div>
           </div>
-          <div 
-            onClick={() => handleNavigation('/')} 
-            className="flex items-center justify-center pl-3 mb-14 cursor-pointer"
-            role="button"
-            aria-label="Go to home"
-          >
-            <Image 
-              src="/cwc-logo.png" 
-              alt="Logo Copa do Mundo de Clubes da FIFA" 
-              width={88}
-              height={29}
-              style={{ width: 'auto', height: '29px' }}
-              priority
-            />
-          </div>
+          {/* Navigation buttons with fixed position */}
           <div className="space-y-2">
             {routes.map((route) => (
               <Button
@@ -136,7 +140,12 @@ export function Sidebar() {
             target="_blank" 
             rel="noopener noreferrer" 
             onClick={() => setIsOpen(false)}
-            className="block w-full py-3 bg-[#061F3F] hover:bg-[#0A2950] active:bg-[#041A33] text-white font-medium rounded-md text-sm text-center shadow-sm transition-colors duration-200 mb-2"
+            className={cn(
+              "block w-full py-3 text-white font-medium rounded-md text-sm text-center shadow-sm transition-colors duration-200 mb-2",
+              isPalmeirasTheme
+                ? "bg-[#00502E] hover:bg-[#004025] active:bg-[#003018]"
+                : "bg-[#061F3F] hover:bg-[#0A2950] active:bg-[#041A33]"
+            )}
           >
             Registre-se Agora
           </a>
@@ -145,10 +154,13 @@ export function Sidebar() {
             target="_blank" 
             rel="noopener noreferrer" 
             onClick={() => setIsOpen(false)}
-            className="block w-full py-3 bg-white/10 hover:bg-white/15 active:bg-white/20 text-white font-medium rounded-md text-sm text-center border border-white/20 transition-colors duration-200"
+            className="block w-full py-3 bg-white/10 hover:bg-white/15 active:bg-white/20 text-white font-medium rounded-md text-sm text-center border border-white/20 transition-colors duration-200 mb-2"
           >
             Entrar
           </a>
+          <div className="mt-3 border-t border-white/10 pt-3 flex justify-center">
+            <ThemeToggle />
+          </div>
         </div>
         <div className="p-4 border-t border-[#D3ECFF]/20">
           <div className="text-white/70 text-xs text-center">
