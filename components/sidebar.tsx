@@ -90,7 +90,7 @@ export function Sidebar() {
           <div className="h-[80px] min-h-[80px] flex items-center justify-center mb-8">
             <div 
               onClick={() => handleNavigation('/')} 
-              className="flex items-center justify-center pl-3 cursor-pointer"
+              className="flex items-center justify-center pl-3 cursor-pointer ml-[-10px]"
               role="button"
               aria-label="Go to home"
             >
@@ -98,9 +98,9 @@ export function Sidebar() {
                 <Image 
                   src="/team-logos/palmeiras.png" 
                   alt="Logo Palmeiras" 
-                  width={120} 
-                  height={120}
-                  style={{ width: 'auto', height: '115px' }}
+                  width={90} 
+                  height={90}
+                  style={{ width: 'auto', height: '90px' }}
                   priority
                 />
               ) : (
