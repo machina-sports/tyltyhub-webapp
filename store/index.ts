@@ -8,14 +8,16 @@ import DiscoverReducer from "@/providers/discover/reducer"
 import ArticleReducer from "@/providers/article/reducer"
 import StandingsReducer from "@/providers/standings/reducer"
 import ThreadsReducer from "@/providers/threads/reducer"
+import TrendingReducer from "@/providers/trending/reducer"
 
 export function makeStore() {
   return configureStore({
     reducer: {
       article: ArticleReducer.reducer,
       discover: DiscoverReducer.reducer,
-      threads: ThreadsReducer.reducer,
       standings: StandingsReducer.reducer,
+      threads: ThreadsReducer.reducer,
+      trending: TrendingReducer.reducer,
     },
     middleware: (getDefaultMiddlewares) => getDefaultMiddlewares().concat()
   })

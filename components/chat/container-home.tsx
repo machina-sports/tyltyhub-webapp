@@ -15,11 +15,59 @@ import { useRouter } from "next/navigation"
 
 import { SportingbetDot } from "../ui/dot"
 
-const ContainerHome = ({ query, topQuestions = [] }: { query: string, topQuestions: any[] }) => {
+import { useGlobalState } from "@/store/useState"
+
+import Image from "next/image"
+
+const getImageUrl = (article: any): string => {
+  if (!article) return '';
+
+  const imageAddress = process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS;
+
+  if (article?.image_path) {
+    return `${imageAddress}/${article?.image_path}`;
+  }
+
+  const title = article.title || 'Article';
+  return `https://placehold.co/1200x600/2A9D8F/FFFFFF?text=${encodeURIComponent(title)}`;
+};
+
+const getEventType = (article: any): string => {
+  if (!article || !article.metadata) return 'Notícias';
+
+  // For soccer games, return "Futebol"
+  if (article.metadata.event_type === 'soccer-game') {
+    return 'Futebol';
+  }
+
+  // For competition names, make them more readable
+  if (article.metadata.competition) {
+    switch (article.metadata.competition) {
+      case 'sr:competition:17':
+        return 'Premier League';
+      case 'sr:competition:384':
+        return 'Libertadores';
+      case 'sr:competition:390':
+        return 'Brasileiro Série B';
+      default:
+        return article.metadata.competition;
+    }
+  }
+
+  return 'Notícias';
+};
+
+const ContainerHome = ({ query }: { query: string }) => {
 
   const router = useRouter()
 
   const [input, setInput] = useState(query)
+
+  const state = useGlobalState((state: any) => state.trending)
+
+  const trendingArticle = state.trendingResults.data?.[0]?.value
+
+  const topQuestions = trendingArticle?.related_questions || []
 
   const user_id = "123"
 
@@ -41,9 +89,22 @@ const ContainerHome = ({ query, topQuestions = [] }: { query: string, topQuestio
   }
 
   return (
-    <div className="flex flex-col h-screen bg-background pt-16 md:pt-0">
+    <div className="flex flex-col h-screen bg-background pt-12 md:pt-0">
       <div className="flex-1 overflow-auto hide-scrollbar momentum-scroll pb-32 pt-4 md:pb-24">
         <div className="flex flex-col items-center justify-center min-h-[calc(100vh-12rem)] p-4">
+          {trendingArticle?.image_path && (
+            <div className="relative w-full overflow-hidden rounded-lg aspect-[12/9] max-w-[520px] mb-8">
+              <Image
+                src={getImageUrl(trendingArticle)}
+                alt={trendingArticle?.title}
+                fill
+                className="object-cover object-center"
+                priority
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1000px"
+                loading="eager"
+              />
+            </div>
+          )}
           <h1 className="text-center mb-4 sm:mb-6 flex items-center gap-3 justify-center">
             Qual vai ser a sua aposta?
             <SportingbetDot size={28} className="ml-1" />
@@ -64,7 +125,7 @@ const ContainerHome = ({ query, topQuestions = [] }: { query: string, topQuestio
             </form>
           </div>
           <div className="mt-6 sm:mt-8 grid grid-cols-1 gap-2 w-full max-w-xl mx-auto">
-            {topQuestions.map((text, index) => (
+            {topQuestions?.map((text: string, index: number) => (
               <button
                 key={index}
                 className="w-full text-left px-3 py-2 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 transition-colors rounded-lg flex items-center group"
