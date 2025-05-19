@@ -30,26 +30,25 @@ const unescapeMarkdown = (text: string | undefined | null): string => {
 
 const getImageUrl = (article: any): string => {
   if (!article) return '';
-  
+
   const imageAddress = process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS;
-  
-  if (article.metadata?.event_code) {
-    // For articles, we use the event_code to construct the image URL
-    return `${imageAddress}/image-preview-${article.metadata.event_code}.webp`;
+
+  if (article?.value?.image_path) {
+    return `${imageAddress}/${article.value.image_path}`;
   }
-  
+
   const title = article.value?.title || 'Article';
   return `https://placehold.co/1200x600/2A9D8F/FFFFFF?text=${encodeURIComponent(title)}`;
 };
 
 const getEventType = (article: any): string => {
   if (!article || !article.metadata) return 'Notícias';
-  
+
   // For soccer games, return "Futebol"
   if (article.metadata.event_type === 'soccer-game') {
     return 'Futebol';
   }
-  
+
   // For competition names, make them more readable
   if (article.metadata.competition) {
     switch (article.metadata.competition) {
@@ -63,31 +62,31 @@ const getEventType = (article: any): string => {
         return article.metadata.competition;
     }
   }
-  
+
   return 'Notícias';
 };
 
 const getReadTime = (article: any): string => {
   if (!article) return '3 min';
   if (article.readTime) return article.readTime;
-  
+
   // Calculate read time based on section content length
   if (article.value) {
     let content = '';
-    
+
     for (let i = 1; i <= 5; i++) {
       const sectionContent = article.value[`section_${i}_content`];
       if (sectionContent) {
         content += ' ' + sectionContent;
       }
     }
-    
+
     // Average reading speed: 200 words per minute
     const wordCount = content.split(/\s+/).length;
     const readTimeMinutes = Math.max(1, Math.ceil(wordCount / 200));
     return `${readTimeMinutes} min`;
   }
-  
+
   return '3 min';
 };
 
@@ -141,24 +140,25 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
 
   const articleData = useMemo(() => {
     if (!article) return null;
-    
     return {
+      ...article,
       imageUrl: getImageUrl(article),
       eventType: getEventType(article),
       readTime: getReadTime(article),
       title: article.value?.title || 'Sem título',
       subtitle: article.value?.subtitle || '',
-      sections: Array.from({length: 5}, (_, i) => {
-        const index = i + 1;
-        const title = article.value?.[`section_${index}_title`];
-        const content = article.value?.[`section_${index}_content`];
-        return title && content ? { title, content } : null;
-      }).filter(Boolean),
+      section_1_title: article.value?.["section_1_title"] || '',
+      section_1_content: article.value?.["section_1_content"] || '',
+      section_2_title: article.value?.["section_2_title"] || '',
+      section_2_content: article.value?.["section_2_content"] || '',
+      section_3_title: article.value?.["section_3_title"] || '',
+      section_3_content: article.value?.["section_3_content"] || '',
       createdDate: article.created || article.date,
       articleId: (article._id || article.id || '').toString(),
       eventDetails: article.value?.["event-details"],
       widgetEmbed: article.value?.["widget-match-embed"],
-      slug: article.value?.slug
+      slug: article.value?.slug,
+      imagePath: article?.value?.["image_path"]
     };
   }, [article]);
 
@@ -174,11 +174,11 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
       </div>
     );
   }
-  
+
   return (
     <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 pt-20 md:pt-6 pb-32 sm:pb-36 space-y-6 sm:space-y-8">
       {articleData.imageUrl && (
-        <div className="relative h-[200px] sm:h-[400px] w-full overflow-hidden rounded-lg">
+        <div className="relative w-full overflow-hidden rounded-lg aspect-[12/9]">
           <Image
             src={articleData.imageUrl}
             alt={articleData.title}
@@ -192,51 +192,42 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
       )}
 
       <div className="space-y-6">
-        <Badge variant="secondary">{articleData.eventType}</Badge>
+        {/* <Badge variant="secondary">{articleData.eventType}</Badge> */}
 
         <h1 className="text-2xl sm:text-4xl font-bold">{articleData.title}</h1>
-        
+
         {articleData.subtitle && (
           <p className="text-lg text-muted-foreground">{articleData.subtitle}</p>
         )}
 
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
+            {/* <div className="flex items-center gap-2">
               <div className="h-8 w-8 rounded-full bg-secondary overflow-hidden flex items-center justify-center text-sm font-medium">
                 M
               </div>
               <span>Machina Sports</span>
-            </div>
-            <span>·</span>
-            <span>
-              {articleData.createdDate ? 
-                formatDistanceToNow(new Date(articleData.createdDate), { addSuffix: true, locale: ptBR }) : 
+            </div> */}
+            {/* <span>·</span> */}
+            <span className="flex items-center">
+              <Clock className="h-4 w-4 mr-2" />
+              {articleData.createdDate ?
+                formatDistanceToNow(new Date(articleData.createdDate), { addSuffix: true, locale: ptBR }) :
                 'Recente'
               }
             </span>
-            <span>·</span>
-            <span className="flex items-center">
-              <Clock className="h-4 w-4 mr-1" />
-              {articleData.readTime}
-            </span>
-            <span>·</span>
-            <span className="flex items-center">
-              <Eye className="h-4 w-4 mr-1" />
-              {views || 0} visualizações
-            </span>
           </div>
-          
+
           <div className="mt-2 sm:mt-0">
-            <ArticleSharing 
+            <ArticleSharing
               articleId={articleData.articleId}
-              title={articleData.title} 
-              url={`${typeof window !== 'undefined' ? window.location.origin : ''}/discover/${articleData.slug || articleData.articleId}`} 
+              title={articleData.title}
+              url={`${typeof window !== 'undefined' ? window.location.origin : ''}/discover/${articleData.slug || articleData.articleId}`}
             />
           </div>
         </div>
       </div>
-      
+
       <div className="prose prose-neutral dark:prose-invert max-w-none">
         {/* Event Details if available */}
         {articleData.eventDetails && (
@@ -255,21 +246,28 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
             </ul>
           </div>
         )}
-        
-        {articleData.sections.map((section: any, index: number) => (
-          <div key={index} className="mb-6">
-            <h2>{section.title}</h2>
-            <ReactMarkdown>
-              {unescapeMarkdown(section.content)}
-            </ReactMarkdown>
-          </div>
-        ))}
-        
-        {articleData.widgetEmbed && (
-          <Suspense fallback={<div className="h-60 w-full bg-muted/30 rounded-md animate-pulse"></div>}>
-            <WidgetEmbed embedCode={articleData.widgetEmbed} />
-          </Suspense>
-        )}
+
+
+        <div className="prose-container">
+          <h2 className="text-lg font-bold mt-8 mb-8">
+          </h2>
+          {article?.["event-details"]?.when && article?.["event-details"]?.venue && article?.["event-details"]?.match && (
+            <p className="text-lg mt-8 mb-8">
+              {article?.["event_type"] === "nba-game" ? "🏀" : "⚽"} {article?.["event-details"]?.match}<br />
+              🕒 {article?.["event-details"]?.when}<br />
+              🏟️ {article?.["event-details"]?.venue}
+            </p>
+          )}
+          {articleData.widgetEmbed && (
+            <Suspense fallback={<div className="h-60 w-full bg-muted/30 rounded-md animate-pulse"></div>}>
+              <WidgetEmbed embedCode={articleData.widgetEmbed} />
+            </Suspense>
+          )}
+          <p className="text-lg mt-8 mb-8">{articleData?.section_1_content}</p>
+          <p className="text-lg mt-8 mb-8">{articleData?.section_2_content}</p>
+          <p className="text-lg mt-8 mb-8">{articleData?.section_3_content}</p>
+        </div>
+
       </div>
 
       <Separator />

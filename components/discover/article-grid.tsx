@@ -34,16 +34,12 @@ const getDescriptionSnippet = (description: string | undefined | null, maxLength
 const getImageUrl = (article: Article): string => {
   if (!article) return '';
   
-  // Get image address from config
   const imageAddress = process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS;
   
-  // Check if we have event_code in metadata
-  if (article.metadata?.event_code) {
-    // For articles, we use the event_code to construct the image URL
-    return `${imageAddress}/image-preview-${article.metadata.event_code}.webp`;
+  if (article.value?.image_path) {
+    return `${imageAddress}/${article.value.image_path}`;
   }
   
-  // Fallback to placeholder if no event_code
   const title = article.value?.title || 'Article';
   return `https://placehold.co/800x450/2A9D8F/FFFFFF?text=${encodeURIComponent(title)}`;
 };
@@ -124,33 +120,33 @@ const ArticleCard = ({ article }: { article: Article }) => {
         prefetch={false}
       >
         <CardContent className="p-0 flex flex-col h-full">
-          <div className="relative aspect-[16/9] w-full">
+          <div className="relative aspect-[12/9] w-full">
             {imageUrl && (
               <Image
                 src={imageUrl}
                 alt={title}
                 fill
-                className="object-cover"
+                className="object-cover rounded-lg"
               />
             )}
           </div>
-          <div className="p-3 flex flex-col flex-grow">
-            <div className="mb-2">
+          <div className="p-5 flex flex-col flex-grow">
+            {/* <div className="mb-2">
               <Badge variant="secondary" className="text-xs">{eventType}</Badge>
-            </div>
-            <h3 className="text-sm md:text-base font-semibold mb-2 hover:text-primary transition-colors line-clamp-2">{title}</h3>
+            </div> */}
+            <h3 className="text-sm md:text-xl font-semibold mb-2 hover:text-primary transition-colors line-clamp-3">{title}</h3>
             <div className="text-muted-foreground text-xs mb-auto">
-              <p className="line-clamp-2">
-                {getDescriptionSnippet(description, 80) || 'Sem descrição'}
+              <p className="line-clamp-3">
+                {getDescriptionSnippet(description, 120) || 'Sem descrição'}
               </p>
             </div>
             <div className="flex items-center justify-between mt-2 pt-2 border-t text-xs">
-              <div className="flex items-center gap-1">
+              {/* <div className="flex items-center gap-1">
                 <div className="h-4 w-4 rounded-full bg-secondary overflow-hidden flex items-center justify-center text-[10px] font-medium">
                   {author ? author.charAt(0).toUpperCase() : 'M'}
                 </div>
                 <span className="text-muted-foreground truncate max-w-[85px]">{author}</span>
-              </div>
+              </div> */}
               <div className="flex items-center text-muted-foreground whitespace-nowrap">
                 <CalendarDays className="h-3 w-3 mr-1" />
                 {articleDate ? formatDistanceToNow(new Date(articleDate), { addSuffix: true, locale: ptBR }) : 'Recente'}
@@ -191,41 +187,39 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
         >
           <CardContent className="p-0">
             <div className="flex flex-col md:grid md:grid-cols-12 gap-0">
-              <div className="md:col-span-7">
-                <div className="relative aspect-[16/9] md:aspect-auto md:h-full w-full">
+              <div className="md:col-span-6">
+                <div className="relative aspect-[12/9] md:h-full w-full">
                   {imageUrl && (
                     <Image
                       src={imageUrl}
                       alt={title}
                       fill
-                      className="object-cover"
+                      className="object-cover rounded-lg"
                       priority
                     />
                   )}
                 </div>
               </div>
-              <div className="md:col-span-5 p-4 md:p-5 flex flex-col">
+              <div className="md:col-span-6 p-4 md:p-8 flex flex-col">
                 <div className="space-y-3">
-                  <div>
+                  {/* <div>
                     <Badge variant="secondary">{eventType}</Badge>
-                  </div>
-                  
-                  <h1 className="text-lg md:text-xl font-bold line-clamp-3 hover:text-primary transition-colors">{title}</h1>
-                  
+                  </div> */}
+                  <h1 className="text-lg md:text-3xl font-bold line-clamp-3 hover:text-primary transition-colors">{title}</h1>
                   <div className="text-muted-foreground prose prose-sm prose-neutral dark:prose-invert max-w-none md:line-clamp-4">
                     <ReactMarkdown>
-                      {getDescriptionSnippet(description, 180) || 'Sem descrição'}
+                      {getDescriptionSnippet(description, 360) || 'Sem descrição'}
                     </ReactMarkdown>
                   </div>
                 </div>
                 
                 <div className="flex items-center justify-between mt-3 pt-3 border-t">
-                  <div className="flex items-center gap-2">
+                  {/* <div className="flex items-center gap-2">
                     <div className="h-5 w-5 rounded-full bg-secondary overflow-hidden flex items-center justify-center text-xs font-medium">
                       {author ? author.charAt(0).toUpperCase() : 'M'}
                     </div>
                     <span className="text-xs md:text-sm text-muted-foreground">{author}</span>
-                  </div>
+                  </div> */}
                   <div className="flex items-center text-xs md:text-sm text-muted-foreground">
                     <CalendarDays className="h-3 w-3 md:h-4 md:w-4 mr-1" />
                     {articleDate ? formatDistanceToNow(new Date(articleDate), { addSuffix: true, locale: ptBR }) : 'Recente'}
