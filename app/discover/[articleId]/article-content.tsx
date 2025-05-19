@@ -153,6 +153,10 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
       section_2_content: article.value?.["section_2_content"] || '',
       section_3_title: article.value?.["section_3_title"] || '',
       section_3_content: article.value?.["section_3_content"] || '',
+      section_4_title: article.value?.["section_4_title"] || '',
+      section_4_content: article.value?.["section_4_content"] || '',
+      section_5_title: article.value?.["section_5_title"] || '',
+      section_5_content: article.value?.["section_5_content"] || '',
       createdDate: article.created || article.date,
       articleId: (article._id || article.id || '').toString(),
       eventDetails: article.value?.["event-details"],
@@ -178,7 +182,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
   return (
     <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 pt-20 md:pt-6 pb-32 sm:pb-36 space-y-6 sm:space-y-8">
       {articleData.imageUrl && (
-        <div className="relative w-full overflow-hidden rounded-lg aspect-[12/9]">
+        <div className="relative w-full overflow-hidden rounded-lg aspect-[14/9]">
           <Image
             src={articleData.imageUrl}
             alt={articleData.title}
@@ -263,9 +267,16 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
               <WidgetEmbed embedCode={articleData.widgetEmbed} />
             </Suspense>
           )}
-          <p className="text-lg mt-8 mb-8">{articleData?.section_1_content}</p>
-          <p className="text-lg mt-8 mb-8">{articleData?.section_2_content}</p>
-          <p className="text-lg mt-8 mb-8">{articleData?.section_3_content}</p>
+          <h2 className="text-lg font-bold mt-8 mb-8">{articleData.section_1_title}</h2>
+          <p className="text-lg mt-8 mb-8">{articleData.section_1_content}</p>
+          <h2 className="text-lg font-bold mt-8 mb-8">{articleData.section_2_title}</h2>
+          <p className="text-lg mt-8 mb-8">{articleData.section_2_content}</p>
+          <h2 className="text-lg font-bold mt-8 mb-8">{articleData.section_3_title}</h2>
+          <p className="text-lg mt-8 mb-8">{articleData.section_3_content}</p>
+          <h2 className="text-lg font-bold mt-8 mb-8">{articleData.section_4_title}</h2>
+          <p className="text-lg mt-8 mb-8">{articleData.section_4_content}</p>
+          <h2 className="text-lg font-bold mt-8 mb-8">{articleData.section_5_title}</h2>
+          <p className="text-lg mt-8 mb-8">{articleData.section_5_content}</p>
         </div>
 
       </div>
