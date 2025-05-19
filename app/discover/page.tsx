@@ -69,7 +69,8 @@ const buildSearchFilters = (
 ): SearchFilters => {
   const baseFilters: SearchFilters = {
     name: "content-article",
-    "metadata.language": "br"
+    "metadata.language": "br",
+    "metadata.content_type": { "$ne": "trendings-competition-trendings" }
   };
   
   if (selectedTeam !== "all-teams") {
