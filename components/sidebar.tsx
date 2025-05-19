@@ -110,7 +110,7 @@ export function Sidebar() {
                   width={250} 
                   height={120}
                   priority
-                  className="ml-[-12px]"
+                  className="ml-[-4px]"
                 />
               )}
             </div>
