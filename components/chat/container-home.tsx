@@ -134,10 +134,9 @@ const ContainerHome = ({ query }: { query: string }) => {
       secondRowPositionRef.current += 0.5;
       const contentWidth = secondRowContentRef.current.offsetWidth;
       
-      if (secondRowPositionRef.current >= 0) {
-        if (secondRowPositionRef.current >= contentWidth) {
-          secondRowPositionRef.current = -contentWidth;
-        }
+      // Reset position when we've scrolled the full width
+      if (secondRowPositionRef.current >= contentWidth) {
+        secondRowPositionRef.current = -contentWidth;
       }
       
       if (secondRowRef.current) { 
