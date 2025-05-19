@@ -68,8 +68,8 @@ export function Sidebar() {
       <MobileHeader onMenuClick={() => setIsOpen(true)} />
 
       <div className={cn(
-        "fixed inset-y-0 left-0 z-50 w-72 transform transition-transform duration-200 ease-in-out md:translate-x-0 md:static md:w-56",
-        "space-y-4 pt-16 md:pt-4 flex flex-col h-full bg-sportingbet-bright-deep-blue border-r",
+        "fixed inset-y-0 left-0 z-50 transform transition-transform duration-200 ease-in-out md:translate-x-0 md:static w-72",
+        "space-y-4 pt-16 md:pt-4 flex flex-col h-full bg-sportingbet-bright-deep-blue",
         isPalmeirasTheme ? "bg-[#006B3D]" : "bg-sportingbet-bright-deep-blue",
         isOpen ? "translate-x-0" : "-translate-x-full"
       )}>
@@ -85,9 +85,9 @@ export function Sidebar() {
           </Button>
         </div>
         
-        <div className="px-3 py-2 flex-1 flex flex-col">
+        <div className="px-8 py-2 flex-1 flex flex-col">
           {/* Fixed height logo container */}
-          <div className="h-[110px] min-h-[110px] flex items-center justify-center mb-8">
+          <div className="h-[80px] min-h-[80px] flex items-center justify-center mb-8">
             <div 
               onClick={() => handleNavigation('/')} 
               className="flex items-center justify-center pl-3 cursor-pointer"
@@ -98,30 +98,31 @@ export function Sidebar() {
                 <Image 
                   src="/team-logos/palmeiras.png" 
                   alt="Logo Palmeiras" 
-                  width={90} 
-                  height={90}
-                  style={{ width: 'auto', height: '90px' }}
+                  width={120} 
+                  height={120}
+                  style={{ width: 'auto', height: '115px' }}
                   priority
                 />
               ) : (
                 <Image 
                   src="/sb-logo-novo.svg" 
                   alt="Logo Sportingbet" 
-                  width={150} 
-                  height={45}
+                  width={250} 
+                  height={120}
                   priority
+                  className="ml-[-12px]"
                 />
               )}
             </div>
           </div>
           {/* Navigation buttons with fixed position */}
-          <div className="space-y-2">
+          <div className="space-y-4 border-t border-white/10 pt-4">
             {routes.map((route) => (
               <Button
                 key={route.href}
                 variant={pathname === route.href ? "secondary" : "ghost"}
                 className={cn(
-                  "w-full justify-start text-white hover:text-white rounded-lg h-12 px-4",
+                  "w-full justify-start text-lg text-white hover:text-white rounded-lg h-16 px-8",
                   pathname === route.href 
                     ? "bg-white/20 text-white hover:bg-white/30 font-medium" 
                     : "hover:bg-white/10 active:bg-white/15 transition-colors duration-200"
@@ -134,14 +135,14 @@ export function Sidebar() {
             ))}
           </div>
         </div>
-        <div className="px-4 pb-4 pt-2">
+        <div className="px-8 py-2 pb-4 pt-2">
           <a 
             href="https://www.sportingbet.bet.br/pt-br/mobileportal/register" 
             target="_blank" 
             rel="noopener noreferrer" 
             onClick={() => setIsOpen(false)}
             className={cn(
-              "block w-full py-3 text-white font-medium rounded-md text-sm text-center shadow-sm transition-colors duration-200 mb-2",
+              "block w-full py-3 text-white font-medium rounded-md text-sm text-center shadow-sm transition-colors duration-200 mb-4",
               isPalmeirasTheme
                 ? "bg-[#00502E] hover:bg-[#004025] active:bg-[#003018]"
                 : "bg-[#061F3F] hover:bg-[#0A2950] active:bg-[#041A33]"
