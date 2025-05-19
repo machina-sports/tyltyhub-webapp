@@ -20,7 +20,7 @@ interface Route {
 
 const routes: Route[] = [
   {
-    label: 'Chat',
+    label: 'Conversar',
     icon: MessageSquare,
     href: '/',
   },
