@@ -73,53 +73,112 @@ const ContainerHome = ({ query }: { query: string }) => {
 
   const user_id = "123"
 
-  // Animation states and refs
-  const [isRowScrolling, setIsRowScrolling] = useState(true)
-  const rowRef = useRef<HTMLDivElement>(null)
-  const rowContentRef = useRef<HTMLDivElement>(null)
-  const rowPositionRef = useRef(0)
-  const animationFrameIdRef = useRef<number | null>(null)
+  // Animation states and refs for first row
+  const [isFirstRowScrolling, setIsFirstRowScrolling] = useState(true)
+  const firstRowRef = useRef<HTMLDivElement>(null)
+  const firstRowContentRef = useRef<HTMLDivElement>(null)
+  const firstRowPositionRef = useRef(0)
+  const firstAnimationFrameIdRef = useRef<number | null>(null)
 
-  // Animation effect
+  // Animation states and refs for second row
+  const [isSecondRowScrolling, setIsSecondRowScrolling] = useState(true)
+  const secondRowRef = useRef<HTMLDivElement>(null)
+  const secondRowContentRef = useRef<HTMLDivElement>(null)
+  const secondRowPositionRef = useRef(0)
+  const secondAnimationFrameIdRef = useRef<number | null>(null)
+
+  // Animation effect for first row
   useEffect(() => {
-    const rowAnimation = () => {
-      if (!isRowScrolling || !rowRef.current || !rowContentRef.current) {
+    const firstRowAnimation = () => {
+      if (!isFirstRowScrolling || !firstRowRef.current || !firstRowContentRef.current) {
         return;
       }
       
-      rowPositionRef.current += 0.5;
-      const contentWidth = rowContentRef.current.offsetWidth;
-      if (rowPositionRef.current >= contentWidth) {
-        rowPositionRef.current = 0;
+      firstRowPositionRef.current += 0.5;
+      const contentWidth = firstRowContentRef.current.offsetWidth;
+      if (firstRowPositionRef.current >= contentWidth) {
+        firstRowPositionRef.current = 0;
       }
-      if (rowRef.current) { 
-        rowRef.current.style.transform = `translateX(-${rowPositionRef.current}px)`;
+      if (firstRowRef.current) { 
+        firstRowRef.current.style.transform = `translateX(-${firstRowPositionRef.current}px)`;
       }
       
-      animationFrameIdRef.current = requestAnimationFrame(rowAnimation);
+      firstAnimationFrameIdRef.current = requestAnimationFrame(firstRowAnimation);
     };
     
-    if (isRowScrolling) {
-      if (animationFrameIdRef.current !== null) {
-        cancelAnimationFrame(animationFrameIdRef.current);
+    if (isFirstRowScrolling) {
+      if (firstAnimationFrameIdRef.current !== null) {
+        cancelAnimationFrame(firstAnimationFrameIdRef.current);
       }
-      animationFrameIdRef.current = requestAnimationFrame(rowAnimation);
-    } else if (animationFrameIdRef.current !== null) {
-      cancelAnimationFrame(animationFrameIdRef.current);
-      animationFrameIdRef.current = null;
+      firstAnimationFrameIdRef.current = requestAnimationFrame(firstRowAnimation);
+    } else if (firstAnimationFrameIdRef.current !== null) {
+      cancelAnimationFrame(firstAnimationFrameIdRef.current);
+      firstAnimationFrameIdRef.current = null;
     }
 
     return () => {
-      if (animationFrameIdRef.current !== null) {
-        cancelAnimationFrame(animationFrameIdRef.current);
-        animationFrameIdRef.current = null;
+      if (firstAnimationFrameIdRef.current !== null) {
+        cancelAnimationFrame(firstAnimationFrameIdRef.current);
+        firstAnimationFrameIdRef.current = null;
       }
     };
-  }, [isRowScrolling]);
+  }, [isFirstRowScrolling]);
+
+  // Animation effect for second row
+  useEffect(() => {
+    const secondRowAnimation = () => {
+      if (!isSecondRowScrolling || !secondRowRef.current || !secondRowContentRef.current) {
+        return;
+      }
+      
+      secondRowPositionRef.current += 0.5;
+      const contentWidth = secondRowContentRef.current.offsetWidth;
+      
+      if (secondRowPositionRef.current >= 0) {
+        if (secondRowPositionRef.current >= contentWidth) {
+          secondRowPositionRef.current = -contentWidth;
+        }
+      }
+      
+      if (secondRowRef.current) { 
+        secondRowRef.current.style.transform = `translateX(${secondRowPositionRef.current}px)`;
+      }
+      
+      secondAnimationFrameIdRef.current = requestAnimationFrame(secondRowAnimation);
+    };
+    
+    if (isSecondRowScrolling) {
+      if (secondAnimationFrameIdRef.current !== null) {
+        cancelAnimationFrame(secondAnimationFrameIdRef.current);
+      }
+      secondAnimationFrameIdRef.current = requestAnimationFrame(secondRowAnimation);
+    } else if (secondAnimationFrameIdRef.current !== null) {
+      cancelAnimationFrame(secondAnimationFrameIdRef.current);
+      secondAnimationFrameIdRef.current = null;
+    }
+
+    return () => {
+      if (secondAnimationFrameIdRef.current !== null) {
+        cancelAnimationFrame(secondAnimationFrameIdRef.current);
+        secondAnimationFrameIdRef.current = null;
+      }
+    };
+  }, [isSecondRowScrolling]);
+
+  // Initialize second row position
+  useEffect(() => {
+    if (secondRowContentRef.current && secondRowRef.current) {
+      const width = secondRowContentRef.current.offsetWidth;
+      secondRowPositionRef.current = -width;
+      secondRowRef.current.style.transform = `translateX(${secondRowPositionRef.current}px)`;
+    }
+  }, []);
 
   // Hover handlers
-  const pauseRow = () => setIsRowScrolling(false);
-  const resumeRow = () => setIsRowScrolling(true);
+  const pauseFirstRow = () => setIsFirstRowScrolling(false);
+  const resumeFirstRow = () => setIsFirstRowScrolling(true);
+  const pauseSecondRow = () => setIsSecondRowScrolling(false);
+  const resumeSecondRow = () => setIsSecondRowScrolling(true);
 
   const handleSubmit = async (e: React.FormEvent) => {
 
@@ -137,6 +196,10 @@ const ContainerHome = ({ query }: { query: string }) => {
   const getInputPlaceholder = () => {
     return "Busque por times, jogos ou odds..."
   }
+
+  // Split questions into two groups
+  const firstHalf = topQuestions?.slice(0, Math.ceil(topQuestions.length / 2)) || []
+  const secondHalf = topQuestions?.slice(Math.ceil(topQuestions.length / 2)) || []
 
   return (
     <div className="flex flex-col h-screen bg-background pt-12 md:pt-0">
@@ -174,43 +237,86 @@ const ContainerHome = ({ query }: { query: string }) => {
               </div>
             </form>
           </div>
-          <div className="mt-6 sm:mt-8 w-full max-w-xl mx-auto">
-            <div 
-              className="relative overflow-hidden rounded-lg"
-              onMouseEnter={pauseRow}
-              onMouseLeave={resumeRow}
-              onTouchStart={pauseRow}
-              onTouchEnd={resumeRow}
-            >
-              <div className="absolute left-0 top-0 h-full w-12 bg-gradient-to-r from-background to-transparent z-10"></div>
-              <div className="absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-background to-transparent z-10"></div>
-              <div className="flex overflow-hidden scrolling-row">
-                <div ref={rowRef} className="flex w-full touch-action-pan-y"> 
-                  <div ref={rowContentRef} className="flex gap-2 py-1">
-                    {topQuestions?.map((text: string, index: number) => (
-                      <motion.button
-                        key={index}
-                        whileTap={{ scale: 0.97 }}
-                        className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 active:bg-secondary/60 transition-colors rounded-lg flex items-center group"
-                        onClick={() => handleSampleQuery(text)}
-                      >
-                        <Reply className="h-4 w-4 mr-3 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" />
-                        {text}
-                      </motion.button>
-                    ))}
+          <div className="mt-4 sm:mt-6 w-full max-w-xl mx-auto px-1">
+            <div className="w-full relative flex flex-col gap-2 md:gap-3">
+              <div 
+                className="relative overflow-hidden rounded-lg"
+                onMouseEnter={pauseFirstRow}
+                onMouseLeave={resumeFirstRow}
+                onTouchStart={pauseFirstRow}
+                onTouchEnd={resumeFirstRow}
+              >
+                <div className="absolute left-0 top-0 h-full w-12 bg-gradient-to-r from-background to-transparent z-10"></div>
+                <div className="absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-background to-transparent z-10"></div>
+                <div className="flex overflow-hidden scrolling-row">
+                  <div ref={firstRowRef} className="flex w-full touch-action-pan-y"> 
+                    <div ref={firstRowContentRef} className="flex gap-2 py-1">
+                      {firstHalf.map((text: string, index: number) => (
+                        <motion.button
+                          key={index}
+                          whileTap={{ scale: 0.97 }}
+                          className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2.5 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 active:bg-secondary/60 transition-colors rounded-lg flex items-center group"
+                          onClick={() => handleSampleQuery(text)}
+                        >
+                          <Reply className="h-4 w-4 mr-3 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" />
+                          {text}
+                        </motion.button>
+                      ))}
+                    </div>
+                    <div className="flex gap-2 py-1">
+                      {firstHalf.map((text: string, index: number) => (
+                        <motion.button
+                          key={`dup1-${index}`}
+                          whileTap={{ scale: 0.97 }}
+                          className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2.5 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 active:bg-secondary/60 transition-colors rounded-lg flex items-center group"
+                          onClick={() => handleSampleQuery(text)}
+                        >
+                          <Reply className="h-4 w-4 mr-3 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" />
+                          {text}
+                        </motion.button>
+                      ))}
+                    </div>
                   </div>
-                  <div className="flex gap-2 py-1">
-                    {topQuestions?.map((text: string, index: number) => (
-                      <motion.button
-                        key={`dup-${index}`}
-                        whileTap={{ scale: 0.97 }}
-                        className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 active:bg-secondary/60 transition-colors rounded-lg flex items-center group"
-                        onClick={() => handleSampleQuery(text)}
-                      >
-                        <Reply className="h-4 w-4 mr-3 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" />
-                        {text}
-                      </motion.button>
-                    ))}
+                </div>
+              </div>
+
+              <div 
+                className="relative overflow-hidden rounded-lg"
+                onMouseEnter={pauseSecondRow}
+                onMouseLeave={resumeSecondRow}
+                onTouchStart={pauseSecondRow}
+                onTouchEnd={resumeSecondRow}
+              >
+                <div className="absolute left-0 top-0 h-full w-12 bg-gradient-to-r from-background to-transparent z-10"></div>
+                <div className="absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-background to-transparent z-10"></div>
+                <div className="flex overflow-hidden scrolling-row">
+                  <div ref={secondRowRef} className="flex w-full touch-action-pan-y"> 
+                    <div ref={secondRowContentRef} className="flex gap-2 py-1">
+                      {secondHalf.map((text: string, index: number) => (
+                        <motion.button
+                          key={index}
+                          whileTap={{ scale: 0.97 }}
+                          className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2.5 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 active:bg-secondary/60 transition-colors rounded-lg flex items-center group"
+                          onClick={() => handleSampleQuery(text)}
+                        >
+                          <Reply className="h-4 w-4 mr-3 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" />
+                          {text}
+                        </motion.button>
+                      ))}
+                    </div>
+                    <div className="flex gap-2 py-1">
+                      {secondHalf.map((text: string, index: number) => (
+                        <motion.button
+                          key={`dup2-${index}`}
+                          whileTap={{ scale: 0.97 }}
+                          className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2.5 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 active:bg-secondary/60 transition-colors rounded-lg flex items-center group"
+                          onClick={() => handleSampleQuery(text)}
+                        >
+                          <Reply className="h-4 w-4 mr-3 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" />
+                          {text}
+                        </motion.button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
