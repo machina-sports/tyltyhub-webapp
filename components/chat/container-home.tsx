@@ -134,13 +134,12 @@ const ContainerHome = ({ query }: { query: string }) => {
       secondRowPositionRef.current += 0.5;
       const contentWidth = secondRowContentRef.current.offsetWidth;
       
-      // Reset position when we've scrolled the full width
       if (secondRowPositionRef.current >= contentWidth) {
-        secondRowPositionRef.current = -contentWidth;
+        secondRowPositionRef.current = 0;
       }
       
       if (secondRowRef.current) { 
-        secondRowRef.current.style.transform = `translateX(${secondRowPositionRef.current}px)`;
+        secondRowRef.current.style.transform = `translateX(-${secondRowPositionRef.current}px)`;
       }
       
       secondAnimationFrameIdRef.current = requestAnimationFrame(secondRowAnimation);
@@ -168,8 +167,8 @@ const ContainerHome = ({ query }: { query: string }) => {
   useEffect(() => {
     if (secondRowContentRef.current && secondRowRef.current) {
       const width = secondRowContentRef.current.offsetWidth;
-      secondRowPositionRef.current = -width;
-      secondRowRef.current.style.transform = `translateX(${secondRowPositionRef.current}px)`;
+      secondRowPositionRef.current = width;
+      secondRowRef.current.style.transform = `translateX(-${secondRowPositionRef.current}px)`;
     }
   }, []);
 
@@ -290,7 +289,7 @@ const ContainerHome = ({ query }: { query: string }) => {
                 <div className="absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-background to-transparent z-10"></div>
                 <div className="flex overflow-hidden scrolling-row">
                   <div ref={secondRowRef} className="flex w-full touch-action-pan-y"> 
-                    <div ref={secondRowContentRef} className="flex gap-2 py-1">
+                    <div ref={secondRowContentRef} className="flex gap-2 py-1 transform">
                       {secondHalf.map((text: string, index: number) => (
                         <motion.button
                           key={index}
