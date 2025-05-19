@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 
 import {
   Search,
@@ -18,6 +18,8 @@ import { SportingbetDot } from "../ui/dot"
 import { useGlobalState } from "@/store/useState"
 
 import Image from "next/image"
+
+import { motion } from "framer-motion"
 
 const getImageUrl = (article: any): string => {
   if (!article) return '';
@@ -70,6 +72,54 @@ const ContainerHome = ({ query }: { query: string }) => {
   const topQuestions = trendingArticle?.related_questions || []
 
   const user_id = "123"
+
+  // Animation states and refs
+  const [isRowScrolling, setIsRowScrolling] = useState(true)
+  const rowRef = useRef<HTMLDivElement>(null)
+  const rowContentRef = useRef<HTMLDivElement>(null)
+  const rowPositionRef = useRef(0)
+  const animationFrameIdRef = useRef<number | null>(null)
+
+  // Animation effect
+  useEffect(() => {
+    const rowAnimation = () => {
+      if (!isRowScrolling || !rowRef.current || !rowContentRef.current) {
+        return;
+      }
+      
+      rowPositionRef.current += 0.5;
+      const contentWidth = rowContentRef.current.offsetWidth;
+      if (rowPositionRef.current >= contentWidth) {
+        rowPositionRef.current = 0;
+      }
+      if (rowRef.current) { 
+        rowRef.current.style.transform = `translateX(-${rowPositionRef.current}px)`;
+      }
+      
+      animationFrameIdRef.current = requestAnimationFrame(rowAnimation);
+    };
+    
+    if (isRowScrolling) {
+      if (animationFrameIdRef.current !== null) {
+        cancelAnimationFrame(animationFrameIdRef.current);
+      }
+      animationFrameIdRef.current = requestAnimationFrame(rowAnimation);
+    } else if (animationFrameIdRef.current !== null) {
+      cancelAnimationFrame(animationFrameIdRef.current);
+      animationFrameIdRef.current = null;
+    }
+
+    return () => {
+      if (animationFrameIdRef.current !== null) {
+        cancelAnimationFrame(animationFrameIdRef.current);
+        animationFrameIdRef.current = null;
+      }
+    };
+  }, [isRowScrolling]);
+
+  // Hover handlers
+  const pauseRow = () => setIsRowScrolling(false);
+  const resumeRow = () => setIsRowScrolling(true);
 
   const handleSubmit = async (e: React.FormEvent) => {
 
@@ -124,17 +174,47 @@ const ContainerHome = ({ query }: { query: string }) => {
               </div>
             </form>
           </div>
-          <div className="mt-6 sm:mt-8 grid grid-cols-1 gap-2 w-full max-w-xl mx-auto">
-            {topQuestions?.map((text: string, index: number) => (
-              <button
-                key={index}
-                className="w-full text-left px-3 py-2 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 transition-colors rounded-lg flex items-center group"
-                onClick={() => handleSampleQuery(text)}
-              >
-                <Reply className="h-4 w-4 mr-3 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" />
-                {text}
-              </button>
-            ))}
+          <div className="mt-6 sm:mt-8 w-full max-w-xl mx-auto">
+            <div 
+              className="relative overflow-hidden rounded-lg"
+              onMouseEnter={pauseRow}
+              onMouseLeave={resumeRow}
+              onTouchStart={pauseRow}
+              onTouchEnd={resumeRow}
+            >
+              <div className="absolute left-0 top-0 h-full w-12 bg-gradient-to-r from-background to-transparent z-10"></div>
+              <div className="absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-background to-transparent z-10"></div>
+              <div className="flex overflow-hidden scrolling-row">
+                <div ref={rowRef} className="flex w-full touch-action-pan-y"> 
+                  <div ref={rowContentRef} className="flex gap-2 py-1">
+                    {topQuestions?.map((text: string, index: number) => (
+                      <motion.button
+                        key={index}
+                        whileTap={{ scale: 0.97 }}
+                        className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 active:bg-secondary/60 transition-colors rounded-lg flex items-center group"
+                        onClick={() => handleSampleQuery(text)}
+                      >
+                        <Reply className="h-4 w-4 mr-3 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" />
+                        {text}
+                      </motion.button>
+                    ))}
+                  </div>
+                  <div className="flex gap-2 py-1">
+                    {topQuestions?.map((text: string, index: number) => (
+                      <motion.button
+                        key={`dup-${index}`}
+                        whileTap={{ scale: 0.97 }}
+                        className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 active:bg-secondary/60 transition-colors rounded-lg flex items-center group"
+                        onClick={() => handleSampleQuery(text)}
+                      >
+                        <Reply className="h-4 w-4 mr-3 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" />
+                        {text}
+                      </motion.button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
