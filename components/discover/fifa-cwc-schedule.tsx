@@ -435,11 +435,21 @@ export function FifaCwcSchedule() {
         </CardHeader>
       </Card>
 
-      <Tabs defaultValue="teams-view" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
+      <Tabs defaultValue="clubs-view" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="clubs-view">Clubes (AI Insights)</TabsTrigger>
           <TabsTrigger value="teams-view">Classificação</TabsTrigger>
           <TabsTrigger value="matches-view">Calendário</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="clubs-view" className="mt-4">
+          {/* Exibir cards de clubes com AI Insights */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+            {fifaCwcData.groups.flatMap(group => group.teams).map((team, idx) => (
+              <TeamCard key={team + idx} teamName={team} />
+            ))}
+          </div>
+        </TabsContent>
 
         <TabsContent value="teams-view" className="mt-4">
           {status === "loading" && (
