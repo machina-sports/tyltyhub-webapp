@@ -16,14 +16,7 @@ export function ChatAvatar({ role }: ChatAvatarProps) {
         : "bg-blue-500/10 text-blue-500"
     )}>
       {role === 'assistant' ? (
-        <Bot className="w-5 h-5" />
-        // <Image 
-        //   src="/sb-logo-novo.jpg"
-        //   alt="Assistant Logo"
-        //   width={40}
-        //   height={40}
-        //   className="object-cover rounded-full"
-        // />
+        <img src="/sb-new.png" alt="SB Logo" className="w-7 h-7 object-contain" />
       ) : (
         <User className="w-5 h-5" />
       )}
