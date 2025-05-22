@@ -226,7 +226,6 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
             <ArticleSharing
               articleId={articleData.articleId}
               title={articleData.title}
-              url={`${typeof window !== 'undefined' ? window.location.origin : ''}/discover/${articleData.slug || articleData.articleId}`}
             />
           </div>
         </div>

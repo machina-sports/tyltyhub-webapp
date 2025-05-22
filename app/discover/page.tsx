@@ -286,10 +286,11 @@ export default function DiscoverPage() {
                   <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                   <Input
                     placeholder="Buscar artigos..."
-                    className="pl-8"
+                    className="pl-8 text-base max-w-[232px]"
                     value={searchQuery}
                     onChange={handleSearchChange}
                     onKeyPress={handleSearchKeyPress}
+                    style={{ fontSize: '16px' }}
                   />
                   {isSearching && (
                     <div className="absolute right-2 top-1/2 -translate-y-1/2">
