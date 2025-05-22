@@ -199,7 +199,7 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
           <CardContent className="p-0">
             <div className="flex flex-col md:grid md:grid-cols-12 gap-0">
               <div className="md:col-span-6">
-                <div className="relative aspect-[12/9] md:h-full w-full">
+                <div className="relative aspect-[3/2] md:h-full w-full">
                   {imageUrl && (
                     <Image
                       src={imageUrl}
