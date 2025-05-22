@@ -200,6 +200,11 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
 
         <h1 className="text-2xl sm:text-4xl font-bold">{articleData.title}</h1>
 
+        <div className="flex items-center gap-2 text-muted-foreground text-sm mb-2">
+          <Clock className="h-4 w-4" />
+          <span>{articleData.readTime}</span>
+        </div>
+
         {articleData.subtitle && (
           <p className="text-lg text-muted-foreground">{articleData.subtitle}</p>
         )}

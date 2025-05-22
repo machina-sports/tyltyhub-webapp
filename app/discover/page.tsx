@@ -273,7 +273,7 @@ export default function DiscoverPage() {
               </TabsTrigger>
               <TabsTrigger value="teams" className="flex items-center gap-2">
                 <Table2 className="h-4 w-4" />
-                Tabela
+                Estatísticas
               </TabsTrigger>
             </TabsList>
           </div>
