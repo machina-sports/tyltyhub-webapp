@@ -1,35 +1,50 @@
 "use client";
-import { useEffect, useState, useRef, useMemo, useCallback, Suspense } from "react";
+import {
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+  useCallback,
+  Suspense,
+} from "react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { formatDistanceToNow } from "date-fns";
-import { ptBR } from 'date-fns/locale';
+import { ptBR } from "date-fns/locale";
 import Image from "next/image";
 import { ArticleVoting } from "@/components/article/article-voting";
 import { ArticleSharing } from "@/components/article/article-sharing";
 import { RelatedArticles } from "@/components/article/related-articles";
 import { ArticleSkeleton } from "@/components/article/article-skeleton";
 import FollowUpQuestionForm from "@/components/follow-up-question";
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown from "react-markdown";
 import { useGlobalState } from "@/store/useState";
 import { useAppDispatch } from "@/store/dispatch";
-import { doFetchArticle, doFetchRelatedArticles } from "@/providers/article/actions";
+import {
+  doFetchArticle,
+  doFetchRelatedArticles,
+} from "@/providers/article/actions";
 import { Clock, Eye } from "lucide-react";
 import dynamic from "next/dynamic";
 
 // Dynamically import the WidgetEmbed component to improve initial load time
-const WidgetEmbed = dynamic(() => import("../../../components/article/widget-embed"), {
-  loading: () => <div className="h-60 w-full bg-muted/30 rounded-md animate-pulse"></div>,
-  ssr: false // Disable server-side rendering for this component
-});
+const WidgetEmbed = dynamic(
+  () => import("../../../components/article/widget-embed"),
+  {
+    loading: () => (
+      <div className="h-60 w-full bg-muted/30 rounded-md animate-pulse"></div>
+    ),
+    ssr: false, // Disable server-side rendering for this component
+  }
+);
 
 const unescapeMarkdown = (text: string | undefined | null): string => {
-  if (!text) return '';
-  return text.replace(/\\n/g, '\n').replace(/\\"/g, '"');
+  if (!text) return "";
+  return text.replace(/\\n/g, "\n").replace(/\\"/g, '"');
 };
 
 const getImageUrl = (article: any): string => {
-  if (!article) return '';
+  if (!article) return "";
 
   const imageAddress = process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS;
 
@@ -37,47 +52,49 @@ const getImageUrl = (article: any): string => {
     return `${imageAddress}/${article.value.image_path}`;
   }
 
-  const title = article.value?.title || 'Article';
-  return `https://placehold.co/1200x600/2A9D8F/FFFFFF?text=${encodeURIComponent(title)}`;
+  const title = article.value?.title || "Article";
+  return `https://placehold.co/1200x600/2A9D8F/FFFFFF?text=${encodeURIComponent(
+    title
+  )}`;
 };
 
 const getEventType = (article: any): string => {
-  if (!article || !article.metadata) return 'Notícias';
+  if (!article || !article.metadata) return "Notícias";
 
   // For soccer games, return "Futebol"
-  if (article.metadata.event_type === 'soccer-game') {
-    return 'Futebol';
+  if (article.metadata.event_type === "soccer-game") {
+    return "Futebol";
   }
 
   // For competition names, make them more readable
   if (article.metadata.competition) {
     switch (article.metadata.competition) {
-      case 'sr:competition:17':
-        return 'Premier League';
-      case 'sr:competition:384':
-        return 'Libertadores';
-      case 'sr:competition:390':
-        return 'Brasileiro Série B';
+      case "sr:competition:17":
+        return "Premier League";
+      case "sr:competition:384":
+        return "Libertadores";
+      case "sr:competition:390":
+        return "Brasileiro Série B";
       default:
         return article.metadata.competition;
     }
   }
 
-  return 'Notícias';
+  return "Notícias";
 };
 
 const getReadTime = (article: any): string => {
-  if (!article) return '3 min';
+  if (!article) return "3 min";
   if (article.readTime) return article.readTime;
 
   // Calculate read time based on section content length
   if (article.value) {
-    let content = '';
+    let content = "";
 
     for (let i = 1; i <= 5; i++) {
       const sectionContent = article.value[`section_${i}_content`];
       if (sectionContent) {
-        content += ' ' + sectionContent;
+        content += " " + sectionContent;
       }
     }
 
@@ -87,7 +104,7 @@ const getReadTime = (article: any): string => {
     return `${readTimeMinutes} min`;
   }
 
-  return '3 min';
+  return "3 min";
 };
 
 interface ArticleContentProps {
@@ -122,11 +139,13 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
       const articleId = article._id || article.id;
       setViews(article.views || 0);
       if (article.metadata) {
-        dispatch(doFetchRelatedArticles({
-          eventType: article.metadata.event_type,
-          competition: article.metadata.competition,
-          language: article.metadata.language
-        }));
+        dispatch(
+          doFetchRelatedArticles({
+            eventType: article.metadata.event_type,
+            competition: article.metadata.competition,
+            language: article.metadata.language,
+          })
+        );
       }
       hasIncrementedViews.current = true;
     }
@@ -145,24 +164,24 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
       imageUrl: getImageUrl(article),
       eventType: getEventType(article),
       readTime: getReadTime(article),
-      title: article.value?.title || 'Sem título',
-      subtitle: article.value?.subtitle || '',
-      section_1_title: article.value?.["section_1_title"] || '',
-      section_1_content: article.value?.["section_1_content"] || '',
-      section_2_title: article.value?.["section_2_title"] || '',
-      section_2_content: article.value?.["section_2_content"] || '',
-      section_3_title: article.value?.["section_3_title"] || '',
-      section_3_content: article.value?.["section_3_content"] || '',
-      section_4_title: article.value?.["section_4_title"] || '',
-      section_4_content: article.value?.["section_4_content"] || '',
-      section_5_title: article.value?.["section_5_title"] || '',
-      section_5_content: article.value?.["section_5_content"] || '',
+      title: article.value?.title || "Sem título",
+      subtitle: article.value?.subtitle || "",
+      section_1_title: article.value?.["section_1_title"] || "",
+      section_1_content: article.value?.["section_1_content"] || "",
+      section_2_title: article.value?.["section_2_title"] || "",
+      section_2_content: article.value?.["section_2_content"] || "",
+      section_3_title: article.value?.["section_3_title"] || "",
+      section_3_content: article.value?.["section_3_content"] || "",
+      section_4_title: article.value?.["section_4_title"] || "",
+      section_4_content: article.value?.["section_4_content"] || "",
+      section_5_title: article.value?.["section_5_title"] || "",
+      section_5_content: article.value?.["section_5_content"] || "",
       createdDate: article.created || article.date,
-      articleId: (article._id || article.id || '').toString(),
+      articleId: (article._id || article.id || "").toString(),
       eventDetails: article.value?.["event-details"],
       widgetEmbed: article.value?.["widget-match-embed"],
       slug: article.value?.slug,
-      imagePath: article?.value?.["image_path"]
+      imagePath: article?.value?.["image_path"],
     };
   }, [article]);
 
@@ -201,36 +220,31 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
         <h1 className="text-2xl sm:text-4xl font-bold">{articleData.title}</h1>
 
         <div className="flex items-center gap-2 text-muted-foreground text-sm mb-2">
+          <span className="flex items-center">
+            Publicado {"\n"}
+            {articleData.createdDate
+              ? formatDistanceToNow(new Date(articleData.createdDate), {
+                  addSuffix: true,
+                  locale: ptBR,
+                })
+              : "Recente"}
+          </span>
           <Clock className="h-4 w-4" />
           <span>{articleData.readTime}</span>
         </div>
 
         {articleData.subtitle && (
-          <p className="text-lg text-muted-foreground">{articleData.subtitle}</p>
+          <p className="text-lg text-muted-foreground">
+            {articleData.subtitle}
+          </p>
         )}
 
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm text-muted-foreground">
-            {/* <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-full bg-secondary overflow-hidden flex items-center justify-center text-sm font-medium">
-                M
-              </div>
-              <span>Machina Sports</span>
-            </div> */}
-            {/* <span>·</span> */}
-            <span className="flex items-center">
-              <Clock className="h-4 w-4 mr-2" />
-              {articleData.createdDate ?
-                formatDistanceToNow(new Date(articleData.createdDate), { addSuffix: true, locale: ptBR }) :
-                'Recente'
-              }
-            </span>
-          </div>
-
           <div className="mt-2 sm:mt-0">
             <ArticleSharing
               articleId={articleData.articleId}
               title={articleData.title}
+              url={`${typeof window !== 'undefined' ? window.location.origin : ''}/discover/${articleData.slug || articleData.articleId}`}
             />
           </div>
         </div>
@@ -243,46 +257,68 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
             <h3>Detalhes do Evento</h3>
             <ul>
               {articleData.eventDetails.match && (
-                <li><strong>Partida:</strong> {articleData.eventDetails.match}</li>
+                <li>
+                  <strong>Partida:</strong> {articleData.eventDetails.match}
+                </li>
               )}
               {articleData.eventDetails.venue && (
-                <li><strong>Local:</strong> {articleData.eventDetails.venue}</li>
+                <li>
+                  <strong>Local:</strong> {articleData.eventDetails.venue}
+                </li>
               )}
               {articleData.eventDetails.when && (
-                <li><strong>Data:</strong> {articleData.eventDetails.when}</li>
+                <li>
+                  <strong>Data:</strong> {articleData.eventDetails.when}
+                </li>
               )}
             </ul>
           </div>
         )}
 
-
         <div className="prose-container">
-          <h2 className="text-lg font-bold mt-8 mb-8">
-          </h2>
-          {article?.["event-details"]?.when && article?.["event-details"]?.venue && article?.["event-details"]?.match && (
-            <p className="text-lg mt-8 mb-8">
-              {article?.["event_type"] === "nba-game" ? "🏀" : "⚽"} {article?.["event-details"]?.match}<br />
-              🕒 {article?.["event-details"]?.when}<br />
-              🏟️ {article?.["event-details"]?.venue}
-            </p>
-          )}
+          <h2 className="text-lg font-bold mt-8 mb-8"></h2>
+          {article?.["event-details"]?.when &&
+            article?.["event-details"]?.venue &&
+            article?.["event-details"]?.match && (
+              <p className="text-lg mt-8 mb-8">
+                {article?.["event_type"] === "nba-game" ? "🏀" : "⚽"}{" "}
+                {article?.["event-details"]?.match}
+                <br />
+                🕒 {article?.["event-details"]?.when}
+                <br />
+                🏟️ {article?.["event-details"]?.venue}
+              </p>
+            )}
           {articleData.widgetEmbed && (
-            <Suspense fallback={<div className="h-60 w-full bg-muted/30 rounded-md animate-pulse"></div>}>
+            <Suspense
+              fallback={
+                <div className="h-60 w-full bg-muted/30 rounded-md animate-pulse"></div>
+              }
+            >
               <WidgetEmbed embedCode={articleData.widgetEmbed} />
             </Suspense>
           )}
-          <h2 className="text-lg font-bold mt-8 mb-8">{articleData.section_1_title}</h2>
+          <h2 className="text-lg font-bold mt-8 mb-8">
+            {articleData.section_1_title}
+          </h2>
           <p className="text-lg mt-8 mb-8">{articleData.section_1_content}</p>
-          <h2 className="text-lg font-bold mt-8 mb-8">{articleData.section_2_title}</h2>
+          <h2 className="text-lg font-bold mt-8 mb-8">
+            {articleData.section_2_title}
+          </h2>
           <p className="text-lg mt-8 mb-8">{articleData.section_2_content}</p>
-          <h2 className="text-lg font-bold mt-8 mb-8">{articleData.section_3_title}</h2>
+          <h2 className="text-lg font-bold mt-8 mb-8">
+            {articleData.section_3_title}
+          </h2>
           <p className="text-lg mt-8 mb-8">{articleData.section_3_content}</p>
-          <h2 className="text-lg font-bold mt-8 mb-8">{articleData.section_4_title}</h2>
+          <h2 className="text-lg font-bold mt-8 mb-8">
+            {articleData.section_4_title}
+          </h2>
           <p className="text-lg mt-8 mb-8">{articleData.section_4_content}</p>
-          <h2 className="text-lg font-bold mt-8 mb-8">{articleData.section_5_title}</h2>
+          <h2 className="text-lg font-bold mt-8 mb-8">
+            {articleData.section_5_title}
+          </h2>
           <p className="text-lg mt-8 mb-8">{articleData.section_5_content}</p>
         </div>
-
       </div>
 
       <Separator />
@@ -296,4 +332,4 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
       <FollowUpQuestionForm />
     </div>
   );
-} 
+}
