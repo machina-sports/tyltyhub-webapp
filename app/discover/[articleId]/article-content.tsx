@@ -219,27 +219,27 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
 
         <h1 className="text-2xl sm:text-4xl font-bold">{articleData.title}</h1>
 
-        <div className="flex items-center gap-2 text-muted-foreground text-sm mb-2">
-          <span className="flex items-center">
-            Publicado {"\n"}
-            {articleData.createdDate
-              ? formatDistanceToNow(new Date(articleData.createdDate), {
-                addSuffix: true,
-                locale: ptBR,
-              })
-              : "Recente"}
-          </span>
-          <Clock className="h-4 w-4" />
-          <span>{articleData.readTime}</span>
-        </div>
-
-        {articleData.subtitle && (
-          <p className="text-lg text-muted-foreground">
-            {articleData.subtitle}
-          </p>
-        )}
-
-        <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            {articleData.subtitle && (
+              <p className="text-lg text-muted-foreground mb-2">
+                {articleData.subtitle}
+              </p>
+            )}
+            <div className="flex items-center gap-2 text-muted-foreground text-sm mb-2">
+              <span className="flex items-center">
+                Publicado {"\n"}
+                {articleData.createdDate
+                  ? formatDistanceToNow(new Date(articleData.createdDate), {
+                    addSuffix: true,
+                    locale: ptBR,
+                  })
+                  : "Recente"}
+              </span>
+              <Clock className="h-4 w-4" />
+              <span>{articleData.readTime}</span>
+            </div>
+          </div>
           <div className="mt-2 sm:mt-0">
             <ArticleSharing
               articleId={articleData.articleId}
@@ -251,44 +251,8 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
       </div>
 
       <div className="prose prose-neutral dark:prose-invert max-w-none">
-        {/* Event Details if available */}
-        {articleData.eventDetails && (
-          <div className="bg-secondary/20 p-4 rounded-lg mb-6">
-            <h3>Detalhes do Evento</h3>
-            <ul>
-              {articleData.eventDetails.match && (
-                <li>
-                  <strong>Partida:</strong> {articleData.eventDetails.match}
-                </li>
-              )}
-              {articleData.eventDetails.venue && (
-                <li>
-                  <strong>Local:</strong> {articleData.eventDetails.venue}
-                </li>
-              )}
-              {articleData.eventDetails.when && (
-                <li>
-                  <strong>Data:</strong> {articleData.eventDetails.when}
-                </li>
-              )}
-            </ul>
-          </div>
-        )}
-
         <div className="prose-container">
           <h2 className="text-lg font-bold mt-8 mb-8"></h2>
-          {article?.["event-details"]?.when &&
-            article?.["event-details"]?.venue &&
-            article?.["event-details"]?.match && (
-              <p className="text-lg mt-8 mb-8">
-                {article?.["event_type"] === "nba-game" ? "🏀" : "⚽"}{" "}
-                {article?.["event-details"]?.match}
-                <br />
-                🕒 {article?.["event-details"]?.when}
-                <br />
-                🏟️ {article?.["event-details"]?.venue}
-              </p>
-            )}
           {articleData.widgetEmbed && (
             <Suspense
               fallback={
@@ -298,6 +262,22 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
               <WidgetEmbed embedCode={articleData.widgetEmbed} />
             </Suspense>
           )}
+          {articleData?.["eventDetails"]?.when &&
+            articleData?.["eventDetails"]?.venue &&
+            articleData?.["eventDetails"]?.match && (
+              <>
+                <p className="text-lg mb-1">
+                  {articleData?.["event_type"] === "nba-game" ? "🏀" : "⚽"}{" "}
+                  {articleData?.["eventDetails"]?.match}
+                </p>
+                <p className="text-lg mb-1">
+                  🕒 {articleData?.["eventDetails"]?.when}
+                </p>
+                <p className="text-lg mb-1">
+                  🏟️ {articleData?.["eventDetails"]?.venue}
+                </p>
+              </>
+            )}
           <h2 className="text-lg font-bold mt-8 mb-8">
             {articleData.section_1_title}
           </h2>
