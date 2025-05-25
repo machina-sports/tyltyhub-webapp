@@ -51,8 +51,8 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
         <div className="space-y-2">
           {isTyping ? (
             <div className="flex items-center gap-2 text-muted-foreground">
-              <img src="/soccer.gif" alt="Pensando..." className="h-6 w-6 animate-spin" />
               <span className="text-sm">Pensando...</span>
+              <img src="/soccer.gif" alt="Pensando..." className="w-4 h-4" />
             </div>
           ) : (
             currentMessage.split('\n').map((line: any, i: number) => (
