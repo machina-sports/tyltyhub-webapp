@@ -92,10 +92,12 @@ const ContainerHome = ({ query }: { query: string }) => {
     
   ]
 
-  // Get random title on component mount
-  const [randomTitle] = useState(() => {
-    return titleOptions[Math.floor(Math.random() * titleOptions.length)]
-  })
+  // Get random title after client-side mount to avoid hydration errors
+  const [randomTitle, setRandomTitle] = useState("Qual vai ser a sua aposta?")
+  
+  useEffect(() => {
+    setRandomTitle(titleOptions[Math.floor(Math.random() * titleOptions.length)])
+  }, [])
 
   // Animation states and refs for first row
   const [isFirstRowScrolling, setIsFirstRowScrolling] = useState(true)
@@ -111,20 +113,20 @@ const ContainerHome = ({ query }: { query: string }) => {
   const secondRowPositionRef = useRef(0)
   const secondAnimationFrameIdRef = useRef<number | null>(null)
 
-  // Animation effect for first row
+  // Animation effect for first row (LEFT TO RIGHT)
   useEffect(() => {
     const firstRowAnimation = () => {
       if (!isFirstRowScrolling || !firstRowRef.current || !firstRowContentRef.current) {
         return;
       }
       
-      firstRowPositionRef.current += 0.5;
       const contentWidth = firstRowContentRef.current.offsetWidth;
+      firstRowPositionRef.current += 0.5;
       if (firstRowPositionRef.current >= contentWidth) {
         firstRowPositionRef.current = 0;
       }
       if (firstRowRef.current) { 
-        firstRowRef.current.style.transform = `translateX(-${firstRowPositionRef.current}px)`;
+        firstRowRef.current.style.transform = `translateX(${-contentWidth + firstRowPositionRef.current}px)`;
       }
       
       firstAnimationFrameIdRef.current = requestAnimationFrame(firstRowAnimation);
@@ -148,22 +150,21 @@ const ContainerHome = ({ query }: { query: string }) => {
     };
   }, [isFirstRowScrolling]);
 
-  // Animation effect for second row
+  // Animation effect for second row (RIGHT TO LEFT)
   useEffect(() => {
     const secondRowAnimation = () => {
       if (!isSecondRowScrolling || !secondRowRef.current || !secondRowContentRef.current) {
         return;
       }
       
-      secondRowPositionRef.current -= 0.5;
       const contentWidth = secondRowContentRef.current.offsetWidth;
-      
-      if (secondRowPositionRef.current <= -contentWidth) {
+      secondRowPositionRef.current += 0.5;
+      if (secondRowPositionRef.current >= contentWidth) {
         secondRowPositionRef.current = 0;
       }
       
       if (secondRowRef.current) { 
-        secondRowRef.current.style.transform = `translateX(-${secondRowPositionRef.current}px)`;
+        secondRowRef.current.style.transform = `translateX(${-secondRowPositionRef.current}px)`;
       }
       
       secondAnimationFrameIdRef.current = requestAnimationFrame(secondRowAnimation);
@@ -187,12 +188,16 @@ const ContainerHome = ({ query }: { query: string }) => {
     };
   }, [isSecondRowScrolling]);
 
-  // Initialize second row position
+  // Initialize positions
   useEffect(() => {
+    if (firstRowContentRef.current && firstRowRef.current) {
+      const width = firstRowContentRef.current.offsetWidth;
+      firstRowPositionRef.current = 0; // Start positionRef at 0
+      firstRowRef.current.style.transform = `translateX(${-width}px)`; // Initial transform for left-to-right
+    }
     if (secondRowContentRef.current && secondRowRef.current) {
-      const width = secondRowContentRef.current.offsetWidth;
-      secondRowPositionRef.current = width;
-      secondRowRef.current.style.transform = `translateX(-${secondRowPositionRef.current}px)`;
+      secondRowPositionRef.current = 0; // Start positionRef at 0
+      secondRowRef.current.style.transform = `translateX(0px)`; // Initial transform for right-to-left
     }
   }, []);
 
