@@ -203,19 +203,6 @@ const ContainerHome = ({ query }: { query: string }) => {
     <div className="flex flex-col h-screen bg-background pt-12 md:pt-0">
       <div className="flex-1 overflow-auto hide-scrollbar momentum-scroll pb-32 pt-4 md:pb-24">
         <div className="flex flex-col items-center justify-center min-h-[calc(100vh-12rem)] p-4">
-          {trendingArticle?.image_path && (
-            <div className="relative w-full overflow-hidden rounded-lg aspect-[3/2] max-w-[420px] mb-12">
-              <Image
-                src={getImageUrl(trendingArticle)}
-                alt={trendingArticle?.title}
-                fill
-                className="object-cover object-center"
-                priority
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1000px"
-                loading="eager"
-              />
-            </div>
-          )}
           <img className="w-full mb-10 max-w-[980px]" src="/980x250px_kv_-landing-page_chatbot.png" alt="logo" />
           <h1 className="text-center mb-4 sm:mb-6 flex items-center gap-3 justify-center">
             Qual vai ser a sua aposta?
