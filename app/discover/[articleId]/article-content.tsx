@@ -16,7 +16,7 @@ import { ArticleVoting } from "@/components/article/article-voting";
 import { ArticleSharing } from "@/components/article/article-sharing";
 import { RelatedArticles } from "@/components/article/related-articles";
 import { ArticleSkeleton } from "@/components/article/article-skeleton";
-import FollowUpQuestionForm from "@/components/follow-up-question";
+// import FollowUpQuestionForm from "@/components/follow-up-question";
 import ReactMarkdown from "react-markdown";
 import { useGlobalState } from "@/store/useState";
 import { useAppDispatch } from "@/store/dispatch";
@@ -198,21 +198,39 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
     );
   }
 
+  const mainImagePrefix = `${process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS}/article-image-id-${articleData?.["_id"]}`
+  
+  const mainImageUrl = `${mainImagePrefix}-${articleData?.value?.["main_image_name"]}.png`
+
+  const section1ImageUrl = `${mainImagePrefix}-${articleData?.value?.["section_1_image"]}.png`
+  
+  const section2ImageUrl = `${mainImagePrefix}-${articleData?.value?.["section_2_image"]}.png`
+  
+  const section3ImageUrl = `${mainImagePrefix}-${articleData?.value?.["section_3_image"]}.png`
+  
+  const section4ImageUrl = `${mainImagePrefix}-${articleData?.value?.["section_4_image"]}.png`
+  
+  const section5ImageUrl = `${mainImagePrefix}-${articleData?.value?.["section_5_image"]}.png`
+
+  const RenderImageComponent = ({ imageUrl, alt }: { imageUrl: string, alt: string }) => {
+    return (
+      <div className="relative w-full overflow-hidden rounded-lg aspect-[1560/1024]">
+        <Image
+          src={imageUrl}
+          alt={alt}
+          fill={true}
+          className="object-cover object-center m-0"
+          priority
+          loading="eager"
+        />
+      </div>
+    )
+  }
+
   return (
     <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 pt-20 md:pt-6 pb-32 sm:pb-36 space-y-6 sm:space-y-8">
-      {articleData.imageUrl && (
-        <div className="relative w-full overflow-hidden rounded-lg aspect-[3/2]">
-          <Image
-            src={articleData.imageUrl}
-            alt={articleData.title}
-            fill
-            className="object-cover object-center"
-            priority
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1000px"
-            loading="eager"
-          />
-        </div>
-      )}
+
+      <RenderImageComponent imageUrl={mainImageUrl} alt={articleData.title} />
 
       <div className="space-y-6">
         {/* <Badge variant="secondary">{articleData.eventType}</Badge> */}
@@ -241,13 +259,13 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
             </div>
           </div>
           <div className="mt-2 sm:mt-0">
-            <ArticleSharing
-              articleId={articleData.articleId}
-              title={articleData.title}
-              url={`${typeof window !== 'undefined' ? window.location.origin : ''}/discover/${articleData.slug || articleData.articleId}`}
-            />
           </div>
         </div>
+        <ArticleSharing
+          articleId={articleData.articleId}
+          title={articleData.title}
+          url={`${typeof window !== 'undefined' ? window.location.origin : ''}/discover/${articleData.slug || articleData.articleId}`}
+        />
       </div>
 
       <div className="prose prose-neutral dark:prose-invert max-w-none">
@@ -278,26 +296,36 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
                 </p>
               </>
             )}
-          <h2 className="text-lg font-bold mt-8 mb-8">
+          <h2 className="text-2xl font-bold mt-12 mb-8">
             {articleData.section_1_title}
           </h2>
-          <p className="text-lg mt-8 mb-8">{articleData.section_1_content}</p>
-          <h2 className="text-lg font-bold mt-8 mb-8">
+          <p className="text-lg mt-8">{articleData.section_1_content}</p>
+          
+          <RenderImageComponent imageUrl={section1ImageUrl} alt={articleData?.["section_1_title"]} />
+
+          <h2 className="text-2xl font-bold mt-12 mb-8">
             {articleData.section_2_title}
           </h2>
-          <p className="text-lg mt-8 mb-8">{articleData.section_2_content}</p>
-          <h2 className="text-lg font-bold mt-8 mb-8">
+          <p className="text-lg mt-8">{articleData.section_2_content}</p>
+          <RenderImageComponent imageUrl={section2ImageUrl} alt={articleData?.["section_2_title"]} />
+
+          <h2 className="text-2xl font-bold mt-12 mb-8">
             {articleData.section_3_title}
           </h2>
-          <p className="text-lg mt-8 mb-8">{articleData.section_3_content}</p>
-          <h2 className="text-lg font-bold mt-8 mb-8">
+          <p className="text-lg mt-8">{articleData.section_3_content}</p>
+          <RenderImageComponent imageUrl={section3ImageUrl} alt={articleData?.["section_3_title"]} />
+
+          <h2 className="text-2xl font-bold mt-12 mb-8">
             {articleData.section_4_title}
           </h2>
-          <p className="text-lg mt-8 mb-8">{articleData.section_4_content}</p>
-          <h2 className="text-lg font-bold mt-8 mb-8">
+          <p className="text-lg mt-8">{articleData.section_4_content}</p>
+          <RenderImageComponent imageUrl={section4ImageUrl} alt={articleData?.["section_4_title"]} />
+
+          <h2 className="text-2xl font-bold mt-12 mb-8">
             {articleData.section_5_title}
           </h2>
-          <p className="text-lg mt-8 mb-8">{articleData.section_5_content}</p>
+          <p className="text-lg mt-8">{articleData.section_5_content}</p>
+          <RenderImageComponent imageUrl={section5ImageUrl} alt={articleData?.["section_5_title"]} />
         </div>
       </div>
 
@@ -309,7 +337,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
 
       <RelatedArticles currentArticleId={articleData.articleId} />
 
-      <FollowUpQuestionForm />
+      {/* <FollowUpQuestionForm /> */}
     </div>
   );
 }

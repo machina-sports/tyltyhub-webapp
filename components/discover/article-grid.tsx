@@ -116,6 +116,9 @@ const ArticleCard = ({ article }: { article: Article }) => {
   const author = getAuthor(article);
   const title = getTitle(article);
 
+  const mainImagePrefix = `${process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS}/article-image-id-${articleId}`
+  const mainImageUrl = `${mainImagePrefix}-${article.value?.["main_image_name"]}.png`
+
   return (
     <Card className={cn("overflow-hidden border", isPalmeirasTheme ? "hover:border-[#006B3D]/30" : "hover:border-primary/30")}>
       <Link
@@ -127,7 +130,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
           <div className="relative aspect-video w-full">
             {imageUrl && (
               <Image
-                src={imageUrl}
+                src={mainImageUrl}
                 alt={title}
                 fill
                 className="object-cover"
@@ -189,6 +192,9 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
     const description = getDescription(article);
     const author = getAuthor(article);
     const title = getTitle(article);
+    
+    const mainImagePrefix = `${process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS}/article-image-id-${articleId}`
+    const mainImageUrl = `${mainImagePrefix}-${article.value?.["main_image_name"]}.png`
 
     return (
       <Card className={cn("overflow-hidden border", isPalmeirasTheme ? "hover:border-[#006B3D]/30" : "hover:border-primary/30")}>
@@ -202,7 +208,7 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
                 <div className="relative aspect-[3/2] md:h-full w-full">
                   {imageUrl && (
                     <Image
-                      src={imageUrl}
+                      src={mainImageUrl}
                       alt={title}
                       fill
                       className="object-cover rounded-lg"
