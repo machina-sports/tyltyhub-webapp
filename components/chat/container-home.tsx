@@ -216,6 +216,7 @@ const ContainerHome = ({ query }: { query: string }) => {
               />
             </div>
           )}
+          <img className="w-full mb-10 max-w-[980px]" src="/980x250px_kv_-landing-page_chatbot.png" alt="logo" />
           <h1 className="text-center mb-4 sm:mb-6 flex items-center gap-3 justify-center">
             Qual vai ser a sua aposta?
             <SportingbetDot size={28} className="ml-1" />
