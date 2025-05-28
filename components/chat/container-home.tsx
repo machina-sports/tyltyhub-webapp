@@ -85,7 +85,11 @@ const ContainerHome = ({ query }: { query: string }) => {
     "E se o próximo lance já estiver nos números?",
     "Vai de palpite ou de estatística hoje?",
     "Como posso entrar em campo para ajudar você hoje?",
-    "Vamos pro jogo ou pro algoritmo?"
+    "Vamos pro jogo ou pro algoritmo?",
+    "Como posso entrar em campo para te ajudar hoje?",
+    "Bola rolando! Em que jogada posso te ajudar?",
+    "Vamos jogar juntos? Me diz onde você precisa de reforço!",
+    
   ]
 
   // Get random title on component mount
