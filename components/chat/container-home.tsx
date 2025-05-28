@@ -73,6 +73,26 @@ const ContainerHome = ({ query }: { query: string }) => {
 
   const user_id = "123"
 
+  // Random title options
+  const titleOptions = [
+    "Tá pronto pra mudar o jogo?",
+    "Qual vai ser a sua jogada decisiva?",
+    "Vai ser espectador ou protagonista?",
+    "Pronto pra ser o craque da vez?",
+    "Aqui, a paixão encontra a estatística.",
+    "O jogo começa aqui.",
+    "Pronto pra ver o jogo com outros olhos?",
+    "E se o próximo lance já estiver nos números?",
+    "Vai de palpite ou de estatística hoje?",
+    "Como posso entrar em campo para ajudar você hoje?",
+    "Vamos pro jogo ou pro algoritmo?"
+  ]
+
+  // Get random title on component mount
+  const [randomTitle] = useState(() => {
+    return titleOptions[Math.floor(Math.random() * titleOptions.length)]
+  })
+
   // Animation states and refs for first row
   const [isFirstRowScrolling, setIsFirstRowScrolling] = useState(true)
   const firstRowRef = useRef<HTMLDivElement>(null)
@@ -131,10 +151,10 @@ const ContainerHome = ({ query }: { query: string }) => {
         return;
       }
       
-      secondRowPositionRef.current += 0.5;
+      secondRowPositionRef.current -= 0.5;
       const contentWidth = secondRowContentRef.current.offsetWidth;
       
-      if (secondRowPositionRef.current >= contentWidth) {
+      if (secondRowPositionRef.current <= -contentWidth) {
         secondRowPositionRef.current = 0;
       }
       
@@ -205,7 +225,7 @@ const ContainerHome = ({ query }: { query: string }) => {
         <div className="flex flex-col items-center justify-center min-h-[calc(100vh-12rem)] p-4">
           <img className="w-full mb-10 max-w-[980px]" src="/980x250px_kv_-landing-page_chatbot.png" alt="logo" />
           <h1 className="text-center mb-4 sm:mb-6 flex items-center gap-3 justify-center">
-            Qual vai ser a sua aposta?
+            {randomTitle}
             <SportingbetDot size={28} className="ml-1" />
           </h1>
           <div className="w-full max-w-xl mx-auto">
