@@ -13,6 +13,15 @@ export function ArticleVoting({ articleId }: ArticleVotingProps) {
 
   const handleVote = (type: "useful" | "improvement") => {
     setVotes(prev => ({ ...prev, [type]: prev[type] + 1 }))
+    // Add gtag event tracking for votes
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'article_vote', {
+        event_category: 'article_voting',
+        event_label: `Voted ${type}`,
+        article_id: articleId,
+        value: type === 'useful' ? 1 : 0,
+      });
+    }
   }
 
   return (

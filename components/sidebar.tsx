@@ -42,6 +42,13 @@ export function Sidebar() {
     if (href === '/') {
       resetChat()
     }
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'navigation_click', {
+        event_category: 'sidebar_menu',
+        event_label: `Clicked ${href}`,
+        value: href,
+      });
+    }
     router.push(href)
     setIsOpen(false)
   }
@@ -94,24 +101,36 @@ export function Sidebar() {
               role="button"
               aria-label="Go to home"
             >
-              {isPalmeirasTheme ? (
-                <Image 
-                  src="/team-logos/palmeiras.png" 
-                  alt="Logo Palmeiras" 
-                  width={90} 
-                  height={90}
-                  style={{ width: 'auto', height: '90px' }}
-                  priority
-                />
-              ) : (
-                <Image 
-                  src="/sb-logo-novo.svg" 
-                  alt="Logo Sportingbet" 
-                  width={250} 
-                  height={120}
-                  priority
-                  className="ml-[-4px]"
-                />
+              {typeof window !== 'undefined' && window.gtag && (
+                <span
+                  onClick={() => {
+                    window.gtag('event', 'navigation_click', {
+                      event_category: 'sidebar_logo',
+                      event_label: 'Clicked Logo',
+                      value: '/',
+                    });
+                  }}
+                >
+                  {isPalmeirasTheme ? (
+                    <Image 
+                      src="/team-logos/palmeiras.png" 
+                      alt="Logo Palmeiras" 
+                      width={90} 
+                      height={90}
+                      style={{ width: 'auto', height: '90px' }}
+                      priority
+                    />
+                  ) : (
+                    <Image 
+                      src="/sb-logo-novo.svg" 
+                      alt="Logo Sportingbet" 
+                      width={250} 
+                      height={120}
+                      priority
+                      className="ml-[-4px]"
+                    />
+                  )}
+                </span>
               )}
             </div>
           </div>
