@@ -220,6 +220,13 @@ export default function DiscoverPage() {
 
   const handleTabChange = useCallback((value: string) => {
     setActiveTab(value);
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'tab_change', {
+        event_category: 'discover_page',
+        event_label: `Changed to ${value} tab`,
+        value: value,
+      });
+    }
   }, []);
 
   useEffect(() => {

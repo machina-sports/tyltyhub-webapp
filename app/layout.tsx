@@ -9,6 +9,13 @@ import { MainProvider } from '@/components/use-provider'
 
 const inter = Inter({ subsets: ['latin'] })
 
+declare global {
+  interface Window {
+    dataLayer: any[];
+    gtag: (...args: any[]) => void;
+  }
+}
+
 export const metadata: Metadata = {
   title: 'Sportingbet CWC',
   description: 'Sportingbet CWC',
@@ -28,6 +35,18 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
+      <head>
+        {/* Google tag (gtag.js) */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-9F6CHT1XS6" />
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-9F6CHT1XS6');
+          `
+        }} />
+      </head>
       <body className={inter.className}>
         <Providers>
           <MainProvider>
