@@ -30,9 +30,9 @@ export default function DiscoverLayout({
             </div>
           </div>
         </main>
-        <div className="fixed bottom-4 right-[0] xl:right-[150px] bottom-[150px] -translate-x-1/2 border rounded-full">
-          {/* {process.env.FEATURE_TOGGLE_ENABLE_AVATAR === '1' && <InteractiveAvatar />} */}
-        </div>
+        {/* <div className="fixed bottom-4 right-[0] xl:right-[150px] bottom-[150px] -translate-x-1/2 border rounded-full">
+          {process.env.FEATURE_TOGGLE_ENABLE_AVATAR === '1' && <InteractiveAvatar />}
+        </div> */}
         {/* <Footer /> */}
       </div>
     </TrendingProvider>

@@ -57,7 +57,7 @@ export default function ContainerView({ threadId }: { threadId: string }) {
       "mobile-container md:pt-4 pb-4 space-y-6 md:max-w-[1200px] mx-auto",
       isDarkMode ? "bg-[#061F3F]" : "bg-background"
     )}>
-      <div className="flex flex-col h-[calc(100vh-13rem)] md:pt-0">
+      <div className="flex flex-col h-[calc(100vh-106px)] md:pt-0">
         <ContainerChat />
       </div>
     </div>

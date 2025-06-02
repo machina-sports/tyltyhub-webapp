@@ -20,7 +20,7 @@ export default function DiscoverLayout({
       isDarkMode ? "bg-[#061F3F]" : ""
     )}>
       {/* <Sidebar /> */}
-      <main className="flex-1 overflow-auto mt-20 min-h-[calc(100vh-27rem)]">
+      <main className="flex-1 overflow-auto mt-12 min-h-[calc(100vh-27rem)]">
         <div className="flex flex-col h-full overflow-hidden">
           <div className="flex-1 overflow-y-scroll">
             {children}
