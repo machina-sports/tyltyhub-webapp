@@ -80,21 +80,9 @@ const ContainerHome = ({ query }: { query: string }) => {
 
   // Random title options
   const titleOptions = [
-    "Tá pronto pra mudar o jogo?",
-    "Qual vai ser a sua jogada decisiva?",
-    "Vai ser espectador ou protagonista?",
-    "Pronto pra ser o craque da vez?",
-    "Aqui, a paixão encontra a estatística.",
-    "O jogo começa aqui.",
-    "Pronto pra ver o jogo com outros olhos?",
-    "E se o próximo lance já estiver nos números?",
-    "Vai de palpite ou de estatística hoje?",
-    "Como posso entrar em campo para ajudar você hoje?",
-    "Vamos pro jogo ou pro algoritmo?",
     "Como posso entrar em campo para te ajudar hoje?",
-    "Bola rolando! Em que jogada posso te ajudar?",
     "Vamos jogar juntos? Me diz onde você precisa de reforço!",
-    
+    "Bola rolando! Em que jogada posso te ajudar?",
   ]
 
   // Get random title after client-side mount to avoid hydration errors
