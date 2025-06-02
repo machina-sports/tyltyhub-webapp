@@ -173,7 +173,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
 };
 
 export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProps) {
-  const { isPalmeirasTheme } = useTheme();
+  const { isDarkMode } = useTheme();
   if (!articles || articles.length === 0) {
     return <div className="py-8 text-center text-muted-foreground">Nenhum artigo encontrado</div>;
   }
@@ -197,7 +197,7 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
     const mainImageUrl = `${mainImagePrefix}-${article.value?.["main_image_name"]}.png`
 
     return (
-      <Card className={cn("overflow-hidden border", isPalmeirasTheme ? "hover:border-[#006B3D]/30" : "hover:border-primary/30")}>
+      <Card className="overflow-hidden border hover:border-primary/30">
         <Link
           href={articleUrl}
           prefetch={false}
@@ -219,11 +219,7 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
               </div>
               <div className="md:col-span-6 p-4 md:p-8 flex flex-col">
                 <div className="space-y-3">
-                  <h1 className={cn("text-lg md:text-3xl font-bold line-clamp-3 transition-colors",
-                    isPalmeirasTheme
-                      ? "hover:text-[#006B3D]"
-                      : "hover:text-primary"
-                  )}>
+                  <h1 className="text-lg md:text-3xl font-bold line-clamp-3 transition-colors hover:text-primary">
                     {title}
                   </h1>
 
@@ -236,9 +232,7 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
 
                 <div className="mt-auto flex flex-col gap-1 pt-4">
                   <div className="flex items-center gap-2">
-                    {/* <div className={cn("h-5 w-5 rounded-full overflow-hidden flex items-center justify-center text-xs font-medium",
-                      isPalmeirasTheme ? "bg-[#E8F5EE]" : "bg-secondary"
-                    )}>
+                    {/* <div className="h-5 w-5 rounded-full overflow-hidden flex items-center justify-center text-xs font-medium bg-secondary">
                       {author ? author.charAt(0).toUpperCase() : 'M'}
                     </div>
                     <span className="text-xs md:text-sm text-muted-foreground">{author}</span> */}

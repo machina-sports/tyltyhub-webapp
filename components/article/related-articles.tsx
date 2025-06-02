@@ -31,7 +31,7 @@ const getImageUrl = (article: any): string => {
 
 export function RelatedArticles({ currentArticleId }: RelatedArticlesProps) {
   const articles = useGlobalState((state: any) => state.article);
-  const { isPalmeirasTheme } = useTheme();
+  const { isDarkMode } = useTheme();
   
   // Filter out the current article and limit to 4 related articles
   const relatedArticles = articles.relatedArticles
@@ -55,9 +55,7 @@ export function RelatedArticles({ currentArticleId }: RelatedArticlesProps) {
           const articleDate = article.date || article.createdAt;
           
           return (
-            <Card key={articleId} className={cn("overflow-hidden flex-none first:ml-0 last:mr-4 min-w-[280px] max-w-[280px]", 
-              isPalmeirasTheme ? "hover:border-[#006B3D]/30" : "hover:border-primary/30"
-            )}>
+            <Card key={articleId} className="overflow-hidden flex-none first:ml-0 last:mr-4 min-w-[280px] max-w-[280px] hover:border-primary/30">
               <Link 
                 href={`/discover/${articleId}`}
                 prefetch={false}
@@ -74,15 +72,11 @@ export function RelatedArticles({ currentArticleId }: RelatedArticlesProps) {
                   )}
                 </div>
                 <div className="p-4 w-full">
-                  <h4 className={cn("font-semibold line-clamp-2 mb-2 text-base", 
-                    isPalmeirasTheme ? "hover:text-[#006B3D]" : "hover:text-primary"
-                  )}>
+                  <h4 className="font-semibold line-clamp-2 mb-2 text-base hover:text-primary">
                     {article.title}
                   </h4>
                   <p className="text-sm text-muted-foreground flex items-center gap-2">
-                    <span className={cn("inline-block w-2 h-2 rounded-full", 
-                      isPalmeirasTheme ? "bg-[#006B3D]/20" : "bg-muted"
-                    )} />
+                    <span className="inline-block w-2 h-2 rounded-full bg-muted" />
                     {articleDate ? 
                       formatDistanceToNow(new Date(articleDate), { addSuffix: true, locale: ptBR }) : 
                       'Recente'
