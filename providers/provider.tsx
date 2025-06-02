@@ -8,7 +8,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       attribute="class"
       defaultTheme="light"
       enableSystem={false}
-      themes={['light', 'dark', 'palmeiras']}
+      themes={['light', 'dark']}
     >
       {children}
     </ThemeProvider>

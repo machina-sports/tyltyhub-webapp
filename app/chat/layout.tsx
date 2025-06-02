@@ -1,4 +1,8 @@
+"use client"
 // import Footer from "@/components/footer"
+
+import { useTheme } from "@/components/theme-provider"
+import { cn } from "@/lib/utils"
 
 // import InteractiveAvatar from "@/components/chat/video"
 
@@ -9,8 +13,12 @@ export default function DiscoverLayout({
 }: {
   children: React.ReactNode
 }) {
+  const { isDarkMode } = useTheme() 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className={cn(
+      "min-h-screen bg-background flex flex-col",
+      isDarkMode ? "bg-[#061F3F]" : ""
+    )}>
       {/* <Sidebar /> */}
       <main className="flex-1 overflow-auto mt-20 min-h-[calc(100vh-27rem)]">
         <div className="flex flex-col h-full overflow-hidden">

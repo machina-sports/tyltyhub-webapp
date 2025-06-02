@@ -28,7 +28,7 @@ const ScrollBar = React.forwardRef<
   React.ElementRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>,
   React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>
 >(({ className, orientation = 'vertical', ...props }, ref) => {
-  const { isPalmeirasTheme } = useTheme();
+  const { isDarkMode } = useTheme();
   
   return (
     <ScrollAreaPrimitive.ScrollAreaScrollbar
@@ -47,7 +47,7 @@ const ScrollBar = React.forwardRef<
       <ScrollAreaPrimitive.ScrollAreaThumb 
         className={cn(
           "relative flex-1 rounded-full", 
-          isPalmeirasTheme ? "bg-primary/40" : "bg-border"
+          isDarkMode ? "bg-[#45CAFF]/40" : "bg-border"
         )} 
       />
     </ScrollAreaPrimitive.ScrollAreaScrollbar>

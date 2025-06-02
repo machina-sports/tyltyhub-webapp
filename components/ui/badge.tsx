@@ -17,8 +17,8 @@ const badgeVariants = cva(
         outline: "text-foreground",
         sportingbet: "border-transparent bg-[#0A5EEA] text-white hover:bg-[#003DC4]",
         sportingbetOutline: "border-[#0A5EEA] text-[#0A5EEA] hover:bg-[#0A5EEA]/10",
-        palmeiras: "border-transparent bg-[#006B3D] text-white hover:bg-[#00502E]",
-        palmeirasOutline: "border-[#006B3D] text-[#006B3D] hover:bg-[#006B3D]/10"
+        dark: "border-transparent bg-[#45CAFF] text-[#061F3F] hover:bg-[#D3ECFF]",
+        darkOutline: "border-[#45CAFF] text-[#45CAFF] hover:bg-[#45CAFF]/10"
       },
     },
     defaultVariants: {
@@ -32,14 +32,14 @@ export interface BadgeProps
     VariantProps<typeof badgeVariants> {}
 
 function Badge({ className, variant, ...props }: BadgeProps) {
-  const { isPalmeirasTheme } = useTheme();
+  const { isDarkMode } = useTheme();
   
-  // Auto-convert Sportingbet variants to Palmeiras variants when theme is active
-  if (isPalmeirasTheme) {
+  // Auto-convert Sportingbet variants to dark mode variants when theme is active
+  if (isDarkMode) {
     if (variant === 'sportingbet') {
-      variant = 'palmeiras';
+      variant = 'dark';
     } else if (variant === 'sportingbetOutline') {
-      variant = 'palmeirasOutline';
+      variant = 'darkOutline';
     }
   }
   

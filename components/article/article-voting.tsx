@@ -3,6 +3,8 @@
 import { useState } from "react"
 import { ThumbsUp, ThumbsDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useTheme } from "@/components/theme-provider"
+import { cn } from "@/lib/utils"
 
 interface ArticleVotingProps {
   articleId: string
@@ -10,6 +12,7 @@ interface ArticleVotingProps {
 
 export function ArticleVoting({ articleId }: ArticleVotingProps) {
   const [votes, setVotes] = useState({ useful: 0, improvement: 0 })
+  const { isDarkMode } = useTheme()
 
   const handleVote = (type: "useful" | "improvement") => {
     setVotes(prev => ({ ...prev, [type]: prev[type] + 1 }))
@@ -17,7 +20,10 @@ export function ArticleVoting({ articleId }: ArticleVotingProps) {
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold">Esta análise foi útil?</h3>
+      <h3 className={cn(
+        "text-lg font-semibold",
+        isDarkMode ? "text-[#D3ECFF]" : ""
+      )}>Esta análise foi útil?</h3>
       <div className="flex gap-4">
         <Button
           variant="outline"
