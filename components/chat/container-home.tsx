@@ -21,6 +21,10 @@ import Image from "next/image"
 
 import { motion } from "framer-motion"
 
+import { useTheme } from "@/components/theme-provider"
+
+import { cn } from "@/lib/utils"
+
 const getImageUrl = (article: any): string => {
   if (!article) return '';
 
@@ -60,6 +64,7 @@ const getEventType = (article: any): string => {
 };
 
 const ContainerHome = ({ query }: { query: string }) => {
+  const { isDarkMode } = useTheme() 
 
   const router = useRouter()
 
@@ -229,13 +234,22 @@ const ContainerHome = ({ query }: { query: string }) => {
   const secondHalf = topQuestions?.slice(Math.ceil(topQuestions.length / 2)) || []
 
   return (
-    <div className="flex flex-col h-screen bg-background pt-12 md:pt-0">
+    <div className={cn(
+      "flex flex-col h-screen pt-12 md:pt-0",
+      isDarkMode ? "bg-[#061F3F]" : "bg-background"
+    )}>
       <div className="flex-1 overflow-auto hide-scrollbar momentum-scroll pb-32 pt-4 md:pb-24">
         <div className="flex flex-col items-center justify-center min-h-[calc(100vh-12rem)] p-4">
           <img className="w-full mb-10 max-w-[980px]" src="/980x250px_kv_-landing-page_chatbot.png" alt="logo" />
-          <h1 className="text-center mb-4 sm:mb-6 flex items-center gap-3 justify-center">
+          <h1 className={cn(
+            "text-center mb-4 sm:mb-6 flex items-center gap-3 justify-center",
+            isDarkMode && "text-[#ffffff]"
+          )}>
             {randomTitle}
-            <SportingbetDot size={28} className="ml-1" />
+            <SportingbetDot size={28} className={cn(
+              "ml-1",
+              isDarkMode && "text-[#45CAFF]"
+            )} />
           </h1>
           <div className="w-full max-w-xl mx-auto">
             <form onSubmit={handleSubmit} className="relative">
@@ -243,10 +257,21 @@ const ContainerHome = ({ query }: { query: string }) => {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder={getInputPlaceholder()}
-                className="w-full h-12 pl-4 pr-12 rounded-lg bg-secondary/50 border-0"
+                className={cn(
+                  "w-full h-12 pl-4 pr-12 rounded-lg",
+                  isDarkMode ? "bg-[#061F3F] text-[#D3ECFF] placeholder:text-[#D3ECFF]/50 border border-[#45CAFF]/30 focus:border-[#45CAFF]/50 transition-colors" : "bg-secondary/50 border-0"
+                )}
               />
               <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                <Button type="submit" size="icon" variant="ghost" className="h-8 w-8">
+                <Button 
+                  type="submit" 
+                  size="icon" 
+                  variant="ghost" 
+                  className={cn(
+                    "h-8 w-8",
+                    isDarkMode && "text-[#45CAFF] hover:text-[#D3ECFF] hover:bg-[#45CAFF]/10"
+                  )}
+                >
                   <Search className="h-4 w-4" />
                 </Button>
               </div>
@@ -261,8 +286,14 @@ const ContainerHome = ({ query }: { query: string }) => {
                 onTouchStart={pauseFirstRow}
                 onTouchEnd={resumeFirstRow}
               >
-                <div className="absolute left-0 top-0 h-full w-12 bg-gradient-to-r from-background to-transparent z-10"></div>
-                <div className="absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-background to-transparent z-10"></div>
+                <div className={cn(
+                  "absolute left-0 top-0 h-full w-12 bg-gradient-to-r to-transparent z-10",
+                  isDarkMode ? "from-[#061F3F]" : "from-background"
+                )}></div>
+                <div className={cn(
+                  "absolute right-0 top-0 h-full w-12 bg-gradient-to-l to-transparent z-10",
+                  isDarkMode ? "from-[#061F3F]" : "from-background"
+                )}></div>
                 <div className="flex overflow-hidden scrolling-row">
                   <div ref={firstRowRef} className="flex w-full touch-action-pan-y"> 
                     <div ref={firstRowContentRef} className="flex gap-2 py-1">
@@ -270,10 +301,20 @@ const ContainerHome = ({ query }: { query: string }) => {
                         <motion.button
                           key={index}
                           whileTap={{ scale: 0.97 }}
-                          className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2.5 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 active:bg-secondary/60 transition-colors rounded-lg flex items-center group"
+                          className={cn(
+                            "flex-shrink-0 whitespace-nowrap text-left px-3 py-2.5 text-sm transition-colors rounded-lg flex items-center group",
+                            isDarkMode 
+                              ? "text-[#D3ECFF]/60 hover:text-[#D3ECFF] hover:bg-[#45CAFF]/10 active:bg-[#45CAFF]/20" 
+                              : "text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 active:bg-secondary/60"
+                          )}
                           onClick={() => handleSampleQuery(text)}
                         >
-                          <Reply className="h-4 w-4 mr-3 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" />
+                          <Reply className={cn(
+                            "h-4 w-4 mr-3 transition-colors",
+                            isDarkMode 
+                              ? "text-[#D3ECFF]/40 group-hover:text-[#D3ECFF]" 
+                              : "text-muted-foreground/40 group-hover:text-muted-foreground"
+                          )} />
                           {text}
                         </motion.button>
                       ))}
@@ -283,10 +324,20 @@ const ContainerHome = ({ query }: { query: string }) => {
                         <motion.button
                           key={`dup1-${index}`}
                           whileTap={{ scale: 0.97 }}
-                          className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2.5 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 active:bg-secondary/60 transition-colors rounded-lg flex items-center group"
+                          className={cn(
+                            "flex-shrink-0 whitespace-nowrap text-left px-3 py-2.5 text-sm transition-colors rounded-lg flex items-center group",
+                            isDarkMode 
+                              ? "text-[#D3ECFF]/60 hover:text-[#D3ECFF] hover:bg-[#45CAFF]/10 active:bg-[#45CAFF]/20" 
+                              : "text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 active:bg-secondary/60"
+                          )}
                           onClick={() => handleSampleQuery(text)}
                         >
-                          <Reply className="h-4 w-4 mr-3 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" />
+                          <Reply className={cn(
+                            "h-4 w-4 mr-3 transition-colors",
+                            isDarkMode 
+                              ? "text-[#D3ECFF]/40 group-hover:text-[#D3ECFF]" 
+                              : "text-muted-foreground/40 group-hover:text-muted-foreground"
+                          )} />
                           {text}
                         </motion.button>
                       ))}
@@ -302,8 +353,14 @@ const ContainerHome = ({ query }: { query: string }) => {
                 onTouchStart={pauseSecondRow}
                 onTouchEnd={resumeSecondRow}
               >
-                <div className="absolute left-0 top-0 h-full w-12 bg-gradient-to-r from-background to-transparent z-10"></div>
-                <div className="absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-background to-transparent z-10"></div>
+                <div className={cn(
+                  "absolute left-0 top-0 h-full w-12 bg-gradient-to-r to-transparent z-10",
+                  isDarkMode ? "from-[#061F3F]" : "from-background"
+                )}></div>
+                <div className={cn(
+                  "absolute right-0 top-0 h-full w-12 bg-gradient-to-l to-transparent z-10",
+                  isDarkMode ? "from-[#061F3F]" : "from-background"
+                )}></div>
                 <div className="flex overflow-hidden scrolling-row">
                   <div ref={secondRowRef} className="flex w-full touch-action-pan-y"> 
                     <div ref={secondRowContentRef} className="flex gap-2 py-1 transform">
@@ -311,10 +368,20 @@ const ContainerHome = ({ query }: { query: string }) => {
                         <motion.button
                           key={index}
                           whileTap={{ scale: 0.97 }}
-                          className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2.5 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 active:bg-secondary/60 transition-colors rounded-lg flex items-center group"
+                          className={cn(
+                            "flex-shrink-0 whitespace-nowrap text-left px-3 py-2.5 text-sm transition-colors rounded-lg flex items-center group",
+                            isDarkMode 
+                              ? "text-[#D3ECFF]/60 hover:text-[#D3ECFF] hover:bg-[#45CAFF]/10 active:bg-[#45CAFF]/20" 
+                              : "text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 active:bg-secondary/60"
+                          )}
                           onClick={() => handleSampleQuery(text)}
                         >
-                          <Reply className="h-4 w-4 mr-3 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" />
+                          <Reply className={cn(
+                            "h-4 w-4 mr-3 transition-colors",
+                            isDarkMode 
+                              ? "text-[#D3ECFF]/40 group-hover:text-[#D3ECFF]" 
+                              : "text-muted-foreground/40 group-hover:text-muted-foreground"
+                          )} />
                           {text}
                         </motion.button>
                       ))}
@@ -324,10 +391,20 @@ const ContainerHome = ({ query }: { query: string }) => {
                         <motion.button
                           key={`dup2-${index}`}
                           whileTap={{ scale: 0.97 }}
-                          className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2.5 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 active:bg-secondary/60 transition-colors rounded-lg flex items-center group"
+                          className={cn(
+                            "flex-shrink-0 whitespace-nowrap text-left px-3 py-2.5 text-sm transition-colors rounded-lg flex items-center group",
+                            isDarkMode 
+                              ? "text-[#D3ECFF]/60 hover:text-[#D3ECFF] hover:bg-[#45CAFF]/10 active:bg-[#45CAFF]/20" 
+                              : "text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 active:bg-secondary/60"
+                          )}
                           onClick={() => handleSampleQuery(text)}
                         >
-                          <Reply className="h-4 w-4 mr-3 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" />
+                          <Reply className={cn(
+                            "h-4 w-4 mr-3 transition-colors",
+                            isDarkMode 
+                              ? "text-[#D3ECFF]/40 group-hover:text-[#D3ECFF]" 
+                              : "text-muted-foreground/40 group-hover:text-muted-foreground"
+                          )} />
                           {text}
                         </motion.button>
                       ))}

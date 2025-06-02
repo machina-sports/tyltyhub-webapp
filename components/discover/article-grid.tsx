@@ -102,7 +102,7 @@ const getArticleUrl = (article: Article): string => {
 };
 
 const ArticleCard = ({ article }: { article: Article }) => {
-  const { isPalmeirasTheme } = useTheme();
+  const { isDarkMode } = useTheme();
   if (!article) return null;
 
   const articleId = article._id || article.id;
@@ -120,7 +120,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
   const mainImageUrl = `${mainImagePrefix}-${article.value?.["main_image_name"]}.png`
 
   return (
-    <Card className={cn("overflow-hidden border", isPalmeirasTheme ? "hover:border-[#006B3D]/30" : "hover:border-primary/30")}>
+    <Card className={cn("overflow-hidden border", isDarkMode ? "hover:border-[#45CAFF]/30" : "hover:border-primary/30")}>
       <Link
         href={articleUrl}
         className="h-full block"
@@ -141,8 +141,8 @@ const ArticleCard = ({ article }: { article: Article }) => {
           </div>
           <div className="p-5 flex flex-col flex-grow">
             <h3 className={cn("text-sm md:text-xl font-semibold mb-2 transition-colors line-clamp-3",
-              isPalmeirasTheme
-                ? "hover:text-[#006B3D]"
+              isDarkMode
+                ? "hover:text-[#45CAFF]"
                 : "hover:text-primary"
             )}>
               {title}

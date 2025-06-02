@@ -15,7 +15,7 @@ export function MobileHeader({ onMenuClick }: MobileHeaderProps) {
   const pathname = usePathname() || ''
   const router = useRouter()
   const { resetChat } = useChatState()
-  const { isPalmeirasTheme } = useTheme()
+  const { isDarkMode } = useTheme()
   const isArticlePage = pathname.startsWith("/discover/") && pathname !== "/discover"
   
   const getPageTitle = () => {
@@ -35,7 +35,7 @@ export function MobileHeader({ onMenuClick }: MobileHeaderProps) {
   return (
     <div className={cn(
       "fixed top-0 left-0 right-0 h-16 backdrop-blur-sm border-b z-40 md:hidden",
-      isPalmeirasTheme ? "bg-[#006B3D]" : "bg-[#0A5EEA]"
+      isDarkMode ? "bg-[#061F3F]" : "bg-[#0A5EEA]"
     )}>
       <div className="flex items-center justify-between h-full px-4">
         <Button

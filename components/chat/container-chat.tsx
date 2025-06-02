@@ -13,12 +13,15 @@ import { actionChat } from "@/providers/threads/actions"
 import { ChatMessage } from "../chat-message"
 
 import { useAppDispatch } from "@/store/dispatch"
+import { useTheme } from "@/components/theme-provider"
 
 import { useGlobalState } from "@/store/useState"
 
 import { TableSkeleton } from "../skeleton"
+import { cn } from "@/lib/utils"
 
 export function ContainerChat() {
+  const { isDarkMode } = useTheme() 
 
   const state = useGlobalState((state: any) => state.threads)
 
@@ -90,17 +93,33 @@ export function ContainerChat() {
         </div>
       </div>
 
-      <div className="fixed md:sticky bottom-0 left-0 right-0 bg-background/80 backdrop-blur-sm border-t p-4 mobile-safe-bottom">
+      <div className={cn(
+        "fixed md:sticky bottom-0 left-0 right-0 bg-background/80 backdrop-blur-sm border-t p-4 mobile-safe-bottom",
+        isDarkMode ? "bg-[#061F3F] border-[#45CAFF]/30" : ""
+      )}>
         <form onSubmit={handleSubmit} className="max-w-3xl mx-auto relative tap-highlight-none md:mt-4">
           <Input
             disabled={isTyping}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask a follow-up question..."
-            className="w-full h-12 pl-4 pr-12 rounded-lg bg-secondary/50 border-0"
+            className={cn(
+              "w-full h-12 pl-4 pr-12 rounded-lg",
+              isDarkMode 
+                ? "bg-[#061F3F] text-[#D3ECFF] placeholder:text-[#D3ECFF]/50 border border-[#45CAFF]/30 focus:border-[#45CAFF]/50 transition-colors" 
+                : "bg-secondary/50 border-0"
+            )}
           />
           <div className="absolute right-2 top-1/2 -translate-y-1/2">
-            <Button type="submit" size="icon" variant="ghost" className="h-8 w-8">
+            <Button 
+              type="submit" 
+              size="icon" 
+              variant="ghost" 
+              className={cn(
+                "h-8 w-8",
+                isDarkMode && "text-[#45CAFF] hover:text-[#D3ECFF] hover:bg-[#45CAFF]/10"
+              )}
+            >
               <Search className="h-4 w-4" />
             </Button>
           </div>

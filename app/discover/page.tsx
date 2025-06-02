@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { Newspaper, Table2, Search } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TeamFilter } from "@/components/discover/sport-filter";
+import { TeamFilter as TeamFilterComponent } from "@/components/discover/sport-filter";
 import { ArticleGrid } from "@/components/discover/article-grid";
 import { ArticleSkeleton } from "@/components/discover/article-skeleton";
 import { FifaCwcSchedule } from "@/components/discover/fifa-cwc-schedule";
@@ -12,6 +12,9 @@ import { Input } from "@/components/ui/input";
 import teamsData from "@/data/teams.json";
 import { searchArticles } from "@/providers/discover/actions";
 import { Loading } from "@/components/ui/loading";
+import { useTheme } from "@/components/theme-provider";
+import { cn } from "@/lib/utils";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface Team {
   id: string;
@@ -62,6 +65,54 @@ interface ArticleSection {
   articles: Article[];
 }
 
+const SPORTS = [
+  "Todos os Esportes",
+  "Futebol",
+  "Basquete",
+  "Tênis",
+  "Beisebol",
+  "Fórmula 1",
+  "MMA",
+  "Boxe"
+];
+
+interface TeamFilterProps {
+  value: string;
+  onChange: (value: string) => void;
+}
+
+const SportFilter = ({ value, onChange }: TeamFilterProps) => {
+  const { isDarkMode } = useTheme();
+  return (
+    <div className={cn(
+      "w-[220px]",
+      isDarkMode ? "text-[#45CAFF]" : ""
+    )}>
+      <Select value={value} onValueChange={onChange}>
+        <SelectTrigger className={cn(
+          "bg-background",
+          isDarkMode ? "border-[#45CAFF]/30" : ""
+        )}>
+          <SelectValue placeholder="Selecionar Esporte" />
+        </SelectTrigger>
+        <SelectContent>
+          {SPORTS.map((sport) => (
+            <SelectItem 
+              key={sport} 
+              value={sport.toLowerCase()}
+              className={cn(
+                isDarkMode ? "text-[#D3ECFF] hover:bg-[#45CAFF]/10" : ""
+              )}
+            >
+              {sport}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+};
+
 const buildSearchFilters = (
   selectedTeam: string,
   teams: Team[],
@@ -107,6 +158,7 @@ function useDebounce<T>(value: T, delay: number): T {
 }
 
 export default function DiscoverPage() {
+  const { isDarkMode } = useTheme();
   const [selectedTeam, setSelectedTeam] = useState("all-teams");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("news");
@@ -260,18 +312,39 @@ export default function DiscoverPage() {
       >
         <div
           ref={headerRef}
-          className={`sticky z-20 bg-background transition-shadow duration-200 ${
-            isScrolled ? "shadow-md shadow-black/5" : "shadow-none"
-          } top-[64px] md:top-0`}
+          className={cn(
+            "sticky z-20 transition-shadow duration-200",
+            isScrolled ? "shadow-md shadow-black/5" : "shadow-none",
+            "top-[64px] md:top-0",
+            isDarkMode ? "bg-[#061F3F]" : "bg-background"
+          )}
           style={{ position: "sticky" }}
         >
-          <div className="border-b pb-2 pt-2">
-            <TabsList className="bg-background w-full justify-start overflow-x-auto">
-              <TabsTrigger value="news" className="flex items-center gap-2">
+          <div className={cn(
+            "border-b pb-2 pt-2",
+            isDarkMode && "border-[#D3ECFF]/20"
+          )}>
+            <TabsList className={cn(
+              "w-full justify-start overflow-x-auto",
+              isDarkMode ? "bg-[#45CAFF] border-[#D3ECFF]/20" : "bg-background"
+            )}>
+              <TabsTrigger 
+                value="news" 
+                className={cn(
+                  "flex items-center gap-2",
+                  isDarkMode && "text-[#061F3F] data-[state=active]:bg-[#061F3F] data-[state=active]:text-[#D3ECFF]"
+                )}
+              >
                 <Newspaper className="h-4 w-4" />
                 Notícias
               </TabsTrigger>
-              <TabsTrigger value="teams" className="flex items-center gap-2">
+              <TabsTrigger 
+                value="teams" 
+                className={cn(
+                  "flex items-center gap-2",
+                  isDarkMode && "text-[#061F3F] data-[state=active]:bg-[#061F3F] data-[state=active]:text-[#D3ECFF]"
+                )}
+              >
                 <Table2 className="h-4 w-4" />
                 Estatísticas
               </TabsTrigger>
@@ -279,14 +352,23 @@ export default function DiscoverPage() {
           </div>
 
           {activeTab === "news" && (
-            <div className="py-2 px-4 sm:px-0 bg-background">
+            <div className={cn(
+              "py-2 px-4 sm:px-0",
+              isDarkMode ? "bg-[#061F3F]" : "bg-background"
+            )}>
               <div className="flex justify-between items-center gap-4">
-                <TeamFilter value={selectedTeam} onChange={handleTeamChange} />
+                <TeamFilterComponent value={selectedTeam} onChange={handleTeamChange} />
                 <div className="relative w-full md:w-[232px]">
-                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Search className={cn(
+                    "absolute left-2 top-2.5 h-4 w-4",
+                    isDarkMode ? "text-[#D3ECFF]" : "text-muted-foreground"
+                  )} />
                   <Input
                     placeholder="Buscar artigos..."
-                    className="pl-8 text-base max-w-[232px]"
+                    className={cn(
+                      "pl-8 text-base max-w-[232px]",
+                      isDarkMode && "bg-[#061F3F] border-[#D3ECFF]/20 text-[#D3ECFF] placeholder:text-[#D3ECFF]/50"
+                    )}
                     value={searchQuery}
                     onChange={handleSearchChange}
                     onKeyPress={handleSearchKeyPress}
