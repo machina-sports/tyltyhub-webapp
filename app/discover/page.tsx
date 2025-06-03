@@ -320,15 +320,16 @@ export default function DiscoverPage() {
         <div
           ref={headerRef}
           className={cn(
-            "sticky z-20 transition-shadow duration-200",
+            "md:sticky z-20 transition-shadow duration-200",
             isScrolled ? "shadow-md shadow-black/5" : "shadow-none",
             "top-[64px] md:top-0",
-            isDarkMode ? "bg-[#061F3F]" : "bg-background"
+            isDarkMode ? "bg-[#061F3F]" : "bg-background",
+            "pt-24 md:pt-8 pb-4"
           )}
-          style={{ position: "sticky" }}
+          // style={{ position: "sticky" }}
         >
           <div className={cn(
-            "border-b pb-2 pt-2",
+            "border-b pb-4",
             isDarkMode && "border-[#D3ECFF]/20"
           )}>
             <TabsList className={cn(
@@ -360,7 +361,7 @@ export default function DiscoverPage() {
 
           {activeTab === "news" && (
             <div className={cn(
-              "py-2 px-4 sm:px-0",
+              "py-4 px-0 sm:px-0",
               isDarkMode ? "bg-[#061F3F]" : "bg-background"
             )}>
               <div className="flex justify-between items-center gap-4">
@@ -392,10 +393,8 @@ export default function DiscoverPage() {
           )}
         </div>
 
-        <div className="h-8 md:h-4"></div>
-
-        <TabsContent value="news" className="space-y-6 pt-6 md:pt-4">
-          <div className="space-y-8">
+        <TabsContent value="news" className="pt-0 md:pt-0">
+          <div className="space-y-12">
             {searchResults.status === "loading" && !searchResults.data.length ? (
               <div className="flex items-center justify-center min-h-[300px]">
                 <Loading width={100} height={100} />

@@ -120,7 +120,12 @@ const ArticleCard = ({ article }: { article: Article }) => {
   const mainImageUrl = `${mainImagePrefix}-${article.value?.["main_image_name"]}.png`
 
   return (
-    <Card className={cn("overflow-hidden border", isDarkMode ? "hover:border-[#45CAFF]/30" : "hover:border-primary/30")}>
+    <Card className={cn(
+      "overflow-hidden border", 
+      isDarkMode 
+        ? "bg-[#061F3F] border-[#45CAFF]/30 hover:border-[#45CAFF]/50" 
+        : "hover:border-primary/30"
+    )}>
       <Link
         href={articleUrl}
         className="h-full block"
@@ -142,17 +147,23 @@ const ArticleCard = ({ article }: { article: Article }) => {
           <div className="p-5 flex flex-col flex-grow">
             <h3 className={cn("text-sm md:text-xl font-semibold mb-2 transition-colors line-clamp-3",
               isDarkMode
-                ? "hover:text-[#45CAFF]"
+                ? "text-[#D3ECFF] hover:text-[#45CAFF]"
                 : "hover:text-primary"
             )}>
               {title}
             </h3>
-            <div className="text-muted-foreground text-sm mb-2">
+            <div className={cn(
+              "text-sm mb-2",
+              isDarkMode ? "text-[#D3ECFF]/80" : "text-muted-foreground"
+            )}>
               <p className="line-clamp-3">
                 {getDescriptionSnippet(description, 120) || 'Sem descrição'}
               </p>
             </div>
-            <div className="flex items-center justify-between mt-2 pt-2 border-t text-xs">
+            <div className={cn(
+              "flex items-center justify-between mt-2 pt-2 border-t text-xs",
+              isDarkMode && "border-[#45CAFF]/30"
+            )}>
               <div className="flex items-center gap-1">
                 {/* <div className={cn("h-4 w-4 rounded-full overflow-hidden flex items-center justify-center text-[10px] font-medium",
                   isPalmeirasTheme ? "bg-[#E8F5EE]" : "bg-secondary"
@@ -161,8 +172,14 @@ const ArticleCard = ({ article }: { article: Article }) => {
                 <span className="text-muted-foreground truncate max-w-[85px]">{author}</span> */}
               </div>
             </div>
-            <div className="flex items-center text-muted-foreground whitespace-nowrap text-xs mt-2">
-              <CalendarDays className="h-4 w-4 mr-2" />
+            <div className={cn(
+              "flex items-center whitespace-nowrap text-xs mt-2",
+              isDarkMode ? "text-[#D3ECFF]/70" : "text-muted-foreground"
+            )}>
+              <CalendarDays className={cn(
+                "h-4 w-4 mr-2",
+                isDarkMode && "text-[#45CAFF]"
+              )} />
               {articleDate ? formatDistanceToNow(new Date(articleDate), { addSuffix: true, locale: ptBR }) : 'Recente'}
             </div>
           </div>
@@ -197,7 +214,12 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
     const mainImageUrl = `${mainImagePrefix}-${article.value?.["main_image_name"]}.png`
 
     return (
-      <Card className="overflow-hidden border hover:border-primary/30">
+      <Card className={cn(
+        "overflow-hidden border", 
+        isDarkMode 
+          ? "bg-[#061F3F] border-[#45CAFF]/30 hover:border-[#45CAFF]/50" 
+          : "hover:border-primary/30"
+      )}>
         <Link
           href={articleUrl}
           prefetch={false}
@@ -219,11 +241,19 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
               </div>
               <div className="md:col-span-6 p-4 md:p-8 flex flex-col">
                 <div className="space-y-3">
-                  <h1 className="text-lg md:text-3xl font-bold line-clamp-3 transition-colors hover:text-primary">
+                  <h1 className={cn(
+                    "text-lg md:text-3xl font-bold line-clamp-3 transition-colors",
+                    isDarkMode
+                      ? "text-[#D3ECFF] hover:text-[#45CAFF]"
+                      : "hover:text-primary"
+                  )}>
                     {title}
                   </h1>
 
-                  <div className="text-muted-foreground prose prose-sm prose-neutral dark:prose-invert max-w-none md:line-clamp-5">
+                  <div className={cn(
+                    "prose prose-sm prose-neutral max-w-none md:line-clamp-5",
+                    isDarkMode ? "prose-invert text-[#D3ECFF]/80" : ""
+                  )}>
                     <ReactMarkdown>
                       {getDescriptionSnippet(description, 360) || 'Sem descrição'}
                     </ReactMarkdown>
@@ -237,8 +267,14 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
                     </div>
                     <span className="text-xs md:text-sm text-muted-foreground">{author}</span> */}
                   </div>
-                  <div className="flex items-center text-xs md:text-sm text-muted-foreground">
-                    <CalendarDays className="h-3 w-3 md:h-4 md:w-4 mr-1" />
+                  <div className={cn(
+                    "flex items-center text-xs md:text-sm",
+                    isDarkMode ? "text-[#D3ECFF]/70" : "text-muted-foreground"
+                  )}>
+                    <CalendarDays className={cn(
+                      "h-3 w-3 md:h-4 md:w-4 mr-1",
+                      isDarkMode && "text-[#45CAFF]"
+                    )} />
                     {articleDate ? formatDistanceToNow(new Date(articleDate), { addSuffix: true, locale: ptBR }) : 'Recente'}
                   </div>
                 </div>

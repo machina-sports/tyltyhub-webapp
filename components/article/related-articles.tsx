@@ -55,7 +55,12 @@ export function RelatedArticles({ currentArticleId }: RelatedArticlesProps) {
           const articleDate = article.date || article.createdAt;
           
           return (
-            <Card key={articleId} className="overflow-hidden flex-none first:ml-0 last:mr-4 min-w-[280px] max-w-[280px] hover:border-primary/30">
+            <Card key={articleId} className={cn(
+              "overflow-hidden flex-none first:ml-0 last:mr-4 min-w-[280px] max-w-[280px]",
+              isDarkMode 
+                ? "bg-[#061F3F] border-[#45CAFF]/30 hover:border-[#45CAFF]/50" 
+                : "hover:border-primary/30"
+            )}>
               <Link 
                 href={`/discover/${articleId}`}
                 prefetch={false}
@@ -72,11 +77,22 @@ export function RelatedArticles({ currentArticleId }: RelatedArticlesProps) {
                   )}
                 </div>
                 <div className="p-4 w-full">
-                  <h4 className="font-semibold line-clamp-2 mb-2 text-base hover:text-primary">
+                  <h4 className={cn(
+                    "font-semibold line-clamp-2 mb-2 text-base transition-colors",
+                    isDarkMode
+                      ? "text-[#D3ECFF] hover:text-[#45CAFF]"
+                      : "hover:text-primary"
+                  )}>
                     {article.title}
                   </h4>
-                  <p className="text-sm text-muted-foreground flex items-center gap-2">
-                    <span className="inline-block w-2 h-2 rounded-full bg-muted" />
+                  <p className={cn(
+                    "text-sm flex items-center gap-2",
+                    isDarkMode ? "text-[#D3ECFF]/70" : "text-muted-foreground"
+                  )}>
+                    <span className={cn(
+                      "inline-block w-2 h-2 rounded-full",
+                      isDarkMode ? "bg-[#45CAFF]" : "bg-muted"
+                    )} />
                     {articleDate ? 
                       formatDistanceToNow(new Date(articleDate), { addSuffix: true, locale: ptBR }) : 
                       'Recente'
