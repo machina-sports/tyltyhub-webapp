@@ -474,7 +474,7 @@ export function FifaCwcSchedule() {
               isDarkMode && "text-[#061F3F] data-[state=active]:bg-[#061F3F] data-[state=active]:text-[#D3ECFF]"
             )}
           >
-            Clubes (AI Insights)
+            Clubes
           </TabsTrigger>
           <TabsTrigger 
             value="teams-view"
