@@ -19,6 +19,7 @@ import { useGlobalState } from "@/store/useState"
 
 import { TableSkeleton } from "../skeleton"
 import { cn } from "@/lib/utils"
+import { trackNewMessage } from "@/lib/analytics"
 
 export function ContainerChat() {
   const { isDarkMode } = useTheme() 
@@ -45,6 +46,7 @@ export function ContainerChat() {
   }
 
   const handleSendMessage = async (message: string) => {
+    trackNewMessage(message)
     dispatch(actionChat({ thread_id: state.item.data?._id, message }))
   }
 

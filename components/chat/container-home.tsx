@@ -25,6 +25,8 @@ import { useTheme } from "@/components/theme-provider"
 
 import { cn } from "@/lib/utils"
 
+import { trackNewMessage, trackSuggestedQuestionClick } from "@/lib/analytics"
+
 const getImageUrl = (article: any): string => {
   if (!article) return '';
 
@@ -201,15 +203,15 @@ const ContainerHome = ({ query }: { query: string }) => {
   const resumeSecondRow = () => setIsSecondRowScrolling(true);
 
   const handleSubmit = async (e: React.FormEvent) => {
-
     e.preventDefault()
-
     if (!input.trim()) return
 
+    trackNewMessage(input)
     router.push(`/chat/new?q=${encodeURIComponent(input)}&user_id=${user_id}`)
   }
 
   const handleSampleQuery = (text: string) => {
+    trackSuggestedQuestionClick(text)
     setInput(text)
   }
 

@@ -8,6 +8,7 @@ import { MarkdownChat } from "./markdown-content"
 
 import React, { useMemo } from "react"
 import Link from "next/link"
+import { trackRelatedQuestionClick } from "@/lib/analytics"
 
 
 interface ChatMessageProps {
@@ -85,7 +86,14 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
           <div className="mt-2 space-y-2 text-sm text-muted-foreground">
             {relatedQuestions.slice(0, 2).map((question: any, index: number) => (
               <div key={index} className="text-sm hover:underline cursor-pointer">
-                <Link className="flex items-center gap-2 ml-4" onClick={() => onNewMessage(question)} href="#">
+                <Link 
+                  className="flex items-center gap-2 ml-4" 
+                  onClick={() => {
+                    trackRelatedQuestionClick(question)
+                    onNewMessage(question)
+                  }} 
+                  href="#"
+                >
                   <Reply className="h-4 w-4" />
                   {question}
                 </Link>
