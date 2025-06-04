@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 
-import { Search } from "lucide-react"
+import { Send } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
@@ -122,7 +122,7 @@ export function ContainerChat() {
                 isDarkMode && "text-[#45CAFF] hover:text-[#D3ECFF] hover:bg-[#45CAFF]/10"
               )}
             >
-              <Search className="h-4 w-4" />
+              <Send className="h-4 w-4" />
             </Button>
           </div>
         </form>

@@ -17,8 +17,11 @@ declare global {
 }
 
 export const metadata: Metadata = {
-  title: 'Sportingbet CWC',
-  description: 'Sportingbet CWC',
+  title: 'SportingBOT, a Inteligência Artificial da Sportingbet',
+  description: 'SportingBOT, a Inteligência Artificial da Sportingbet',
+  icons: {
+    icon: '/sb-new.ico',
+  },
 }
 
 export const viewport: Viewport = {
