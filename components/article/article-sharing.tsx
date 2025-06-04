@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Share2, MessageCircle, Instagram, Facebook } from "lucide-react"
+import { Share2, MessageCircle, Instagram, Facebook, Link as LinkIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { 
   DropdownMenu,
@@ -16,15 +16,17 @@ interface ArticleSharingProps {
   articleId: string
   title: string
   url?: string
+  shareImageUrl?: string
 }
 
-export function ArticleSharing({ articleId, title, url }: ArticleSharingProps) {
+export function ArticleSharing({ articleId, title, url, shareImageUrl }: ArticleSharingProps) {
   const [isOpen, setIsOpen] = useState(false)
   
   // Generate full URL if only articleId is provided
   const fullUrl = url || `${typeof window !== 'undefined' ? window.location.origin : ''}/discover/${articleId}`
   
   const shareText = `Confira este artigo: ${title}`
+  const shareImage = shareImageUrl || 'https://www.sportingbet.com/content/dam/sportingbet/brand/og-image.jpg'
   
   const handleShare = (platform: string) => {
     let shareUrl = ''
@@ -34,7 +36,7 @@ export function ArticleSharing({ articleId, title, url }: ArticleSharingProps) {
         shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(`${shareText} ${fullUrl}`)}`
         break
       case 'facebook':
-        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(fullUrl)}`
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(fullUrl)}&quote=${encodeURIComponent(shareText)}&picture=${encodeURIComponent(shareImage)}`
         break
       case 'instagram':
         // Instagram doesn't have a direct share URL so we'll copy to clipboard
@@ -43,6 +45,20 @@ export function ArticleSharing({ articleId, title, url }: ArticleSharingProps) {
           toast({
             title: "Link copiado!",
             description: "Cole o link no Instagram para compartilhar."
+          })
+        } else {
+          toast({
+            title: "Erro ao copiar",
+            description: "Não foi possível copiar o link automaticamente."
+          })
+        }
+        return
+      case 'copy':
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(fullUrl)
+          toast({
+            title: "Link copiado!",
+            description: "O link do artigo foi copiado para a área de transferência."
           })
         } else {
           toast({
@@ -69,10 +85,11 @@ export function ArticleSharing({ articleId, title, url }: ArticleSharingProps) {
   }
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center gap-2">
+      {/* Floating Share Button - Visible on larger screens */}
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" className="hidden sm:flex">
             <Share2 className="h-4 w-4 mr-2" />
             Compartilhar
           </Button>
@@ -91,9 +108,30 @@ export function ArticleSharing({ articleId, title, url }: ArticleSharingProps) {
               <Facebook className="h-4 w-4 mr-2 text-blue-600" />
               <span>Facebook</span>
             </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleShare('copy')}>
+              <LinkIcon className="h-4 w-4 mr-2 text-gray-500" />
+              <span>Copiar link</span>
+            </DropdownMenuItem>
+            {/* Native share button for mobile */}
+            {typeof navigator.share === 'function' && (
+              <DropdownMenuItem onClick={() => handleShare('native')}>
+                <Share2 className="h-4 w-4 mr-2 text-gray-500" />
+                <span>Outros...</span>
+              </DropdownMenuItem>
+            )}
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
+      
+      {/* Mobile Share Button - Only visible on small screens */}
+      <Button 
+        variant="outline" 
+        size="icon" 
+        className="sm:hidden"
+        onClick={() => handleShare('native')}
+      >
+        <Share2 className="h-4 w-4" />
+      </Button>
     </div>
   )
 } 

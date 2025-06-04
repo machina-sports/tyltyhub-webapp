@@ -238,14 +238,21 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
       <div className="space-y-6">
         {/* <Badge variant="secondary">{articleData.eventType}</Badge> */}
 
+        <div className="flex justify-start mb-4">
+          <ArticleSharing
+            articleId={articleData.articleId}
+            title={articleData.title}
+            url={`${typeof window !== 'undefined' ? window.location.origin : ''}/discover/${articleData.slug || articleData.articleId}`}
+            shareImageUrl={mainImageUrl}
+          />
+        </div>
         <h1 className={cn(
           "text-2xl sm:text-4xl font-bold",
           isDarkMode ? "text-[#fff]" : ""
         )}>
           {articleData.title}
         </h1>
-
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div>
             {articleData.subtitle && (
               <p className={cn(
@@ -282,6 +289,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           articleId={articleData.articleId}
           title={articleData.title}
           url={`${typeof window !== 'undefined' ? window.location.origin : ''}/discover/${articleData.slug || articleData.articleId}`}
+          shareImageUrl={mainImageUrl}
         />
       </div>
 

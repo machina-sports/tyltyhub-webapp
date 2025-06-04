@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 
 import {
-  Search,
+  Send,
   Reply,
 } from "lucide-react"
 
@@ -260,7 +260,7 @@ const ContainerHome = ({ query }: { query: string }) => {
                     isDarkMode && "text-[#45CAFF] hover:text-[#D3ECFF] hover:bg-[#45CAFF]/10"
                   )}
                 >
-                  <Search className="h-4 w-4" />
+                  <Send className="h-4 w-4" />
                 </Button>
               </div>
             </form>
