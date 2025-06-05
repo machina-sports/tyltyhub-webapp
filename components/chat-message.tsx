@@ -1,12 +1,12 @@
 "use client"
 
-import { Loader2, Reply } from "lucide-react"
+import { Loader2, Reply, BarChart3 } from "lucide-react"
 
 import { ChatBubble } from "./chat/bubble"
 
 import { MarkdownChat } from "./markdown-content"
 
-import React, { useMemo } from "react"
+import React, { useMemo, useState } from "react"
 import Link from "next/link"
 import { trackRelatedQuestionClick } from "@/lib/analytics"
 
@@ -26,6 +26,7 @@ const WidgetEmbed = React.memo(({ content }: { content: string }) => (
 WidgetEmbed.displayName = 'WidgetEmbed'
 
 export function ChatMessage({ role, content, date, isTyping, onNewMessage }: ChatMessageProps) {
+  const [showWidget, setShowWidget] = useState(false)
 
   const currentMessage = content?.["question_answer"] || (typeof content === 'string' ? content : JSON.stringify(content))
 
@@ -35,7 +36,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
 
   const isMatchFinished = content?.["is_match_finished"]
 
-  const widgetMatchEmbed = content?.["widget-match-embed"]
+  const widgetMatchEmbed = content?.["widget-url"]
 
   const isRelatedBettingsEnabled = content?.["related_betting_enabled"] && relatedBettings.length > 0
 
@@ -65,22 +66,6 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
         </div>
       </ChatBubble>
 
-      {widgetMatchEmbed ? (
-        <div className="flex flex-col gap-2 ml-[5%] md:ml-16 mt-4 w-[90%] md:w-[600px]">
-          <WidgetEmbed content={parsedWidgetContent} />
-        </div>
-      ) : null}
-
-      {/* {isRelatedBettingsEnabled && (
-        <div className="mt-4 pl-14 ml-3">
-          <div className="mt-2 space-y-2 text-md text-muted-foreground">
-            {relatedBettings.slice(0, 3).map((bet: any, index: number) => (
-              <BetBox key={index} bet={bet} />
-            ))}
-          </div>
-        </div>
-      )} */}
-
       {relatedQuestions.length > 0 && (
         <div className="mt-4 pl-14">
           <div className="mt-2 space-y-2 text-sm text-muted-foreground">
@@ -102,6 +87,40 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
           </div>
         </div>
       )}
+      
+      {parsedWidgetContent && (
+        <div className="mt-0 pl-14">
+          <div className="mt-2 space-y-2 text-sm text-muted-foreground">
+            <div className="text-sm hover:underline cursor-pointer">
+              <Link
+                className="flex items-center gap-2 ml-4"
+                onClick={() => setShowWidget(!showWidget)}
+                href="#"
+              >
+                <BarChart3 className="h-4 w-4" />
+                {showWidget ? "Ocultar tabela de odds" : "Ver a tabela de odds da partida"}
+              </Link>
+            </div>
+          </div>
+          
+          {showWidget && (
+            <div className="flex flex-col gap-2 mt-4 ml-4 w-[90%] md:w-[600px]">
+              <WidgetEmbed content={parsedWidgetContent} />
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* {isRelatedBettingsEnabled && (
+        <div className="mt-4 pl-14 ml-3">
+          <div className="mt-2 space-y-2 text-md text-muted-foreground">
+            {relatedBettings.slice(0, 3).map((bet: any, index: number) => (
+              <BetBox key={index} bet={bet} />
+            ))}
+          </div>
+        </div>
+      )} */}
+
 
       {/* <RelatedArticles currentArticle="" /> */}
       <div className="h-8 md:hidden"></div> {/* Adjust height as needed */}
