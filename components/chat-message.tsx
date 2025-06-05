@@ -101,7 +101,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
   }, [widgetMatchEmbed])
 
   return (
-    <div className="mb-4 last:mb-0">
+    <div className="mb-2 last:mb-0">
       <ChatBubble role={role}>
         <div className="space-y-2">
           {isTyping ? (
@@ -245,7 +245,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
       )} */}
 
       {/* <RelatedArticles currentArticle="" /> */}
-      <div className="h-8 md:hidden"></div> {/* Adjust height as needed */}
+      <div className="h-2 md:hidden"></div>  {/*Adjust height as needed */}
     </div>
   )
 }

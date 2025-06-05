@@ -68,9 +68,9 @@ export function ContainerChat() {
 
   return (
     <>
-      <div className="flex-1 overflow-auto" ref={messageContainerRef}>
+     <div className="flex-1 min-h-0 overflow-y-auto" ref={messageContainerRef}>
         <div className="max-w-3xl mx-auto space-y-6 pb-[24px]">
-          <div className="space-y-6">
+          <div className="space-y-3 sm:space-y-6">
             {isLoading ? (
               <TableSkeleton isLoading={true} length={5} />
             ) : (

@@ -238,14 +238,6 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
       <div className="space-y-6">
         {/* <Badge variant="secondary">{articleData.eventType}</Badge> */}
 
-        <div className="flex justify-start mb-4">
-          <ArticleSharing
-            articleId={articleData.articleId}
-            title={articleData.title}
-            url={`${typeof window !== 'undefined' ? window.location.origin : ''}/discover/${articleData.slug || articleData.articleId}`}
-            shareImageUrl={mainImageUrl}
-          />
-        </div>
         <h1 className={cn(
           "text-2xl sm:text-4xl font-bold",
           isDarkMode ? "text-[#fff]" : ""
