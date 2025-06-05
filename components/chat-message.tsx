@@ -52,7 +52,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
         <div className="space-y-2">
           {isTyping ? (
             <div className="flex items-center gap-2 text-muted-foreground">
-              <span className="text-sm">Pensando...</span>
+              <span className="text-sm">{content || "Pensando..."}</span>
               <img src="/soccer.gif" alt="Pensando..." className="w-6 h-6" />
             </div>
           ) : (
@@ -86,12 +86,12 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
           <div className="mt-2 space-y-2 text-sm text-muted-foreground">
             {relatedQuestions.slice(0, 2).map((question: any, index: number) => (
               <div key={index} className="text-sm hover:underline cursor-pointer">
-                <Link 
-                  className="flex items-center gap-2 ml-4" 
+                <Link
+                  className="flex items-center gap-2 ml-4"
                   onClick={() => {
                     trackRelatedQuestionClick(question)
                     onNewMessage(question)
-                  }} 
+                  }}
                   href="#"
                 >
                   <Reply className="h-4 w-4" />

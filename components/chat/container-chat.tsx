@@ -60,6 +60,8 @@ export function ContainerChat() {
 
   const currentStatus = state.item.data?.value?.status
 
+  const currentStatusMessage = state.item.data?.value?.["status-message"]
+
   const isTyping = currentStatus === "processing" || currentStatus === "waiting" || state.fields.status === "loading"
 
   const isLoading = state.item.status === 'loading'
@@ -84,7 +86,7 @@ export function ContainerChat() {
                 {isTyping && (
                   <ChatMessage
                     role="assistant"
-                    content=""
+                    content={currentStatusMessage}
                     isTyping={true}
                     onNewMessage={handleSendMessage}
                   />
