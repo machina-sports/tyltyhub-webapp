@@ -1,6 +1,6 @@
 "use client"
 
-import { Loader2, Reply, BarChart3, Newspaper } from "lucide-react"
+import { Loader2, Reply, BarChart3, Newspaper, Gift } from "lucide-react"
 
 import { ChatBubble } from "./chat/bubble"
 
@@ -43,6 +43,11 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
 
   const relatedArticle = content?.["related-article"]
 
+  const promotion = content?.["promotion-image"] || content?.["promotion-link"] ? {
+    image: content?.["promotion-image"],
+    link: content?.["promotion-link"]
+  } : null
+
   const isRelatedBettingsEnabled = content?.["related_betting_enabled"] && relatedBettings.length > 0
 
   // Helper function to get image URL for related article
@@ -73,6 +78,18 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
       return `${imageAddress}/article-image-id-${article._id}-${article.value.main_image_name}.png`;
     }
 
+    return '';
+  };
+
+  // Helper function to get promotion image URL
+  const getPromotionImageUrl = (promotionImage: any): string => {
+    if (!promotionImage) return '';
+    
+    // Return the absolute URL directly
+    if (typeof promotionImage === 'string') {
+      return promotionImage;
+    }
+    
     return '';
   };
 
@@ -138,6 +155,36 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
                 )}
               </div>
             </Link>
+          </div>
+        </div>
+      )}
+
+      {promotion && (
+        <div className="mt-0 pl-14">
+          <div className="mt-2 ml-4">
+            <a
+              href={promotion.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(
+                "block rounded-lg transition-colors max-w-[420px] border overflow-hidden",
+                isDarkMode 
+                  ? "border-[#45CAFF]/30 hover:border-[#45CAFF]/50 hover:bg-[#45CAFF]/10" 
+                  : "border-border hover:border-primary/30 hover:bg-muted/50"
+              )}
+            >
+              {getPromotionImageUrl(promotion.image) ? (
+                <img 
+                  src={getPromotionImageUrl(promotion.image)}
+                  alt="Promoção"
+                  className="w-full h-auto object-cover"
+                />
+              ) : (
+                <div className="w-full h-32 flex items-center justify-center bg-muted">
+                  <Gift className="h-8 w-8 text-muted-foreground" />
+                </div>
+              )}
+            </a>
           </div>
         </div>
       )}
