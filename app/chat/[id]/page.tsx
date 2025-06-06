@@ -1,6 +1,30 @@
 import ContainerView from "@/components/chat/container-view"
+import ShareProvider from "@/providers/share/provider"
 
 import ThreadProvider from "@/providers/threads/provider"
+
+// Metadata generation for improved sharing experience
+export async function generateMetadata({ params }: { params: { id: string } }) {
+  const id = params.id
+  
+  // In a real implementation, you would fetch the thread data from the API
+  // For now, we'll use a default title and description
+  
+  return {
+    title: 'Chat Compartilhado | SportingBet CWC',
+    description: 'Veja esta interessante conversa no SportingBet CWC',
+    openGraph: {
+      title: 'Chat Compartilhado | SportingBet CWC',
+      description: 'Veja esta interessante conversa no SportingBet CWC',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Chat Compartilhado | SportingBet CWC',
+      description: 'Veja esta interessante conversa no SportingBet CWC',
+    }
+  }
+}
 
 export default function ChatPage({
   params,
@@ -9,7 +33,9 @@ export default function ChatPage({
 }) {
   return (
     <ThreadProvider>
-      <ContainerView threadId={params.id || ''} />
+      <ShareProvider>
+        <ContainerView threadId={params.id || ''} />
+      </ShareProvider>
     </ThreadProvider>
   )
 }

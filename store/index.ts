@@ -9,6 +9,7 @@ import ArticleReducer from "@/providers/article/reducer"
 import StandingsReducer from "@/providers/standings/reducer"
 import ThreadsReducer from "@/providers/threads/reducer"
 import TrendingReducer from "@/providers/trending/reducer"
+import ShareReducer from "@/providers/share/reducer"
 
 export function makeStore() {
   return configureStore({
@@ -18,6 +19,7 @@ export function makeStore() {
       standings: StandingsReducer.reducer,
       threads: ThreadsReducer.reducer,
       trending: TrendingReducer.reducer,
+      share: ShareReducer.reducer,
     },
     middleware: (getDefaultMiddlewares) => getDefaultMiddlewares().concat()
   })
