@@ -15,6 +15,7 @@ import Image from "next/image";
 import { ArticleVoting } from "@/components/article/article-voting";
 import { ArticleSharing } from "@/components/article/article-sharing";
 import { RelatedArticles } from "@/components/article/related-articles";
+import { RelatedOdds } from "@/components/article/related-odds";
 import { ArticleSkeleton } from "@/components/article/article-skeleton";
 // import FollowUpQuestionForm from "@/components/follow-up-question";
 import ReactMarkdown from "react-markdown";
@@ -404,6 +405,10 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
       <Separator className={cn(isDarkMode ? "bg-[#45CAFF]/30" : "")} />
 
       <ArticleVoting articleId={articleData.articleId} />
+
+      <Separator className={cn(isDarkMode ? "bg-[#45CAFF]/30" : "")} />
+
+      <RelatedOdds currentArticleId={articleData.articleId} />
 
       <Separator className={cn(isDarkMode ? "bg-[#45CAFF]/30" : "")} />
 
