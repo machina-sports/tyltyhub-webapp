@@ -173,24 +173,21 @@ export function ContainerChat() {
       {/* Share Dialog */}
       <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
         <DialogContent className={cn(
-          "sm:max-w-[625px]", 
+          "w-[94%] max-w-[94%] sm:max-w-[625px] overflow-y-auto max-h-[90vh] p-4 sm:p-6", 
           isDarkMode && "bg-[#061F3F] border-[#45CAFF]/30 text-white"
         )}>
           <DialogHeader>
             <DialogTitle className={cn("text-lg font-semibold", isDarkMode && "text-white")}>Link público atualizado</DialogTitle>
-            <DialogDescription className={cn("text-sm", isDarkMode && "text-gray-300")}>
-              O link público para seu chat foi atualizado. Gerencie chats compartilhados através das configurações.
-            </DialogDescription>
           </DialogHeader>
           
 
 
           <div className="mt-4 space-y-4">
             <div className={cn(
-              "flex items-center space-x-2 border rounded-md px-3 py-2", 
+              "flex flex-col sm:flex-row sm:items-center sm:space-x-2 border rounded-md px-3 py-3", 
               isDarkMode ? "border-[#45CAFF]/30 bg-[#061F3F] text-white" : "bg-secondary"
             )}>
-              <span className="text-sm truncate flex-1">{shareUrl}</span>
+              <span className="text-sm break-all sm:truncate sm:flex-1 pb-2 sm:pb-0">{shareUrl || 'URL indisponível'}</span>
               <Button 
                 variant="ghost" 
                 size="sm" 
@@ -215,48 +212,36 @@ export function ContainerChat() {
             </div>
           </div>
           
-          <div className="grid grid-cols-3 gap-2 mt-4">
+          <div className="grid grid-cols-2 gap-4 mt-6">
             <Button 
               variant="outline" 
               className={cn(
-                "flex flex-col items-center justify-center h-20 space-y-1", 
+                "flex flex-col items-center justify-center h-16 sm:h-20 space-y-2 py-3", 
                 isDarkMode && "border-[#45CAFF]/30 text-white hover:bg-[#45CAFF]/10"
               )}
               onClick={() => handleShare('linkedin')}
             >
-              <div className="h-10 w-10 rounded-full bg-[#0077b5] flex items-center justify-center">
-                <Linkedin className="h-5 w-5 text-white" />
+              <div className="h-12 w-12 rounded-full bg-[#0077b5] flex items-center justify-center">
+                <Linkedin className="h-6 w-6 text-white" />
               </div>
-              <span className="text-xs">LinkedIn</span>
+              <span className="text-xs font-medium">LinkedIn</span>
             </Button>
             
             <Button 
               variant="outline" 
               className={cn(
-                "flex flex-col items-center justify-center h-20 space-y-1", 
+                "flex flex-col items-center justify-center h-16 sm:h-20 space-y-2 py-3", 
                 isDarkMode && "border-[#45CAFF]/30 text-white hover:bg-[#45CAFF]/10"
               )}
               onClick={() => handleShare('x')}
             >
-              <div className="h-10 w-10 rounded-full bg-black flex items-center justify-center">
-                <X className="h-5 w-5 text-white" />
+              <div className="h-12 w-12 rounded-full bg-black flex items-center justify-center">
+                <X className="h-6 w-6 text-white" />
               </div>
-              <span className="text-xs">X</span>
+              <span className="text-xs font-medium">X</span>
             </Button>
             
-            <Button 
-              variant="outline" 
-              className={cn(
-                "flex flex-col items-center justify-center h-20 space-y-1", 
-                isDarkMode && "border-[#45CAFF]/30 text-white hover:bg-[#45CAFF]/10"
-              )}
-              onClick={() => setShareDialogOpen(false)}
-            >
-              <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                <X className="h-5 w-5 text-gray-700" />
-              </div>
-              <span className="text-xs">Fechar</span>
-            </Button>
+
           </div>
         </DialogContent>
       </Dialog>
