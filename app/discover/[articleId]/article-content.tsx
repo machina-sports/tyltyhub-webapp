@@ -9,7 +9,7 @@ import {
 } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { formatDistanceToNow } from "date-fns";
+import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import Image from "next/image";
 import { ArticleVoting } from "@/components/article/article-voting";
@@ -206,15 +206,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
   
   const mainImageUrl = `${mainImagePrefix}-${articleData?.value?.["main_image_name"]}.png`
 
-  const section1ImageUrl = `${mainImagePrefix}-${articleData?.value?.["section_1_image"]}.png`
-  
-  const section2ImageUrl = `${mainImagePrefix}-${articleData?.value?.["section_2_image"]}.png`
-  
-  const section3ImageUrl = `${mainImagePrefix}-${articleData?.value?.["section_3_image"]}.png`
-  
-  const section4ImageUrl = `${mainImagePrefix}-${articleData?.value?.["section_4_image"]}.png`
-  
-  const section5ImageUrl = `${mainImagePrefix}-${articleData?.value?.["section_5_image"]}.png`
+  // Only using main image as per requirement to reduce visual clutter
 
   const RenderImageComponent = ({ imageUrl, alt }: { imageUrl: string, alt: string }) => {
     return (
@@ -260,13 +252,12 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
               isDarkMode ? "text-[#D3ECFF]/60" : "text-muted-foreground"
             )}>
               <span className="flex items-center">
-                Publicado {"\n"}
+                Publicado em {"\n"}
                 {articleData.createdDate
-                  ? formatDistanceToNow(new Date(articleData.createdDate), {
-                    addSuffix: true,
+                  ? format(new Date(articleData.createdDate), "dd/MM/yyyy", {
                     locale: ptBR,
                   })
-                  : "Recente"}
+                  : "Data não disponível"}
               </span>
               <Clock className={cn(
                 "h-4 w-4",
@@ -312,20 +303,19 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
                   "text-lg mb-1",
                   isDarkMode ? "text-[#D3ECFF]" : ""
                 )}>
-                  {articleData?.["event_type"] === "nba-game" ? "🏀" : "⚽"}{" "}
                   {articleData?.["eventDetails"]?.match}
                 </p>
                 <p className={cn(
                   "text-lg mb-1",
                   isDarkMode ? "text-[#D3ECFF]" : ""
                 )}>
-                  🕒 {articleData?.["eventDetails"]?.when}
+                  {articleData?.["eventDetails"]?.when}
                 </p>
                 <p className={cn(
                   "text-lg mb-1",
                   isDarkMode ? "text-[#D3ECFF]" : ""
                 )}>
-                  🏟️ {articleData?.["eventDetails"]?.venue}
+                  {articleData?.["eventDetails"]?.venue}
                 </p>
               </>
             )}
@@ -342,8 +332,6 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
             {articleData.section_1_content}
           </p>
           
-          <RenderImageComponent imageUrl={section1ImageUrl} alt={articleData?.["section_1_title"]} />
-
           <h2 className={cn(
             "text-2xl font-bold mt-12 mb-8",
             isDarkMode ? "text-[#fff]" : ""
@@ -356,7 +344,6 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           )}>
             {articleData.section_2_content}
           </p>
-          <RenderImageComponent imageUrl={section2ImageUrl} alt={articleData?.["section_2_title"]} />
 
           <h2 className={cn(
             "text-2xl font-bold mt-12 mb-8",
@@ -370,7 +357,6 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           )}>
             {articleData.section_3_content}
           </p>
-          <RenderImageComponent imageUrl={section3ImageUrl} alt={articleData?.["section_3_title"]} />
 
           <h2 className={cn(
             "text-2xl font-bold mt-12 mb-8",
@@ -384,7 +370,6 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           )}>
             {articleData.section_4_content}
           </p>
-          <RenderImageComponent imageUrl={section4ImageUrl} alt={articleData?.["section_4_title"]} />
 
           <h2 className={cn(
             "text-2xl font-bold mt-12 mb-8",
@@ -398,7 +383,6 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           )}>
             {articleData.section_5_content}
           </p>
-          <RenderImageComponent imageUrl={section5ImageUrl} alt={articleData?.["section_5_title"]} />
         </div>
       </div>
 
