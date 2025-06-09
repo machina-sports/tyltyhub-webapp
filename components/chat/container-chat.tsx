@@ -217,7 +217,7 @@ export function ContainerChat() {
               variant="outline" 
               className={cn(
                 "flex flex-col items-center justify-center h-16 sm:h-20 space-y-2 py-3", 
-                isDarkMode && "border-[#45CAFF]/30 text-white hover:bg-[#45CAFF]/10"
+                isDarkMode ? "bg-[#0077b5] border-[#0077b5] text-white hover:bg-[#0077b5]/10 hover:text-[#fff]" : ""  
               )}
               onClick={() => handleShare('linkedin')}
             >
@@ -231,14 +231,14 @@ export function ContainerChat() {
               variant="outline" 
               className={cn(
                 "flex flex-col items-center justify-center h-16 sm:h-20 space-y-2 py-3", 
-                isDarkMode && "border-[#45CAFF]/30 text-white hover:bg-[#45CAFF]/10"
+                isDarkMode ? "bg-[#0077b5] border-[#0077b5] text-white hover:bg-[#0077b5]/10 hover:text-[#fff]" : "" 
               )}
               onClick={() => handleShare('x')}
             >
               <div className="h-12 w-12 rounded-full bg-black flex items-center justify-center">
                 <X className="h-6 w-6 text-white" />
               </div>
-              <span className="text-xs font-medium">X</span>
+              <span className="text-xs font-medium">Twitter</span>
             </Button>
             
 
