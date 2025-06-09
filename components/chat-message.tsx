@@ -146,7 +146,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
         </div>
       )}
       
-      {relatedArticle && (
+      {relatedArticle && relatedArticle.slug && (
         <div className="mt-0 pl-14">
           <div className="mt-2 ml-4">
             <Link

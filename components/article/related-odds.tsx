@@ -217,7 +217,7 @@ export function RelatedOdds({
 
   return (
     <Card className={cn(
-      "overflow-hidden max-w-[316px] ml-3 rounded-2xl",
+      "overflow-hidden max-w-[420px] ml-3 rounded-2xl",
       isDarkMode ? "bg-[#061F3F] border-[#45CAFF]/30" : "border-border"
     )}>
       <div className="p-4">
@@ -286,7 +286,7 @@ export function RelatedOdds({
 
         {/* Options */}
         <div className={cn(
-          "grid gap-2",
+          "grid gap-2 items-end",
           marketData.options.length === 2 ? "grid-cols-2" : "grid-cols-3"
         )}>
           {marketData.options.map((option) => (
