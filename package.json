@@ -1,6 +1,6 @@
 {
   "name": "nextjs",
-  "version": "0.4.6",
+  "version": "0.4.16",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -72,11 +72,13 @@
     "tailwindcss": "^3.4.1",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.3.3",
+    "uuid": "^11.1.0",
     "vaul": "^0.9.9",
     "zod": "^3.23.8",
     "zustand": "^5.0.3"
   },
   "devDependencies": {
-    "@tailwindcss/typography": "^0.5.16"
+    "@tailwindcss/typography": "^0.5.16",
+    "@types/uuid": "^10.0.0"
   }
 }

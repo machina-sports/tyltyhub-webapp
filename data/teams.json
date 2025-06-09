@@ -124,7 +124,7 @@
       "name": "Palmeiras",
       "league": "Campeonato Brasileiro Série A",
       "logo": "/team-logos/palmeiras.png",
-      "abbreviation": "SEP"
+      "abbreviation": "PAL"
     },
     {
       "id": "river-plate",
@@ -159,7 +159,7 @@
       "name": "Benfica",
       "league": "Primeira Liga",
       "logo": "/team-logos/benfica.png",
-      "abbreviation": "SLB"
+      "abbreviation": "BEN"
     },
     {
       "id": "borussia-dortmund",
@@ -208,7 +208,7 @@
       "name": "Porto",
       "league": "Primeira Liga",
       "logo": "/team-logos/porto.png",
-      "abbreviation": "POR"
+      "abbreviation": "FCP"
     },
     {
       "id": "real-madrid",
@@ -222,7 +222,7 @@
       "name": "Red Bull Salzburg",
       "league": "Bundesliga",
       "logo": "/team-logos/red-bull-salzburg.png",
-      "abbreviation": "SAL"
+      "abbreviation": "RBS"
     }
   ]
 }

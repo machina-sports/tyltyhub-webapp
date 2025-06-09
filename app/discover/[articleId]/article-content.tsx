@@ -15,8 +15,9 @@ import Image from "next/image";
 import { ArticleVoting } from "@/components/article/article-voting";
 import { ArticleSharing } from "@/components/article/article-sharing";
 import { RelatedArticles } from "@/components/article/related-articles";
+import { RelatedOdds } from "@/components/article/related-odds";
 import { ArticleSkeleton } from "@/components/article/article-skeleton";
-import FollowUpQuestionForm from "@/components/follow-up-question";
+// import FollowUpQuestionForm from "@/components/follow-up-question";
 import ReactMarkdown from "react-markdown";
 import { useGlobalState } from "@/store/useState";
 import { useAppDispatch } from "@/store/dispatch";
@@ -26,6 +27,8 @@ import {
 } from "@/providers/article/actions";
 import { Clock, Eye } from "lucide-react";
 import dynamic from "next/dynamic";
+import { useTheme } from "@/components/theme-provider";
+import { cn } from "@/lib/utils";
 
 // Dynamically import the WidgetEmbed component to improve initial load time
 const WidgetEmbed = dynamic(
@@ -112,6 +115,7 @@ interface ArticleContentProps {
 }
 
 export default function ArticleContent({ articleParam }: ArticleContentProps) {
+  const { isDarkMode } = useTheme();
   const dispatch = useAppDispatch();
   const articles = useGlobalState((state: any) => state.article);
   const article = articles.currentArticle;
@@ -198,35 +202,63 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
     );
   }
 
+  const mainImagePrefix = `${process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS}/article-image-id-${articleData?.["_id"]}`
+  
+  const mainImageUrl = `${mainImagePrefix}-${articleData?.value?.["main_image_name"]}.png`
+
+  const section1ImageUrl = `${mainImagePrefix}-${articleData?.value?.["section_1_image"]}.png`
+  
+  const section2ImageUrl = `${mainImagePrefix}-${articleData?.value?.["section_2_image"]}.png`
+  
+  const section3ImageUrl = `${mainImagePrefix}-${articleData?.value?.["section_3_image"]}.png`
+  
+  const section4ImageUrl = `${mainImagePrefix}-${articleData?.value?.["section_4_image"]}.png`
+  
+  const section5ImageUrl = `${mainImagePrefix}-${articleData?.value?.["section_5_image"]}.png`
+
+  const RenderImageComponent = ({ imageUrl, alt }: { imageUrl: string, alt: string }) => {
+    return (
+      <div className="relative w-full overflow-hidden rounded-lg aspect-[1560/1024]">
+        <Image
+          src={imageUrl}
+          alt={alt}
+          fill={true}
+          className="object-cover object-center m-0"
+          priority
+          loading="eager"
+        />
+      </div>
+    )
+  }
+
   return (
     <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 pt-20 md:pt-6 pb-32 sm:pb-36 space-y-6 sm:space-y-8">
-      {articleData.imageUrl && (
-        <div className="relative w-full overflow-hidden rounded-lg aspect-[3/2]">
-          <Image
-            src={articleData.imageUrl}
-            alt={articleData.title}
-            fill
-            className="object-cover object-center"
-            priority
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1000px"
-            loading="eager"
-          />
-        </div>
-      )}
+
+      <RenderImageComponent imageUrl={mainImageUrl} alt={articleData.title} />
 
       <div className="space-y-6">
         {/* <Badge variant="secondary">{articleData.eventType}</Badge> */}
 
-        <h1 className="text-2xl sm:text-4xl font-bold">{articleData.title}</h1>
-
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <h1 className={cn(
+          "text-2xl sm:text-4xl font-bold",
+          isDarkMode ? "text-[#fff]" : ""
+        )}>
+          {articleData.title}
+        </h1>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div>
             {articleData.subtitle && (
-              <p className="text-lg text-muted-foreground mb-2">
+              <p className={cn(
+                "text-lg mb-2",
+                isDarkMode ? "text-[#D3ECFF]/80" : "text-muted-foreground"
+              )}>
                 {articleData.subtitle}
               </p>
             )}
-            <div className="flex items-center gap-2 text-muted-foreground text-sm mb-2">
+            <div className={cn(
+              "flex items-center gap-2 text-sm mb-2",
+              isDarkMode ? "text-[#D3ECFF]/60" : "text-muted-foreground"
+            )}>
               <span className="flex items-center">
                 Publicado {"\n"}
                 {articleData.createdDate
@@ -236,23 +268,33 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
                   })
                   : "Recente"}
               </span>
-              <Clock className="h-4 w-4" />
+              <Clock className={cn(
+                "h-4 w-4",
+                isDarkMode && "text-[#45CAFF]"
+              )} />
               <span>{articleData.readTime}</span>
             </div>
           </div>
           <div className="mt-2 sm:mt-0">
-            <ArticleSharing
-              articleId={articleData.articleId}
-              title={articleData.title}
-              url={`${typeof window !== 'undefined' ? window.location.origin : ''}/discover/${articleData.slug || articleData.articleId}`}
-            />
           </div>
         </div>
+        <ArticleSharing
+          articleId={articleData.articleId}
+          title={articleData.title}
+          url={`${typeof window !== 'undefined' ? window.location.origin : ''}/discover/${articleData.slug || articleData.articleId}`}
+          shareImageUrl={mainImageUrl}
+        />
       </div>
 
-      <div className="prose prose-neutral dark:prose-invert max-w-none">
+      <div className={cn(
+        "prose prose-neutral max-w-none",
+        isDarkMode ? "prose-invert text-[#D3ECFF]" : ""
+      )}>
         <div className="prose-container">
-          <h2 className="text-lg font-bold mt-8 mb-8"></h2>
+          <h2 className={cn(
+            "text-lg font-bold mt-8 mb-8",
+            isDarkMode ? "text-[#D3ECFF]" : ""
+          )}></h2>
           {articleData.widgetEmbed && (
             <Suspense
               fallback={
@@ -266,50 +308,113 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
             articleData?.["eventDetails"]?.venue &&
             articleData?.["eventDetails"]?.match && (
               <>
-                <p className="text-lg mb-1">
+                <p className={cn(
+                  "text-lg mb-1",
+                  isDarkMode ? "text-[#D3ECFF]" : ""
+                )}>
                   {articleData?.["event_type"] === "nba-game" ? "🏀" : "⚽"}{" "}
                   {articleData?.["eventDetails"]?.match}
                 </p>
-                <p className="text-lg mb-1">
+                <p className={cn(
+                  "text-lg mb-1",
+                  isDarkMode ? "text-[#D3ECFF]" : ""
+                )}>
                   🕒 {articleData?.["eventDetails"]?.when}
                 </p>
-                <p className="text-lg mb-1">
+                <p className={cn(
+                  "text-lg mb-1",
+                  isDarkMode ? "text-[#D3ECFF]" : ""
+                )}>
                   🏟️ {articleData?.["eventDetails"]?.venue}
                 </p>
               </>
             )}
-          <h2 className="text-lg font-bold mt-8 mb-8">
+          <h2 className={cn(
+            "text-2xl font-bold mt-12 mb-8",
+            isDarkMode ? "text-[#fff]" : ""
+          )}>
             {articleData.section_1_title}
           </h2>
-          <p className="text-lg mt-8 mb-8">{articleData.section_1_content}</p>
-          <h2 className="text-lg font-bold mt-8 mb-8">
+          <p className={cn(
+            "text-lg mt-8",
+            isDarkMode ? "text-[#D3ECFF]" : ""
+          )}>
+            {articleData.section_1_content}
+          </p>
+          
+          <RenderImageComponent imageUrl={section1ImageUrl} alt={articleData?.["section_1_title"]} />
+
+          <h2 className={cn(
+            "text-2xl font-bold mt-12 mb-8",
+            isDarkMode ? "text-[#fff]" : ""
+          )}>
             {articleData.section_2_title}
           </h2>
-          <p className="text-lg mt-8 mb-8">{articleData.section_2_content}</p>
-          <h2 className="text-lg font-bold mt-8 mb-8">
+          <p className={cn(
+            "text-lg mt-8",
+            isDarkMode ? "text-[#D3ECFF]" : ""
+          )}>
+            {articleData.section_2_content}
+          </p>
+          <RenderImageComponent imageUrl={section2ImageUrl} alt={articleData?.["section_2_title"]} />
+
+          <h2 className={cn(
+            "text-2xl font-bold mt-12 mb-8",
+            isDarkMode ? "text-[#fff]" : ""
+          )}>
             {articleData.section_3_title}
           </h2>
-          <p className="text-lg mt-8 mb-8">{articleData.section_3_content}</p>
-          <h2 className="text-lg font-bold mt-8 mb-8">
+          <p className={cn(
+            "text-lg mt-8",
+            isDarkMode ? "text-[#D3ECFF]" : ""
+          )}>
+            {articleData.section_3_content}
+          </p>
+          <RenderImageComponent imageUrl={section3ImageUrl} alt={articleData?.["section_3_title"]} />
+
+          <h2 className={cn(
+            "text-2xl font-bold mt-12 mb-8",
+            isDarkMode ? "text-[#fff]" : ""
+          )}>
             {articleData.section_4_title}
           </h2>
-          <p className="text-lg mt-8 mb-8">{articleData.section_4_content}</p>
-          <h2 className="text-lg font-bold mt-8 mb-8">
+          <p className={cn(
+            "text-lg mt-8",
+            isDarkMode ? "text-[#D3ECFF]" : ""
+          )}>
+            {articleData.section_4_content}
+          </p>
+          <RenderImageComponent imageUrl={section4ImageUrl} alt={articleData?.["section_4_title"]} />
+
+          <h2 className={cn(
+            "text-2xl font-bold mt-12 mb-8",
+            isDarkMode ? "text-[#fff]" : ""
+          )}>
             {articleData.section_5_title}
           </h2>
-          <p className="text-lg mt-8 mb-8">{articleData.section_5_content}</p>
+          <p className={cn(
+            "text-lg mt-8",
+            isDarkMode ? "text-[#D3ECFF]" : ""
+          )}>
+            {articleData.section_5_content}
+          </p>
+          <RenderImageComponent imageUrl={section5ImageUrl} alt={articleData?.["section_5_title"]} />
         </div>
       </div>
 
-      <Separator />
+      <Separator className={cn(isDarkMode ? "bg-[#45CAFF]/30" : "")} />
 
       <ArticleVoting articleId={articleData.articleId} />
 
-      <Separator />
+      <Separator className={cn(isDarkMode ? "bg-[#45CAFF]/30" : "")} />
+
+      <RelatedOdds currentArticleId={articleData.articleId} />
+
+      <Separator className={cn(isDarkMode ? "bg-[#45CAFF]/30" : "")} />
 
       <RelatedArticles currentArticleId={articleData.articleId} />
 
-      <FollowUpQuestionForm />
+      {/* <FollowUpQuestionForm /> */}
     </div>
   );
 }

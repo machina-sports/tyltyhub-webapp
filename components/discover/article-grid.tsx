@@ -102,7 +102,7 @@ const getArticleUrl = (article: Article): string => {
 };
 
 const ArticleCard = ({ article }: { article: Article }) => {
-  const { isPalmeirasTheme } = useTheme();
+  const { isDarkMode } = useTheme();
   if (!article) return null;
 
   const articleId = article._id || article.id;
@@ -116,8 +116,16 @@ const ArticleCard = ({ article }: { article: Article }) => {
   const author = getAuthor(article);
   const title = getTitle(article);
 
+  const mainImagePrefix = `${process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS}/article-image-id-${articleId}`
+  const mainImageUrl = `${mainImagePrefix}-${article.value?.["main_image_name"]}.png`
+
   return (
-    <Card className={cn("overflow-hidden border", isPalmeirasTheme ? "hover:border-[#006B3D]/30" : "hover:border-primary/30")}>
+    <Card className={cn(
+      "overflow-hidden border", 
+      isDarkMode 
+        ? "bg-[#061F3F] border-[#45CAFF]/30 hover:border-[#45CAFF]/50" 
+        : "hover:border-primary/30"
+    )}>
       <Link
         href={articleUrl}
         className="h-full block"
@@ -127,7 +135,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
           <div className="relative aspect-video w-full">
             {imageUrl && (
               <Image
-                src={imageUrl}
+                src={mainImageUrl}
                 alt={title}
                 fill
                 className="object-cover"
@@ -138,18 +146,24 @@ const ArticleCard = ({ article }: { article: Article }) => {
           </div>
           <div className="p-5 flex flex-col flex-grow">
             <h3 className={cn("text-sm md:text-xl font-semibold mb-2 transition-colors line-clamp-3",
-              isPalmeirasTheme
-                ? "hover:text-[#006B3D]"
+              isDarkMode
+                ? "text-[#D3ECFF] hover:text-[#45CAFF]"
                 : "hover:text-primary"
             )}>
               {title}
             </h3>
-            <div className="text-muted-foreground text-sm mb-2">
+            <div className={cn(
+              "text-sm mb-2",
+              isDarkMode ? "text-[#D3ECFF]/80" : "text-muted-foreground"
+            )}>
               <p className="line-clamp-3">
                 {getDescriptionSnippet(description, 120) || 'Sem descrição'}
               </p>
             </div>
-            <div className="flex items-center justify-between mt-2 pt-2 border-t text-xs">
+            <div className={cn(
+              "flex items-center justify-between mt-2 pt-2 border-t text-xs",
+              isDarkMode && "border-[#45CAFF]/30"
+            )}>
               <div className="flex items-center gap-1">
                 {/* <div className={cn("h-4 w-4 rounded-full overflow-hidden flex items-center justify-center text-[10px] font-medium",
                   isPalmeirasTheme ? "bg-[#E8F5EE]" : "bg-secondary"
@@ -158,8 +172,14 @@ const ArticleCard = ({ article }: { article: Article }) => {
                 <span className="text-muted-foreground truncate max-w-[85px]">{author}</span> */}
               </div>
             </div>
-            <div className="flex items-center text-muted-foreground whitespace-nowrap text-xs mt-2">
-              <CalendarDays className="h-4 w-4 mr-2" />
+            <div className={cn(
+              "flex items-center whitespace-nowrap text-xs mt-2",
+              isDarkMode ? "text-[#D3ECFF]/70" : "text-muted-foreground"
+            )}>
+              <CalendarDays className={cn(
+                "h-4 w-4 mr-2",
+                isDarkMode && "text-[#45CAFF]"
+              )} />
               {articleDate ? formatDistanceToNow(new Date(articleDate), { addSuffix: true, locale: ptBR }) : 'Recente'}
             </div>
           </div>
@@ -170,7 +190,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
 };
 
 export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProps) {
-  const { isPalmeirasTheme } = useTheme();
+  const { isDarkMode } = useTheme();
   if (!articles || articles.length === 0) {
     return <div className="py-8 text-center text-muted-foreground">Nenhum artigo encontrado</div>;
   }
@@ -189,9 +209,17 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
     const description = getDescription(article);
     const author = getAuthor(article);
     const title = getTitle(article);
+    
+    const mainImagePrefix = `${process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS}/article-image-id-${articleId}`
+    const mainImageUrl = `${mainImagePrefix}-${article.value?.["main_image_name"]}.png`
 
     return (
-      <Card className={cn("overflow-hidden border", isPalmeirasTheme ? "hover:border-[#006B3D]/30" : "hover:border-primary/30")}>
+      <Card className={cn(
+        "overflow-hidden border", 
+        isDarkMode 
+          ? "bg-[#061F3F] border-[#45CAFF]/30 hover:border-[#45CAFF]/50" 
+          : "hover:border-primary/30"
+      )}>
         <Link
           href={articleUrl}
           prefetch={false}
@@ -202,7 +230,7 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
                 <div className="relative aspect-[3/2] md:h-full w-full">
                   {imageUrl && (
                     <Image
-                      src={imageUrl}
+                      src={mainImageUrl}
                       alt={title}
                       fill
                       className="object-cover rounded-lg"
@@ -213,15 +241,19 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
               </div>
               <div className="md:col-span-6 p-4 md:p-8 flex flex-col">
                 <div className="space-y-3">
-                  <h1 className={cn("text-lg md:text-3xl font-bold line-clamp-3 transition-colors",
-                    isPalmeirasTheme
-                      ? "hover:text-[#006B3D]"
+                  <h1 className={cn(
+                    "text-lg md:text-3xl font-bold line-clamp-3 transition-colors",
+                    isDarkMode
+                      ? "text-[#D3ECFF] hover:text-[#45CAFF]"
                       : "hover:text-primary"
                   )}>
                     {title}
                   </h1>
 
-                  <div className="text-muted-foreground prose prose-sm prose-neutral dark:prose-invert max-w-none md:line-clamp-5">
+                  <div className={cn(
+                    "prose prose-sm prose-neutral max-w-none md:line-clamp-5",
+                    isDarkMode ? "prose-invert text-[#D3ECFF]/80" : ""
+                  )}>
                     <ReactMarkdown>
                       {getDescriptionSnippet(description, 360) || 'Sem descrição'}
                     </ReactMarkdown>
@@ -230,15 +262,19 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
 
                 <div className="mt-auto flex flex-col gap-1 pt-4">
                   <div className="flex items-center gap-2">
-                    {/* <div className={cn("h-5 w-5 rounded-full overflow-hidden flex items-center justify-center text-xs font-medium",
-                      isPalmeirasTheme ? "bg-[#E8F5EE]" : "bg-secondary"
-                    )}>
+                    {/* <div className="h-5 w-5 rounded-full overflow-hidden flex items-center justify-center text-xs font-medium bg-secondary">
                       {author ? author.charAt(0).toUpperCase() : 'M'}
                     </div>
                     <span className="text-xs md:text-sm text-muted-foreground">{author}</span> */}
                   </div>
-                  <div className="flex items-center text-xs md:text-sm text-muted-foreground">
-                    <CalendarDays className="h-3 w-3 md:h-4 md:w-4 mr-1" />
+                  <div className={cn(
+                    "flex items-center text-xs md:text-sm",
+                    isDarkMode ? "text-[#D3ECFF]/70" : "text-muted-foreground"
+                  )}>
+                    <CalendarDays className={cn(
+                      "h-3 w-3 md:h-4 md:w-4 mr-1",
+                      isDarkMode && "text-[#45CAFF]"
+                    )} />
                     {articleDate ? formatDistanceToNow(new Date(articleDate), { addSuffix: true, locale: ptBR }) : 'Recente'}
                   </div>
                 </div>

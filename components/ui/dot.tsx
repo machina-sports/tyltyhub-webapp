@@ -25,9 +25,9 @@ export function Dot({
   color,
   ...props
 }: DotProps) {
-  const { isPalmeirasTheme } = useTheme();
+  const { isDarkMode } = useTheme();
   // Default color now depends on theme
-  const defaultColor = isPalmeirasTheme ? '#006B3D' : '#0A5EEA';
+  const defaultColor = isDarkMode ? '#45CAFF' : '#0A5EEA';
   const dotColor = color || defaultColor;
   
   const sizeNum = typeof size === 'string' ? parseInt(size, 10) : size;
@@ -81,11 +81,11 @@ export function Dot({
 
 // Export variants with theme awareness
 export function SportingbetDot(props: Omit<DotProps, 'color'>) {
-  const { isPalmeirasTheme } = useTheme();
-  return <Dot color={isPalmeirasTheme ? "#006B3D" : "#0A5EEA"} {...props} />;
+  const { isDarkMode } = useTheme();
+  return <Dot color={isDarkMode ? "#45CAFF" : "#0A5EEA"} {...props} />;
 }
 
 export function SportingbetDarkDot(props: Omit<DotProps, 'color'>) {
-  const { isPalmeirasTheme } = useTheme();
-  return <Dot color={isPalmeirasTheme ? "#00502E" : "#001F3F"} {...props} />;
+  const { isDarkMode } = useTheme();
+  return <Dot color={isDarkMode ? "#D3ECFF" : "#061F3F"} {...props} />;
 } 

@@ -226,15 +226,14 @@ interface TeamMatchProps {
 
 // Component for team in match
 const TeamMatch = ({ teamName, logo, isSecond }: TeamMatchProps) => {
-  const { isPalmeirasTheme } = useTheme();
-  const isPalmeiras = teamName.includes("Palmeiras");
+  const { isDarkMode } = useTheme();
   
   return (
     <div className={`flex items-center gap-2 ${isSecond ? 'justify-start' : 'justify-end'}`}>
       {!isSecond && (
         <span className={cn(
           "font-medium text-sm overflow-wrap-normal word-break-normal",
-          isPalmeirasTheme && isPalmeiras ? "text-[#006B3D] font-semibold" : ""
+          isDarkMode ? "text-[#45CAFF]" : ""
         )}>
           {teamName}
         </span>
@@ -253,7 +252,7 @@ const TeamMatch = ({ teamName, logo, isSecond }: TeamMatchProps) => {
       {isSecond && (
         <span className={cn(
           "font-medium text-sm overflow-wrap-normal word-break-normal",
-          isPalmeirasTheme && isPalmeiras ? "text-[#006B3D] font-semibold" : ""
+          isDarkMode ? "text-[#45CAFF]" : ""
         )}>
           {teamName}
         </span>
@@ -264,35 +263,44 @@ const TeamMatch = ({ teamName, logo, isSecond }: TeamMatchProps) => {
 
 // Match Card Component for both mobile and desktop
 const MatchCard = ({ fixture }: { fixture: Fixture }) => {
-  const { isPalmeirasTheme } = useTheme();
+  const { isDarkMode } = useTheme();
   const teams = fixture.match.split(" x ").map(t => t.trim());
   const teamLogos = teams.map(t => findTeamLogo(t));
-  
-  // Check if this is a Palmeiras match
-  const isPalmeirasMatch = teams.some(team => team.includes("Palmeiras"));
   
   return (
     <div className={cn(
       "border rounded-md p-4 bg-card hover:bg-muted/10 transition-colors h-full",
-      isPalmeirasTheme && isPalmeirasMatch ? "border-[#006B3D]/30" : ""
+      isDarkMode && "border-[#45CAFF]/30 bg-[#061F3F] hover:bg-[#061f3ff3]"
     )}>
       <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 mb-3">
         <TeamMatch teamName={teams[0]} logo={teamLogos[0]} />
-        <span className="text-base font-bold px-2 text-muted-foreground">x</span>
+        <span className={cn(
+          "text-base font-bold px-2",
+          isDarkMode ? "text-[#D3ECFF]" : "text-muted-foreground"
+        )}>x</span>
         <TeamMatch teamName={teams[1]} logo={teamLogos[1]} isSecond />
       </div>
       
-      <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 text-sm text-muted-foreground border-t pt-3">
-        <Clock className={cn("h-4 w-4 flex-shrink-0", isPalmeirasTheme ? "text-[#006B3D]" : "text-blue-500")} />
-        <span className="overflow-wrap-normal word-break-normal">{fixture.ko}</span>
-        
-        <MapPin className={cn("h-4 w-4 flex-shrink-0", isPalmeirasTheme ? "text-[#006B3D]" : "text-blue-500")} />
-        <span className="overflow-wrap-normal word-break-normal">{fixture.venue}</span>
-        
-        <Users className={cn("h-4 w-4 flex-shrink-0", isPalmeirasTheme ? "text-[#006B3D]" : "text-blue-500")} />
+      <div className={cn(
+        "grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 text-sm border-t pt-3",
+        isDarkMode && "border-[#45CAFF]/30"
+      )}>
+        <Clock className={cn("h-4 w-4 flex-shrink-0", isDarkMode ? "text-[#45CAFF]" : "text-blue-500")} />
         <span className={cn(
           "overflow-wrap-normal word-break-normal",
-          isPalmeirasTheme && fixture.groupName.includes("A") ? "text-[#006B3D] font-medium" : ""
+          isDarkMode ? "text-[#D3ECFF]" : "text-muted-foreground"
+        )}>{fixture.ko}</span>
+        
+        <MapPin className={cn("h-4 w-4 flex-shrink-0", isDarkMode ? "text-[#45CAFF]" : "text-blue-500")} />
+        <span className={cn(
+          "overflow-wrap-normal word-break-normal",
+          isDarkMode ? "text-[#D3ECFF]" : "text-muted-foreground"
+        )}>{fixture.venue}</span>
+        
+        <Users className={cn("h-4 w-4 flex-shrink-0", isDarkMode ? "text-[#45CAFF]" : "text-blue-500")} />
+        <span className={cn(
+          "overflow-wrap-normal word-break-normal",
+          isDarkMode ? "text-[#D3ECFF]" : "text-muted-foreground"
         )}>
           {fixture.groupName.replace('Group', 'Grupo')}
         </span>
@@ -303,13 +311,16 @@ const MatchCard = ({ fixture }: { fixture: Fixture }) => {
 
 // Team Card Component with AI insights
 const TeamCard = ({ teamName }: { teamName: string }) => {
-  const { isPalmeirasTheme } = useTheme();
+  const { isDarkMode } = useTheme();
   const logo = findTeamLogo(teamName);
   const league = findTeamLeague(teamName);
   const insight = generateTeamInsight(teamName);
   
   return (
-    <div className="border rounded-lg p-4 hover:bg-muted/30 transition-colors h-full flex flex-col">
+    <div className={cn(
+      "border rounded-lg p-4 hover:bg-muted/30 transition-colors h-full flex flex-col",
+      isDarkMode ? "border-[#45CAFF]/30 bg-[#061F3F] hover:bg-[#061f3ff3]" : ""
+    )}>
       <div className="flex items-start gap-3 mb-3">
         {logo && (
           <div className="relative h-14 w-14 flex-shrink-0 mt-1">
@@ -323,25 +334,38 @@ const TeamCard = ({ teamName }: { teamName: string }) => {
           </div>
         )}
         <div className="min-w-0 space-y-1">
-          <h3 className="text-sm font-semibold text-foreground overflow-wrap-normal word-break-normal">
+          <h3 className={cn(
+            "text-sm font-semibold overflow-wrap-normal word-break-normal",
+            isDarkMode ? "text-[#45CAFF]" : "text-foreground"
+          )}>
             {teamName}
           </h3>
           {league && (
-            <p className="text-xs text-muted-foreground overflow-wrap-normal word-break-normal">
+            <p className={cn(
+              "text-xs overflow-wrap-normal word-break-normal",
+              isDarkMode ? "text-[#D3ECFF]" : "text-muted-foreground"
+            )}>
               {translateLeague(league)}
             </p>
           )}
         </div>
       </div>
       
-      <div className="mt-1 pt-3 border-t text-sm flex-1">
-        <div className={cn("flex items-center gap-1.5 mb-2", 
-          isPalmeirasTheme ? "text-[#006B3D]" : "text-blue-600"
+      <div className={cn(
+        "mt-1 pt-3 border-t text-sm flex-1",
+        isDarkMode && "border-[#45CAFF]/30"
+      )}>
+        <div className={cn(
+          "flex items-center gap-1.5 mb-2", 
+          isDarkMode ? "text-[#45CAFF]" : "text-blue-600"
         )}>
           <Sparkles className="h-3.5 w-3.5" />
           <span className="text-xs font-medium">Análise IA</span>
         </div>
-        <div className="text-muted-foreground text-xs leading-relaxed space-y-1.5 overflow-auto max-h-[12rem]">
+        <div className={cn(
+          "text-xs leading-relaxed space-y-1.5 overflow-auto max-h-[12rem]",
+          isDarkMode ? "text-[#D3ECFF]" : "text-muted-foreground"
+        )}>
           {insight.split('. ').map((sentence, index) => 
             sentence ? (
               <p key={index} className="overflow-wrap-normal word-break-normal">
@@ -359,7 +383,7 @@ const TeamCard = ({ teamName }: { teamName: string }) => {
 const DateSection = ({ date, fixtures }: { date: string; fixtures: Fixture[] }) => {
   const [isOpen, setIsOpen] = useState(true);
   const translatedDate = translateDate(date);
-  const { isPalmeirasTheme } = useTheme();
+  const { isDarkMode } = useTheme();
   
   return (
     <div className="mb-6">
@@ -368,7 +392,7 @@ const DateSection = ({ date, fixtures }: { date: string; fixtures: Fixture[] }) 
         onClick={() => setIsOpen(!isOpen)}
       >
         <h3 className="font-bold text-lg flex items-center">
-          <Calendar className={cn("h-5 w-5 mr-2", isPalmeirasTheme ? "text-[#006B3D]" : "")} />
+          <Calendar className={cn("h-5 w-5 mr-2", isDarkMode ? "text-[#45CAFF]" : "")} />
           {translatedDate}
         </h3>
         <Badge>{fixtures.length} partidas</Badge>
@@ -387,7 +411,7 @@ const DateSection = ({ date, fixtures }: { date: string; fixtures: Fixture[] }) 
 
 export function FifaCwcSchedule() {
   const { data: standingsData, status } = useGlobalState(state => state.standings)
-  const { isPalmeirasTheme } = useTheme()
+  const { isDarkMode } = useTheme() 
   const groups = standingsData?.value?.data[0]?.groups || []
 
   // Combine and sort all fixtures by date and time
@@ -428,22 +452,49 @@ export function FifaCwcSchedule() {
 
   return (
     <div className="space-y-8">
-      <Card>
+      <Card className={cn(isDarkMode && "border-[#45CAFF]/30 bg-[#061F3F]")}>
         <CardHeader>
-          <CardTitle className="text-2xl">{fifaCwcData.tournamentInfo.name}</CardTitle>
-          <CardDescription>{fifaCwcData.tournamentInfo.description}</CardDescription>
+          <CardTitle className={cn("text-2xl", isDarkMode && "text-[#45CAFF]")}>
+            {fifaCwcData.tournamentInfo.name}
+          </CardTitle>
+          <CardDescription className={cn(isDarkMode && "text-[#D3ECFF]")}>
+            {fifaCwcData.tournamentInfo.description}
+          </CardDescription>
         </CardHeader>
       </Card>
 
       <Tabs defaultValue="clubs-view" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="clubs-view">Clubes (AI Insights)</TabsTrigger>
-          <TabsTrigger value="teams-view">Classificação</TabsTrigger>
-          <TabsTrigger value="matches-view">Calendário</TabsTrigger>
+        <TabsList className={cn(
+          "grid w-full grid-cols-3",
+          isDarkMode && "bg-[#45CAFF] border-[#45CAFF]/30"
+        )}>
+          <TabsTrigger 
+            value="clubs-view"
+            className={cn(
+              isDarkMode && "text-[#061F3F] data-[state=active]:bg-[#061F3F] data-[state=active]:text-[#D3ECFF]"
+            )}
+          >
+            Clubes
+          </TabsTrigger>
+          <TabsTrigger 
+            value="teams-view"
+            className={cn(
+              isDarkMode && "text-[#061F3F] data-[state=active]:bg-[#061F3F] data-[state=active]:text-[#D3ECFF]"
+            )}
+          >
+            Classificação
+          </TabsTrigger>
+          <TabsTrigger 
+            value="matches-view"
+            className={cn(
+              isDarkMode && "text-[#061F3F] data-[state=active]:bg-[#061F3F] data-[state=active]:text-[#D3ECFF]"
+            )}
+          >
+            Calendário
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="clubs-view" className="mt-4">
-          {/* Exibir cards de clubes com AI Insights */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
             {fifaCwcData.groups.flatMap(group => group.teams).map((team, idx) => (
               <TeamCard key={team + idx} teamName={team} />
@@ -454,7 +505,10 @@ export function FifaCwcSchedule() {
         <TabsContent value="teams-view" className="mt-4">
           {status === "loading" && (
             <div className="flex justify-center items-center min-h-[200px]">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+              <div className={cn(
+                "animate-spin rounded-full h-8 w-8 border-b-2",
+                isDarkMode ? "border-[#45CAFF]" : "border-gray-900"
+              )}></div>
             </div>
           )}
 
@@ -467,26 +521,63 @@ export function FifaCwcSchedule() {
           {status === "idle" && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
               {groups.map((group) => (
-                <Card key={`team-${group.id}`} className="overflow-hidden h-full flex flex-col">
-                  <CardHeader className={cn("pb-2", isPalmeirasTheme ? "bg-[#E8F5EE]" : "bg-muted/50")}>
-                    <CardTitle className="text-xl font-semibold">
+                <Card 
+                  key={`team-${group.id}`} 
+                  className={cn(
+                    "overflow-hidden h-full flex flex-col",
+                    isDarkMode && "border-[#45CAFF]/30 bg-[#061F3F]"
+                  )}
+                >
+                  <CardHeader className={cn(
+                    "pb-2",
+                    isDarkMode ? "bg-[#061F3F] border-b border-[#45CAFF]/30" : "bg-muted/50"
+                  )}>
+                    <CardTitle className={cn(
+                      "text-xl font-semibold",
+                      isDarkMode && "text-[#45CAFF]"
+                    )}>
                       Grupo {group.group_name}
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="pt-4 flex-1 px-2 sm:px-6">
-                    {/* Tabela de classificação para o grupo */}
                     <div className="overflow-x-auto w-full">
                       <Table className="w-full table-fixed">
                         <TableHeader>
-                          <TableRow>
-                            <TableHead className="w-[10%] text-center text-xs sm:text-sm px-1 sm:px-4">Pos</TableHead>
-                            <TableHead className="w-[35%] text-xs sm:text-sm px-1 sm:px-4">Time</TableHead>
-                            <TableHead className="w-[8%] text-center text-xs sm:text-sm px-1 sm:px-4">J</TableHead>
-                            <TableHead className="w-[8%] text-center text-xs sm:text-sm px-1 sm:px-4">V</TableHead>
-                            <TableHead className="w-[8%] text-center text-xs sm:text-sm px-1 sm:px-4">E</TableHead>
-                            <TableHead className="w-[8%] text-center text-xs sm:text-sm px-1 sm:px-4">D</TableHead>
-                            <TableHead className="w-[8%] text-center text-xs sm:text-sm px-1 sm:px-4">SG</TableHead>
-                            <TableHead className="w-[15%] text-center text-xs sm:text-sm px-1 sm:px-4">Pts</TableHead>
+                          <TableRow className={cn(
+                            isDarkMode && "border-[#45CAFF]/30"
+                          )}>
+                            <TableHead className={cn(
+                              "w-[10%] text-center text-xs sm:text-sm px-1 sm:px-4",
+                              isDarkMode && "text-[#45CAFF]"
+                            )}>Pos</TableHead>
+                            <TableHead className={cn(
+                              "w-[35%] text-xs sm:text-sm px-1 sm:px-4",
+                              isDarkMode && "text-[#45CAFF]"
+                            )}>Time</TableHead>
+                            <TableHead className={cn(
+                              "w-[8%] text-center text-xs sm:text-sm px-1 sm:px-4",
+                              isDarkMode && "text-[#45CAFF]"
+                            )}>J</TableHead>
+                            <TableHead className={cn(
+                              "w-[8%] text-center text-xs sm:text-sm px-1 sm:px-4",
+                              isDarkMode && "text-[#45CAFF]"
+                            )}>V</TableHead>
+                            <TableHead className={cn(
+                              "w-[8%] text-center text-xs sm:text-sm px-1 sm:px-4",
+                              isDarkMode && "text-[#45CAFF]"
+                            )}>E</TableHead>
+                            <TableHead className={cn(
+                              "w-[8%] text-center text-xs sm:text-sm px-1 sm:px-4",
+                              isDarkMode && "text-[#45CAFF]"
+                            )}>D</TableHead>
+                            <TableHead className={cn(
+                              "w-[8%] text-center text-xs sm:text-sm px-1 sm:px-4",
+                              isDarkMode && "text-[#45CAFF]"
+                            )}>SG</TableHead>
+                            <TableHead className={cn(
+                              "w-[15%] text-center text-xs sm:text-sm px-1 sm:px-4",
+                              isDarkMode && "text-[#45CAFF]"
+                            )}>Pts</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -495,17 +586,24 @@ export function FifaCwcSchedule() {
                               key={standing.competitor.id}
                               className={cn(
                                 "transition-colors",
-                                standing.competitor.name.includes("Palmeiras") && isPalmeirasTheme
-                                  ? "bg-[#E8F5EE]/30"
-                                  : ""
+                                isDarkMode && "hover:bg-[#45CAFF]/10 border-[#45CAFF]/30"
                               )}
                             >
-                              <TableCell className="text-center font-medium text-xs sm:text-sm px-1 sm:px-4">
+                              <TableCell className={cn(
+                                "text-center font-medium text-xs sm:text-sm px-1 sm:px-4",
+                                isDarkMode && "text-[#D3ECFF]"
+                              )}>
                                 {standing.rank}
                               </TableCell>
-                              <TableCell className="text-xs sm:text-sm px-1 sm:px-4">
+                              <TableCell className={cn(
+                                "text-xs sm:text-sm px-1 sm:px-4",
+                                isDarkMode && "text-[#D3ECFF]"
+                              )}>
                                 <div className="flex items-center gap-1 sm:gap-2 min-w-0">
-                                  <div className="relative h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0 bg-muted/30 rounded-full flex items-center justify-center">
+                                  <div className={cn(
+                                    "relative h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0 rounded-full flex items-center justify-center",
+                                    isDarkMode ? "bg-[#45CAFF]/10" : "bg-muted/30"
+                                  )}>
                                     {findTeamLogo(standing.competitor.name) ? (
                                       <Image
                                         src={findTeamLogo(standing.competitor.name) || ''}
@@ -515,32 +613,48 @@ export function FifaCwcSchedule() {
                                         sizes="24px"
                                       />
                                     ) : (
-                                      <span className="text-xs font-medium">{standing.competitor.abbreviation}</span>
+                                      <span className={cn(
+                                        "text-xs font-medium",
+                                        isDarkMode && "text-[#D3ECFF]"
+                                      )}>
+                                        {standing.competitor.abbreviation}
+                                      </span>
                                     )}
                                   </div>
                                   <span 
                                     title={standing.competitor.name} 
                                     className={cn(
-                                      "truncate", 
-                                      standing.competitor.name.includes("Palmeiras") && isPalmeirasTheme
-                                        ? "font-semibold text-[#006B3D]"
-                                        : ""
+                                      "truncate",
+                                      isDarkMode && "text-[#D3ECFF]"
                                     )}
                                   >
                                     {standing.competitor.abbreviation || standing.competitor.name}
                                   </span>
                                 </div>
                               </TableCell>
-                              <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4">{standing.played}</TableCell>
-                              <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4">{standing.win}</TableCell>
-                              <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4">{standing.draw}</TableCell>
-                              <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4">{standing.loss}</TableCell>
-                              <TableCell className="text-center text-xs sm:text-sm px-1 sm:px-4">{standing.goals_diff}</TableCell>
+                              <TableCell className={cn(
+                                "text-center text-xs sm:text-sm px-1 sm:px-4",
+                                isDarkMode && "text-[#D3ECFF]"
+                              )}>{standing.played}</TableCell>
+                              <TableCell className={cn(
+                                "text-center text-xs sm:text-sm px-1 sm:px-4",
+                                isDarkMode && "text-[#D3ECFF]"
+                              )}>{standing.win}</TableCell>
+                              <TableCell className={cn(
+                                "text-center text-xs sm:text-sm px-1 sm:px-4",
+                                isDarkMode && "text-[#D3ECFF]"
+                              )}>{standing.draw}</TableCell>
+                              <TableCell className={cn(
+                                "text-center text-xs sm:text-sm px-1 sm:px-4",
+                                isDarkMode && "text-[#D3ECFF]"
+                              )}>{standing.loss}</TableCell>
+                              <TableCell className={cn(
+                                "text-center text-xs sm:text-sm px-1 sm:px-4",
+                                isDarkMode && "text-[#D3ECFF]"
+                              )}>{standing.goals_diff}</TableCell>
                               <TableCell className={cn(
                                 "text-center font-semibold text-xs sm:text-sm px-1 sm:px-4",
-                                standing.competitor.name.includes("Palmeiras") && isPalmeirasTheme
-                                  ? "text-[#006B3D]"
-                                  : ""
+                                isDarkMode ? "text-[#45CAFF]" : ""
                               )}>
                                 {standing.points}
                               </TableCell>
@@ -557,15 +671,28 @@ export function FifaCwcSchedule() {
         </TabsContent>
 
         <TabsContent value="matches-view" className="mt-4">
-          {/* Both mobile and desktop version */}
           <div>
             {sortedDates.map(date => (
               <div key={date} className="mb-8">
-                <div className="sticky top-0 z-10 bg-background mb-4 py-3 border-b">
+                <div className={cn(
+                  "sticky top-0 z-10 bg-background mb-4 py-6 px-4 border-b",
+                  isDarkMode && "bg-[#061F3F] border-[#45CAFF]/30"
+                )}>
                   <h2 className="text-xl font-bold flex items-center">
-                    <Calendar className={cn("h-5 w-5 mr-2", isPalmeirasTheme ? "text-[#006B3D]" : "text-primary")} />
-                    {translateDate(date)}
-                    <Badge variant="outline" className="ml-2">
+                    <Calendar className={cn(
+                      "h-5 w-5 mr-2",
+                      isDarkMode ? "text-[#45CAFF]" : "text-primary"
+                    )} />
+                    <span className={cn(isDarkMode && "text-[#45CAFF]")}>
+                      {translateDate(date)}
+                    </span>
+                    <Badge 
+                      variant="outline" 
+                      className={cn(
+                        "ml-2",
+                        isDarkMode && "border-[#45CAFF]/30 text-[#D3ECFF]"
+                      )}
+                    >
                       {fixturesByDate[date].length} partidas
                     </Badge>
                   </h2>

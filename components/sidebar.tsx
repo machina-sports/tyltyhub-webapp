@@ -36,11 +36,18 @@ export function Sidebar() {
   const router = useRouter()
   const { resetChat } = useChatState()
   const [isOpen, setIsOpen] = useState(false)
-  const { isPalmeirasTheme } = useTheme()
+  const { isDarkMode } = useTheme()
 
   const handleNavigation = (href: string) => {
     if (href === '/') {
       resetChat()
+    }
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'navigation_click', {
+        event_category: 'sidebar_menu',
+        event_label: `Clicked ${href}`,
+        value: href,
+      });
     }
     router.push(href)
     setIsOpen(false)
@@ -69,8 +76,8 @@ export function Sidebar() {
 
       <div className={cn(
         "fixed inset-y-0 left-0 z-50 transform transition-transform duration-200 ease-in-out md:translate-x-0 md:static w-72",
-        "space-y-4 pt-16 md:pt-4 flex flex-col h-full bg-sportingbet-bright-deep-blue",
-        isPalmeirasTheme ? "bg-[#006B3D]" : "bg-sportingbet-bright-deep-blue",
+        "space-y-4 pt-16 md:pt-4 flex flex-col h-full bg-sportingbet-bright-deep-blue border-r",
+        isDarkMode ? "bg-[#061F3F] border-[#D3ECFF]/20" : "bg-sportingbet-bright-deep-blue border-white/10",
         isOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="pr-4 pl-2 absolute top-4 right-0 md:hidden">
@@ -84,34 +91,35 @@ export function Sidebar() {
             <X className="h-5 w-5" />
           </Button>
         </div>
-        
+
         <div className="px-8 py-2 flex-1 flex flex-col">
           {/* Fixed height logo container */}
           <div className="h-[80px] min-h-[80px] flex items-center justify-center mb-8">
-            <div 
-              onClick={() => handleNavigation('/')} 
+            <div
+              onClick={() => handleNavigation('/')}
               className="flex items-center justify-center pl-3 cursor-pointer ml-[-10px]"
               role="button"
               aria-label="Go to home"
             >
-              {isPalmeirasTheme ? (
-                <Image 
-                  src="/team-logos/palmeiras.png" 
-                  alt="Logo Palmeiras" 
-                  width={90} 
-                  height={90}
-                  style={{ width: 'auto', height: '90px' }}
-                  priority
-                />
-              ) : (
-                <Image 
-                  src="/sb-logo-novo.svg" 
-                  alt="Logo Sportingbet" 
-                  width={250} 
-                  height={120}
-                  priority
-                  className="ml-[-4px]"
-                />
+              {typeof window !== 'undefined' && window.gtag && (
+                <span
+                  onClick={() => {
+                    window.gtag('event', 'navigation_click', {
+                      event_category: 'sidebar_logo',
+                      event_label: 'Clicked Logo',
+                      value: '/',
+                    });
+                  }}
+                >
+                  <Image
+                    src="/sb-logo-novo.svg"
+                    alt="Logo Sportingbet"
+                    width={250}
+                    height={120}
+                    priority
+                    className="ml-[-4px]"
+                  />
+                </span>
               )}
             </div>
           </div>
@@ -122,9 +130,9 @@ export function Sidebar() {
                 key={route.href}
                 variant={pathname === route.href ? "secondary" : "ghost"}
                 className={cn(
-                  "w-full justify-start text-lg text-white hover:text-white rounded-lg h-16 px-8",
-                  pathname === route.href 
-                    ? "bg-white/20 text-white hover:bg-white/30 font-medium" 
+                  "w-full justify-start text-base text-white hover:text-white rounded-lg h-16 px-8",
+                  pathname === route.href
+                    ? "bg-white/20 text-white hover:bg-white/30 font-medium"
                     : "hover:bg-white/10 active:bg-white/15 transition-colors duration-200"
                 )}
                 onClick={() => handleNavigation(route.href)}
@@ -136,24 +144,24 @@ export function Sidebar() {
           </div>
         </div>
         <div className="px-8 py-2 pb-4 pt-2">
-          <a 
-            href="https://www.sportingbet.bet.br/pt-br/mobileportal/register" 
-            target="_blank" 
-            rel="noopener noreferrer" 
+          <a
+            href="https://www.sportingbet.bet.br/pt-br/mobileportal/register"
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={() => setIsOpen(false)}
             className={cn(
               "block w-full py-3 text-white font-medium rounded-md text-sm text-center shadow-sm transition-colors duration-200 mb-4",
-              isPalmeirasTheme
-                ? "bg-[#00502E] hover:bg-[#004025] active:bg-[#003018]"
+              isDarkMode
+                ? "bg-[#45CAFF] hover:bg-[#3DB8E6] active:bg-[#35A6D1]"
                 : "bg-[#061F3F] hover:bg-[#0A2950] active:bg-[#041A33]"
             )}
           >
             Registre-se Agora
           </a>
-          <a 
-            href="https://www.sportingbet.bet.br/pt-br/labelhost/login" 
-            target="_blank" 
-            rel="noopener noreferrer" 
+          <a
+            href="https://www.sportingbet.bet.br/pt-br/labelhost/login"
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={() => setIsOpen(false)}
             className="block w-full py-3 bg-white/10 hover:bg-white/15 active:bg-white/20 text-white font-medium rounded-md text-sm text-center border border-white/20 transition-colors duration-200 mb-2"
           >

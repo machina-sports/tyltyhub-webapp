@@ -17,19 +17,19 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
 export function useTheme() {
   const { theme, setTheme } = useNextTheme()
 
-  // Function to toggle to Palmeiras theme
-  const togglePalmeirasTheme = React.useCallback(() => {
-    if (theme === 'palmeiras') {
+  // Function to toggle dark mode
+  const toggleDarkMode = React.useCallback(() => {
+    if (theme === 'dark') {
       setTheme('light')
     } else {
-      setTheme('palmeiras')
+      setTheme('dark')
     }
   }, [theme, setTheme])
 
   return {
     theme,
     setTheme,
-    togglePalmeirasTheme,
-    isPalmeirasTheme: theme === 'palmeiras'
+    toggleDarkMode,
+    isDarkMode: theme === 'dark'
   }
 }
