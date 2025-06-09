@@ -17,8 +17,6 @@ import { SportingbetDot } from "../ui/dot"
 
 import { useGlobalState } from "@/store/useState"
 
-import Image from "next/image"
-
 import { motion } from "framer-motion"
 
 import { useTheme } from "@/components/theme-provider"
