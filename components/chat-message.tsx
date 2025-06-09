@@ -12,6 +12,7 @@ import { trackRelatedQuestionClick } from "@/lib/analytics"
 import { cn } from "@/lib/utils"
 import { useTheme } from '@/components/theme-provider'
 
+import { RelatedOdds } from "@/components/article/related-odds";
 
 interface ChatMessageProps {
   role: "user" | "assistant"
@@ -42,6 +43,15 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
   const widgetMatchEmbed = content?.["widget-url"]
 
   const relatedArticle = content?.["related-article"]
+  
+  const marketSelected = content?.["market-selected"]
+
+  const teamAwayAbbreviation = content?.["team_away_abbreviation"]
+  const teamHomeAbbreviation = content?.["team_home_abbreviation"]
+  const teamHomeName = content?.["team_home_name"]
+  const teamAwayName = content?.["team_away_name"]
+  const eventDateTime = content?.["event_datetime"]
+  
 
   const promotion = content?.["promotion-image"] || content?.["promotion-link"] ? {
     image: content?.["promotion-image"],
@@ -119,6 +129,23 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
         </div>
       </ChatBubble>
 
+      {marketSelected && (
+        <div className="mt-4 pl-14">
+          <div className="mt-2 space-y-2 text-sm text-muted-foreground">
+            <div className="text-sm">
+              <RelatedOdds 
+                currentArticleId={marketSelected} 
+                teamHomeAbbreviation={teamHomeAbbreviation}
+                teamAwayAbbreviation={teamAwayAbbreviation}
+                teamHomeName={teamHomeName}
+                teamAwayName={teamAwayName}
+                eventDateTime={eventDateTime}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+      
       {relatedArticle && (
         <div className="mt-0 pl-14">
           <div className="mt-2 ml-4">
