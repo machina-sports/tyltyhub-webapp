@@ -5,7 +5,7 @@ export async function GET() {
   const bearer = process.env.MACHINA_API_KEY
 
   try {
-    const response = await fetch(`${api_url}/document/6825eb7b2359555b6c0e8b0d`, {
+    const response = await fetch(`${api_url}/document/6846fc54836fbc9505c05fe4`, {
       headers: {
         "X-Api-Token": `${bearer}`,
         "Content-Type": "application/json",

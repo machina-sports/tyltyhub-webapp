@@ -65,11 +65,11 @@ const normalizeTeamName = (name: string): string => {
 };
 
 // Helper function to find team logo by name
-const findTeamLogo = (teamName: string): string | undefined => {
-  const normalizedName = teamName.toLowerCase().replace(/ /g, '-')
+const findTeamLogo = (abbreviation: string): string | undefined => {
+  const normalizedName = abbreviation.toLowerCase().replace(/ /g, '-')
   const team = teamsData.teams.find(t => 
-    t.name.toLowerCase() === teamName.toLowerCase() || 
-    t.abbreviation === teamName
+    t.name.toLowerCase() === abbreviation.toLowerCase() || 
+    t.abbreviation === abbreviation
   )
   return team?.logo
 }
@@ -604,10 +604,10 @@ export function FifaCwcSchedule() {
                                     "relative h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0 rounded-full flex items-center justify-center",
                                     isDarkMode ? "bg-[#45CAFF]/10" : "bg-muted/30"
                                   )}>
-                                    {findTeamLogo(standing.competitor.name) ? (
+                                    {findTeamLogo(standing.competitor.abbreviation) ? (
                                       <Image
-                                        src={findTeamLogo(standing.competitor.name) || ''}
-                                        alt={standing.competitor.name}
+                                        src={findTeamLogo(standing.competitor.abbreviation) || ''}
+                                        alt={standing.competitor.abbreviation}
                                         fill
                                         className="object-contain"
                                         sizes="24px"

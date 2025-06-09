@@ -19,7 +19,7 @@
       "name": "Ulsan HD",
       "league": "K League 1",
       "logo": "/team-logos/ulsan-hd.png",
-      "abbreviation": "UHD"
+      "abbreviation": "ULS"
     },
     {
       "id": "urawa-red-diamonds",
@@ -47,7 +47,7 @@
       "name": "Mamelodi Sundowns",
       "league": "Betway Premiership",
       "logo": "/team-logos/mamelodi-sundowns.png",
-      "abbreviation": "MSU"
+      "abbreviation": "MAM"
     },
     {
       "id": "wydad-ac",
@@ -75,7 +75,7 @@
       "name": "Monterrey",
       "league": "Liga MX",
       "logo": "/team-logos/monterrey.png",
-      "abbreviation": "CFM"
+      "abbreviation": "MON"
     },
     {
       "id": "pachuca",
@@ -138,7 +138,7 @@
       "name": "Auckland City",
       "league": "National League/Northern League",
       "logo": "/team-logos/auckland-city.png",
-      "abbreviation": "AKL"
+      "abbreviation": "ACI"
     },
     {
       "id": "atletico-madrid",
@@ -152,7 +152,7 @@
       "name": "Bayern Munich",
       "league": "Bundesliga",
       "logo": "/team-logos/bayern-munich.png",
-      "abbreviation": "BAY"
+      "abbreviation": "BMU"
     },
     {
       "id": "benfica",
