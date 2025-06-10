@@ -152,8 +152,8 @@ export function Sidebar() {
             className={cn(
               "block w-full py-3 text-white font-medium rounded-md text-sm text-center shadow-sm transition-colors duration-200 mb-4",
               isDarkMode
-                ? "bg-[#45CAFF] hover:bg-[#3DB8E6] active:bg-[#35A6D1]"
-                : "bg-[#061F3F] hover:bg-[#0A2950] active:bg-[#041A33]"
+                ? "bg-[#0078B3] hover:bg-[#006699] active:bg-[#005580]"
+                : "bg-[#0066CC] hover:bg-[#0052A3] active:bg-[#004080]"
             )}
           >
             Registre-se Agora
