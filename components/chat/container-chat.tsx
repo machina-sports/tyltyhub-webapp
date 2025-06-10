@@ -30,11 +30,13 @@ import { TableSkeleton } from "../skeleton"
 import { cn } from "@/lib/utils"
 import { trackNewMessage } from "@/lib/analytics"
 
+import { AppState } from "@/store"
+
 export function ContainerChat() {
   const { isDarkMode } = useTheme() 
 
   const state = useGlobalState((state: any) => state.threads)
-  const shareState = useGlobalState((state: any) => state.share)
+  const shareState = useGlobalState((state: AppState) => state.share)
 
   const dispatch = useAppDispatch()
 
@@ -77,10 +79,10 @@ export function ContainerChat() {
           chatData: threadData,
           expirationDays
         })).unwrap()
-          .then((chatId) => {
+          .then((result) => {
             // Após salvar com sucesso, gera o link de compartilhamento
             const baseUrl = window.location.origin
-            const shareLink = `${baseUrl}/chat/${chatId}`
+            const shareLink = `${baseUrl}/chat/${result.chatId}`
             setShareUrl(shareLink)
             setIsSaving(false)
             setShareDialogOpen(true)
