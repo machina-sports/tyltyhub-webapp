@@ -171,8 +171,13 @@ export function Sidebar() {
             <ThemeToggle />
           </div>
         </div>
-        <div className="p-4 border-t border-[#D3ECFF]/20">
-          <div className="text-white/70 text-xs text-center">
+        <div className="px-4 py-3 border-t border-[#D3ECFF]/20">
+          <div className="text-[#D3ECFF]/70 text-[11px] leading-tight text-center">
+            18+. Apostar pode causar dependência e transtornos do jogo patológico. Jogue com responsabilidade. Autorizada pela SPA/MF sob licença nº 247.
+          </div>
+        </div>
+        <div className="px-4 py-2 border-t border-[#D3ECFF]/20">
+          <div className="text-[#D3ECFF]/70 text-xs text-center">
             © {new Date().getFullYear()} Sportingbet
           </div>
         </div>
