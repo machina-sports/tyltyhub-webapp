@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Providers } from "@/providers/provider";
 import DiscoveryProvider from "@/providers/discover/provider";
 import { MainProvider } from "@/components/use-provider";
+import { LGPDConsent } from "@/components/ui/lgpd-consent";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -65,6 +66,7 @@ export default function RootLayout({
               </div>
               <Toaster />
             </DiscoveryProvider>
+            <LGPDConsent />
           </MainProvider>
         </Providers>
       </body>

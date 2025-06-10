@@ -152,8 +152,8 @@ export function Sidebar() {
             className={cn(
               "block w-full py-3 text-white font-medium rounded-md text-sm text-center shadow-sm transition-colors duration-200 mb-4",
               isDarkMode
-                ? "bg-[#45CAFF] hover:bg-[#3DB8E6] active:bg-[#35A6D1]"
-                : "bg-[#061F3F] hover:bg-[#0A2950] active:bg-[#041A33]"
+                ? "bg-[#0078B3] hover:bg-[#006699] active:bg-[#005580]"
+                : "bg-[#0066CC] hover:bg-[#0052A3] active:bg-[#004080]"
             )}
           >
             Registre-se Agora
@@ -171,8 +171,13 @@ export function Sidebar() {
             <ThemeToggle />
           </div>
         </div>
-        <div className="p-4 border-t border-[#D3ECFF]/20">
-          <div className="text-white/70 text-xs text-center">
+        <div className="px-4 py-3 border-t border-[#D3ECFF]/20">
+          <div className="text-[#D3ECFF]/70 text-[11px] leading-tight text-center">
+            18+. Apostar pode causar dependência e transtornos do jogo patológico. Jogue com responsabilidade. Autorizada pela SPA/MF sob licença nº 247.
+          </div>
+        </div>
+        <div className="px-4 py-2 border-t border-[#D3ECFF]/20">
+          <div className="text-[#D3ECFF]/70 text-xs text-center">
             © {new Date().getFullYear()} Sportingbet
           </div>
         </div>

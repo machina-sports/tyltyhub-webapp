@@ -214,7 +214,7 @@ const ContainerHome = ({ query }: { query: string }) => {
   }
 
   const getInputPlaceholder = () => {
-    return "Busque por times, jogos ou odds..."
+    return "O que você quer saber sobre apostas esportivas?"
   }
 
   // Split questions into two groups
