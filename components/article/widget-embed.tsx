@@ -32,11 +32,11 @@ export default function WidgetEmbed({ embedCode }: WidgetEmbedProps) {
 
       // Track widget load event
       if (typeof window !== 'undefined' && window.gtag) {
-        window.gtag('event', 'widget_load', {
-          event_category: 'widget_embed',
-          event_action: 'load_widget',
-          event_label: 'Widget loaded successfully',
-          widget_type: htmlContent.includes('odds') ? 'odds_widget' : 'generic_widget',
+        window.gtag('event', 'widget_information_load', {
+          event_category: 'odds_information',
+          event_action: 'load_odds_widget',
+          event_label: 'Odds information widget loaded',
+          widget_type: htmlContent.includes('odds') ? 'odds_information_widget' : 'information_widget',
           widget_size: htmlContent.length
         });
       }
@@ -61,14 +61,14 @@ export default function WidgetEmbed({ embedCode }: WidgetEmbedProps) {
               const elementClass = element.className || '';
               const elementTag = element.tagName.toLowerCase();
               
-              window.gtag('event', 'widget_interaction', {
-                event_category: 'widget_embed',
-                event_action: 'click_embedded_element',
+              window.gtag('event', 'widget_information_interaction', {
+                event_category: 'odds_information',
+                event_action: 'interact_with_odds_element',
                 event_label: `${elementTag}: ${elementText}`,
                 element_index: index,
                 element_class: elementClass,
                 element_text: elementText,
-                widget_type: htmlContent.includes('odds') ? 'odds_widget' : 'generic_widget'
+                widget_type: htmlContent.includes('odds') ? 'odds_information_widget' : 'information_widget'
               });
             }
           });
@@ -83,9 +83,9 @@ export default function WidgetEmbed({ embedCode }: WidgetEmbedProps) {
       
       // Track widget error event
       if (typeof window !== 'undefined' && window.gtag) {
-        window.gtag('event', 'widget_error', {
-          event_category: 'widget_embed',
-          event_action: 'load_error',
+        window.gtag('event', 'widget_information_error', {
+          event_category: 'odds_information',
+          event_action: 'widget_load_error',
           event_label: error instanceof Error ? error.message : 'Unknown error',
           error_type: error instanceof Error ? error.name : 'UnknownError'
         });

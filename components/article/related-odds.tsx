@@ -1,5 +1,13 @@
 "use client"
 
+// CORREÇÕES GA4 TRACKING - Dezembro 2024
+// Este componente foi corrigido para refletir que o site é INFORMATIVO sobre odds,
+// não uma casa de apostas real. O tracking agora foca em:
+// - odds_information: para visualização de informações sobre odds
+// - betting_education: para simulações educativas
+// - Removido: redirecionamentos para /sportsbook/ que não existem
+// - Removido: tracking de apostas reais que não são possíveis
+
 import { Card } from "@/components/ui/card"
 import { formatDistanceToNow } from "date-fns"
 import { ptBR } from 'date-fns/locale'
@@ -182,26 +190,21 @@ export function RelatedOdds({
   };
 
   const handleOddsClick = (optionId: number, odds: number, optionName: string) => {
-    // Track GA4 event for odds click
+    // Track GA4 event for informational odds viewing
     if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'odds_click', {
-        event_category: 'odds_widget',
-        event_action: 'click_odds_button',
+      window.gtag('event', 'odds_view_interest', {
+        event_category: 'odds_information',
+        event_action: 'view_odds_details',
         event_label: `${marketData.homeTeam.code} vs ${marketData.awayTeam?.code || 'TBD'} - ${optionName}`,
-        market_id: marketData.id,
         market_type: marketData.marketType,
         market_title: marketData.title,
-        option_id: optionId,
         odds_value: odds,
         home_team: marketData.homeTeam.code,
-        away_team: marketData.awayTeam?.code || null,
-        event_time: eventDateTime || null,
-        value: odds
+        away_team: marketData.awayTeam?.code || null
       });
     }
 
-    const sportsbookUrl = `/sportsbook/${marketData.id}/${optionId}?odds=${encodeURIComponent(odds)}`;
-    window.open(sportsbookUrl, '_blank');
+    // No action needed - this is informational content only
   };
 
   const OddsButton = ({ option }: { option: MarketOption }) => {

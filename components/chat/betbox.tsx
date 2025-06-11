@@ -33,11 +33,11 @@ export const BetBox = ({ bet }: { bet: any }) => {
     e.stopPropagation()
     setIsLoading(true)
     
-    // Track bet placement attempt
+    // Track educational betting simulation
     if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'bet_place_attempt', {
-        event_category: 'bet_box',
-        event_action: 'attempt_place_bet',
+      window.gtag('event', 'betting_simulation_attempt', {
+        event_category: 'betting_education',
+        event_action: 'simulate_betting_process',
         event_label: `${bet.bet_title} - ${bet.runner_name}`,
         bet_title: bet.bet_title,
         runner_name: bet.runner_name,
@@ -56,19 +56,18 @@ export const BetBox = ({ bet }: { bet: any }) => {
       runner_name: bet.runner_name,
     })
       .then(() => {
-        // Track successful bet placement
+        // Track educational simulation completion
         if (typeof window !== 'undefined' && window.gtag) {
-          window.gtag('event', 'bet_place_success', {
-            event_category: 'bet_box',
-            event_action: 'successful_bet_placement',
+          window.gtag('event', 'betting_simulation_completed', {
+            event_category: 'betting_education',
+            event_action: 'complete_betting_simulation',
             event_label: `${bet.bet_title} - ${bet.runner_name}`,
             bet_title: bet.bet_title,
             runner_name: bet.runner_name,
             bet_odd: parseFloat(bet.bet_odd),
             stake_amount: parseFloat(stake),
             potential_profit: potentialProfit,
-            thread_id: state.item.data._id,
-            value: parseFloat(stake)
+            thread_id: state.item.data._id
           });
         }
         
@@ -77,14 +76,14 @@ export const BetBox = ({ bet }: { bet: any }) => {
         setIsSuccess(true)
         dispatch(setItemStatus('waiting'))
       })
-      .catch((error) => {
+      .catch((error: any) => {
         console.error('Failed to place bet:', error)
         
-        // Track bet placement error
+        // Track educational simulation error
         if (typeof window !== 'undefined' && window.gtag) {
-          window.gtag('event', 'bet_place_error', {
-            event_category: 'bet_box',
-            event_action: 'bet_placement_error',
+          window.gtag('event', 'betting_simulation_error', {
+            event_category: 'betting_education',
+            event_action: 'simulation_error',
             event_label: `${bet.bet_title} - ${bet.runner_name} - ${error.message || 'Unknown error'}`,
             bet_title: bet.bet_title,
             runner_name: bet.runner_name,
@@ -105,11 +104,11 @@ export const BetBox = ({ bet }: { bet: any }) => {
 
   const handleOpen = () => {
     if (!isOpen && !isLoading) {
-      // Track bet box open
+      // Track educational betting interface engagement
       if (typeof window !== 'undefined' && window.gtag) {
-        window.gtag('event', 'bet_box_open', {
-          event_category: 'bet_box',
-          event_action: 'open_bet_box',
+        window.gtag('event', 'betting_education_engagement', {
+          event_category: 'betting_education',
+          event_action: 'open_betting_interface',
           event_label: `${bet.bet_title} - ${bet.runner_name}`,
           bet_title: bet.bet_title,
           runner_name: bet.runner_name,
@@ -125,11 +124,11 @@ export const BetBox = ({ bet }: { bet: any }) => {
   const handleClose = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (isOpen && !isLoading) {
-      // Track bet box close
+      // Track educational interface navigation
       if (typeof window !== 'undefined' && window.gtag) {
-        window.gtag('event', 'bet_box_close', {
-          event_category: 'bet_box',
-          event_action: 'close_bet_box',
+        window.gtag('event', 'betting_education_navigation', {
+          event_category: 'betting_education',
+          event_action: 'close_betting_interface',
           event_label: `${bet.bet_title} - ${bet.runner_name}`,
           bet_title: bet.bet_title,
           runner_name: bet.runner_name,
