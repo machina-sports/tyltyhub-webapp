@@ -66,6 +66,20 @@ export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: B
 
   const handleSelectOption = (market: string, option: { name: string, odds: string }) => {
     if (isCompleted) return
+    
+    // Track betting option selection
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'betting_option_select', {
+        event_category: 'betting_odds_box',
+        event_action: 'select_betting_option',
+        event_label: `${event} - ${market} - ${option.name}`,
+        event_name: event,
+        market_name: market,
+        option_name: option.name,
+        odds_value: option.odds
+      });
+    }
+
     setSelectedBet({
       market,
       selection: option.name,
@@ -77,6 +91,21 @@ export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: B
   const handlePlaceBet = async () => {
     if (!selectedBet || !stake) return
 
+    // Track bet placement attempt
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'bet_place_attempt', {
+        event_category: 'betting_odds_box',
+        event_action: 'attempt_place_bet',
+        event_label: `${event} - ${selectedBet.market} - ${selectedBet.selection}`,
+        event_name: event,
+        market_name: selectedBet.market,
+        selection_name: selectedBet.selection,
+        odds_value: selectedBet.odds,
+        stake_amount: Number(stake),
+        potential_winnings: Number(potentialWinnings)
+      });
+    }
+
     setIsPlacing(true)
     await new Promise(resolve => setTimeout(resolve, 1000))
     
@@ -87,6 +116,22 @@ export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: B
       odds: selectedBet.odds,
       stake: Number(stake)
     })
+
+    // Track successful bet placement
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'bet_place_success', {
+        event_category: 'betting_odds_box',
+        event_action: 'successful_bet_placement',
+        event_label: `${event} - ${selectedBet.market} - ${selectedBet.selection}`,
+        event_name: event,
+        market_name: selectedBet.market,
+        selection_name: selectedBet.selection,
+        odds_value: selectedBet.odds,
+        stake_amount: Number(stake),
+        potential_winnings: Number(potentialWinnings),
+        value: Number(stake)
+      });
+    }
 
     setIsCompleted(true)
     setIsPlacing(false)
@@ -127,6 +172,15 @@ export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: B
             variant="ghost"
             size="sm"
             onClick={() => {
+              // Track back button click
+              if (typeof window !== 'undefined' && window.gtag) {
+                window.gtag('event', 'betting_back_click', {
+                  event_category: 'betting_odds_box',
+                  event_action: 'click_back_button',
+                  event_label: `${event} - Back from confirmation`
+                });
+              }
+              
               setShowConfirmation(false)
               setSelectedBet(null)
             }}

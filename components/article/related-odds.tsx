@@ -181,7 +181,25 @@ export function RelatedOdds({
     }
   };
 
-  const handleOddsClick = (optionId: number, odds: number) => {
+  const handleOddsClick = (optionId: number, odds: number, optionName: string) => {
+    // Track GA4 event for odds click
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'odds_click', {
+        event_category: 'odds_widget',
+        event_action: 'click_odds_button',
+        event_label: `${marketData.homeTeam.code} vs ${marketData.awayTeam?.code || 'TBD'} - ${optionName}`,
+        market_id: marketData.id,
+        market_type: marketData.marketType,
+        market_title: marketData.title,
+        option_id: optionId,
+        odds_value: odds,
+        home_team: marketData.homeTeam.code,
+        away_team: marketData.awayTeam?.code || null,
+        event_time: eventDateTime || null,
+        value: odds
+      });
+    }
+
     const sportsbookUrl = `/sportsbook/${marketData.id}/${optionId}?odds=${encodeURIComponent(odds)}`;
     window.open(sportsbookUrl, '_blank');
   };
@@ -202,7 +220,7 @@ export function RelatedOdds({
 
     return (
       <button
-        onClick={() => handleOddsClick(option.id, option.price.odds)}
+        onClick={() => handleOddsClick(option.id, option.price.odds, option.name.shortText || option.name.text)}
         className={cn(
           "text-sm px-3 py-1.5 font-semibold rounded-md transition-all duration-200",
           isDarkMode 
