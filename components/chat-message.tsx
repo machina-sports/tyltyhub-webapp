@@ -221,17 +221,17 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
           <div className="mt-2 space-y-2 text-sm text-muted-foreground">
             {relatedQuestions.slice(0, 2).map((question: any, index: number) => (
               <div key={index} className="text-sm hover:underline cursor-pointer">
-                <Link
-                  className="flex items-center gap-2 ml-4"
-                  onClick={() => {
+                <button
+                  className="flex items-center gap-2 ml-4 text-left w-full"
+                  onClick={(e) => {
+                    e.preventDefault()
                     trackRelatedQuestionClick(question)
                     onNewMessage(question)
                   }}
-                  href="#"
                 >
                   <Reply className="h-4 w-4" />
                   {question}
-                </Link>
+                </button>
               </div>
             ))}
           </div>
@@ -242,14 +242,16 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
         <div className="mt-0 pl-14">
           <div className="mt-2 space-y-2 text-sm text-muted-foreground">
             <div className="text-sm hover:underline cursor-pointer">
-              <Link
-                className="flex items-center gap-2 ml-4"
-                onClick={() => setShowWidget(!showWidget)}
-                href="#"
+              <button
+                className="flex items-center gap-2 ml-4 text-left w-full"
+                onClick={(e) => {
+                  e.preventDefault()
+                  setShowWidget(!showWidget)
+                }}
               >
                 <BarChart3 className="h-4 w-4" />
                 {showWidget ? "Ocultar tabela de odds" : "Ver a tabela de odds da partida"}
-              </Link>
+              </button>
             </div>
           </div>
 
