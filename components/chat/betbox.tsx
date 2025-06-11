@@ -33,6 +33,21 @@ export const BetBox = ({ bet }: { bet: any }) => {
     e.stopPropagation()
     setIsLoading(true)
     
+    // Track bet placement attempt
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'bet_place_attempt', {
+        event_category: 'bet_box',
+        event_action: 'attempt_place_bet',
+        event_label: `${bet.bet_title} - ${bet.runner_name}`,
+        bet_title: bet.bet_title,
+        runner_name: bet.runner_name,
+        bet_odd: parseFloat(bet.bet_odd),
+        stake_amount: parseFloat(stake),
+        potential_profit: potentialProfit,
+        thread_id: state.item.data._id
+      });
+    }
+    
     doPlaceBet({ 
       thread_id: state.item.data._id,
       bet_amount: parseFloat(stake),
@@ -41,6 +56,22 @@ export const BetBox = ({ bet }: { bet: any }) => {
       runner_name: bet.runner_name,
     })
       .then(() => {
+        // Track successful bet placement
+        if (typeof window !== 'undefined' && window.gtag) {
+          window.gtag('event', 'bet_place_success', {
+            event_category: 'bet_box',
+            event_action: 'successful_bet_placement',
+            event_label: `${bet.bet_title} - ${bet.runner_name}`,
+            bet_title: bet.bet_title,
+            runner_name: bet.runner_name,
+            bet_odd: parseFloat(bet.bet_odd),
+            stake_amount: parseFloat(stake),
+            potential_profit: potentialProfit,
+            thread_id: state.item.data._id,
+            value: parseFloat(stake)
+          });
+        }
+        
         setStake("")
         setIsOpen(false)
         setIsSuccess(true)
@@ -48,6 +79,18 @@ export const BetBox = ({ bet }: { bet: any }) => {
       })
       .catch((error) => {
         console.error('Failed to place bet:', error)
+        
+        // Track bet placement error
+        if (typeof window !== 'undefined' && window.gtag) {
+          window.gtag('event', 'bet_place_error', {
+            event_category: 'bet_box',
+            event_action: 'bet_placement_error',
+            event_label: `${bet.bet_title} - ${bet.runner_name} - ${error.message || 'Unknown error'}`,
+            bet_title: bet.bet_title,
+            runner_name: bet.runner_name,
+            error_message: error.message || 'Unknown error'
+          });
+        }
       })
       .finally(() => {
         setIsLoading(false)
@@ -62,10 +105,41 @@ export const BetBox = ({ bet }: { bet: any }) => {
 
   const handleOpen = () => {
     if (!isOpen && !isLoading) {
+      // Track bet box open
+      if (typeof window !== 'undefined' && window.gtag) {
+        window.gtag('event', 'bet_box_open', {
+          event_category: 'bet_box',
+          event_action: 'open_bet_box',
+          event_label: `${bet.bet_title} - ${bet.runner_name}`,
+          bet_title: bet.bet_title,
+          runner_name: bet.runner_name,
+          bet_odd: parseFloat(bet.bet_odd)
+        });
+      }
+      
       setIsOpen(true)
       setIsSuccess(false)
     }
   }
+
+  const handleClose = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (isOpen && !isLoading) {
+      // Track bet box close
+      if (typeof window !== 'undefined' && window.gtag) {
+        window.gtag('event', 'bet_box_close', {
+          event_category: 'bet_box',
+          event_action: 'close_bet_box',
+          event_label: `${bet.bet_title} - ${bet.runner_name}`,
+          bet_title: bet.bet_title,
+          runner_name: bet.runner_name,
+          had_stake: stake !== ""
+        });
+      }
+      
+      setIsOpen(false);
+    }
+  };
 
   return (
     <div
@@ -76,10 +150,7 @@ export const BetBox = ({ bet }: { bet: any }) => {
       <div className="flex flex-row">
         <div
           className="flex flex-col items-center justify-center ml-2 mr-5"
-          onClick={(e) => {
-            e.stopPropagation();
-            if (isOpen && !isLoading) setIsOpen(false);
-          }}
+          onClick={handleClose}
         >
           {isLoading ? (
             <Loader2 className="h-6 w-6 animate-spin" />
