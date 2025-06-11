@@ -45,7 +45,7 @@ export function MobileHeader({ onMenuClick }: MobileHeaderProps) {
           className="h-12 w-12 text-white hover:bg-white/20 active:bg-white/30 hover:text-white transition-colors"
           aria-label="Open menu"
         >
-          <Menu className="h-5 w-5" />
+          <Menu className="h-8 w-8" />
         </Button>
         
         <h1 
