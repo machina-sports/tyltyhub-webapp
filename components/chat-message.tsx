@@ -222,7 +222,10 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
             {relatedQuestions.slice(0, 2).map((question: any, index: number) => (
               <div key={index} className="text-sm hover:underline cursor-pointer">
                 <button
-                  className="flex items-center gap-2 ml-4 text-left w-full"
+                  className={cn(
+                    "flex items-center gap-2 ml-4 text-left w-full bg-transparent border-none p-0 hover:underline",
+                    isDarkMode ? "text-[#D3ECFF]/70 hover:text-[#D3ECFF]" : "text-muted-foreground hover:text-foreground"
+                  )}
                   onClick={(e) => {
                     e.preventDefault()
                     trackRelatedQuestionClick(question)
@@ -243,7 +246,10 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
           <div className="mt-2 space-y-2 text-sm text-muted-foreground">
             <div className="text-sm hover:underline cursor-pointer">
               <button
-                className="flex items-center gap-2 ml-4 text-left w-full"
+                className={cn(
+                  "flex items-center gap-2 ml-4 text-left w-full bg-transparent border-none p-0 hover:underline",
+                  isDarkMode ? "text-[#D3ECFF]/70 hover:text-[#D3ECFF]" : "text-muted-foreground hover:text-foreground"
+                )}
                 onClick={(e) => {
                   e.preventDefault()
                   setShowWidget(!showWidget)
