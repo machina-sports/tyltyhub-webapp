@@ -77,28 +77,33 @@ export function ContainerChat() {
       })
     }
     
-    // Fallback para mobile: scroll no container pai também com extra offset
+    // Fallback para container pai com detecção mobile/desktop
     if (messageContainerRef.current) {
       const container = messageContainerRef.current
       const scrollTop = container.scrollHeight - container.clientHeight
+      const isMobile = window.innerWidth < 768
+      const extraOffset = isMobile ? 50 : 20 // Mobile: 50px, Desktop: 20px
       
       if (smooth) {
         container.scrollTo({
-          top: scrollTop + 50, // Extra offset para garantir que não corte
+          top: scrollTop + extraOffset,
           behavior: 'smooth'
         })
       } else {
-        container.scrollTop = scrollTop + 50
+        container.scrollTop = scrollTop + extraOffset
       }
     }
     
-    // Extra fallback para garantir scroll completo no mobile
+    // Extra fallback para garantir scroll completo
+    const isMobile = window.innerWidth < 768
+    const timeoutDelay = isMobile ? (smooth ? 300 : 50) : (smooth ? 200 : 30)
+    
     setTimeout(() => {
       if (messageContainerRef.current) {
         const container = messageContainerRef.current
         container.scrollTop = container.scrollHeight
       }
-    }, smooth ? 300 : 50)
+    }, timeoutDelay)
   }
 
   const handleSendMessage = async (message: string) => {
@@ -363,7 +368,7 @@ export function ContainerChat() {
       </Dialog>
 
      <div className="flex-1 min-h-0 overflow-y-auto" ref={messageContainerRef}>
-        <div className="max-w-3xl mx-auto space-y-6 pb-[160px] md:pb-[24px]">
+        <div className="max-w-3xl mx-auto space-y-6 pb-[160px] md:pb-[120px]">
           <div className="space-y-3 sm:space-y-6">
             {isLoading ? (
               <TableSkeleton isLoading={true} length={5} />
@@ -389,7 +394,7 @@ export function ContainerChat() {
             )}
           </div>
           {/* Elemento invisível para marcar o final das mensagens */}
-          <div ref={messagesEndRef} className="h-20 md:h-1" />
+          <div ref={messagesEndRef} className="h-20 md:h-16" />
         </div>
       </div>
 
