@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { X, ChevronDown } from "lucide-react"
 import {
   Select,
@@ -18,7 +18,7 @@ import { useTheme } from "@/components/theme-provider"
 
 // Convert to array of team objects with name and id for filtering
 const TEAMS = [
-  { id: "all-teams", name: "Todos os Times", logo: null },
+  { id: "all-teams", name: "Todos os Times", logo: null, abbreviation: "ALL" },
   ...teamsData.teams
 ]
 
@@ -30,7 +30,7 @@ const getTeamDetails = (teamName: string) => {
     t.name.toLowerCase().includes(teamName.toLowerCase()) ||
     teamName.toLowerCase().includes(t.name.toLowerCase())
   )
-  return team || { id: "unknown", name: teamName, logo: null }
+  return team || { id: "unknown", name: teamName, logo: null, abbreviation: teamName.substring(0, 3).toUpperCase() }
 }
 
 // Process FIFA CWC groups data for the filter component
@@ -42,7 +42,7 @@ const CWC_GROUPS = fifaCwcData.groups.map(group => {
 })
 
 // Additional option for "All Teams"
-const ALL_TEAMS_OPTION = { id: "all-teams", name: "Todos os Times", logo: null }
+const ALL_TEAMS_OPTION = { id: "all-teams", name: "Todos os Times", logo: null, abbreviation: "ALL" }
 
 interface TeamFilterProps {
   value: string
@@ -52,7 +52,20 @@ interface TeamFilterProps {
 export function TeamFilter({ value, onChange }: TeamFilterProps) {
   const [activeGroup, setActiveGroup] = useState(CWC_GROUPS[0].name)
   const [open, setOpen] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const { isDarkMode } = useTheme();
+
+  // Check if screen is mobile size
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 640) // sm breakpoint
+    }
+    
+    checkScreenSize()
+    window.addEventListener('resize', checkScreenSize)
+    
+    return () => window.removeEventListener('resize', checkScreenSize)
+  }, [])
 
   // Selected team details for the dropdown trigger
   const selectedTeam = TEAMS.find(team => team.id === value) || ALL_TEAMS_OPTION
@@ -61,7 +74,14 @@ export function TeamFilter({ value, onChange }: TeamFilterProps) {
   const getDisplayValue = () => {
     if (value === "all-teams") return "Todos os Times"
     const team = TEAMS.find(t => t.id === value)
-    return team?.name || "Todos os Times"
+    if (!team) return "Todos os Times"
+    
+    // Use abbreviation on mobile when there's a clear button (X) to prevent overlap
+    if (isMobile && value !== 'all-teams') {
+      return team.abbreviation || team.name
+    }
+    
+    return team.name
   }
 
   // Handle reset separately to avoid dropdown opening
