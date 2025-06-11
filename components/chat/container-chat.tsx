@@ -46,79 +46,45 @@ export function ContainerChat() {
   const [expirationDays, setExpirationDays] = useState<number>(7)
   const [isSaving, setIsSaving] = useState(false)
 
-  // const [thread, setThread] = useState<any>(objectData)
-
   const [input, setInput] = useState('')
 
   const messageContainerRef = useRef<HTMLDivElement>(null)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const [isUserNearBottom, setIsUserNearBottom] = useState(true)
 
   const handleSubmit = async (e: React.FormEvent) => {
-
     e.preventDefault()
-
     if (!input.trim()) return
-
-    handleSendMessage(input)
-
+    handleSendMessage(input, true)
     setInput('')
   }
 
-  // Ref para o elemento que marca o final das mensagens
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-  const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
-
-  // Função para fazer scroll suave para o final
-  const scrollToBottom = (smooth = true) => {
-    // Método principal usando scrollIntoView
+  // Função simples para scroll
+  const scrollToBottom = () => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ 
-        behavior: smooth ? 'smooth' : 'auto',
-        block: 'end'
-      })
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
     }
-    
-    // Fallback para container pai com detecção mobile/desktop
-    if (messageContainerRef.current) {
-      const container = messageContainerRef.current
-      const scrollTop = container.scrollHeight - container.clientHeight
-      const isMobile = window.innerWidth < 768
-      const extraOffset = isMobile ? 50 : 20 // Mobile: 50px, Desktop: 20px
-      
-      if (smooth) {
-        container.scrollTo({
-          top: scrollTop + extraOffset,
-          behavior: 'smooth'
-        })
-      } else {
-        container.scrollTop = scrollTop + extraOffset
-      }
-    }
-    
-    // Extra fallback para garantir scroll completo
-    const isMobile = window.innerWidth < 768
-    const timeoutDelay = isMobile ? (smooth ? 300 : 50) : (smooth ? 200 : 30)
-    
-    setTimeout(() => {
-      if (messageContainerRef.current) {
-        const container = messageContainerRef.current
-        container.scrollTop = container.scrollHeight
-      }
-    }, timeoutDelay)
   }
 
-  const handleSendMessage = async (message: string) => {
+  // Detectar se usuário está próximo do final
+  const handleScroll = () => {
+    if (!messageContainerRef.current) return
+    
+    const container = messageContainerRef.current
+    const threshold = 100 // pixels from bottom
+    const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < threshold
+    
+    setIsUserNearBottom(isNearBottom)
+  }
+
+  const handleSendMessage = async (message: string, shouldScroll = false) => {
     trackNewMessage(message)
-    // Forçar scroll para baixo imediatamente e manter ativo
-    setShouldAutoScroll(true)
-    scrollToBottom(false)
-    
+    // shouldScroll = true quando usuário digita manualmente
+    // shouldScroll = false quando clica em sugestões (não deve fazer scroll)
+    if (shouldScroll) {
+      setIsUserNearBottom(true)
+    }
     dispatch(actionChat({ thread_id: state.item.data?._id, message }))
-    
-    // Scroll adicional após dispatch para garantir
-    setTimeout(() => {
-      setShouldAutoScroll(true)
-      scrollToBottom(true)
-    }, 50)
   }
   
   const handleOpenShareDialog = () => {
@@ -127,13 +93,11 @@ export function ContainerChat() {
       try {
         setIsSaving(true)
         
-        // Usa a action do Redux em vez do serviço diretamente
         dispatch(actionSaveSharedChat({
           chatData: threadData,
           expirationDays
         })).unwrap()
           .then((result) => {
-            // Após salvar com sucesso, gera o link de compartilhamento
             const baseUrl = window.location.origin
             const shareLink = `${baseUrl}/chat/${result.chatId}`
             setShareUrl(shareLink)
@@ -187,88 +151,24 @@ export function ContainerChat() {
   }
 
   const currentMessages = state.item.data?.value?.messages || []
-
   const currentStatus = state.item.data?.value?.status
-
   const currentStatusMessage = state.item.data?.value?.["status-message"]
-
   const isTyping = currentStatus === "processing" || currentStatus === "waiting" || state.fields.status === "loading"
-
-  // Intersection Observer para detectar quando o usuário está no final
-  useEffect(() => {
-    if (!messagesEndRef.current) return
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const [entry] = entries
-        // Não desabilitar auto-scroll se o bot estiver digitando
-        if (!isTyping) {
-          setShouldAutoScroll(entry.isIntersecting)
-        }
-      },
-      { 
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px' // Considera como "no final" mesmo 50px antes
-      }
-    )
-
-    observer.observe(messagesEndRef.current)
-    return () => observer.disconnect()
-  }, [isTyping])
-
-  // Scroll automático apenas se shouldAutoScroll for true
-  useEffect(() => {
-    if (shouldAutoScroll && state.item.data?.value?.messages?.length > 0) {
-      setTimeout(() => scrollToBottom(true), 100)
-    }
-  }, [state.item.data?.value?.messages?.length, shouldAutoScroll])
-
-  // Scroll quando começa a digitar - MELHORADO
-  useEffect(() => {
-    if (isTyping && shouldAutoScroll) {
-      // Scroll imediato quando começa a digitar
-      scrollToBottom(false)
-      // Scroll suave logo após
-      setTimeout(() => scrollToBottom(true), 100)
-    }
-  }, [isTyping, shouldAutoScroll])
-
-  // Scroll quando o conteúdo da mensagem de status muda - MELHORADO
-  useEffect(() => {
-    if (currentStatusMessage && isTyping && shouldAutoScroll) {
-      // Scroll mais frequente durante a digitação
-      scrollToBottom(true)
-    }
-  }, [currentStatusMessage, isTyping, shouldAutoScroll])
-
-  // Scroll quando o chat termina de processar (status muda para idle)
-  useEffect(() => {
-    if (currentStatus === "idle" && shouldAutoScroll) {
-      setTimeout(() => scrollToBottom(true), 300)
-    }
-  }, [currentStatus, shouldAutoScroll])
-
-  // NOVO: Effect específico para scroll contínuo durante digitação
-  useEffect(() => {
-    let scrollInterval: NodeJS.Timeout | null = null;
-    
-    if (isTyping && shouldAutoScroll) {
-      // Forçar scroll contínuo enquanto está digitando
-      scrollInterval = setInterval(() => {
-        scrollToBottom(true)
-      }, 500) // Scroll a cada 500ms durante a digitação
-    }
-    
-    return () => {
-      if (scrollInterval) {
-        clearInterval(scrollInterval)
-      }
-    }
-  }, [isTyping, shouldAutoScroll])
-
   const isLoading = state.item.status === 'loading'
 
-  
+  // Scroll quando há novas mensagens (apenas se usuário está próximo do final)
+  useEffect(() => {
+    if (isUserNearBottom && currentMessages.length > 0) {
+      setTimeout(scrollToBottom, 100)
+    }
+  }, [currentMessages.length, isUserNearBottom])
+
+  // Scroll quando bot está digitando (apenas se usuário está próximo do final)
+  useEffect(() => {
+    if (isUserNearBottom && currentStatusMessage && isTyping) {
+      scrollToBottom()
+    }
+  }, [currentStatusMessage, isTyping, isUserNearBottom])
 
   return (
     <>
@@ -301,8 +201,6 @@ export function ContainerChat() {
             <DialogTitle className={cn("text-lg font-semibold", isDarkMode && "text-white")}>Link público atualizado</DialogTitle>
           </DialogHeader>
           
-
-
           <div className="mt-4 space-y-4">
             <div className={cn(
               "flex flex-col sm:flex-row sm:items-center sm:space-x-2 border rounded-md px-3 py-3", 
@@ -361,13 +259,15 @@ export function ContainerChat() {
               </div>
               <span className="text-xs font-medium">Twitter</span>
             </Button>
-            
-
           </div>
         </DialogContent>
       </Dialog>
 
-     <div className="flex-1 min-h-0 overflow-y-auto" ref={messageContainerRef}>
+      <div 
+        className="flex-1 min-h-0 overflow-y-auto" 
+        ref={messageContainerRef}
+        onScroll={handleScroll}
+      >
         <div className="max-w-3xl mx-auto space-y-6 pb-[160px] md:pb-[120px]">
           <div className="space-y-3 sm:space-y-6 pt-4">
             {isLoading ? (
@@ -393,8 +293,7 @@ export function ContainerChat() {
               </>
             )}
           </div>
-          {/* Elemento invisível para marcar o final das mensagens */}
-          <div ref={messagesEndRef} className="h-20 md:h-16" />
+          <div ref={messagesEndRef} />
         </div>
       </div>
 
