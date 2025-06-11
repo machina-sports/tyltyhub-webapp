@@ -227,8 +227,8 @@ const ContainerHome = ({ query }: { query: string }) => {
       isDarkMode ? "bg-[#061F3F]" : "bg-background"
     )}>
       <div className="flex-1 overflow-auto hide-scrollbar momentum-scroll pb-32 pt-4 md:pb-24">
-        <div className="flex flex-col items-center justify-center min-h-[calc(100vh-12rem)] p-4">
-          <img className="w-full mb-10 max-w-[980px]" src="/980x250px_kv_-landing-page_chatbot.png" alt="logo" />
+        <div className="flex flex-col items-center p-4">
+          <img className="w-full mb-10 max-w-[980px]" src="/kv-txt-op1_980x250px_bot_.gif" alt="logo" />
           <h1 className={cn(
             "text-center mb-4 sm:mb-6 flex items-center gap-3 justify-center",
             isDarkMode && "text-[#ffffff]"
