@@ -112,7 +112,7 @@ export function Sidebar() {
                   }}
                 >
                   <Image
-                    src="/sb-logo-novo.svg"
+                    src="/outline.png"
                     alt="Logo Sportingbet"
                     width={250}
                     height={120}
