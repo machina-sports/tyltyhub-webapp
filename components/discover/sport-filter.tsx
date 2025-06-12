@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { X, ChevronDown } from "lucide-react"
 import {
   Select,
@@ -10,15 +10,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import * as SelectPrimitive from "@radix-ui/react-select"
 import teamsData from "@/data/teams.json"
 import fifaCwcData from "@/data/fifa-cwc-2025.json"
 import { cn } from "@/lib/utils"
 import { useTheme } from "@/components/theme-provider"
+import { useAppDispatch } from "@/store/dispatch"
+import { useTeamDisplay } from "@/hooks/use-team-display"
 
-// Convert to array of team objects with name and id for filtering
 const TEAMS = [
-  { id: "all-teams", name: "Todos os Times", logo: null, abbreviation: "ALL" },
+  { id: "all-teams", name: "Todos os Times", logo: null },
   ...teamsData.teams
 ]
 
@@ -30,7 +30,7 @@ const getTeamDetails = (teamName: string) => {
     t.name.toLowerCase().includes(teamName.toLowerCase()) ||
     teamName.toLowerCase().includes(t.name.toLowerCase())
   )
-  return team || { id: "unknown", name: teamName, logo: null, abbreviation: teamName.substring(0, 3).toUpperCase() }
+  return team || { id: "unknown", name: teamName, logo: null }
 }
 
 // Process FIFA CWC groups data for the filter component
@@ -42,7 +42,7 @@ const CWC_GROUPS = fifaCwcData.groups.map(group => {
 })
 
 // Additional option for "All Teams"
-const ALL_TEAMS_OPTION = { id: "all-teams", name: "Todos os Times", logo: null, abbreviation: "ALL" }
+const ALL_TEAMS_OPTION = { id: "all-teams", name: "Todos os Times", logo: null }
 
 interface TeamFilterProps {
   value: string
@@ -54,6 +54,8 @@ export function TeamFilter({ value, onChange }: TeamFilterProps) {
   const [open, setOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const { isDarkMode } = useTheme();
+  const dispatch = useAppDispatch();
+  const { getDisplayName, shouldUseAbbreviation } = useTeamDisplay();
 
   // Check if screen is mobile size
   useEffect(() => {
@@ -66,59 +68,63 @@ export function TeamFilter({ value, onChange }: TeamFilterProps) {
     
     return () => window.removeEventListener('resize', checkScreenSize)
   }, [])
+  
 
-  // Selected team details for the dropdown trigger
-  const selectedTeam = TEAMS.find(team => team.id === value) || ALL_TEAMS_OPTION
+   const selectedTeam = TEAMS.find(team => team.id === value) || ALL_TEAMS_OPTION
 
-  // Helper to get what to display in the top bar
-  const getDisplayValue = () => {
-    if (value === "all-teams") return "Todos os Times"
-    const team = TEAMS.find(t => t.id === value)
-    if (!team) return "Todos os Times"
-    
-    // Use abbreviation on mobile when there's a clear button (X) to prevent overlap
-    if (isMobile && value !== 'all-teams') {
-      return team.abbreviation || team.name
-    }
-    
-    return team.name
-  }
+ 
+   // Handle reset separately to avoid dropdown opening
+   const handleReset = (e: React.MouseEvent) => {
+     e.preventDefault();
+     e.stopPropagation();
+     onChange("all-teams");
+   };
+ 
+   const handleTeamSelect = (teamId: string) => {
+     onChange(teamId);
+     setOpen(false);
+   };
 
-  // Handle reset separately to avoid dropdown opening
-  const handleReset = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onChange("all-teams");
-  };
+   // Se o nome do time for muito extenso, aumentamos o padding right do trigger
+  const memoizeTeamsLengh = useMemo(() => TEAMS.length, [TEAMS.length]);
+  const triggerPaddingRight = memoizeTeamsLengh > 10 ? "pr-14" : "pr-10";
+
 
   return (
     <div className="relative w-[220px]">
       <Select 
         value={value} 
-        onValueChange={onChange}
+        onValueChange={handleTeamSelect}
         open={open}
         onOpenChange={setOpen}
       >
         <div className="relative">
           <SelectTrigger className={cn(
-            "cursor-pointer pr-10 flex [&>span]:flex-grow [&>span]:mr-0 [&>svg]:hidden",
+            `cursor-pointer pr-10 flex [&>span]:flex-grow [&>span]:mr-0 [&>svg]:hidden ${triggerPaddingRight}`,
             isDarkMode 
               ? "bg-[#061F3F] border-[#45CAFF]/30 text-[#D3ECFF] hover:bg-[#45CAFF]/10" 
               : "bg-background hover:bg-accent hover:text-accent-foreground"
           )}>
-            <div className="flex items-center gap-2 overflow-hidden w-full">
-              {selectedTeam.logo && value !== 'all-teams' && (
-                <div className="h-5 w-5 relative overflow-hidden flex-shrink-0">
-                  <Image 
-                    src={selectedTeam.logo}
-                    alt={selectedTeam.name}
-                    fill
-                    className="object-contain"
-                  />
-                </div>
-              )}
-              <span className="truncate">{getDisplayValue()}</span>
-            </div>
+            <SelectValue>
+              <div className="flex items-center gap-2 overflow-hidden w-full">
+                {selectedTeam.logo && value !== 'all-teams' && (
+                  <div className="h-5 w-5 relative overflow-hidden flex-shrink-0">
+                    <Image 
+                      src={selectedTeam.logo}
+                      alt={selectedTeam.name}
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                )}
+                <span className="truncate">
+                  {value !== 'all-teams' ? getDisplayName(selectedTeam.name, { 
+                    preferAbbreviation: shouldUseAbbreviation(selectedTeam.name, undefined, isMobile),
+                    maxLength: isMobile ? 10 : 20
+                  }) : selectedTeam.name}
+                </span>
+              </div>
+            </SelectValue>
             <div className="absolute right-3 top-0 bottom-0 flex items-center pointer-events-none">
               <ChevronDown className={cn(
                 "h-4 w-4",
