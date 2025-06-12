@@ -306,7 +306,7 @@ export function ContainerChat() {
             disabled={isTyping}
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Continue a conversa com o SportingBOT..."
+            placeholder="Converse com o SportingBOT..."
             className={cn(
               "w-full h-12 pl-4 pr-12 rounded-lg",
               isDarkMode 

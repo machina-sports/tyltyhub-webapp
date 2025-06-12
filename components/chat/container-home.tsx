@@ -268,7 +268,7 @@ const ContainerHome = ({ query }: { query: string }) => {
         }}
       >
         <div className="flex flex-col items-center p-4">
-          <img className="w-full mb-0 max-w-[980px] mt-8 md:mt-0" src="/kv-txt-op1_980x250px_bot_.gif" alt="logo" />
+          <img className="w-full mb-0 max-w-[980px] mt-12 md:mt-0" src="/kv-txt-op1_980x250px_bot_.gif" alt="logo" />
           <h1 className={cn(
             "text-center mb-4 sm:mb-6 flex items-center gap-3 justify-center pt-10 pb-6 sm:pt-14 sm:pb-10",
             isDarkMode && "text-[#ffffff]"
