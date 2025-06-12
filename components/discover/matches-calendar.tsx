@@ -17,6 +17,13 @@ type Fixture = {
   groupName: string;
 };
 
+interface MatchesCalendarProps {
+  useAbbreviations?: boolean;
+  compact?: boolean;
+  maxMatches?: number;
+  maxWidth?: string;
+}
+
 // Helper to translate month names in dates
 const translateDate = (date: string): string => {
   return date
@@ -91,43 +98,50 @@ interface TeamMatchProps {
   teamName: string;
   logo?: string;
   isSecond?: boolean;
+  useAbbreviation?: boolean;
+  compact?: boolean;
 }
 
 // Component for team in match
-const TeamMatch = ({ teamName, logo, isSecond }: TeamMatchProps) => {
+const TeamMatch = ({ teamName, logo, isSecond, useAbbreviation = false, compact = false }: TeamMatchProps) => {
   const { isDarkMode } = useTheme();
   const { getDisplayName, shouldUseAbbreviation } = useTeamDisplay();
   
-  // Use abbreviation on smaller screens or for long team names
+  // Use abbreviation based on props or screen constraints
   const displayName = getDisplayName(teamName, {
-    preferAbbreviation: shouldUseAbbreviation(teamName, undefined, window?.innerWidth < 768),
-    maxLength: 15
+    preferAbbreviation: useAbbreviation || shouldUseAbbreviation(teamName, undefined, compact),
+    maxLength: compact ? 8 : 15
   });
   
   return (
     <div className={`flex items-center gap-2 ${isSecond ? 'justify-start' : 'justify-end'}`}>
       {!isSecond && (
         <span className={cn(
-          "font-medium text-sm overflow-wrap-normal word-break-normal",
+          "font-medium overflow-wrap-normal word-break-normal",
+          compact ? "text-xs" : "text-sm",
           isDarkMode ? "text-[#45CAFF]" : ""
         )}>
           {displayName}
         </span>
       )}
       {logo && (
-        <div className="relative h-7 w-7 flex-shrink-0">
+        <div className={cn(
+          "relative flex-shrink-0",
+          compact ? "h-5 w-5" : "h-7 w-7"
+        )}>
           <Image 
             src={logo} 
             alt={teamName} 
             fill 
             className="object-contain"
-            sizes="28px"
+            sizes={compact ? "20px" : "28px"}
           />
         </div>
       )}
       {isSecond && (
         <span className={cn(
-          "font-medium text-sm overflow-wrap-normal word-break-normal",
+          "font-medium overflow-wrap-normal word-break-normal",
+          compact ? "text-xs" : "text-sm",
           isDarkMode ? "text-[#45CAFF]" : ""
         )}>
           {displayName}
@@ -138,7 +152,11 @@ const TeamMatch = ({ teamName, logo, isSecond }: TeamMatchProps) => {
 };
 
 // Match Card Component for both mobile and desktop
-const MatchCard = ({ fixture }: { fixture: Fixture }) => {
+const MatchCard = ({ fixture, useAbbreviation = false, compact = false }: { 
+  fixture: Fixture; 
+  useAbbreviation?: boolean; 
+  compact?: boolean; 
+}) => {
   const { isDarkMode } = useTheme();
   const { getTeamLogo } = useTeamDisplay();
   const teams = fixture.match.split(" x ").map(t => t.trim());
@@ -146,35 +164,64 @@ const MatchCard = ({ fixture }: { fixture: Fixture }) => {
   
   return (
     <div className={cn(
-      "border rounded-md p-4 bg-card hover:bg-muted/10 transition-colors h-full",
+      "border rounded-md bg-card hover:bg-muted/10 transition-colors h-full",
+      compact ? "p-3" : "p-4",
       isDarkMode && "border-[#45CAFF]/30 bg-[#061F3F] hover:bg-[#061f3ff3]"
     )}>
-      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 mb-3">
-        <TeamMatch teamName={teams[0]} logo={teamLogos[0]} />
+      <div className={cn(
+        "grid grid-cols-[1fr_auto_1fr] items-center gap-2",
+        compact ? "mb-2" : "mb-3"
+      )}>
+        <TeamMatch 
+          teamName={teams[0]} 
+          logo={teamLogos[0]} 
+          useAbbreviation={useAbbreviation}
+          compact={compact}
+        />
         <span className={cn(
-          "text-base font-bold px-2",
+          "font-bold px-2",
+          compact ? "text-sm" : "text-base",
           isDarkMode ? "text-[#D3ECFF]" : "text-muted-foreground"
         )}>x</span>
-        <TeamMatch teamName={teams[1]} logo={teamLogos[1]} isSecond />
+        <TeamMatch 
+          teamName={teams[1]} 
+          logo={teamLogos[1]} 
+          isSecond 
+          useAbbreviation={useAbbreviation}
+          compact={compact}
+        />
       </div>
       
       <div className={cn(
-        "grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 text-sm border-t pt-3",
+        "grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 border-t pt-2",
+        compact ? "text-xs" : "text-sm",
         isDarkMode && "border-[#45CAFF]/30"
       )}>
-        <Clock className={cn("h-4 w-4 flex-shrink-0", isDarkMode ? "text-[#45CAFF]" : "text-blue-500")} />
+        <Clock className={cn(
+          "flex-shrink-0", 
+          compact ? "h-3 w-3" : "h-4 w-4",
+          isDarkMode ? "text-[#45CAFF]" : "text-blue-500"
+        )} />
         <span className={cn(
           "overflow-wrap-normal word-break-normal",
           isDarkMode ? "text-[#D3ECFF]" : "text-muted-foreground"
         )}>{fixture.ko}</span>
         
-        <MapPin className={cn("h-4 w-4 flex-shrink-0", isDarkMode ? "text-[#45CAFF]" : "text-blue-500")} />
+        <MapPin className={cn(
+          "flex-shrink-0", 
+          compact ? "h-3 w-3" : "h-4 w-4",
+          isDarkMode ? "text-[#45CAFF]" : "text-blue-500"
+        )} />
         <span className={cn(
           "overflow-wrap-normal word-break-normal",
           isDarkMode ? "text-[#D3ECFF]" : "text-muted-foreground"
-        )}>{fixture.venue}</span>
+        )}>{compact ? fixture.venue.split(',')[0] : fixture.venue}</span>
         
-        <Users className={cn("h-4 w-4 flex-shrink-0", isDarkMode ? "text-[#45CAFF]" : "text-blue-500")} />
+        <Users className={cn(
+          "flex-shrink-0", 
+          compact ? "h-3 w-3" : "h-4 w-4",
+          isDarkMode ? "text-[#45CAFF]" : "text-blue-500"
+        )} />
         <span className={cn(
           "overflow-wrap-normal word-break-normal",
           isDarkMode ? "text-[#D3ECFF]" : "text-muted-foreground"
@@ -186,7 +233,12 @@ const MatchCard = ({ fixture }: { fixture: Fixture }) => {
   );
 };
 
-export function MatchesCalendar() {
+export function MatchesCalendar({ 
+  useAbbreviations = false, 
+  compact = false, 
+  maxMatches,
+  maxWidth 
+}: MatchesCalendarProps = {}) {
   const { isDarkMode } = useTheme();
 
   // Combine and sort all fixtures by date and time
@@ -203,12 +255,15 @@ export function MatchesCalendar() {
     });
     
     // Sort by date and time
-    return fixtures.sort((a, b) => {
+    const sorted = fixtures.sort((a, b) => {
       const dateA = parseDate(a.date, a.ko);
       const dateB = parseDate(b.date, b.ko);
       return dateA.getTime() - dateB.getTime();
     });
-  }, []);
+
+    // Limit matches if maxMatches is specified
+    return maxMatches ? sorted.slice(0, maxMatches) : sorted;
+  }, [maxMatches]);
   
   // Group fixtures by date for display
   const fixturesByDate = useMemo(() => {
@@ -226,16 +281,21 @@ export function MatchesCalendar() {
   }, [fixturesByDate]);
 
   return (
-    <div>
+    <div style={maxWidth ? { maxWidth } : undefined}>
       {sortedDates.map(date => (
-        <div key={date} className="mb-8">
+        <div key={date} className={compact ? "mb-4" : "mb-8"}>
           <div className={cn(
-            "sticky top-0 z-10 bg-background mb-4 py-6 px-4 border-b",
+            "sticky top-0 z-10 bg-background border-b",
+            compact ? "mb-2 py-3 px-2" : "mb-4 py-6 px-4",
             isDarkMode && "bg-[#061F3F] border-[#45CAFF]/30"
           )}>
-            <h2 className="text-xl font-bold flex items-center">
+            <h2 className={cn(
+              "font-bold flex items-center",
+              compact ? "text-base" : "text-xl"
+            )}>
               <Calendar className={cn(
-                "h-5 w-5 mr-2",
+                "mr-2",
+                compact ? "h-4 w-4" : "h-5 w-5",
                 isDarkMode ? "text-[#45CAFF]" : "text-primary"
               )} />
               <span className={cn(isDarkMode && "text-[#45CAFF]")}>
@@ -245,6 +305,7 @@ export function MatchesCalendar() {
                 variant="outline" 
                 className={cn(
                   "ml-2",
+                  compact && "text-xs",
                   isDarkMode && "border-[#45CAFF]/30 text-[#D3ECFF]"
                 )}
               >
@@ -253,9 +314,19 @@ export function MatchesCalendar() {
             </h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className={cn(
+            "grid gap-3",
+            compact 
+              ? "grid-cols-1 sm:grid-cols-2" 
+              : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+          )}>
             {fixturesByDate[date].map((fixture, index) => (
-              <MatchCard key={index} fixture={fixture} />
+              <MatchCard 
+                key={index} 
+                fixture={fixture} 
+                useAbbreviation={useAbbreviations}
+                compact={compact}
+              />
             ))}
           </div>
         </div>
