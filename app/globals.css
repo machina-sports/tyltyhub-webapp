@@ -404,3 +404,10 @@ input[type="search"],
   max-zoom: 1.0;
   user-zoom: fixed;
 }
+
+.widget-embed iframe {
+  max-height: none !important;
+  height: 300px !important;
+  min-height: 300px !important;
+  width: 100% !important;
+}
