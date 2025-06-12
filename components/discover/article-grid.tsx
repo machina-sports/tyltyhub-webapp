@@ -132,7 +132,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
         prefetch={false}
       >
         <CardContent className="p-0 flex flex-col h-full">
-          <div className="relative aspect-video w-full">
+          <div className="relative aspect-[3/2] w-full">
             {imageUrl && (
               <Image
                 src={mainImageUrl}
