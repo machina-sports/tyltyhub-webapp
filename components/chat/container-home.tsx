@@ -230,7 +230,7 @@ const ContainerHome = ({ query }: { query: string }) => {
         <div className="flex flex-col items-center p-4">
           <img className="w-full mb-10 max-w-[980px]" src="/kv-txt-op1_980x250px_bot_.gif" alt="logo" />
           <h1 className={cn(
-            "text-center mb-4 sm:mb-6 flex items-center gap-3 justify-center",
+            "text-center mb-4 sm:mb-6 flex items-center gap-3 justify-center pt-10 pb-6 sm:pt-14 sm:pb-10",
             isDarkMode && "text-[#ffffff]"
           )}>
             {randomTitle}
@@ -247,7 +247,7 @@ const ContainerHome = ({ query }: { query: string }) => {
                 placeholder={getInputPlaceholder()}
                 className={cn(
                   "w-full h-12 pl-4 pr-12 rounded-lg",
-                  isDarkMode ? "bg-[#061F3F] text-[#D3ECFF] placeholder:text-[#D3ECFF]/50 border border-[#45CAFF]/30 focus:border-[#45CAFF]/50 transition-colors" : "bg-secondary/50 border-0"
+                  isDarkMode ? "bg-[#051A35] text-[#D3ECFF] placeholder:text-[#D3ECFF]/50 border border-[#45CAFF]/30 focus:border-[#45CAFF]/50 transition-colors" : "bg-secondary border-0"
                 )}
               />
               <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">

@@ -310,8 +310,8 @@ export function ContainerChat() {
             className={cn(
               "w-full h-12 pl-4 pr-12 rounded-lg",
               isDarkMode 
-                ? "bg-[#061F3F] text-[#D3ECFF] placeholder:text-[#D3ECFF]/50 border border-[#45CAFF]/30 focus:border-[#45CAFF]/50 transition-colors" 
-                : "bg-secondary/50 border-0"
+                ? "bg-[#051A35] text-[#D3ECFF] placeholder:text-[#D3ECFF]/50 border border-[#45CAFF]/30 focus:border-[#45CAFF]/50 transition-colors" 
+                : "bg-secondary border-0"
             )}
           />
           <div className="absolute right-2 top-1/2 -translate-y-1/2">
