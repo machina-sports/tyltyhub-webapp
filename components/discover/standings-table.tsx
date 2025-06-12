@@ -8,21 +8,10 @@ import { cn } from "@/lib/utils"
 import { useTheme } from "@/components/theme-provider"
 import { useTeamDisplay } from "@/hooks/use-team-display"
 
-// Helper function to find team logo by name
-const findTeamLogo = (abbreviation: string): string | undefined => {
-  const teamsData = require("@/data/teams.json")
-  const normalizedName = abbreviation.toLowerCase().replace(/ /g, '-')
-  const team = teamsData.teams.find((t: any) => 
-    t.name.toLowerCase() === abbreviation.toLowerCase() || 
-    t.abbreviation === abbreviation
-  )
-  return team?.logo
-}
-
 export function StandingsTable() {
   const { data: standingsData, status } = useGlobalState(state => state.standings)
   const { isDarkMode } = useTheme() 
-  const { getDisplayName } = useTeamDisplay()
+  const { getDisplayName, getTeamLogo } = useTeamDisplay()
   const groups = standingsData?.value?.data[0]?.groups || []
 
   if (status === "loading") {
@@ -107,88 +96,92 @@ export function StandingsTable() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {group.standings.map((standing: any) => (
-                    <TableRow 
-                      key={standing.competitor.id}
-                      className={cn(
-                        "transition-colors",
-                        isDarkMode && "hover:bg-[#45CAFF]/10 border-[#45CAFF]/30"
-                      )}
-                    >
-                      <TableCell className={cn(
-                        "text-center font-medium text-xs sm:text-sm px-1 sm:px-4",
-                        isDarkMode && "text-[#D3ECFF]"
-                      )}>
-                        {standing.rank}
-                      </TableCell>
-                      <TableCell className={cn(
-                        "text-xs sm:text-sm px-1 sm:px-4",
-                        isDarkMode && "text-[#D3ECFF]"
-                      )}>
-                        <div className="flex items-center gap-1 sm:gap-2 min-w-0">
-                          <div className={cn(
-                            "relative h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0 rounded-full flex items-center justify-center",
-                            isDarkMode ? "bg-[#45CAFF]/10" : "bg-muted/30"
-                          )}>
-                            {findTeamLogo(standing.competitor.abbreviation) ? (
-                              <Image
-                                src={findTeamLogo(standing.competitor.abbreviation) || ''}
-                                alt={standing.competitor.abbreviation}
-                                fill
-                                className="object-contain"
-                                sizes="24px"
-                              />
-                            ) : (
-                              <span className={cn(
-                                "text-xs font-medium",
+                  {group.standings.map((standing: any) => {
+                    const teamLogo = getTeamLogo(standing.competitor.name) || getTeamLogo(standing.competitor.abbreviation)
+                    
+                    return (
+                      <TableRow 
+                        key={standing.competitor.id}
+                        className={cn(
+                          "transition-colors",
+                          isDarkMode && "hover:bg-[#45CAFF]/10 border-[#45CAFF]/30"
+                        )}
+                      >
+                        <TableCell className={cn(
+                          "text-center font-medium text-xs sm:text-sm px-1 sm:px-4",
+                          isDarkMode && "text-[#D3ECFF]"
+                        )}>
+                          {standing.rank}
+                        </TableCell>
+                        <TableCell className={cn(
+                          "text-xs sm:text-sm px-1 sm:px-4",
+                          isDarkMode && "text-[#D3ECFF]"
+                        )}>
+                          <div className="flex items-center gap-1 sm:gap-2 min-w-0">
+                            <div className={cn(
+                              "relative h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0 rounded-full flex items-center justify-center",
+                              isDarkMode ? "bg-[#45CAFF]/10" : "bg-muted/30"
+                            )}>
+                              {teamLogo ? (
+                                <Image
+                                  src={teamLogo}
+                                  alt={standing.competitor.name}
+                                  fill
+                                  className="object-contain"
+                                  sizes="24px"
+                                />
+                              ) : (
+                                <span className={cn(
+                                  "text-xs font-medium",
+                                  isDarkMode && "text-[#D3ECFF]"
+                                )}>
+                                  {standing.competitor.abbreviation}
+                                </span>
+                              )}
+                            </div>
+                            <span 
+                              title={standing.competitor.name} 
+                              className={cn(
+                                "truncate",
                                 isDarkMode && "text-[#D3ECFF]"
-                              )}>
-                                {standing.competitor.abbreviation}
-                              </span>
-                            )}
+                              )}
+                            >
+                              {getDisplayName(standing.competitor.name, {
+                                preferAbbreviation: true,
+                                fallbackToOriginal: true
+                              })}
+                            </span>
                           </div>
-                          <span 
-                            title={standing.competitor.name} 
-                            className={cn(
-                              "truncate",
-                              isDarkMode && "text-[#D3ECFF]"
-                            )}
-                          >
-                            {getDisplayName(standing.competitor.name, {
-                              preferAbbreviation: true,
-                              fallbackToOriginal: true
-                            })}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell className={cn(
-                        "text-center text-xs sm:text-sm px-1 sm:px-4",
-                        isDarkMode && "text-[#D3ECFF]"
-                      )}>{standing.played}</TableCell>
-                      <TableCell className={cn(
-                        "text-center text-xs sm:text-sm px-1 sm:px-4",
-                        isDarkMode && "text-[#D3ECFF]"
-                      )}>{standing.win}</TableCell>
-                      <TableCell className={cn(
-                        "text-center text-xs sm:text-sm px-1 sm:px-4",
-                        isDarkMode && "text-[#D3ECFF]"
-                      )}>{standing.draw}</TableCell>
-                      <TableCell className={cn(
-                        "text-center text-xs sm:text-sm px-1 sm:px-4",
-                        isDarkMode && "text-[#D3ECFF]"
-                      )}>{standing.loss}</TableCell>
-                      <TableCell className={cn(
-                        "text-center text-xs sm:text-sm px-1 sm:px-4",
-                        isDarkMode && "text-[#D3ECFF]"
-                      )}>{standing.goals_diff}</TableCell>
-                      <TableCell className={cn(
-                        "text-center font-semibold text-xs sm:text-sm px-1 sm:px-4",
-                        isDarkMode ? "text-[#45CAFF]" : ""
-                      )}>
-                        {standing.points}
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                        </TableCell>
+                        <TableCell className={cn(
+                          "text-center text-xs sm:text-sm px-1 sm:px-4",
+                          isDarkMode && "text-[#D3ECFF]"
+                        )}>{standing.played}</TableCell>
+                        <TableCell className={cn(
+                          "text-center text-xs sm:text-sm px-1 sm:px-4",
+                          isDarkMode && "text-[#D3ECFF]"
+                        )}>{standing.win}</TableCell>
+                        <TableCell className={cn(
+                          "text-center text-xs sm:text-sm px-1 sm:px-4",
+                          isDarkMode && "text-[#D3ECFF]"
+                        )}>{standing.draw}</TableCell>
+                        <TableCell className={cn(
+                          "text-center text-xs sm:text-sm px-1 sm:px-4",
+                          isDarkMode && "text-[#D3ECFF]"
+                        )}>{standing.loss}</TableCell>
+                        <TableCell className={cn(
+                          "text-center text-xs sm:text-sm px-1 sm:px-4",
+                          isDarkMode && "text-[#D3ECFF]"
+                        )}>{standing.goals_diff}</TableCell>
+                        <TableCell className={cn(
+                          "text-center font-semibold text-xs sm:text-sm px-1 sm:px-4",
+                          isDarkMode ? "text-[#45CAFF]" : ""
+                        )}>
+                          {standing.points}
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })}
                 </TableBody>
               </Table>
             </div>

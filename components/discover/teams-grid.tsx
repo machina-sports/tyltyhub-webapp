@@ -83,15 +83,15 @@ const TeamCard = ({ teamName }: { teamName: string }) => {
       <div className="flex items-start gap-3 mb-3">
         {logo && (
           <div className="relative h-14 w-14 flex-shrink-0 mt-1">
-            <Image 
+                  <Image
               src={logo} 
               alt={teamName} 
-              fill 
-              className="object-contain"
+                    fill
+                    className="object-contain"
               sizes="56px"
-            />
-          </div>
-        )}
+                  />
+                  </div>
+                )}
         <div className="min-w-0 space-y-1">
           <h3 className={cn(
             "text-sm font-semibold overflow-wrap-normal word-break-normal",
@@ -107,9 +107,9 @@ const TeamCard = ({ teamName }: { teamName: string }) => {
               {translateLeague(league)}
             </p>
           )}
-        </div>
-      </div>
-      
+              </div>
+            </div>
+            
       <div className={cn(
         "mt-1 pt-3 border-t text-sm flex-1",
         isDarkMode && "border-[#45CAFF]/30"
@@ -126,8 +126,8 @@ const TeamCard = ({ teamName }: { teamName: string }) => {
             ) : null
           )}
         </div>
-      </div>
-    </div>
+              </div>
+            </div>
   );
 };
 

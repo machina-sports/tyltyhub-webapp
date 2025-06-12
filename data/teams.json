@@ -223,6 +223,12 @@
       "league": "Bundesliga",
       "logo": "/team-logos/red-bull-salzburg.png",
       "abbreviation": "RBS"
+    },
+    {
+      "id": "los-angeles-fc",
+      "name": "Los Angeles FC",
+      "league": "MLS",
+      "abbreviation": "LAFC"
     }
   ]
 }

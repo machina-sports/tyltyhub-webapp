@@ -34,7 +34,16 @@ export const useTeamDisplay = () => {
       "Botafogo FR RJ": "botafogo",
       "CR Flamengo RJ": "flamengo",
       "SE Palmeiras SP": "palmeiras",
-      "CA River Plate (ARG)": "river-plate"
+      "CA River Plate (ARG)": "river-plate",
+      
+      // Mapeamentos adicionais para times específicos
+      "Espérance de Tunis": "espérance-de-tunis",
+      "Esperance de Tunis": "espérance-de-tunis",
+      "Esperance Sportive de Tunis": "espérance-de-tunis",
+      "EST": "espérance-de-tunis",
+      "Los Angeles FC": "los-angeles-fc",
+      "Los Angeles": "los-angeles-fc",
+      "LAFC": "los-angeles-fc"
     };
 
     // Check if we have a direct mapping
@@ -71,6 +80,24 @@ export const useTeamDisplay = () => {
         t.name.toLowerCase().includes(teamName.toLowerCase()) ||
         teamName.toLowerCase().includes(t.name.toLowerCase())
       )
+    }
+    
+    // Special cases for teams with different naming conventions
+    if (!team) {
+      const specialCases: Record<string, string> = {
+        "espérance de tunis": "espérance-de-tunis",
+        "esperance de tunis": "espérance-de-tunis", 
+        "esperance sportive de tunis": "espérance-de-tunis",
+        "est": "espérance-de-tunis",
+        "los angeles fc": "los-angeles-fc",
+        "los angeles": "los-angeles-fc",
+        "lafc": "los-angeles-fc"
+      }
+      
+      const specialId = specialCases[teamName.toLowerCase()]
+      if (specialId) {
+        team = teamsData.teams.find(t => t.id === specialId)
+      }
     }
     
     if (team) {
