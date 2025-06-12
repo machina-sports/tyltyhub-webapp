@@ -56,16 +56,16 @@ export default function RootLayout({
           `,
           }}
         />
+        <script 
+          async
+          type="module" 
+          data-tallysight-defaults-widget-config-workspace="sporting-bet" 
+          src="https://storage.googleapis.com/tallysight-widgets/dist/tallysight.min.js"
+          data-tallysight-widget-loading="lazy"
+          data-tallysight-observer="true"
+        />
       </head>
       <body className={inter.className}>
-        {/* TallySight Widget */}
-        <Script 
-          data-tallysight-defaults-widget-config-workspace="sporting-bet" 
-          type="module" 
-          src="https://storage.googleapis.com/tallysight-widgets/dist/tallysight.min.js"  
-          data-tallysight-widget-loading="lazy"
-          strategy="lazyOnload"
-        />
         <Providers>
           <MainProvider>
             <DiscoveryProvider>

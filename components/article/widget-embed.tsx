@@ -41,15 +41,15 @@ export default function WidgetEmbed({ embedCode }: WidgetEmbedProps) {
         });
       }
 
-      const scripts = containerRef.current.querySelectorAll('script');
-      scripts.forEach((oldScript) => {
-        const newScript = document.createElement('script');
-        Array.from(oldScript.attributes).forEach((attr) => {
-          newScript.setAttribute(attr.name, attr.value);
-        });
-        newScript.appendChild(document.createTextNode(oldScript.innerHTML));
-        oldScript.parentNode?.replaceChild(newScript, oldScript);
-      });
+      // const scripts = containerRef.current.querySelectorAll('script');
+      // scripts.forEach((oldScript) => {
+      //   const newScript = document.createElement('script');
+      //   Array.from(oldScript.attributes).forEach((attr) => {
+      //     newScript.setAttribute(attr.name, attr.value);
+      //   });
+      //   newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+      //   oldScript.parentNode?.replaceChild(newScript, oldScript);
+      // });
 
       // Add click tracking to embedded content
       const addClickTracking = () => {
