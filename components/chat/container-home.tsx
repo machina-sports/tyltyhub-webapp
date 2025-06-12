@@ -221,14 +221,54 @@ const ContainerHome = ({ query }: { query: string }) => {
   const firstHalf = topQuestions?.slice(0, Math.ceil(topQuestions.length / 2)) || []
   const secondHalf = topQuestions?.slice(Math.ceil(topQuestions.length / 2)) || []
 
+  // Prevent scroll on mobile only for home page
+  useEffect(() => {
+    const isMobile = window.innerWidth <= 768
+    if (isMobile) {
+      // Store original body styles
+      const originalBodyStyle = {
+        overflow: document.body.style.overflow,
+        position: document.body.style.position,
+        height: document.body.style.height,
+        width: document.body.style.width
+      }
+
+      // Apply mobile-specific styles
+      document.body.style.overflow = 'hidden'
+      document.body.style.position = 'fixed'
+      document.body.style.height = '100vh'
+      document.body.style.width = '100%'
+
+      // Cleanup function
+      return () => {
+        document.body.style.overflow = originalBodyStyle.overflow
+        document.body.style.position = originalBodyStyle.position
+        document.body.style.height = originalBodyStyle.height
+        document.body.style.width = originalBodyStyle.width
+      }
+    }
+  }, [])
+
   return (
-    <div className={cn(
-      "flex flex-col h-screen pt-12 md:pt-0",
-      isDarkMode ? "bg-[#061F3F]" : "bg-background"
-    )}>
-      <div className="flex-1 overflow-auto hide-scrollbar momentum-scroll pb-32 pt-4 md:pb-24">
+    <div 
+      className={cn(
+        "flex flex-col h-[100vh] md:min-h-screen",
+        isDarkMode ? "bg-[#061F3F]" : "bg-background"
+      )}
+      style={{
+        overscrollBehavior: 'none',
+        WebkitOverflowScrolling: 'touch'
+      }}
+    >
+      <div 
+        className="flex-1 overflow-y-auto overflow-x-hidden hide-scrollbar momentum-scroll pb-32 pt-4 md:pt-4 md:pb-24"
+        style={{
+          overscrollBehavior: 'contain',
+          WebkitOverflowScrolling: 'touch'
+        }}
+      >
         <div className="flex flex-col items-center p-4">
-          <img className="w-full mb-10 max-w-[980px]" src="/kv-txt-op1_980x250px_bot_.gif" alt="logo" />
+          <img className="w-full mb-0 max-w-[980px] mt-8 md:mt-0" src="/kv-txt-op1_980x250px_bot_.gif" alt="logo" />
           <h1 className={cn(
             "text-center mb-4 sm:mb-6 flex items-center gap-3 justify-center pt-10 pb-6 sm:pt-14 sm:pb-10",
             isDarkMode && "text-[#ffffff]"
