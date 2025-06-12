@@ -366,13 +366,6 @@ const TeamCard = ({ teamName }: { teamName: string }) => {
         isDarkMode && "border-[#45CAFF]/30"
       )}>
         <div className={cn(
-          "flex items-center gap-1.5 mb-2", 
-          isDarkMode ? "text-[#45CAFF]" : "text-blue-600"
-        )}>
-          <Sparkles className="h-3.5 w-3.5" />
-          <span className="text-xs font-medium">Análises da SportingBOT</span>
-        </div>
-        <div className={cn(
           "text-xs leading-relaxed space-y-1.5 overflow-auto max-h-[12rem]",
           isDarkMode ? "text-[#D3ECFF]" : "text-muted-foreground"
         )}>

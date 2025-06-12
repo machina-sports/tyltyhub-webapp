@@ -222,7 +222,6 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
       )}>
         <Link
           href={articleUrl}
-          target="_blank"
           prefetch={false}
         >
           <CardContent className="p-0">
