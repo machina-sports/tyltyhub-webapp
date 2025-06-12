@@ -15,6 +15,7 @@ import fifaCwcData from "@/data/fifa-cwc-2025.json"
 import { cn } from "@/lib/utils"
 import { useTheme } from "@/components/theme-provider"
 import { useAppDispatch } from "@/store/dispatch"
+import { useTeamDisplay } from "@/hooks/use-team-display"
 
 const TEAMS = [
   { id: "all-teams", name: "Todos os Times", logo: null },
@@ -54,6 +55,7 @@ export function TeamFilter({ value, onChange }: TeamFilterProps) {
   const [isMobile, setIsMobile] = useState(false)
   const { isDarkMode } = useTheme();
   const dispatch = useAppDispatch();
+  const { getDisplayName, shouldUseAbbreviation } = useTeamDisplay();
 
   // Check if screen is mobile size
   useEffect(() => {
@@ -115,7 +117,12 @@ export function TeamFilter({ value, onChange }: TeamFilterProps) {
                     />
                   </div>
                 )}
-                <span className="truncate">{selectedTeam.name}</span>
+                <span className="truncate">
+                  {value !== 'all-teams' ? getDisplayName(selectedTeam.name, { 
+                    preferAbbreviation: shouldUseAbbreviation(selectedTeam.name, undefined, isMobile),
+                    maxLength: isMobile ? 10 : 20
+                  }) : selectedTeam.name}
+                </span>
               </div>
             </SelectValue>
             <div className="absolute right-3 top-0 bottom-0 flex items-center pointer-events-none">
