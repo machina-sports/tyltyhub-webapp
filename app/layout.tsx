@@ -64,7 +64,6 @@ export default function RootLayout({
           type="module" 
           src="https://storage.googleapis.com/tallysight-widgets/dist/tallysight.min.js"  
           data-tallysight-widget-loading="lazy"
-          strategy="lazyOnload"
         />
         <Providers>
           <MainProvider>
