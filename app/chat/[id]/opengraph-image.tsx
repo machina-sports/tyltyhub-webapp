@@ -60,7 +60,7 @@ export default async function Image({ params }: { params: { id: string } }) {
               maxWidth: '60%',
             }}
           >
-            Chat Compartilhado do SportingBet CWC
+            SportingBOT - A Inteligência Artificial da SportingBet
           </div>
         </div>
         

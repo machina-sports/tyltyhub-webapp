@@ -11,7 +11,7 @@ interface ChatMetadataProps {
 
 export function ChatMetadata({ threadId }: ChatMetadataProps) {
   const state = useGlobalState((state: any) => state.threads)
-  const [title, setTitle] = useState('SportingBet CWC Chat')
+  const [title, setTitle] = useState('SportingBOT Chat')
   const [description, setDescription] = useState('Veja esta conversa no SportingBet CWC')
   
   useEffect(() => {

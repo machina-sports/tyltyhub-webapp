@@ -125,17 +125,16 @@ const buildSearchFilters = (
   };
   
   if (selectedTeam !== "all-teams") {
-    const teamName = teams.find((t: Team) => t.id === selectedTeam)?.name;
-    if (teamName) {
-      return { ...baseFilters, team: teamName };
+    const team = teams.find((t: Team) => t.id === selectedTeam);
+    if (team) {
+      baseFilters["$and"] = [
+        { "value.title": { $regex: team.name, $options: "i" } }
+      ];
     }
   }
 
   if (searchQuery) {
-    return {
-      ...baseFilters,
-      "value.title": { $regex: searchQuery, $options: "i" }
-    };
+    baseFilters["value.title"] = { $regex: searchQuery, $options: "i" };
   }
 
   return baseFilters;
@@ -216,7 +215,14 @@ export default function DiscoverPage() {
 
   const handleTeamChange = useCallback((value: string) => {
     setSelectedTeam(value);
-  }, []);
+    setIsSearching(true);
+    const filters = buildSearchFilters(value, teams, searchQuery);
+    dispatch(searchArticles({ 
+      filters,
+      pagination: { page: 1, page_size: pageSize },
+      sorters: ["_id", -1]
+    })).finally(() => setIsSearching(false));
+  }, [teams, searchQuery, dispatch, pageSize]);
 
   const handleTabChange = useCallback((value: string) => {
     setActiveTab(value);

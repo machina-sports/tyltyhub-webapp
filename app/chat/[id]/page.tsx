@@ -11,17 +11,17 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
   // For now, we'll use a default title and description
   
   return {
-    title: 'Chat Compartilhado | SportingBet CWC',
-    description: 'Veja esta interessante conversa no SportingBet CWC',
+    title: 'SportingBOT | Chat',
+    description: 'A Inteligência Artificial da SportingBet',
     openGraph: {
-      title: 'Chat Compartilhado | SportingBet CWC',
-      description: 'Veja esta interessante conversa no SportingBet CWC',
+      title: 'SportingBOT | Chat',
+      description: 'A Inteligência Artificial da SportingBet',
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Chat Compartilhado | SportingBet CWC',
-      description: 'Veja esta interessante conversa no SportingBet CWC',
+      title: 'SportingBOT | Chat',
+      description: 'A Inteligência Artificial da SportingBet',
     }
   }
 }

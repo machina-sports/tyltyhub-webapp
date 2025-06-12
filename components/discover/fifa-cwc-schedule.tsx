@@ -12,6 +12,7 @@ import { ChevronDown, Calendar, Clock, MapPin, Users, Sparkles } from "lucide-re
 import { useGlobalState } from "@/store/useState"
 import { cn } from "@/lib/utils"
 import { useTheme } from "@/components/theme-provider"
+import { useTeamDisplay } from "@/hooks/use-team-display"
 
 type Fixture = {
   date: string;
@@ -227,6 +228,13 @@ interface TeamMatchProps {
 // Component for team in match
 const TeamMatch = ({ teamName, logo, isSecond }: TeamMatchProps) => {
   const { isDarkMode } = useTheme();
+  const { getDisplayName, shouldUseAbbreviation } = useTeamDisplay();
+  
+  // Use abbreviation on smaller screens or for long team names
+  const displayName = getDisplayName(teamName, {
+    preferAbbreviation: shouldUseAbbreviation(teamName, undefined, window?.innerWidth < 768),
+    maxLength: 15
+  });
   
   return (
     <div className={`flex items-center gap-2 ${isSecond ? 'justify-start' : 'justify-end'}`}>
@@ -235,7 +243,7 @@ const TeamMatch = ({ teamName, logo, isSecond }: TeamMatchProps) => {
           "font-medium text-sm overflow-wrap-normal word-break-normal",
           isDarkMode ? "text-[#45CAFF]" : ""
         )}>
-          {teamName}
+          {displayName}
         </span>
       )}
       {logo && (
@@ -254,7 +262,7 @@ const TeamMatch = ({ teamName, logo, isSecond }: TeamMatchProps) => {
           "font-medium text-sm overflow-wrap-normal word-break-normal",
           isDarkMode ? "text-[#45CAFF]" : ""
         )}>
-          {teamName}
+          {displayName}
         </span>
       )}
     </div>
@@ -264,8 +272,9 @@ const TeamMatch = ({ teamName, logo, isSecond }: TeamMatchProps) => {
 // Match Card Component for both mobile and desktop
 const MatchCard = ({ fixture }: { fixture: Fixture }) => {
   const { isDarkMode } = useTheme();
+  const { getTeamLogo } = useTeamDisplay();
   const teams = fixture.match.split(" x ").map(t => t.trim());
-  const teamLogos = teams.map(t => findTeamLogo(t));
+  const teamLogos = teams.map(t => getTeamLogo(t));
   
   return (
     <div className={cn(
@@ -312,8 +321,9 @@ const MatchCard = ({ fixture }: { fixture: Fixture }) => {
 // Team Card Component with AI insights
 const TeamCard = ({ teamName }: { teamName: string }) => {
   const { isDarkMode } = useTheme();
-  const logo = findTeamLogo(teamName);
-  const league = findTeamLeague(teamName);
+  const { getTeamLogo, getTeamLeague } = useTeamDisplay();
+  const logo = getTeamLogo(teamName);
+  const league = getTeamLeague(teamName);
   const insight = generateTeamInsight(teamName);
   
   return (
@@ -355,13 +365,6 @@ const TeamCard = ({ teamName }: { teamName: string }) => {
         "mt-1 pt-3 border-t text-sm flex-1",
         isDarkMode && "border-[#45CAFF]/30"
       )}>
-        <div className={cn(
-          "flex items-center gap-1.5 mb-2", 
-          isDarkMode ? "text-[#45CAFF]" : "text-blue-600"
-        )}>
-          <Sparkles className="h-3.5 w-3.5" />
-          <span className="text-xs font-medium">Análise IA</span>
-        </div>
         <div className={cn(
           "text-xs leading-relaxed space-y-1.5 overflow-auto max-h-[12rem]",
           isDarkMode ? "text-[#D3ECFF]" : "text-muted-foreground"
@@ -412,6 +415,7 @@ const DateSection = ({ date, fixtures }: { date: string; fixtures: Fixture[] }) 
 export function FifaCwcSchedule() {
   const { data: standingsData, status } = useGlobalState(state => state.standings)
   const { isDarkMode } = useTheme() 
+  const { getDisplayName, getTeamLogo, shouldUseAbbreviation } = useTeamDisplay()
   const groups = standingsData?.value?.data[0]?.groups || []
 
   // Combine and sort all fixtures by date and time
@@ -628,7 +632,10 @@ export function FifaCwcSchedule() {
                                       isDarkMode && "text-[#D3ECFF]"
                                     )}
                                   >
-                                    {standing.competitor.abbreviation || standing.competitor.name}
+                                    {getDisplayName(standing.competitor.name, {
+                                      preferAbbreviation: true,
+                                      fallbackToOriginal: true
+                                    })}
                                   </span>
                                 </div>
                               </TableCell>

@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import Script from "next/script";
 import { Sidebar } from "@/components/sidebar";
 import { Toaster } from "@/components/ui/toaster";
 import { Providers } from "@/providers/provider";
@@ -57,6 +58,14 @@ export default function RootLayout({
         />
       </head>
       <body className={inter.className}>
+        {/* TallySight Widget */}
+        <Script 
+          data-tallysight-defaults-widget-config-workspace="sporting-bet" 
+          type="module" 
+          src="https://storage.googleapis.com/tallysight-widgets/dist/tallysight.min.js"  
+          data-tallysight-widget-loading="lazy"
+          strategy="lazyOnload"
+        />
         <Providers>
           <MainProvider>
             <DiscoveryProvider>

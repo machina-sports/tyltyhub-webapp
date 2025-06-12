@@ -259,11 +259,14 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
                   })
                   : "Data não disponível"}
               </span>
+              <span className="mx-2">•</span>
               <Clock className={cn(
-                "h-4 w-4",
+                "h-4 w-4 ml-2",
                 isDarkMode && "text-[#45CAFF]"
               )} />
               <span>{articleData.readTime}</span>
+              <span className="ml-2">Criado por SportingBOT</span>
+
             </div>
           </div>
           <div className="mt-2 sm:mt-0">
