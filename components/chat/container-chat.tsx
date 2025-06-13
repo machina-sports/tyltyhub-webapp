@@ -27,6 +27,7 @@ import { useTheme } from "@/components/theme-provider"
 import { useGlobalState } from "@/store/useState"
 
 import { TableSkeleton } from "../skeleton"
+import { Loading } from "../ui/loading"
 import { cn } from "@/lib/utils"
 import { trackNewMessage } from "@/lib/analytics"
 
@@ -271,7 +272,9 @@ export function ContainerChat() {
         <div className="max-w-3xl mx-auto space-y-6 pb-[160px] md:pb-[120px]">
           <div className="space-y-3 sm:space-y-6 pt-4">
             {isLoading ? (
-              <TableSkeleton isLoading={true} length={5} />
+              <div className="flex justify-center items-center py-8">
+                <Loading width={60} height={60} />
+              </div>
             ) : (
               <>
                 {currentMessages.map((message: any, index: number) => (
