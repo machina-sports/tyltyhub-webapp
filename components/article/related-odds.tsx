@@ -21,7 +21,7 @@ interface TeamInfo {
   id: string
   name: string
   abbreviation: string
-  logo: string
+  logo?: string
 }
 
 // Helper function to get team info by abbreviation
