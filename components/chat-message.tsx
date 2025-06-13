@@ -13,6 +13,9 @@ import { cn } from "@/lib/utils"
 import { useTheme } from '@/components/theme-provider'
 
 import { RelatedOdds } from "@/components/article/related-odds";
+import { StandingsTable } from "@/components/discover/standings-table";
+import { MatchesCalendar } from "@/components/discover/matches-calendar";
+import { TeamsGrid } from "@/components/discover/teams-grid";
 
 interface ChatMessageProps {
   role: "user" | "assistant"
@@ -137,6 +140,48 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
                 teamAwayName={teamAwayName}
                 eventDateTime={eventDateTime}
               />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TESTE PROVISÓRIO - Componentes FIFA CWC */}
+      {role === "assistant" && (
+        <div className="mt-6 pl-14">
+          <div className="space-y-8">
+            <div>
+              <h3 className={cn(
+                "text-lg font-semibold mb-4",
+                isDarkMode ? "text-[#45CAFF]" : "text-foreground"
+              )}>
+                📊 Classificação dos Grupos
+              </h3>
+              <StandingsTable />
+            </div>
+            
+            <div>
+              <h3 className={cn(
+                "text-lg font-semibold mb-4",
+                isDarkMode ? "text-[#45CAFF]" : "text-foreground"
+              )}>
+                📅 Calendário de Partidas
+              </h3>
+              <MatchesCalendar 
+                useAbbreviations={true} 
+                compact={true} 
+                maxMatches={6}
+                maxWidth="500px"
+              />
+            </div>
+            
+            <div>
+              <h3 className={cn(
+                "text-lg font-semibold mb-4",
+                isDarkMode ? "text-[#45CAFF]" : "text-foreground"
+              )}>
+                ⚽ Times Participantes
+              </h3>
+              <TeamsGrid />
             </div>
           </div>
         </div>
