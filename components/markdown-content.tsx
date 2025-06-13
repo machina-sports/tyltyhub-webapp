@@ -20,7 +20,7 @@ export function MarkdownChat({ content, className }: MarkdownContentProps) {
             p:  { props: { className: 'text-xs ml-4 mt-4 mb-0' } },
             h3: { props: { className: 'text-base font-bold mt-6 mb-2 ml-4' } },
             strong: { props: { className: 'font-bold' } },
-            code: { props: { className: 'text-xs bg-muted text-muted-foreground font-mono px-1 py-0.5 rounded-sm' } },
+            code: { props: { className: 'font-mono rounded-md bg-zinc-200/50 px-1.5 py-0.5 text-sm text-zinc-800 dark:bg-zinc-800/50 dark:text-zinc-200' } },
             blockquote: { props: { className: 'pl-4 italic border-l-4 my-4 ml-4' } },
             table: { props: { className: 'my-4 text-sm w-full border-collapse border' } },
             thead: { props: { className: 'bg-muted/50' } },
