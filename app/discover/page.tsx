@@ -19,7 +19,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 interface Team {
   id: string;
   name: string;
-  logo: string;
+  logo?: string;
   league: string;
 }
 
