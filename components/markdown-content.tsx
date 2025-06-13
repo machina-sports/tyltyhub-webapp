@@ -1,12 +1,22 @@
 "use client";
 
 import Markdown from "markdown-to-jsx";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { AnchorHTMLAttributes } from "react";
 
 interface MarkdownContentProps {
   content: string;
   className?: string;
 }
+
+const MarkdownLink = (props: AnchorHTMLAttributes<HTMLAnchorElement>) => {
+  const href = props.href || "";
+  if (href.startsWith("/") || href.startsWith("#")) {
+    return <Link href={href} {...props} />;
+  }
+  return <a href={href} target="_blank" rel="noopener noreferrer" {...props} />;
+};
 
 export function MarkdownChat({ content, className }: MarkdownContentProps) {
   return (
@@ -14,6 +24,10 @@ export function MarkdownChat({ content, className }: MarkdownContentProps) {
       <Markdown
         options={{
           overrides: {
+            a: {
+              component: MarkdownLink,
+              props: { className: "text-blue-600 dark:text-blue-400 underline" },
+            },
             ul: { props: { className: 'list-disc ml-8 mt-4 mb-4' } },
             ol: { props: { className: 'list-decimal ml-8 mt-4 mb-8' } },
             li: { props: { className: 'mb-0' } },
@@ -42,6 +56,9 @@ export function MarkdownContent({ content, className }: MarkdownContentProps) {
       <Markdown
         options={{
           overrides: {
+            a: {
+              component: MarkdownLink,
+            },
             ul: { props: { className: 'list-disc ml-8 mt-4 mb-8' } },
             ol: { props: { className: 'list-decimal ml-8 mt-4 mb-8' } },
             li: { props: { className: 'mb-8 ' } },
