@@ -94,7 +94,7 @@ export function Sidebar() {
 
         <div className="px-8 py-2 flex-1 flex flex-col">
           {/* Fixed height logo container */}
-          <div className="h-[80px] min-h-[80px] flex items-center justify-center mb-8">
+          <div className="h-[80px] min-h-[80px] flex flex-col items-center justify-center mb-8">
             <div
               onClick={() => handleNavigation('/')}
               className="flex items-center justify-center pl-3 cursor-pointer ml-[-10px]"
@@ -122,6 +122,7 @@ export function Sidebar() {
                 </span>
               )}
             </div>
+            <p className="text-xs text-white/50 pt-3 ml-[-10px]">A Inteligência Artificial da Sportingbet</p>
           </div>
           {/* Navigation buttons with fixed position */}
           <div className="space-y-4 border-t border-white/10 pt-4">
