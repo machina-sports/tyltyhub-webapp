@@ -20,7 +20,7 @@ const MarkdownLink = (props: AnchorHTMLAttributes<HTMLAnchorElement>) => {
 
 export function MarkdownChat({ content, className }: MarkdownContentProps) {
   return (
-    <article className={cn("max-w-none break-words", className)}>
+    <article className={cn("prose prose-neutral dark:prose-invert max-w-none text-sm break-words", className)}>
       <Markdown
         options={{
           overrides: {
@@ -28,19 +28,19 @@ export function MarkdownChat({ content, className }: MarkdownContentProps) {
               component: MarkdownLink,
               props: { className: "text-blue-600 dark:text-blue-400 underline" },
             },
-            ul: { props: { className: 'list-disc ml-8 mt-4 mb-4' } },
-            ol: { props: { className: 'list-decimal ml-8 mt-4 mb-8' } },
-            li: { props: { className: 'mb-0' } },
-            p:  { props: { className: 'text-xs ml-4 mt-4 mb-0' } },
-            h3: { props: { className: 'text-base font-bold mt-6 mb-2 ml-4' } },
-            strong: { props: { className: 'font-bold' } },
-            code: { props: { className: 'font-mono rounded-md bg-zinc-200/50 px-1.5 py-0.5 text-sm text-zinc-800 dark:bg-zinc-800/50 dark:text-zinc-200' } },
-            blockquote: { props: { className: 'pl-4 italic border-l-4 my-4 ml-4' } },
-            table: { props: { className: 'my-4 text-sm w-full border-collapse border' } },
+            ul: { props: { className: "list-disc mt-2" } },
+            ol: { props: { className: "list-decimal mt-2" } },
+            li: { props: { className: "my-1" } },
+            p:  { props: { className: "my-2" } },
+            h3: { props: { className: "font-bold mt-4 mb-1" } },
+            strong: { props: { className: "font-bold" } },
+            code: { props: { className: 'not-prose font-semibold' } },
+            blockquote: { props: { className: 'pl-4 italic border-l-4 my-4' } },
+            table: { props: { className: 'my-4 text-sm w-full border-collapse' } },
             thead: { props: { className: 'bg-muted/50' } },
             tr: { props: { className: 'border-b' } },
-            th: { props: { className: 'border p-2 text-left font-semibold' } },
-            td: { props: { className: 'border p-2 text-left' } },
+            th: { props: { className: 'p-3 text-left font-semibold' } },
+            td: { props: { className: 'p-3 text-left' } },
           },
         }}
       >
