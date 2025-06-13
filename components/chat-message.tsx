@@ -120,11 +120,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
               <img src="/soccer.gif" alt="Pensando..." className="w-6 h-6" />
             </div>
           ) : (
-            currentMessage.split('\n').map((line: any, i: number) => (
-              <React.Fragment key={i}>
-                <MarkdownChat content={line} />
-              </React.Fragment>
-            ))
+            <MarkdownChat content={currentMessage} />
           )}
         </div>
       </ChatBubble>

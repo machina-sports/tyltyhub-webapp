@@ -10,14 +10,23 @@ interface MarkdownContentProps {
 
 export function MarkdownChat({ content, className }: MarkdownContentProps) {
   return (
-    <article className={cn("max-w-none break-words", className)} style={{ wordBreak: 'break-word' }}>
+    <article className={cn("max-w-none break-words", className)}>
       <Markdown
         options={{
           overrides: {
-            ul: { props: { className: 'list-disc ml-8 mt-4 mb-4 break-words', style: { wordBreak: 'break-word' } } },
-            ol: { props: { className: 'list-decimal ml-8 mt-4 mb-8 break-words', style: { wordBreak: 'break-word' } } },
-            li: { props: { className: 'mb-0 break-words', style: { wordBreak: 'break-word' } } },
-            p:  { props: { className: 'text-xs ml-4 mt-4 mb-0 break-words', style: { wordBreak: 'break-word' } } }
+            ul: { props: { className: 'list-disc ml-8 mt-4 mb-4' } },
+            ol: { props: { className: 'list-decimal ml-8 mt-4 mb-8' } },
+            li: { props: { className: 'mb-0' } },
+            p:  { props: { className: 'text-xs ml-4 mt-4 mb-0' } },
+            h3: { props: { className: 'text-base font-bold mt-6 mb-2 ml-4' } },
+            strong: { props: { className: 'font-bold' } },
+            code: { props: { className: 'text-xs bg-muted text-muted-foreground font-mono px-1 py-0.5 rounded-sm' } },
+            blockquote: { props: { className: 'pl-4 italic border-l-4 my-4 ml-4' } },
+            table: { props: { className: 'my-4 text-sm w-full border-collapse border' } },
+            thead: { props: { className: 'bg-muted/50' } },
+            tr: { props: { className: 'border-b' } },
+            th: { props: { className: 'border p-2 text-left font-semibold' } },
+            td: { props: { className: 'border p-2 text-left' } },
           },
         }}
       >
