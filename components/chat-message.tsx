@@ -14,7 +14,7 @@ import { useTheme } from '@/components/theme-provider'
 
 import { RelatedOdds } from "@/components/article/related-odds";
 import { StandingsTable } from "@/components/discover/standings-table";
-import { MatchesCalendar } from "@/components/discover/matches-calendar";
+import { MatchCard, MatchesCalendar } from "@/components/discover/matches-calendar";
 import { TeamsGrid } from "@/components/discover/teams-grid";
 
 interface ChatMessageProps {
@@ -46,7 +46,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
   const widgetMatchEmbed = content?.["widget-url"]
 
   const relatedArticle = content?.["related-article"]
-  
+
   const marketSelected = content?.["market-selected"]
 
   const teamAwayAbbreviation = content?.["team_away_abbreviation"]
@@ -54,7 +54,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
   const teamHomeName = content?.["team_home_name"]
   const teamAwayName = content?.["team_away_name"]
   const eventDateTime = content?.["event_datetime"]
-  
+
 
   const promotion = content?.["promotion-image"] || content?.["promotion-link"] ? {
     image: content?.["promotion-image"],
@@ -97,20 +97,35 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
   // Helper function to get promotion image URL
   const getPromotionImageUrl = (promotionImage: any): string => {
     if (!promotionImage) return '';
-    
+
     // Return the absolute URL directly
     if (typeof promotionImage === 'string') {
       return promotionImage;
     }
-    
+
     return '';
   };
 
+  const haveSportsContext = content?.["sport_event"]
+
   const parsedWidgetContent = useMemo(() => {
     if (!widgetMatchEmbed) return null
-    return typeof widgetMatchEmbed === 'string'
-      ? JSON.parse(widgetMatchEmbed)?.[0]?.embed || widgetMatchEmbed
-      : widgetMatchEmbed
+
+    try {
+      if (typeof widgetMatchEmbed === 'string') {
+        try {
+          const parsed = JSON.parse(widgetMatchEmbed)
+          return parsed?.[0]?.embed || widgetMatchEmbed
+        } catch (parseError) {
+          console.warn('Failed to parse widget content:', parseError)
+          return widgetMatchEmbed
+        }
+      }
+      return widgetMatchEmbed
+    } catch (error) {
+      console.error('Error processing widget content:', error)
+      return null
+    }
   }, [widgetMatchEmbed])
 
   return (
@@ -132,8 +147,8 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
         <div className="mt-4 pl-4 sm:pl-14">
           <div className="mt-2 space-y-2 text-sm text-muted-foreground">
             <div className="text-sm">
-              <RelatedOdds 
-                currentArticleId={marketSelected} 
+              <RelatedOdds
+                currentArticleId={marketSelected}
                 teamHomeAbbreviation={teamHomeAbbreviation}
                 teamAwayAbbreviation={teamAwayAbbreviation}
                 teamHomeName={teamHomeName}
@@ -145,8 +160,31 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
         </div>
       )}
 
+      {haveSportsContext && (
+        <div className="mt-4 pl-4 ml-2 sm:pl-14 max-w-[320px]">
+          <MatchCard
+            fixture={{
+              date: "",
+              ko: haveSportsContext?.["start_time"] ? new Date(haveSportsContext["start_time"]).toLocaleString('pt-BR', {
+                hour: '2-digit',
+                minute: '2-digit',
+                day: '2-digit',
+                month: '2-digit',
+                weekday: 'short'
+              }).replace(',', '').replace('.', '') : "",
+              match: haveSportsContext?.["competitors"][0]?.["name"] + " x " + haveSportsContext?.["competitors"][1]?.["name"],
+              venue: haveSportsContext?.["venue"]?.["name"],
+              groupName: `Grupo ${haveSportsContext?.["sport_event_context"]?.["groups"]?.[0]?.["group_name"] || ""}`
+            }}
+            useAbbreviation={true}
+            compact={true}
+          />
+        </div>
+      )}
+
+
       {/* TESTE PROVISÓRIO - Componentes FIFA CWC */}
-      {role === "assistant" && (
+      {/* {role === "assistant" && (
         <div className="mt-6 pl-14">
           <div className="space-y-8">
             <div>
@@ -186,7 +224,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
           </div>
         </div>
       )}
-      
+       */}
       {relatedArticle && relatedArticle.slug && (
         <div className="mt-0 pl-4 sm:pl-14">
           <div className="mt-2 ml-2 sm:ml-4">
@@ -194,8 +232,8 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
               href={`/discover/${relatedArticle.slug}`}
               className={cn(
                 "flex items-center gap-3 p-3 rounded-lg transition-colors max-w-[420px] border overflow-hidden",
-                isDarkMode 
-                  ? "border-[#45CAFF]/30 hover:border-[#45CAFF]/50 hover:bg-[#45CAFF]/10" 
+                isDarkMode
+                  ? "border-[#45CAFF]/30 hover:border-[#45CAFF]/50 hover:bg-[#45CAFF]/10"
                   : "border-border hover:border-primary/30 hover:bg-muted/50"
               )}
             >
@@ -236,13 +274,13 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
               rel="noopener noreferrer"
               className={cn(
                 "block rounded-lg transition-colors max-w-[420px] border overflow-hidden",
-                isDarkMode 
-                  ? "border-[#45CAFF]/30 hover:border-[#45CAFF]/50 hover:bg-[#45CAFF]/10" 
+                isDarkMode
+                  ? "border-[#45CAFF]/30 hover:border-[#45CAFF]/50 hover:bg-[#45CAFF]/10"
                   : "border-border hover:border-primary/30 hover:bg-muted/50"
               )}
             >
               {getPromotionImageUrl(promotion.image) ? (
-                <img 
+                <img
                   src={getPromotionImageUrl(promotion.image)}
                   alt="Promoção"
                   className="w-full h-auto object-cover"

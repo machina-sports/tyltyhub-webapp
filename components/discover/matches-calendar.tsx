@@ -152,7 +152,7 @@ const TeamMatch = ({ teamName, logo, isSecond, useAbbreviation = false, compact 
 };
 
 // Match Card Component for both mobile and desktop
-const MatchCard = ({ fixture, useAbbreviation = false, compact = false }: { 
+export const MatchCard = ({ fixture, useAbbreviation = false, compact = false }: { 
   fixture: Fixture; 
   useAbbreviation?: boolean; 
   compact?: boolean; 
