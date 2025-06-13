@@ -206,9 +206,34 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
   
   const mainImageUrl = `${mainImagePrefix}-${articleData?.value?.["main_image_name"]}.png`
 
+  const hasTextImage = articleData?.metadata?.["content-group"] == "TEAM_ARTICLE"
+
+  // Only construct URLs for sections that have images
+  const section1ImageUrl = hasTextImage && articleData?.value?.["section_1_image"] 
+    ? `${mainImagePrefix}-${articleData.value["section_1_image"]}.png`
+    : undefined;
+  
+  const section2ImageUrl = hasTextImage && articleData?.value?.["section_2_image"]
+    ? `${mainImagePrefix}-${articleData.value["section_2_image"]}.png`
+    : undefined;
+  
+  const section3ImageUrl = hasTextImage && articleData?.value?.["section_3_image"]
+    ? `${mainImagePrefix}-${articleData.value["section_3_image"]}.png`
+    : undefined;
+  
+  const section4ImageUrl = hasTextImage && articleData?.value?.["section_4_image"]
+    ? `${mainImagePrefix}-${articleData.value["section_4_image"]}.png`
+    : undefined;
+  
+  const section5ImageUrl = hasTextImage && articleData?.value?.["section_5_image"]
+    ? `${mainImagePrefix}-${articleData.value["section_5_image"]}.png`
+    : undefined;
+
   // Only using main image as per requirement to reduce visual clutter
 
-  const RenderImageComponent = ({ imageUrl, alt }: { imageUrl: string, alt: string }) => {
+  const RenderImageComponent = ({ imageUrl, alt }: { imageUrl: string | undefined, alt: string }) => {
+    if (!imageUrl) return null;
+    
     return (
       <div className="relative w-full overflow-hidden rounded-lg aspect-[1560/1024]">
         <Image
@@ -365,6 +390,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           )}>
             {articleData.section_1_content}
           </p>
+          <RenderImageComponent imageUrl={section1ImageUrl} alt={articleData?.["section_1_title"]} />
           
           <h2 className={cn(
             "text-2xl font-bold mt-12 mb-8",
@@ -378,6 +404,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           )}>
             {articleData.section_2_content}
           </p>
+          <RenderImageComponent imageUrl={section2ImageUrl} alt={articleData?.["section_2_title"]} />
 
           <h2 className={cn(
             "text-2xl font-bold mt-12 mb-8",
@@ -391,6 +418,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           )}>
             {articleData.section_3_content}
           </p>
+          <RenderImageComponent imageUrl={section3ImageUrl} alt={articleData?.["section_3_title"]} />
 
           <h2 className={cn(
             "text-2xl font-bold mt-12 mb-8",
@@ -404,6 +432,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           )}>
             {articleData.section_4_content}
           </p>
+          <RenderImageComponent imageUrl={section4ImageUrl} alt={articleData?.["section_4_title"]} />
 
           <h2 className={cn(
             "text-2xl font-bold mt-12 mb-8",
@@ -417,6 +446,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           )}>
             {articleData.section_5_content}
           </p>
+          <RenderImageComponent imageUrl={section5ImageUrl} alt={articleData?.["section_5_title"]} />
         </div>
       </div>
 
