@@ -11,6 +11,7 @@ import { MobileHeader } from './mobile-header'
 import { useChatState } from '@/hooks/use-chat-state'
 import { ThemeToggle } from './theme-toggle'
 import { useTheme } from './theme-provider'
+import AnimatedShinyText from './magicui/animated-shiny-text'
 
 interface Route {
   label: string
@@ -122,7 +123,7 @@ export function Sidebar() {
                 </span>
               )}
             </div>
-            <p className="text-xs text-white/50 pt-3 ml-[-10px]">A Inteligência Artificial da Sportingbet</p>
+            <AnimatedShinyText className="text-xs text-white/50 pt-3">A Inteligência Artificial da Sportingbet</AnimatedShinyText>
           </div>
           {/* Navigation buttons with fixed position */}
           <div className="space-y-4 border-t border-white/10 pt-4">
