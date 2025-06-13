@@ -54,7 +54,7 @@ export default function ContainerView({ threadId }: { threadId: string }) {
 
   return (
     <div className={cn(
-      "min-h-screen w-full",
+      "min-h-screen w-full overflow-x-hidden",
       isDarkMode ? "bg-[#061F3F]" : "bg-background"
     )}>
       <div className={cn(

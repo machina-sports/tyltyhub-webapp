@@ -25,7 +25,7 @@ import {
   doFetchArticle,
   doFetchRelatedArticles,
 } from "@/providers/article/actions";
-import { Clock, Eye } from "lucide-react";
+import { Clock, Calendar, User } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useTheme } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
@@ -237,47 +237,78 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
         )}>
           {articleData.title}
         </h1>
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <div>
+        {/* Header Meta & Sharing */}
+        <div className="flex flex-row items-center justify-between gap-3 sm:gap-6 mb-6">
+          {/* Meta information */}
+          <div className="flex flex-col justify-center flex-1">
             {articleData.subtitle && (
-              <p className={cn(
-                "text-lg mb-2",
-                isDarkMode ? "text-[#D3ECFF]/80" : "text-muted-foreground"
-              )}>
+              <p
+                className={cn(
+                  "text-base sm:text-lg",
+                  isDarkMode ? "text-[#D3ECFF]/80" : "text-muted-foreground"
+                )}
+              >
                 {articleData.subtitle}
               </p>
             )}
-            <div className={cn(
-              "flex items-center gap-2 text-sm mb-2",
-              isDarkMode ? "text-[#D3ECFF]/60" : "text-muted-foreground"
-            )}>
-              <span className="flex items-center">
-                Publicado em {"\n"}
+
+            <div
+              className={cn(
+                "flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:text-sm mt-6",
+                isDarkMode ? "text-[#D3ECFF]/60" : "text-muted-foreground"
+              )}
+            >
+              {/* Date */}
+              <span className="flex items-center gap-1">
+                <Calendar
+                  className={cn(
+                    "h-3 w-3 sm:h-4 sm:w-4",
+                    isDarkMode && "text-[#45CAFF]"
+                  )}
+                />
                 {articleData.createdDate
                   ? format(new Date(articleData.createdDate), "dd/MM/yyyy", {
-                    locale: ptBR,
-                  })
-                  : "Data não disponível"}
+                      locale: ptBR,
+                    })
+                  : "--/--/----"}
               </span>
-              <span className="mx-2">•</span>
-              <Clock className={cn(
-                "h-4 w-4 ml-2",
-                isDarkMode && "text-[#45CAFF]"
-              )} />
-              <span>{articleData.readTime}</span>
-              <span className="ml-2">Criado por SportingBOT</span>
 
+              <span className="hidden sm:inline">•</span>
+
+              <span className="flex items-center gap-1">
+                <Clock
+                  className={cn(
+                    "h-3 w-3 sm:h-4 sm:w-4",
+                    isDarkMode && "text-[#45CAFF]"
+                  )}
+                />
+                {articleData.readTime}
+              </span>
+
+              <span className="hidden sm:inline">•</span>
+
+              <span className="flex items-center gap-1 whitespace-nowrap">
+                <User
+                  className={cn(
+                    "h-3 w-3 sm:h-4 sm:w-4",
+                    isDarkMode && "text-[#45CAFF]"
+                  )}
+                />
+                SportingBOT
+              </span>
             </div>
           </div>
-          <div className="mt-2 sm:mt-0">
+
+          {/* Sharing – sits right side on desktop, below meta on mobile */}
+          <div className="flex-shrink-0">
+            <ArticleSharing
+              articleId={articleData.articleId}
+              title={articleData.title}
+              url={`${typeof window !== 'undefined' ? window.location.origin : ''}/discover/${articleData.slug || articleData.articleId}`}
+              shareImageUrl={mainImageUrl}
+            />
           </div>
         </div>
-        <ArticleSharing
-          articleId={articleData.articleId}
-          title={articleData.title}
-          url={`${typeof window !== 'undefined' ? window.location.origin : ''}/discover/${articleData.slug || articleData.articleId}`}
-          shareImageUrl={mainImageUrl}
-        />
       </div>
 
       <div className={cn(
@@ -396,8 +427,6 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
       <Separator className={cn(isDarkMode ? "bg-[#45CAFF]/30" : "")} />
 
       <RelatedOdds currentArticleId={articleData.articleId} />
-
-      <Separator className={cn(isDarkMode ? "bg-[#45CAFF]/30" : "")} />
 
       <RelatedArticles currentArticleId={articleData.articleId} />
 

@@ -130,7 +130,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
       </ChatBubble>
 
       {marketSelected && (
-        <div className="mt-4 pl-14">
+        <div className="mt-4 pl-4 sm:pl-14">
           <div className="mt-2 space-y-2 text-sm text-muted-foreground">
             <div className="text-sm">
               <RelatedOdds 
@@ -147,12 +147,12 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
       )}
       
       {relatedArticle && relatedArticle.slug && (
-        <div className="mt-0 pl-14">
-          <div className="mt-2 ml-4">
+        <div className="mt-0 pl-4 sm:pl-14">
+          <div className="mt-2 ml-2 sm:ml-4">
             <Link
               href={`/discover/${relatedArticle.slug}`}
               className={cn(
-                "flex items-center gap-3 p-3 rounded-lg transition-colors max-w-[420px] border",
+                "flex items-center gap-3 p-3 rounded-lg transition-colors max-w-[420px] border overflow-hidden",
                 isDarkMode 
                   ? "border-[#45CAFF]/30 hover:border-[#45CAFF]/50 hover:bg-[#45CAFF]/10" 
                   : "border-border hover:border-primary/30 hover:bg-muted/50"
@@ -171,7 +171,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
                   </div>
                 )}
               </div>
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 overflow-hidden">
                 <h4 className="text-sm font-medium text-primary line-clamp-2 leading-tight">
                   {relatedArticle.title}
                 </h4>
@@ -187,8 +187,8 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
       )}
 
       {promotion && (
-        <div className="mt-0 pl-14">
-          <div className="mt-2 ml-4">
+        <div className="mt-0 pl-4 sm:pl-14">
+          <div className="mt-2 ml-2 sm:ml-4">
             <a
               href={promotion.link}
               target="_blank"
@@ -217,13 +217,13 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
       )}
 
       {relatedQuestions.length > 0 && (
-        <div className="mt-4 pl-14">
+        <div className="mt-4 pl-4 sm:pl-14">
           <div className="mt-2 space-y-2 text-sm text-muted-foreground">
             {relatedQuestions.slice(0, 2).map((question: any, index: number) => (
-              <div key={index} className="text-sm hover:underline cursor-pointer">
+              <div key={index} className="text-sm hover:underline cursor-pointer pr-2">
                 <button
                   className={cn(
-                    "flex items-center gap-2 ml-4 text-left w-full bg-transparent border-none p-0 hover:underline",
+                    "flex items-start gap-2 ml-2 sm:ml-4 text-left w-full bg-transparent border-none p-0 hover:underline break-words",
                     isDarkMode ? "text-[#D3ECFF]/70 hover:text-[#D3ECFF]" : "text-muted-foreground hover:text-foreground"
                   )}
                   onClick={(e) => {
@@ -232,8 +232,8 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
                     onNewMessage(question)
                   }}
                 >
-                  <Reply className="h-4 w-4" />
-                  {question}
+                  <Reply className="h-4 w-4 flex-shrink-0 mt-1" />
+                  <span className="break-words">{question}</span>
                 </button>
               </div>
             ))}
@@ -242,12 +242,12 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
       )}
 
       {parsedWidgetContent && (
-        <div className="mt-0 pl-14">
+        <div className="mt-0 pl-4 sm:pl-14">
           <div className="mt-2 space-y-2 text-sm text-muted-foreground">
             <div className="text-sm hover:underline cursor-pointer">
               <button
                 className={cn(
-                  "flex items-center gap-2 ml-4 text-left w-full bg-transparent border-none p-0 hover:underline",
+                  "flex items-center gap-2 ml-2 sm:ml-4 text-left w-full bg-transparent border-none p-0 hover:underline break-words",
                   isDarkMode ? "text-[#D3ECFF]/70 hover:text-[#D3ECFF]" : "text-muted-foreground hover:text-foreground"
                 )}
                 onClick={(e) => {
@@ -255,14 +255,14 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
                   setShowWidget(!showWidget)
                 }}
               >
-                <BarChart3 className="h-4 w-4" />
-                {showWidget ? "Ocultar tabela de odds" : "Ver a tabela de odds da partida"}
+                <BarChart3 className="h-4 w-4 flex-shrink-0" />
+                <span className="break-words">{showWidget ? "Ocultar tabela de odds" : "Ver a tabela de odds da partida"}</span>
               </button>
             </div>
           </div>
 
           {showWidget && (
-            <div className="flex flex-col gap-2 mt-4 ml-4 w-[90%] md:w-[600px]">
+            <div className="flex flex-col gap-2 mt-4 ml-2 sm:ml-4 w-[90%] md:w-[600px]">
               <WidgetEmbed content={parsedWidgetContent} />
             </div>
           )}

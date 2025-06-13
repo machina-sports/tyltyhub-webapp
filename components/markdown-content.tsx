@@ -10,14 +10,14 @@ interface MarkdownContentProps {
 
 export function MarkdownChat({ content, className }: MarkdownContentProps) {
   return (
-    <article className={cn("max-w-none", className)}>
+    <article className={cn("max-w-none break-words", className)} style={{ wordBreak: 'break-word' }}>
       <Markdown
         options={{
           overrides: {
-            ul: { props: { className: 'list-disc ml-8 mt-4 mb-4' } },
-            ol: { props: { className: 'list-decimal ml-8 mt-4 mb-8' } },
-            li: { props: { className: 'mb-0' } },
-            p:  { props: { className: 'text-xs ml-4 mt-4 mb-0' } }
+            ul: { props: { className: 'list-disc ml-8 mt-4 mb-4 break-words', style: { wordBreak: 'break-word' } } },
+            ol: { props: { className: 'list-decimal ml-8 mt-4 mb-8 break-words', style: { wordBreak: 'break-word' } } },
+            li: { props: { className: 'mb-0 break-words', style: { wordBreak: 'break-word' } } },
+            p:  { props: { className: 'text-xs ml-4 mt-4 mb-0 break-words', style: { wordBreak: 'break-word' } } }
           },
         }}
       >
