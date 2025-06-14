@@ -289,10 +289,10 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
 
       {parsedWidgetContent && parsedWidgetContent?.embed && (
         <div className={cn("mt-0 pl-4 sm:pl-[68px] max-w-[420px]", isDarkMode && "dark")}>
-          <p className="text-sm text-muted-foreground">
+          {/* <p className="text-sm text-muted-foreground">
             {parsedWidgetContent?.name}: 
             {parsedWidgetContent?.embed}
-          </p>
+          </p> */}
           <WidgetEmbed content={parsedWidgetContent?.embed} />
         </div>
       )}
