@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 import {
   useEffect,
   useState,
@@ -30,17 +31,16 @@ import dynamic from "next/dynamic";
 import { useTheme } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
 
-// Dynamically import the WidgetEmbed component to improve initial load time
-const WidgetEmbed = dynamic(
-  () => import("../../../components/article/widget-embed"),
-  {
-    loading: () => (
-      <div className="h-60 w-full bg-muted/30 rounded-md animate-pulse"></div>
-    ),
-    ssr: false, // Disable server-side rendering for this component
-  }
-);
-
+// // Dynamically import the WidgetEmbed component to improve initial load time
+// const WidgetEmbed = dynamic(
+//   () => import("../../../components/article/widget-embed"),
+//   {
+//     loading: () => (
+//       <div className="h-60 w-full bg-muted/30 rounded-md animate-pulse"></div>
+//     ),
+//     ssr: false, // Disable server-side rendering for this component
+//   }
+// );
 const unescapeMarkdown = (text: string | undefined | null): string => {
   if (!text) return "";
   return text.replace(/\\n/g, "\n").replace(/\\"/g, '"');
@@ -109,6 +109,12 @@ const getReadTime = (article: any): string => {
 
   return "3 min";
 };
+
+const WidgetEmbed = React.memo(({ content }: { content: string }) => (
+  // <div dangerouslySetInnerHTML={{ __html: content?.replace(/\s*data-tallysight-widget-config-market=['"][^'"]*['"]/, '') }} />
+  <div dangerouslySetInnerHTML={{ __html: content }} />
+))
+WidgetEmbed.displayName = 'WidgetEmbed'
 
 interface ArticleContentProps {
   articleParam: string;
@@ -203,28 +209,28 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
   }
 
   const mainImagePrefix = `${process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS}/article-image-id-${articleData?.["_id"]}`
-  
+
   const mainImageUrl = `${mainImagePrefix}-${articleData?.value?.["main_image_name"]}.png`
 
   const hasTextImage = articleData?.metadata?.["content-group"] == "TEAM_ARTICLE"
 
   // Only construct URLs for sections that have images
-  const section1ImageUrl = hasTextImage && articleData?.value?.["section_1_image"] 
+  const section1ImageUrl = hasTextImage && articleData?.value?.["section_1_image"]
     ? `${mainImagePrefix}-${articleData.value["section_1_image"]}.png`
     : undefined;
-  
+
   const section2ImageUrl = hasTextImage && articleData?.value?.["section_2_image"]
     ? `${mainImagePrefix}-${articleData.value["section_2_image"]}.png`
     : undefined;
-  
+
   const section3ImageUrl = hasTextImage && articleData?.value?.["section_3_image"]
     ? `${mainImagePrefix}-${articleData.value["section_3_image"]}.png`
     : undefined;
-  
+
   const section4ImageUrl = hasTextImage && articleData?.value?.["section_4_image"]
     ? `${mainImagePrefix}-${articleData.value["section_4_image"]}.png`
     : undefined;
-  
+
   const section5ImageUrl = hasTextImage && articleData?.value?.["section_5_image"]
     ? `${mainImagePrefix}-${articleData.value["section_5_image"]}.png`
     : undefined;
@@ -233,7 +239,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
 
   const RenderImageComponent = ({ imageUrl, alt }: { imageUrl: string | undefined, alt: string }) => {
     if (!imageUrl) return null;
-    
+
     return (
       <div className="relative w-full overflow-hidden rounded-lg aspect-[1560/1024]">
         <Image
@@ -293,8 +299,8 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
                 />
                 {articleData.createdDate
                   ? format(new Date(articleData.createdDate), "dd/MM/yyyy", {
-                      locale: ptBR,
-                    })
+                    locale: ptBR,
+                  })
                   : "--/--/----"}
               </span>
 
@@ -346,13 +352,9 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
             isDarkMode ? "text-[#D3ECFF]" : ""
           )}></h2>
           {articleData.widgetEmbed && (
-            <Suspense
-              fallback={
-                <div className="h-60 w-full bg-muted/30 rounded-md animate-pulse"></div>
-              }
-            >
-              <WidgetEmbed embedCode={articleData.widgetEmbed} />
-            </Suspense>
+            <div className={cn("mt-0", isDarkMode && "dark")}>
+              <WidgetEmbed content={articleData.widgetEmbed} />
+            </div>
           )}
           {articleData?.["eventDetails"]?.when &&
             articleData?.["eventDetails"]?.venue &&
@@ -391,7 +393,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
             {articleData.section_1_content}
           </p>
           <RenderImageComponent imageUrl={section1ImageUrl} alt={articleData?.["section_1_title"]} />
-          
+
           <h2 className={cn(
             "text-2xl font-bold mt-12 mb-8",
             isDarkMode ? "text-[#fff]" : ""

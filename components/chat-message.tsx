@@ -27,7 +27,17 @@ interface ChatMessageProps {
 
 // Add a memoized wrapper component
 const WidgetEmbed = React.memo(({ content }: { content: string }) => (
-  <div dangerouslySetInnerHTML={{ __html: content }} className="h-[200px]" />
+  <div dangerouslySetInnerHTML={{ __html: content }} />  
+  // <div dangerouslySetInnerHTML={{ __html: content?.replace(/\s*data-tallysight-widget-config-market=['"][^'"]*['"]/, '') }} />  
+//   <span
+//       data-tallysight-widget-type="tile"
+//       data-tallysight-widget-id="68470e2bd434471a062df410"
+//       data-tallysight-widget-config-format="decimal"
+//       data-tallysight-widget-config-odds-by="sportingbet"
+//       data-tallysight-widget-config-type="games"
+//       data-tallysight-widget-config-workspace="sporting-bet"      
+//       data-tallysight-widget-config-market="684710e2a6eeee768b97e548">
+// </span>
 ))
 WidgetEmbed.displayName = 'WidgetEmbed'
 
@@ -108,25 +118,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
 
   const haveSportsContext = content?.["sport_event"]
 
-  const parsedWidgetContent = useMemo(() => {
-    if (!widgetMatchEmbed) return null
-
-    try {
-      if (typeof widgetMatchEmbed === 'string') {
-        try {
-          const parsed = JSON.parse(widgetMatchEmbed)
-          return parsed?.[0]?.embed || widgetMatchEmbed
-        } catch (parseError) {
-          console.warn('Failed to parse widget content:', parseError)
-          return widgetMatchEmbed
-        }
-      }
-      return widgetMatchEmbed
-    } catch (error) {
-      console.error('Error processing widget content:', error)
-      return null
-    }
-  }, [widgetMatchEmbed])
+  const parsedWidgetContent = content?.["widget-market-selected"]
 
   return (
     <div className="mb-2 last:mb-0">
@@ -295,6 +287,16 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
         </div>
       )}
 
+      {parsedWidgetContent && parsedWidgetContent?.embed && (
+        <div className={cn("mt-0 pl-4 sm:pl-[68px] max-w-[420px]", isDarkMode && "dark")}>
+          <p className="text-sm text-muted-foreground">
+            {parsedWidgetContent?.name}: 
+            {parsedWidgetContent?.embed}
+          </p>
+          <WidgetEmbed content={parsedWidgetContent?.embed} />
+        </div>
+      )}
+
       {relatedQuestions.length > 0 && (
         <div className="mt-4 pl-4 sm:pl-14">
           <div className="mt-2 space-y-2 text-sm text-muted-foreground">
@@ -317,34 +319,6 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
               </div>
             ))}
           </div>
-        </div>
-      )}
-
-      {parsedWidgetContent && (
-        <div className="mt-0 pl-4 sm:pl-14">
-          <div className="mt-2 space-y-2 text-sm text-muted-foreground">
-            <div className="text-sm hover:underline cursor-pointer">
-              <button
-                className={cn(
-                  "flex items-center gap-2 ml-2 sm:ml-4 text-left w-full bg-transparent border-none p-0 hover:underline break-words",
-                  isDarkMode ? "text-[#D3ECFF]/70 hover:text-[#D3ECFF]" : "text-muted-foreground hover:text-foreground"
-                )}
-                onClick={(e) => {
-                  e.preventDefault()
-                  setShowWidget(!showWidget)
-                }}
-              >
-                <BarChart3 className="h-4 w-4 flex-shrink-0" />
-                <span className="break-words">{showWidget ? "Ocultar tabela de odds" : "Ver a tabela de odds da partida"}</span>
-              </button>
-            </div>
-          </div>
-
-          {showWidget && (
-            <div className="flex flex-col gap-2 mt-4 ml-2 sm:ml-4 w-[90%] md:w-[600px]">
-              <WidgetEmbed content={parsedWidgetContent} />
-            </div>
-          )}
         </div>
       )}
 
