@@ -1,6 +1,6 @@
 "use client"
 
-import { Loader2, Reply, BarChart3, Newspaper, Gift } from "lucide-react"
+import { Loader2, Reply, BarChart3, Newspaper, Gift, ChevronLeft, ChevronRight } from "lucide-react"
 
 import { ChatBubble } from "./chat/bubble"
 
@@ -41,6 +41,111 @@ const WidgetEmbed = React.memo(({ content }: { content: string }) => (
 ))
 WidgetEmbed.displayName = 'WidgetEmbed'
 
+// Widget Carousel Component
+const WidgetCarousel = React.memo(({ 
+  widgets, 
+  isDarkMode 
+}: { 
+  widgets: Array<{ name?: string; embed: string }>;
+  isDarkMode: boolean;
+}) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const nextWidget = () => {
+    setCurrentIndex((prev) => (prev + 1) % widgets.length);
+  };
+
+  const prevWidget = () => {
+    setCurrentIndex((prev) => (prev - 1 + widgets.length) % widgets.length);
+  };
+
+  const goToWidget = (index: number) => {
+    setCurrentIndex(index);
+  };
+
+  if (widgets.length === 0) return null;
+
+  if (widgets.length === 1) {
+    return (
+      <div className={cn(
+        "rounded-lg border p-4",
+        isDarkMode
+          ? "border-[#45CAFF]/30 bg-card"
+          : "border-border bg-card"
+      )}>
+        <WidgetEmbed content={widgets[0].embed} />
+      </div>
+    );
+  }
+
+  return (
+    <div className={cn(
+      "rounded-lg border p-4",
+      isDarkMode
+        ? "border-[#45CAFF]/30 bg-card"
+        : "border-border bg-card"
+    )}>
+      {/* Widget Display */}
+      <div className="overflow-hidden rounded-md ">
+        <WidgetEmbed content={widgets[currentIndex].embed} />
+      </div>
+
+      {/* Footer with Navigation and Indicators */}
+      <div className="flex items-center justify-between mt-4">
+        {/* Left Arrow */}
+        <button
+          onClick={prevWidget}
+          className={cn(
+            "p-1.5 rounded-full transition-colors",
+            isDarkMode
+              ? "hover:bg-[#45CAFF]/20 text-[#45CAFF] hover:text-[#45CAFF]"
+              : "hover:bg-primary/20 text-primary hover:text-primary"
+          )}
+          aria-label="Widget anterior"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </button>
+
+        {/* Indicators */}
+        <div className="flex items-center gap-1">
+          {widgets.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => goToWidget(index)}
+              className={cn(
+                "w-2 h-2 rounded-full transition-colors",
+                index === currentIndex
+                  ? isDarkMode
+                    ? "bg-[#45CAFF]"
+                    : "bg-primary"
+                  : isDarkMode
+                  ? "bg-white/30 hover:bg-white/50"
+                  : "bg-black/30 hover:bg-black/50"
+              )}
+              aria-label={`Ir para widget ${index + 1}`}
+            />
+          ))}
+        </div>
+
+        {/* Right Arrow */}
+        <button
+          onClick={nextWidget}
+          className={cn(
+            "p-1.5 rounded-full transition-colors",
+            isDarkMode
+              ? "hover:bg-[#45CAFF]/20 text-[#45CAFF] hover:text-[#45CAFF]"
+              : "hover:bg-primary/20 text-primary hover:text-primary"
+          )}
+          aria-label="Próximo widget"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </button>
+      </div>
+    </div>
+  );
+});
+WidgetCarousel.displayName = 'WidgetCarousel';
+
 export function ChatMessage({ role, content, date, isTyping, onNewMessage }: ChatMessageProps) {
   const [showWidget, setShowWidget] = useState(false)
   const { isDarkMode } = useTheme();
@@ -57,14 +162,13 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
 
   const relatedArticle = content?.["related-article"]
 
-  const marketSelected = content?.["market-selected"]
+  const marketSelected = content?.["selected-markets"]
 
   const teamAwayAbbreviation = content?.["team_away_abbreviation"]
   const teamHomeAbbreviation = content?.["team_home_abbreviation"]
   const teamHomeName = content?.["team_home_name"]
   const teamAwayName = content?.["team_away_name"]
   const eventDateTime = content?.["event_datetime"]
-
 
   const promotion = content?.["promotion-image"] || content?.["promotion-link"] ? {
     image: content?.["promotion-image"],
@@ -118,7 +222,23 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
 
   const haveSportsContext = content?.["sport_event"]
 
-  const parsedWidgetContent = content?.["widget-market-selected"]
+  // Handle both single widget and array of widgets
+  const parsedWidgetContent = content?.["selected-widgets"]
+  const widgetArray = useMemo(() => {
+    if (!parsedWidgetContent) return [];
+    
+    // If it's already an array, return it
+    if (Array.isArray(parsedWidgetContent)) {
+      return parsedWidgetContent.filter(widget => widget?.embed);
+    }
+    
+    // If it's a single widget object, wrap it in an array
+    if (parsedWidgetContent?.embed) {
+      return [parsedWidgetContent];
+    }
+    
+    return [];
+  }, [parsedWidgetContent]);
 
   return (
     <div className="mb-2 last:mb-0">
@@ -173,7 +293,6 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
           />
         </div>
       )}
-
 
       {/* TESTE PROVISÓRIO - Componentes FIFA CWC */}
       {/* {role === "assistant" && (
@@ -287,13 +406,9 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
         </div>
       )}
 
-      {parsedWidgetContent && parsedWidgetContent?.embed && (
+      {widgetArray.length > 0 && (
         <div className={cn("mt-0 pl-4 sm:pl-[68px] max-w-[420px]", isDarkMode && "dark")}>
-          {/* <p className="text-sm text-muted-foreground">
-            {parsedWidgetContent?.name}: 
-            {parsedWidgetContent?.embed}
-          </p> */}
-          <WidgetEmbed content={parsedWidgetContent?.embed} />
+          <WidgetCarousel widgets={widgetArray} isDarkMode={isDarkMode} />
         </div>
       )}
 
