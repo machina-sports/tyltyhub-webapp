@@ -147,7 +147,7 @@ export function Sidebar() {
         </div>
         <div className="px-8 py-2 pb-4 pt-2">
           <a
-            href="https://www.sportingbet.bet.br/pt-br/mobileportal/register"
+            href="https://www.sportingbet.bet.br/pt-br/mobileportal/register?utm_source=sportingbot.com"
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => setIsOpen(false)}
@@ -161,7 +161,7 @@ export function Sidebar() {
             Registre-se Agora
           </a>
           <a
-            href="https://www.sportingbet.bet.br/pt-br/labelhost/login"
+            href="https://www.sportingbet.bet.br/pt-br/labelhost/login?utm_source=sportingbot.com"
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => setIsOpen(false)}
