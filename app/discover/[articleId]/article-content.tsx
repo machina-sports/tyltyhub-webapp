@@ -30,6 +30,7 @@ import { Clock, Calendar, User } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useTheme } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
+import { WidgetCarousel } from "@/components/carousel/container";
 
 // // Dynamically import the WidgetEmbed component to improve initial load time
 // const WidgetEmbed = dynamic(
@@ -189,7 +190,13 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
       createdDate: article.created || article.date,
       articleId: (article._id || article.id || "").toString(),
       eventDetails: article.value?.["event-details"],
-      widgetEmbed: article.value?.["widget-match-embed"],
+      oddsWidgets: {
+        mainWidget: article.value?.["main-widget"] || [],
+        secondWidget: article.value?.["second-widget"] || [],
+        thirdWidget: article.value?.["third-widget"] || [],
+        fourthWidget: article.value?.["fourth-widget"] || [],
+        fifthWidget: article.value?.["fifth-widget"] || [],
+      },
       slug: article.value?.slug,
       imagePath: article?.value?.["image_path"],
     };
@@ -380,8 +387,14 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
                 </p>
               </>
             )}
+          <RenderImageComponent imageUrl={section1ImageUrl} alt={articleData?.["section_1_title"]} />
+          {articleData?.oddsWidgets?.mainWidget && (
+            <div className={cn("mt-8 pl-4 sm:pl-0 max-w-[420px]", isDarkMode && "dark")}>
+              <WidgetCarousel widgets={articleData?.oddsWidgets?.mainWidget} isDarkMode={isDarkMode} />
+            </div>
+          )}
           <h2 className={cn(
-            "text-2xl font-bold mt-12 mb-8",
+            "text-2xl font-bold mt-8 mb-8",
             isDarkMode ? "text-[#fff]" : ""
           )}>
             {articleData.section_1_title}
@@ -393,9 +406,13 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
             {articleData.section_1_content}
           </p>
           <RenderImageComponent imageUrl={section1ImageUrl} alt={articleData?.["section_1_title"]} />
-
+          {articleData?.oddsWidgets?.mainWidget && (
+            <div className={cn("mt-0 pl-4 sm:pl-0 max-w-[420px]", isDarkMode && "dark")}>
+              <WidgetCarousel widgets={articleData?.oddsWidgets?.secondWidget} isDarkMode={isDarkMode} />
+            </div>
+          )}
           <h2 className={cn(
-            "text-2xl font-bold mt-12 mb-8",
+            "text-2xl font-bold mt-8 mb-8",
             isDarkMode ? "text-[#fff]" : ""
           )}>
             {articleData.section_2_title}
@@ -407,9 +424,13 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
             {articleData.section_2_content}
           </p>
           <RenderImageComponent imageUrl={section2ImageUrl} alt={articleData?.["section_2_title"]} />
-
+          {articleData?.oddsWidgets?.thirdWidget && (
+            <div className={cn("mt-0 pl-4 sm:pl-0 max-w-[420px]", isDarkMode && "dark")}>
+              <WidgetCarousel widgets={articleData?.oddsWidgets?.thirdWidget} isDarkMode={isDarkMode} />
+            </div>
+          )}
           <h2 className={cn(
-            "text-2xl font-bold mt-12 mb-8",
+            "text-2xl font-bold mt-8 mb-8",
             isDarkMode ? "text-[#fff]" : ""
           )}>
             {articleData.section_3_title}
@@ -421,9 +442,13 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
             {articleData.section_3_content}
           </p>
           <RenderImageComponent imageUrl={section3ImageUrl} alt={articleData?.["section_3_title"]} />
-
+          {articleData?.oddsWidgets?.fourthWidget && (
+            <div className={cn("mt-0 pl-4 sm:pl-0 max-w-[420px]", isDarkMode && "dark")}>
+              <WidgetCarousel widgets={articleData?.oddsWidgets?.fourthWidget} isDarkMode={isDarkMode} />
+            </div>
+          )}
           <h2 className={cn(
-            "text-2xl font-bold mt-12 mb-8",
+            "text-2xl font-bold mt-8 mb-8",
             isDarkMode ? "text-[#fff]" : ""
           )}>
             {articleData.section_4_title}
@@ -435,9 +460,13 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
             {articleData.section_4_content}
           </p>
           <RenderImageComponent imageUrl={section4ImageUrl} alt={articleData?.["section_4_title"]} />
-
+          {articleData?.oddsWidgets?.fifthWidget && (
+            <div className={cn("mt-0 pl-4 sm:pl-0 max-w-[420px]", isDarkMode && "dark")}>
+              <WidgetCarousel widgets={articleData?.oddsWidgets?.fifthWidget} isDarkMode={isDarkMode} />
+            </div>
+          )}
           <h2 className={cn(
-            "text-2xl font-bold mt-12 mb-8",
+            "text-2xl font-bold mt-8 mb-8",
             isDarkMode ? "text-[#fff]" : ""
           )}>
             {articleData.section_5_title}
