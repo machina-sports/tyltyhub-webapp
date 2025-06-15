@@ -301,7 +301,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
       )}
 
       {(widgetArray.length > 0) && !hideWidgetOdds && (
-        <div className={cn("mt-0 pl-4 sm:pl-[68px] max-w-[420px]", isDarkMode && "dark")}>
+        <div className={cn("mt-4 pl-4 sm:pl-[68px] max-w-[420px]", isDarkMode && "dark")}>
           <WidgetCarousel widgets={widgetArray} isDarkMode={isDarkMode} />
         </div>
       )}
