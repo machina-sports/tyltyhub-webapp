@@ -37,7 +37,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
 
   const relatedArticle = content?.["related-article"]
 
-  console.log("relatedArticle", relatedArticle)
+  const hideWidgetOdds = ["finished", "cancelled", "ended"].includes(content?.["event_status"]?.["match_status"])
 
   const marketSelected = content?.["selected-markets"]
 
@@ -300,7 +300,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
         </div>
       )}
 
-      {(widgetArray.length > 0) && (
+      {(widgetArray.length > 0) && !hideWidgetOdds && (
         <div className={cn("mt-0 pl-4 sm:pl-[68px] max-w-[420px]", isDarkMode && "dark")}>
           <WidgetCarousel widgets={widgetArray} isDarkMode={isDarkMode} />
         </div>
