@@ -148,7 +148,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
         </div>
       </ChatBubble>
 
-      {marketSelected && (
+      {/* {marketSelected && (
         <div className="mt-4 pl-4 sm:pl-14">
           <div className="mt-2 space-y-2 text-sm text-muted-foreground">
             <div className="text-sm">
@@ -163,7 +163,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {haveSportsContext && (
         <div className="mt-4 pl-4 ml-2 sm:pl-14 max-w-[320px]">
