@@ -36,7 +36,7 @@ export function MarkdownChat({ content, className }: MarkdownContentProps) {
             h3: { props: { className: "font-bold text-sm" } },
             strong: { props: { className: "font-bold" } },
             code: { props: { className: 'not-prose font-semibold' } },
-            blockquote: { props: { className: 'pl-4 italic border-l-4 my-4' } },
+            blockquote: { props: { className: 'not-prose my-4 p-3 bg-muted/50 rounded-lg text-sm' } },
             table: { props: { className: 'my-4 text-sm w-full border-collapse' } },
             thead: { props: { className: 'bg-muted/50' } },
             tr: { props: { className: 'border-b' } },
