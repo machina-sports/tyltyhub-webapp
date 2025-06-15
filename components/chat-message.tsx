@@ -300,7 +300,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
         </div>
       )}
 
-      {(widgetArray.length > 0 || (eventStatus && eventStatus.status === "live")) && (
+      {(widgetArray.length > 0) && (
         <div className={cn("mt-0 pl-4 sm:pl-[68px] max-w-[420px]", isDarkMode && "dark")}>
           <WidgetCarousel widgets={widgetArray} isDarkMode={isDarkMode} />
         </div>
