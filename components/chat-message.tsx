@@ -16,6 +16,8 @@ import { RelatedOdds } from "@/components/article/related-odds";
 import { StandingsTable } from "@/components/discover/standings-table";
 import { MatchCard, MatchesCalendar } from "@/components/discover/matches-calendar";
 import { TeamsGrid } from "@/components/discover/teams-grid";
+import { LiveMatchStatus } from "@/components/live-match-status";
+import { WidgetCarousel } from "@/components/carousel/container";
 
 interface ChatMessageProps {
   role: "user" | "assistant"
@@ -25,127 +27,6 @@ interface ChatMessageProps {
   date?: string | null
 }
 
-// Add a memoized wrapper component
-const WidgetEmbed = React.memo(({ content }: { content: string }) => (
-  <div dangerouslySetInnerHTML={{ __html: content }} />  
-  // <div dangerouslySetInnerHTML={{ __html: content?.replace(/\s*data-tallysight-widget-config-market=['"][^'"]*['"]/, '') }} />  
-//   <span
-//       data-tallysight-widget-type="tile"
-//       data-tallysight-widget-id="68470e2bd434471a062df410"
-//       data-tallysight-widget-config-format="decimal"
-//       data-tallysight-widget-config-odds-by="sportingbet"
-//       data-tallysight-widget-config-type="games"
-//       data-tallysight-widget-config-workspace="sporting-bet"      
-//       data-tallysight-widget-config-market="684710e2a6eeee768b97e548">
-// </span>
-))
-WidgetEmbed.displayName = 'WidgetEmbed'
-
-// Widget Carousel Component
-const WidgetCarousel = React.memo(({ 
-  widgets, 
-  isDarkMode 
-}: { 
-  widgets: Array<{ name?: string; embed: string }>;
-  isDarkMode: boolean;
-}) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const nextWidget = () => {
-    setCurrentIndex((prev) => (prev + 1) % widgets.length);
-  };
-
-  const prevWidget = () => {
-    setCurrentIndex((prev) => (prev - 1 + widgets.length) % widgets.length);
-  };
-
-  const goToWidget = (index: number) => {
-    setCurrentIndex(index);
-  };
-
-  if (widgets.length === 0) return null;
-
-  if (widgets.length === 1) {
-    return (
-      <div className={cn(
-        "rounded-lg border p-4",
-        isDarkMode
-          ? "border-[#45CAFF]/30 bg-card"
-          : "border-border bg-card"
-      )}>
-        <WidgetEmbed content={widgets[0].embed} />
-      </div>
-    );
-  }
-
-  return (
-    <div className={cn(
-      "rounded-lg border p-4",
-      isDarkMode
-        ? "border-[#45CAFF]/30 bg-card"
-        : "border-border bg-card"
-    )}>
-      {/* Widget Display */}
-      <div className="overflow-hidden rounded-md ">
-        <WidgetEmbed content={widgets[currentIndex].embed} />
-      </div>
-
-      {/* Footer with Navigation and Indicators */}
-      <div className="flex items-center justify-between mt-4">
-        {/* Left Arrow */}
-        <button
-          onClick={prevWidget}
-          className={cn(
-            "p-1.5 rounded-full transition-colors",
-            isDarkMode
-              ? "hover:bg-[#45CAFF]/20 text-[#45CAFF] hover:text-[#45CAFF]"
-              : "hover:bg-primary/20 text-primary hover:text-primary"
-          )}
-          aria-label="Widget anterior"
-        >
-          <ChevronLeft className="h-4 w-4" />
-        </button>
-
-        {/* Indicators */}
-        <div className="flex items-center gap-1">
-          {widgets.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => goToWidget(index)}
-              className={cn(
-                "w-2 h-2 rounded-full transition-colors",
-                index === currentIndex
-                  ? isDarkMode
-                    ? "bg-[#45CAFF]"
-                    : "bg-primary"
-                  : isDarkMode
-                  ? "bg-white/30 hover:bg-white/50"
-                  : "bg-black/30 hover:bg-black/50"
-              )}
-              aria-label={`Ir para widget ${index + 1}`}
-            />
-          ))}
-        </div>
-
-        {/* Right Arrow */}
-        <button
-          onClick={nextWidget}
-          className={cn(
-            "p-1.5 rounded-full transition-colors",
-            isDarkMode
-              ? "hover:bg-[#45CAFF]/20 text-[#45CAFF] hover:text-[#45CAFF]"
-              : "hover:bg-primary/20 text-primary hover:text-primary"
-          )}
-          aria-label="Próximo widget"
-        >
-          <ChevronRight className="h-4 w-4" />
-        </button>
-      </div>
-    </div>
-  );
-});
-WidgetCarousel.displayName = 'WidgetCarousel';
-
 export function ChatMessage({ role, content, date, isTyping, onNewMessage }: ChatMessageProps) {
   const [showWidget, setShowWidget] = useState(false)
   const { isDarkMode } = useTheme();
@@ -154,13 +35,9 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
 
   const relatedQuestions = content?.["related_questions"] || []
 
-  const relatedBettings = content?.["related_bettings"] || []
-
-  const isMatchFinished = content?.["is_match_finished"]
-
-  const widgetMatchEmbed = content?.["widget-url"]
-
   const relatedArticle = content?.["related-article"]
+
+  console.log("relatedArticle", relatedArticle)
 
   const marketSelected = content?.["selected-markets"]
 
@@ -170,12 +47,12 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
   const teamAwayName = content?.["team_away_name"]
   const eventDateTime = content?.["event_datetime"]
 
+  const eventStatus = content?.["event_status"]
+
   const promotion = content?.["promotion-image"] || content?.["promotion-link"] ? {
     image: content?.["promotion-image"],
     link: content?.["promotion-link"]
   } : null
-
-  const isRelatedBettingsEnabled = content?.["related_betting_enabled"] && relatedBettings.length > 0
 
   // Helper function to get image URL for related article
   const getRelatedArticleImageUrl = (article: any): string => {
@@ -225,20 +102,36 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
   // Handle both single widget and array of widgets
   const parsedWidgetContent = content?.["selected-widgets"]
   const widgetArray = useMemo(() => {
-    if (!parsedWidgetContent) return [];
+    const widgets = [];
     
-    // If it's already an array, return it
-    if (Array.isArray(parsedWidgetContent)) {
-      return parsedWidgetContent.filter(widget => widget?.embed);
+    // Add LiveMatchStatus as first widget if eventStatus exists and status is "live"
+    if (eventStatus && eventStatus.status === "live") {
+      widgets.push({
+        name: "Live Match Status",
+        component: (
+          <LiveMatchStatus 
+            eventStatus={eventStatus}
+            isDarkMode={isDarkMode}
+            teamHomeName={teamHomeName}
+            teamAwayName={teamAwayName}
+            teamHomeAbbreviation={teamHomeAbbreviation}
+            teamAwayAbbreviation={teamAwayAbbreviation}
+          />
+        )
+      });
     }
     
-    // If it's a single widget object, wrap it in an array
-    if (parsedWidgetContent?.embed) {
-      return [parsedWidgetContent];
+    // Add regular widgets
+    if (parsedWidgetContent) {
+      if (Array.isArray(parsedWidgetContent)) {
+        widgets.push(...parsedWidgetContent.filter(widget => widget?.embed));
+      } else if (parsedWidgetContent?.embed) {
+        widgets.push(parsedWidgetContent);
+      }
     }
     
-    return [];
-  }, [parsedWidgetContent]);
+    return widgets;
+  }, [parsedWidgetContent, eventStatus, isDarkMode, teamHomeName, teamAwayName, teamHomeAbbreviation, teamAwayAbbreviation]);
 
   return (
     <div className="mb-2 last:mb-0">
@@ -336,6 +229,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
         </div>
       )}
        */}
+
       {relatedArticle && relatedArticle.slug && (
         <div className="mt-0 pl-4 sm:pl-14">
           <div className="mt-2 ml-2 sm:ml-4">
@@ -406,7 +300,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
         </div>
       )}
 
-      {widgetArray.length > 0 && (
+      {(widgetArray.length > 0 || (eventStatus && eventStatus.status === "live")) && (
         <div className={cn("mt-0 pl-4 sm:pl-[68px] max-w-[420px]", isDarkMode && "dark")}>
           <WidgetCarousel widgets={widgetArray} isDarkMode={isDarkMode} />
         </div>
