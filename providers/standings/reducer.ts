@@ -93,7 +93,7 @@ const StandingsReducer = createSlice({
         state.error = null;
       })
       .addCase(fetchStandings.fulfilled, (state, action) => {
-        state.data = action.payload.data;
+        state.data = action.payload;
         state.status = "idle";
       })
       .addCase(fetchStandings.rejected, (state, action) => {

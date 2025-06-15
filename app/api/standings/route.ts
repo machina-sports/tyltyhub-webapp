@@ -4,19 +4,36 @@ export async function GET() {
   const api_url = process.env.MACHINA_CLIENT_URL
   const bearer = process.env.MACHINA_API_KEY
 
+  const body = {
+    "filters": {
+      "metadata.sid": "sr:season:126393"
+    },
+    "sorters": [
+      "_id",
+      -1
+    ],
+    "page": 1,
+    "page_size": 1,
+  }
+
   try {
-    const response = await fetch(`${api_url}/document/6846fc54836fbc9505c05fe4`, {
+    const response = await fetch(`${api_url}/document/search`, {
+      method: "POST",
       headers: {
         "X-Api-Token": `${bearer}`,
         "Content-Type": "application/json",
       },
+      body: JSON.stringify(body),
       next: { revalidate: 0 },
     })
 
-    const data = await response.json()
+    const payload = await response.json()
 
-    if (data) {
-      return NextResponse.json({ standings: data })
+    const data = payload.data
+
+
+    if (data && data[0]) {
+      return NextResponse.json({ standings: data[0] })
     }
 
     return NextResponse.json({ error: "Standings not found" }, { status: 404 })
