@@ -131,56 +131,92 @@ const ArticleCard = ({ article }: { article: Article }) => {
         className="h-full block"
         prefetch={false}
       >
-        <CardContent className="p-0 flex flex-col h-full">
-          <div className="relative aspect-[3/2] w-full">
-            {imageUrl && (
-              <Image
-                src={mainImageUrl}
-                alt={title}
-                fill
-                className="object-cover"
-                priority={false}
-                sizes="(max-width: 768px) 100vw, 33vw"
-              />
-            )}
-          </div>
-          <div className="p-5 flex flex-col flex-grow">
-            <h3 className={cn("text-sm md:text-xl font-semibold mb-2 transition-colors line-clamp-3",
-              isDarkMode
-                ? "text-[#D3ECFF] hover:text-[#45CAFF]"
-                : "hover:text-primary"
-            )}>
-              {title}
-            </h3>
-            <div className={cn(
-              "text-sm mb-2",
-              isDarkMode ? "text-[#D3ECFF]/80" : "text-muted-foreground"
-            )}>
-              <p className="line-clamp-3">
-                {getDescriptionSnippet(description, 120) || 'Sem descrição'}
-              </p>
+        <CardContent className="p-0 flex flex-col md:flex-col h-full">
+          {/* Mobile: Horizontal layout with image on left */}
+          <div className="flex md:hidden">
+            <div className="relative w-32 h-24 flex-shrink-0">
+              {imageUrl && (
+                <Image
+                  src={mainImageUrl}
+                  alt={title}
+                  fill
+                  className="object-cover rounded-l-lg"
+                  priority={false}
+                  sizes="150px"
+                />
+              )}
             </div>
-            <div className={cn(
-              "flex items-center justify-between mt-2 pt-2 border-t text-xs",
-              isDarkMode && "border-[#45CAFF]/30"
-            )}>
-              <div className="flex items-center gap-1">
-                {/* <div className={cn("h-4 w-4 rounded-full overflow-hidden flex items-center justify-center text-[10px] font-medium",
-                  isPalmeirasTheme ? "bg-[#E8F5EE]" : "bg-secondary"
-                )}>
-                </div>
-                <span className="text-muted-foreground truncate max-w-[85px]">{author}</span> */}
+            <div className="p-3 flex flex-col flex-grow min-w-0">
+              <h3 className={cn("text-sm font-semibold mb-1 transition-colors line-clamp-2",
+                isDarkMode
+                  ? "text-[#D3ECFF] hover:text-[#45CAFF]"
+                  : "hover:text-primary"
+              )}>
+                {title}
+              </h3>
+              <div className={cn(
+                "text-xs flex-grow",
+                isDarkMode ? "text-[#D3ECFF]/80" : "text-muted-foreground"
+              )}>
+                <p className="line-clamp-2">
+                  {getDescriptionSnippet(description, 80) || 'Sem descrição'}
+                </p>
               </div>
             </div>
-            <div className={cn(
-              "flex items-center whitespace-nowrap text-xs mt-2",
-              isDarkMode ? "text-[#D3ECFF]/70" : "text-muted-foreground"
-            )}>
-              <CalendarDays className={cn(
-                "h-4 w-4 mr-2",
-                isDarkMode && "text-[#45CAFF]"
-              )} />
-              {articleDate ? formatDistanceToNow(new Date(articleDate), { addSuffix: true, locale: ptBR }) : 'Recente'}
+          </div>
+
+          {/* Desktop: Vertical layout (original) */}
+          <div className="hidden md:flex md:flex-col md:h-full">
+            <div className="relative aspect-[3/2] w-full">
+              {imageUrl && (
+                <Image
+                  src={mainImageUrl}
+                  alt={title}
+                  fill
+                  className="object-cover"
+                  priority={false}
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
+              )}
+            </div>
+            <div className="p-5 flex flex-col flex-grow">
+              <h3 className={cn("text-sm md:text-xl font-semibold mb-2 transition-colors line-clamp-3",
+                isDarkMode
+                  ? "text-[#D3ECFF] hover:text-[#45CAFF]"
+                  : "hover:text-primary"
+              )}>
+                {title}
+              </h3>
+              <div className={cn(
+                "text-sm mb-2",
+                isDarkMode ? "text-[#D3ECFF]/80" : "text-muted-foreground"
+              )}>
+                <p className="line-clamp-3">
+                  {getDescriptionSnippet(description, 120) || 'Sem descrição'}
+                </p>
+              </div>
+              <div className={cn(
+                "flex items-center justify-between mt-2 pt-2 border-t text-xs",
+                isDarkMode && "border-[#45CAFF]/30"
+              )}>
+                <div className="flex items-center gap-1">
+                  {/* <div className={cn("h-4 w-4 rounded-full overflow-hidden flex items-center justify-center text-[10px] font-medium",
+                    isPalmeirasTheme ? "bg-[#E8F5EE]" : "bg-secondary"
+                  )}>
+                  </div>
+                  <span className="text-muted-foreground truncate max-w-[85px]">{author}</span> */}
+                </div>
+              </div>
+              <div className={cn(
+                "flex items-center whitespace-nowrap text-xs mt-2",
+                isDarkMode ? "text-[#D3ECFF]/70" : "text-muted-foreground"
+              )}>
+                <CalendarDays className={cn(
+                  "h-4 w-4 mr-2",
+                  isDarkMode && "text-[#45CAFF]"
+                )} />
+                {articleDate ? formatDistanceToNow(new Date(articleDate), { addSuffix: true, locale: ptBR }) : 'Recente'}
+              </div>
             </div>
           </div>
         </CardContent>
