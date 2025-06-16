@@ -142,7 +142,7 @@ export function ContainerChat() {
       try {
         await navigator.share({
           title: firstMessage.substring(0, 50) + (firstMessage.length > 50 ? '...' : ''),
-          text: 'Veja este chat do SportingBet CWC',
+          text: 'Veja este chat do Sportingbet CWC',
           url: shareUrl
         })
       } catch (error) {

@@ -1,6 +1,6 @@
-# SportingBet AI Platform
+# Sportingbet AI Platform
 
-SportingBet is an AI-powered sports betting platform that provides users with insightful analysis, betting tips, and odds for various sports events. This project is built using Next.js, React, and Tailwind CSS, and leverages a variety of modern UI components to deliver a seamless user experience.
+Sportingbet is an AI-powered sports betting platform that provides users with insightful analysis, betting tips, and odds for various sports events. This project is built using Next.js, React, and Tailwind CSS, and leverages a variety of modern UI components to deliver a seamless user experience.
 
 ## Features
 

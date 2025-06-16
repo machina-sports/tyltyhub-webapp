@@ -12,12 +12,12 @@ interface ChatMetadataProps {
 export function ChatMetadata({ threadId }: ChatMetadataProps) {
   const state = useGlobalState((state: any) => state.threads)
   const [title, setTitle] = useState('SportingBOT Chat')
-  const [description, setDescription] = useState('Veja esta conversa no SportingBet CWC')
+  const [description, setDescription] = useState('Veja esta conversa no Sportingbet CWC')
   
   useEffect(() => {
     if (state.item.data?.value?.messages?.length > 0) {
       const firstMessage = state.item.data.value.messages[0].content || ''
-      setTitle(firstMessage.substring(0, 60) + (firstMessage.length > 60 ? '...' : '') + ' | SportingBet CWC')
+      setTitle(firstMessage.substring(0, 60) + (firstMessage.length > 60 ? '...' : '') + ' | Sportingbet CWC')
       
       const assistantMessage = state.item.data.value.messages.find((msg: any) => msg.role === 'assistant')
       if (assistantMessage) {

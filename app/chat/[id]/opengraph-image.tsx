@@ -2,7 +2,7 @@ import { ImageResponse } from 'next/og'
  
 export const runtime = 'edge'
  
-export const alt = 'SportingBet CWC Chat'
+export const alt = 'Sportingbet CWC Chat'
 export const size = {
   width: 1200,
   height: 630,
@@ -46,7 +46,7 @@ export default async function Image({ params }: { params: { id: string } }) {
               height: '100px',
             }}
           >
-            <div style={{ fontSize: 44, fontWeight: 'bold', color: '#061F3F' }}>SportingBet</div>
+            <div style={{ fontSize: 44, fontWeight: 'bold', color: '#061F3F' }}>Sportingbet</div>
           </div>
           <div
             style={{
@@ -60,7 +60,7 @@ export default async function Image({ params }: { params: { id: string } }) {
               maxWidth: '60%',
             }}
           >
-            SportingBOT - A Inteligência Artificial da SportingBet
+            SportingBOT - A Inteligência Artificial da Sportingbet
           </div>
         </div>
         
