@@ -42,13 +42,13 @@
     },
     {
       "name": "Group D",
-      "teams": ["Chelsea", "Leon", "Flamengo", "Espérance de Tunis"],
+      "teams": ["Chelsea", "Los Angeles FC", "Flamengo", "Espérance de Tunis"],
       "fixtures": [
-        { "date": "June 16", "ko": "3:00 p.m. EDT", "match": "Chelsea x Leon", "venue": "Mercedes-Benz Stadium, Atlanta" },
+        { "date": "June 16", "ko": "3:00 p.m. EDT", "match": "Chelsea x Los Angeles FC", "venue": "Mercedes-Benz Stadium, Atlanta" },
         { "date": "June 16", "ko": "9:00 p.m. EDT", "match": "Flamengo x Espérance de Tunis", "venue": "Lincoln Financial Field, Philadelphia" },
         { "date": "June 20", "ko": "2:00 p.m. EDT", "match": "Flamengo x Chelsea", "venue": "Lincoln Financial Field, Philadelphia" },
-        { "date": "June 20", "ko": "5:00 p.m. CDT", "match": "Leon x Espérance de Tunis", "venue": "Geodis Park, Nashville" },
-        { "date": "June 24", "ko": "9:00 p.m. EDT", "match": "Leon x Flamengo", "venue": "Camping World Stadium, Orlando" },
+        { "date": "June 20", "ko": "5:00 p.m. CDT", "match": "Los Angeles FC x Espérance de Tunis", "venue": "Geodis Park, Nashville" },
+        { "date": "June 24", "ko": "9:00 p.m. EDT", "match": "Los Angeles FC x Flamengo", "venue": "Camping World Stadium, Orlando" },
         { "date": "June 24", "ko": "9:00 p.m. EDT", "match": "Espérance de Tunis x Chelsea", "venue": "Lincoln Financial Field, Philadelphia" }
       ]
     },

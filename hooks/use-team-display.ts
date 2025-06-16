@@ -43,7 +43,10 @@ export const useTeamDisplay = () => {
       "EST": "espérance-de-tunis",
       "Los Angeles FC": "los-angeles-fc",
       "Los Angeles": "los-angeles-fc",
-      "LAFC": "los-angeles-fc"
+      "LAFC": "los-angeles-fc",
+      "LAC": "los-angeles-fc",
+      "LA": "los-angeles-fc",
+      "LAF": "los-angeles-fc"
     };
 
     // Check if we have a direct mapping
@@ -91,7 +94,10 @@ export const useTeamDisplay = () => {
         "est": "espérance-de-tunis",
         "los angeles fc": "los-angeles-fc",
         "los angeles": "los-angeles-fc",
-        "lafc": "los-angeles-fc"
+        "lafc": "los-angeles-fc",
+        "lac": "los-angeles-fc",
+        "la": "los-angeles-fc",
+        "laf": "los-angeles-fc"
       }
       
       const specialId = specialCases[teamName.toLowerCase()]

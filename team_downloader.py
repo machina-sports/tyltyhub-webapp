@@ -23,7 +23,7 @@ https://images.daznservices.com/di/library/DAZN_News/9d/75/esperance-tunis-logo_
 https://images.daznservices.com/di/library/DAZN_News/fb/dc/malmelodi-sundowns-logo_v4qd6zbme8o818s6p00c5dzye.png,Mamelodi Sundowns,Betway Premiership
 https://images.daznservices.com/di/library/DAZN_News/d1/7d/wydad-casablanca-logo_f2atewhnaf5d10i826wyjnrk8.png,Wydad AC,Botola
 https://images.daznservices.com/di/library/DAZN_News/4d/2a/inter-miami-logo_1u1yfsmwx8klf12ipbsr7ctrb1.png,Inter Miami,MLS
-https://images.daznservices.com/di/library/DAZN_News/23/d/club-leon-logo_lgrzwp93ml9e1wcadm07lh9mf.png,Leon,Liga MX
+https://logos-world.net/wp-content/uploads/2020/06/Los-Angeles-FC-Logo.png,Los Angeles FC,MLS
 https://images.daznservices.com/di/library/DAZN_News/ef/d5/cf-monterrey-logo_1i01y5d42u1jz1sx3s5m8jrrg9.png,Monterrey,Liga MX
 https://images.daznservices.com/di/library/DAZN_News/79/fa/cf-pachuca-logo_kqpt5sma18iw1ohctg13z75ls.png,Pachuca,Liga MX
 https://images.daznservices.com/di/library/DAZN_News/da/86/seattle-sounders-logo_121wwe57qqtqn1vayzqcutj0aq.png,Seattle Sounders,MLS

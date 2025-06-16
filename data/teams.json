@@ -64,13 +64,6 @@
       "abbreviation": "MIA"
     },
     {
-      "id": "leon",
-      "name": "Leon",
-      "league": "Liga MX",
-      "logo": "/team-logos/leon.png",
-      "abbreviation": "LEO"
-    },
-    {
       "id": "monterrey",
       "name": "Monterrey",
       "league": "Liga MX",
@@ -228,6 +221,7 @@
       "id": "los-angeles-fc",
       "name": "Los Angeles FC",
       "league": "MLS",
+      "logo": "/team-logos/lafc.png",
       "abbreviation": "LAFC"
     }
   ]
