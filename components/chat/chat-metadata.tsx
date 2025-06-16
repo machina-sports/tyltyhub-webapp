@@ -30,6 +30,8 @@ export function ChatMetadata({ threadId }: ChatMetadataProps) {
     }
   }, [state.item.data])
 
+  const shareImageUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/kv-txt-op1_980x250px_bot_.gif`
+
   return (
     <Head>
       <title>{title}</title>
@@ -40,13 +42,18 @@ export function ChatMetadata({ threadId }: ChatMetadataProps) {
       <meta property="og:url" content={`${typeof window !== 'undefined' ? window.location.origin : ''}/chat/${threadId}`} />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
-      <meta property="og:image" content={`${typeof window !== 'undefined' ? window.location.origin : ''}/sb-sharing-image.png`} />
+      <meta property="og:image" content={shareImageUrl} />
+      <meta property="og:image:width" content="980" />
+      <meta property="og:image:height" content="250" />
+      <meta property="og:image:alt" content="SportingBOT: a IA da Sportingbet" />
+      <meta property="og:locale" content="pt_BR" />
+      <meta property="og:site_name" content="SportingBOT" />
       
       <meta property="twitter:card" content="summary_large_image" />
       <meta property="twitter:url" content={`${typeof window !== 'undefined' ? window.location.origin : ''}/chat/${threadId}`} />
       <meta property="twitter:title" content={title} />
       <meta property="twitter:description" content={description} />
-      <meta property="twitter:image" content={`${typeof window !== 'undefined' ? window.location.origin : ''}/sb-sharing-image.png`} />
+      <meta property="twitter:image" content={shareImageUrl} />
     </Head>
   )
 }

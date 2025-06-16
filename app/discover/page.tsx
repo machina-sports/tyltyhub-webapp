@@ -318,6 +318,7 @@ export default function DiscoverPage() {
 
   return (
     <div className="mobile-container pb-4 space-y-6 max-w-5xl mx-auto">
+      <h1 className="sr-only">A Inteligência Artificial da Sportingbet</h1>
       <Tabs
         value={activeTab}
         onValueChange={handleTabChange}

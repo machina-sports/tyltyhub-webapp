@@ -54,6 +54,17 @@ export function Sidebar() {
     setIsOpen(false)
   }
 
+  const handleLogoClick = () => {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'navigation_click', {
+        event_category: 'sidebar_logo',
+        event_label: 'Clicked Logo',
+        value: '/',
+      });
+    }
+    handleNavigation('/')
+  }
+
   useEffect(() => {
     // Close sidebar when route changes (mobile)
     setIsOpen(false)
@@ -97,33 +108,21 @@ export function Sidebar() {
           {/* Fixed height logo container */}
           <div className="h-[80px] min-h-[80px] flex flex-col items-center justify-center mb-8">
             <div
-              onClick={() => handleNavigation('/')}
+              onClick={handleLogoClick}
               className="flex items-center justify-center pl-3 cursor-pointer ml-[-10px]"
               role="button"
               aria-label="Go to home"
             >
-              {typeof window !== 'undefined' && window.gtag && (
-                <span
-                  onClick={() => {
-                    window.gtag('event', 'navigation_click', {
-                      event_category: 'sidebar_logo',
-                      event_label: 'Clicked Logo',
-                      value: '/',
-                    });
-                  }}
-                >
-                  <Image
-                    src="/outline.png"
-                    alt="Logo Sportingbet"
-                    width={250}
-                    height={120}
-                    priority
-                    className="ml-[-4px]"
-                  />
-                </span>
-              )}
+              <Image
+                src="/outline.png"
+                alt="Sportingbot"
+                width={250}
+                height={120}
+                priority
+                className="ml-[-4px]"
+              />
             </div>
-            <AnimatedShinyText className="text-xs text-white/50 pt-3">A Inteligência Artificial da Sportingbet</AnimatedShinyText>
+            <p className="text-xs text-white/50 pt-3">A Inteligência Artificial da Sportingbet</p>
           </div>
           {/* Navigation buttons with fixed position */}
           <div className="space-y-4 border-t border-white/10 pt-4">

@@ -17,11 +17,22 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
       title: 'SportingBOT | Chat',
       description: 'A Inteligência Artificial da Sportingbet',
       type: 'website',
+      locale: 'pt_BR',
+      siteName: 'SportingBOT',
+      images: [
+        {
+          url: '/kv-txt-op1_980x250px_bot_.gif',
+          width: 980,
+          height: 250,
+          alt: 'SportingBOT: a IA da Sportingbet',
+        },
+      ],
     },
     twitter: {
       card: 'summary_large_image',
       title: 'SportingBOT | Chat',
       description: 'A Inteligência Artificial da Sportingbet',
+      images: ['/kv-txt-op1_980x250px_bot_.gif'],
     }
   }
 }

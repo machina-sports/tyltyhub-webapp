@@ -64,9 +64,9 @@ const ContainerHistory = () => {
       <div className="flex flex-row justify-center w-full">
         <div className="flex flex-col max-w-4xl w-full">
           <div>
-            <h1 className="text-center mb-6 sm:mb-8 mt-4">
+            <h2 className="text-center mb-6 sm:mb-8 mt-4">
               Your chat history
-            </h1>
+            </h2>
           </div>
           <div className="flex flex-col items-center justify-center p-4 gap-4 w-full">
             {state.list.status === 'loading' ? (

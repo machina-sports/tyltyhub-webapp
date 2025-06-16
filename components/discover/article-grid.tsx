@@ -277,14 +277,14 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
               </div>
               <div className="md:col-span-6 p-4 md:p-8 flex flex-col">
                 <div className="space-y-3">
-                  <h1 className={cn(
+                  <h2 className={cn(
                     "text-lg md:text-3xl font-bold line-clamp-3 transition-colors",
                     isDarkMode
                       ? "text-[#D3ECFF] hover:text-[#45CAFF]"
                       : "hover:text-primary"
                   )}>
                     {title}
-                  </h1>
+                  </h2>
 
                   <div className={cn(
                     "prose prose-sm prose-neutral max-w-none md:line-clamp-5",

@@ -26,7 +26,7 @@ export function ArticleSharing({ articleId, title, url, shareImageUrl }: Article
   const fullUrl = url || `${typeof window !== 'undefined' ? window.location.origin : ''}/discover/${articleId}`
   
   const shareText = `Confira este artigo: ${title}`
-  const shareImage = shareImageUrl || 'https://www.sportingbet.com/content/dam/sportingbet/brand/og-image.jpg'
+  const shareImage = shareImageUrl || `${typeof window !== 'undefined' ? window.location.origin : ''}/kv-txt-op1_980x250px_bot_.gif`
   
   const handleShare = (platform: string) => {
     let shareUrl = ''

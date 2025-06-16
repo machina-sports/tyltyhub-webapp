@@ -70,14 +70,14 @@ export function MobileHeader({ onMenuClick }: MobileHeaderProps) {
           <Menu className="h-8 w-8" />
         </Button>
         
-        <h1 
+        <h2 
           className="text-lg font-semibold cursor-pointer text-white py-2 px-4 -mx-4 flex-1 text-center" 
           onClick={handleHomeNavigation}
           role="button"
           aria-label="Go to home"
         >
           {getPageTitle()}
-        </h1>
+        </h2>
 
         {isArticlePage ? (
           <Button
