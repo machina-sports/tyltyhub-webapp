@@ -90,6 +90,7 @@ const ContainerHome = ({ query }: { query: string }) => {
   const [randomTitle, setRandomTitle] = useState("Qual vai ser a sua aposta?")
   
   const inputRef = useRef<HTMLInputElement>(null)
+  const questionRefs = useRef<(HTMLDivElement | null)[]>([])
 
   useEffect(() => {
     setRandomTitle(titleOptions[Math.floor(Math.random() * titleOptions.length)])
@@ -101,6 +102,26 @@ const ContainerHome = ({ query }: { query: string }) => {
       inputRef.current.focus()
     }
   }, [])
+
+  // Auto-scroll to selected item
+  useEffect(() => {
+    if (selectedIndex >= 0 && questionRefs.current[selectedIndex]) {
+      questionRefs.current[selectedIndex]?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest'
+      })
+    } else if (selectedIndex === -1 && inputRef.current) {
+      setTimeout(() => {
+        inputRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        })
+        setTimeout(() => {
+          inputRef.current?.focus()
+        }, 200)
+      }, 100)
+    }
+  }, [selectedIndex])
 
   // Keyboard navigation
   useEffect(() => {
@@ -129,20 +150,12 @@ const ContainerHome = ({ query }: { query: string }) => {
       } else if (e.key === 'Escape') {
         e.preventDefault()
         setSelectedIndex(-1)
-        inputRef.current?.focus()
       }
     }
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [selectedIndex, input, topQuestions])
-
-  // Focus input when selectedIndex is -1
-  useEffect(() => {
-    if (selectedIndex === -1 && inputRef.current) {
-      inputRef.current.focus()
-    }
-  }, [selectedIndex])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -171,7 +184,7 @@ const ContainerHome = ({ query }: { query: string }) => {
   }
 
   const getInputPlaceholder = () => {
-    return "O que você quer saber sobre apostas esportivas?"
+    return "Quais apostas você quer fazer?"
   }
 
   // Prevent scroll on mobile only for home page
@@ -227,20 +240,21 @@ const ContainerHome = ({ query }: { query: string }) => {
             isDarkMode && "text-[#ffffff]"
           )}>
             {randomTitle}
-            <SportingbetDot size={28} className={cn(
-              "ml-1",
-              isDarkMode && "text-[#45CAFF]"
-            )} />
           </h1>
           <div className="w-full max-w-xl mx-auto">
             <form onSubmit={handleSubmit} className="relative">
+              <div className="absolute left-3 top-[22px] -translate-y-1/2">
+                <SportingbetDot size={20} className={cn(
+                  isDarkMode && "text-[#45CAFF]"
+                )} />
+              </div>
               <Input
                 ref={inputRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder={getInputPlaceholder()}
                 className={cn(
-                  "w-full h-12 pl-4 pr-12 rounded-lg",
+                  "w-full h-12 pl-12 pr-12 rounded-lg",
                   selectedIndex === -1 && "ring-2 ring-primary/50",
                   isDarkMode ? "bg-[#051A35] text-[#D3ECFF] placeholder:text-[#D3ECFF]/50 border border-[#45CAFF]/30 focus:border-[#45CAFF]/50 transition-colors" : "bg-secondary border-0"
                 )}
@@ -259,6 +273,18 @@ const ContainerHome = ({ query }: { query: string }) => {
                 </Button>
               </div>
             </form>
+            
+            {/* Navigation instruction - appears on both desktop and mobile */}
+            {topQuestions.length > 0 && (
+              <div className="mt-2 text-center hidden md:block">
+                <p className={cn(
+                  "text-xs",
+                  isDarkMode ? "text-[#D3ECFF]/40" : "text-muted-foreground/60"
+                )}>
+                  Use ↑↓ para navegar • Enter para confirmar • Esc para o campo de busca
+                </p>
+              </div>
+            )}
           </div>
           
           {/* Questions List */}
@@ -268,6 +294,7 @@ const ContainerHome = ({ query }: { query: string }) => {
                 {topQuestions.map((question: string, index: number) => (
                   <motion.div
                     key={index}
+                    ref={(el) => { questionRefs.current[index] = el }}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.05 }}
@@ -318,16 +345,6 @@ const ContainerHome = ({ query }: { query: string }) => {
                     </div>
                   </motion.div>
                 ))}
-              </div>
-              
-              {/* Navigation hint - only show on desktop */}
-              <div className="mt-4 text-center hidden md:block">
-                <p className={cn(
-                  "text-xs",
-                  isDarkMode ? "text-[#D3ECFF]/40" : "text-muted-foreground/60"
-                )}>
-                  Use ↑↓ para navegar • Enter para confirmar • Esc para o campo de busca
-                </p>
               </div>
             </div>
           )}
