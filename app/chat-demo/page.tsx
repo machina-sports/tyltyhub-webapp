@@ -10,7 +10,6 @@ import { cn } from '@/lib/utils'
 import { useChatScroll } from '@/hooks/use-chat-scroll'
 import { useChatState } from '@/hooks/use-chat-state'
 import { Dot, SportingbetDot } from '@/components/ui/dot'
-import { Carousel, CarouselContent, CarouselItem, CarouselApi } from '@/components/ui/carousel'
 import { motion } from 'framer-motion'
 
 type SuggestionItem = {
@@ -44,6 +43,7 @@ export default function Home() {
   const [isRecording, setIsRecording] = useState(false)
   const [isPreparing, setIsPreparing] = useState(false)
   const [isTranscribing, setIsTranscribing] = useState(false)
+  const [selectedIndex, setSelectedIndex] = useState(-1) // -1 means input is focused
   const { 
     messages, 
     showInitial, 
@@ -52,119 +52,59 @@ export default function Home() {
     setIsTyping 
   } = useChatState()
   const { messagesEndRef } = useChatScroll(messages, isTyping)
-  const [api, setApi] = useState<CarouselApi>()
-  const autoScrollTimerRef = useRef<NodeJS.Timeout | null>(null)
-  const prepareTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Ref for the preparation timeout
-  
-  // Refs for DOM elements, scroll positions, and animation frames
-  const [isFirstRowScrolling, setIsFirstRowScrolling] = useState(true); // Control first row
-  const [isSecondRowScrolling, setIsSecondRowScrolling] = useState(true); // Control second row
-  const firstRowRef = useRef<HTMLDivElement>(null)
-  const secondRowRef = useRef<HTMLDivElement>(null)
-  const firstRowContentRef = useRef<HTMLDivElement>(null)
-  const secondRowContentRef = useRef<HTMLDivElement>(null)
-  const firstRowPositionRef = useRef(0);
-  const secondRowPositionRef = useRef(0);
-  const firstAnimationFrameIdRef = useRef<number | null>(null);
-  const secondAnimationFrameIdRef = useRef<number | null>(null);
-  
-  // Auto-scroll animation using requestAnimationFrame
-  useEffect(() => {
-    // --- First Row Animation --- 
-    const firstRowAnimation = () => {
-      if (!isFirstRowScrolling || !firstRowRef.current || !firstRowContentRef.current) {
-        return; // Stop if paused or refs are null
-      }
-      
-      firstRowPositionRef.current += 0.5;
-      const contentWidth = firstRowContentRef.current.offsetWidth;
-      if (firstRowPositionRef.current >= contentWidth) {
-        firstRowPositionRef.current = 0;
-      }
-      if (firstRowRef.current) { 
-        firstRowRef.current.style.transform = `translateX(-${firstRowPositionRef.current}px)`;
-      }
-      
-      firstAnimationFrameIdRef.current = requestAnimationFrame(firstRowAnimation);
-    };
+  const inputRef = useRef<HTMLInputElement>(null)
+  const prepareTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-    // --- Second Row Animation --- 
-    const secondRowAnimation = () => {
-      if (!isSecondRowScrolling || !secondRowRef.current || !secondRowContentRef.current) {
-        return; // Stop if paused or refs are null
-      }
-      
-      // For left-to-right scrolling (we need to initialize at negative position)
-      secondRowPositionRef.current += 0.5; 
-      const contentWidth = secondRowContentRef.current.offsetWidth;
-      
-      // Reset position when content has fully entered from the left
-      if (secondRowPositionRef.current >= 0) {
-        // If position has reached the end of first set, loop back
-        if (secondRowPositionRef.current >= contentWidth) {
-          secondRowPositionRef.current = -contentWidth;
+  // Focus input on mount
+  useEffect(() => {
+    if (showInitial && inputRef.current) {
+      inputRef.current.focus()
+    }
+  }, [showInitial])
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!showInitial) return
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault()
+        setSelectedIndex(prev => {
+          const newIndex = prev + 1
+          if (newIndex >= suggestions.length) return 0
+          return newIndex
+        })
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault()
+        setSelectedIndex(prev => {
+          const newIndex = prev - 1
+          if (newIndex < -1) return suggestions.length - 1
+          return newIndex
+        })
+      } else if (e.key === 'Enter') {
+        e.preventDefault()
+        if (selectedIndex >= 0) {
+          handleSampleQuery(suggestions[selectedIndex].text)
+        } else if (input.trim()) {
+          handleSubmit(e as any)
         }
+      } else if (e.key === 'Escape') {
+        e.preventDefault()
+        setSelectedIndex(-1)
+        inputRef.current?.focus()
       }
-      
-      if (secondRowRef.current) { 
-        secondRowRef.current.style.transform = `translateX(${secondRowPositionRef.current}px)`;
-      }
-      
-      secondAnimationFrameIdRef.current = requestAnimationFrame(secondRowAnimation);
-    };
-    
-    // Handle first row animation
-    if (isFirstRowScrolling) {
-      // Cancel any existing animation before starting a new one
-      if (firstAnimationFrameIdRef.current !== null) {
-        cancelAnimationFrame(firstAnimationFrameIdRef.current);
-      }
-      firstAnimationFrameIdRef.current = requestAnimationFrame(firstRowAnimation);
-    } else if (firstAnimationFrameIdRef.current !== null) {
-      cancelAnimationFrame(firstAnimationFrameIdRef.current);
-      firstAnimationFrameIdRef.current = null;
-    }
-    
-    // Handle second row animation
-    if (isSecondRowScrolling) {
-      // Cancel any existing animation before starting a new one
-      if (secondAnimationFrameIdRef.current !== null) {
-        cancelAnimationFrame(secondAnimationFrameIdRef.current);
-      }
-      secondAnimationFrameIdRef.current = requestAnimationFrame(secondRowAnimation);
-    } else if (secondAnimationFrameIdRef.current !== null) {
-      cancelAnimationFrame(secondAnimationFrameIdRef.current);
-      secondAnimationFrameIdRef.current = null;
     }
 
-    // Cleanup: Cancel animation frames when component unmounts
-    return () => {
-      if (firstAnimationFrameIdRef.current !== null) {
-        cancelAnimationFrame(firstAnimationFrameIdRef.current);
-        firstAnimationFrameIdRef.current = null;
-      }
-      if (secondAnimationFrameIdRef.current !== null) {
-        cancelAnimationFrame(secondAnimationFrameIdRef.current);
-        secondAnimationFrameIdRef.current = null;
-      }
-    };
-  }, [isFirstRowScrolling, isSecondRowScrolling]); // Only depend on these two state variables
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [showInitial, selectedIndex, input])
 
-  // Initialize second row position when component mounts
+  // Focus input when selectedIndex is -1
   useEffect(() => {
-    // Initialize second row at negative position to create illusion of infinite scroll
-    if (secondRowContentRef.current && secondRowRef.current) {
-      const width = secondRowContentRef.current.offsetWidth;
-      secondRowPositionRef.current = -width; // Start completely off-screen to the left
-      secondRowRef.current.style.transform = `translateX(${secondRowPositionRef.current}px)`;
+    if (selectedIndex === -1 && inputRef.current) {
+      inputRef.current.focus()
     }
-  }, []);
-
-  // Hover handlers remain simple state toggles
-  const pauseFirstRow = () => setIsFirstRowScrolling(false);
-  const resumeFirstRow = () => setIsFirstRowScrolling(true);
-  const pauseSecondRow = () => setIsSecondRowScrolling(false);
-  const resumeSecondRow = () => setIsSecondRowScrolling(true);
+  }, [selectedIndex])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -185,6 +125,7 @@ export default function Home() {
     // Add user message immediately
     addMessage({ role: 'user', content: input })
     setInput('')
+    setSelectedIndex(-1)
 
     // Show typing indicator for assistant response
     setIsTyping(true)
@@ -201,6 +142,11 @@ export default function Home() {
 
   const handleSampleQuery = (query: string) => {
     setInput(query)
+    setSelectedIndex(-1)
+    // Submit immediately
+    setTimeout(() => {
+      handleSubmit({ preventDefault: () => {} } as any)
+    }, 100)
   }
 
   // Add microphone handling functions
@@ -268,18 +214,23 @@ export default function Home() {
       <div className="flex-1 overflow-auto hide-scrollbar momentum-scroll pb-32 pt-4 md:pb-24">
         {showInitial ? (
           <div className="flex flex-col items-center justify-center min-h-[calc(100vh-12rem)] p-4">
-            <h1 className="text-center mb-4 sm:mb-6 flex items-center gap-3 justify-center">
-              Qual vai ser a sua aposta?
+            {/* Banner */}
+            <img className="w-full mb-0 max-w-[980px] mt-12 md:mt-0" src="/kv-txt-op1_980x250px_bot_.gif" alt="SportingBet Banner" />
+            
+            <h1 className="text-center mb-4 sm:mb-6 flex items-center gap-3 justify-center pt-10 pb-6 sm:pt-14 sm:pb-10">
+              Vamos jogar juntos? Me diz onde você precisa de reforço!
               <SportingbetDot size={28} className="ml-1" />
             </h1>
             <div className="w-full max-w-xl mx-auto">
               <form onSubmit={handleSubmit} className="relative">
                 <Input
+                  ref={inputRef}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder={getInputPlaceholder()}
                   className={cn(
                     "w-full h-10 md:h-12 pl-4 pr-12 rounded-lg bg-secondary/50 border-0 shadow-sm text-base",
+                    selectedIndex === -1 && "ring-2 ring-primary/50",
                     isPreparing && "animate-pulse text-amber-600",
                     isRecording && "animate-pulse text-red-600",
                     isTranscribing && "animate-pulse"
@@ -328,117 +279,77 @@ export default function Home() {
                 </div>
               </form>
             </div>
-            <div className="mt-4 sm:mt-6 w-full max-w-xl mx-auto px-1">
-              <div className="w-full relative flex flex-col gap-2 md:gap-3">
-                <div 
-                  className="relative overflow-hidden rounded-lg"
-                  onMouseEnter={pauseFirstRow}
-                  onMouseLeave={resumeFirstRow}
-                  onTouchStart={pauseFirstRow}
-                  onTouchEnd={resumeFirstRow}
-                >
-                  <div className="absolute left-0 top-0 h-full w-12 bg-gradient-to-r from-background to-transparent z-10"></div>
-                  <div className="absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-background to-transparent z-10"></div>
-                  <div className="flex overflow-hidden scrolling-row">
-                    <div ref={firstRowRef} className="flex w-full touch-action-pan-y"> 
-                      <div ref={firstRowContentRef} className="flex gap-2 py-1">
-                        {suggestions.slice(0, 6).map((suggestion, index) => (
-                          <motion.button
-                            key={index}
-                            whileTap={{ scale: 0.97 }}
-                            className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2.5 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 active:bg-secondary/60 transition-colors rounded-lg flex items-center group"
-                            onClick={() => handleSampleQuery(suggestion.text)}
-                          >
-                            {suggestion.isLabIcon && suggestion.iconNode ? (
-                              <Icon 
-                                iconNode={suggestion.iconNode} 
-                                className="h-4 w-4 mr-3 flex-shrink-0 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" 
-                              />
-                            ) : suggestion.icon ? (
-                              <suggestion.icon className="h-4 w-4 mr-3 flex-shrink-0 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" />
-                            ) : null}
-                            {suggestion.text}
-                          </motion.button>
-                        ))}
-                      </div>
-                      <div className="flex gap-2 py-1">
-                        {suggestions.slice(0, 6).map((suggestion, index) => (
-                          <motion.button
-                            key={`dup1-${index}`}
-                            whileTap={{ scale: 0.97 }}
-                            className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2.5 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 active:bg-secondary/60 transition-colors rounded-lg flex items-center group"
-                            onClick={() => handleSampleQuery(suggestion.text)}
-                          >
-                            {suggestion.isLabIcon && suggestion.iconNode ? (
-                              <Icon 
-                                iconNode={suggestion.iconNode} 
-                                className="h-4 w-4 mr-3 flex-shrink-0 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" 
-                              />
-                            ) : suggestion.icon ? (
-                              <suggestion.icon className="h-4 w-4 mr-3 flex-shrink-0 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" />
-                            ) : null}
-                            {suggestion.text}
-                          </motion.button>
-                        ))}
-                      </div>
+            
+            {/* Questions List */}
+            <div className="mt-6 w-full max-w-xl mx-auto">
+              <div className="space-y-2">
+                {suggestions.map((suggestion, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    className={cn(
+                      "flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-200",
+                      selectedIndex === index
+                        ? "bg-primary/10 border-2 border-primary/50 shadow-sm"
+                        : "hover:bg-secondary/40 border-2 border-transparent"
+                    )}
+                    onClick={() => handleSampleQuery(suggestion.text)}
+                  >
+                    {/* Dot indicator */}
+                    <div className="flex-shrink-0">
+                      <SportingbetDot 
+                        size={16} 
+                        className={cn(
+                          "transition-opacity duration-200",
+                          selectedIndex === index ? "opacity-100" : "opacity-30"
+                        )} 
+                      />
                     </div>
-                  </div>
-                </div>
-
-                <div 
-                  className="relative overflow-hidden rounded-lg"
-                  onMouseEnter={pauseSecondRow}
-                  onMouseLeave={resumeSecondRow}
-                  onTouchStart={pauseSecondRow}
-                  onTouchEnd={resumeSecondRow}
-                >
-                  <div className="absolute left-0 top-0 h-full w-12 bg-gradient-to-r from-background to-transparent z-10"></div>
-                  <div className="absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-background to-transparent z-10"></div>
-                  <div className="flex overflow-hidden scrolling-row">
-                    <div ref={secondRowRef} className="flex w-full touch-action-pan-y"> 
-                      <div ref={secondRowContentRef} className="flex gap-2 py-1">
-                        {suggestions.slice(6).map((suggestion, index) => (
-                          <motion.button
-                            key={index}
-                            whileTap={{ scale: 0.97 }}
-                            className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2.5 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 active:bg-secondary/60 transition-colors rounded-lg flex items-center group"
-                            onClick={() => handleSampleQuery(suggestion.text)}
-                          >
-                            {suggestion.isLabIcon && suggestion.iconNode ? (
-                              <Icon 
-                                iconNode={suggestion.iconNode} 
-                                className="h-4 w-4 mr-3 flex-shrink-0 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" 
-                              />
-                            ) : suggestion.icon ? (
-                              <suggestion.icon className="h-4 w-4 mr-3 flex-shrink-0 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" />
-                            ) : null}
-                            {suggestion.text}
-                          </motion.button>
-                        ))}
-                      </div>
-                      <div className="flex gap-2 py-1">
-                        {suggestions.slice(6).map((suggestion, index) => (
-                          <motion.button
-                            key={`dup2-${index}`}
-                            whileTap={{ scale: 0.97 }}
-                            className="flex-shrink-0 whitespace-nowrap text-left px-3 py-2.5 text-sm text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 active:bg-secondary/60 transition-colors rounded-lg flex items-center group"
-                            onClick={() => handleSampleQuery(suggestion.text)}
-                          >
-                            {suggestion.isLabIcon && suggestion.iconNode ? (
-                              <Icon 
-                                iconNode={suggestion.iconNode} 
-                                className="h-4 w-4 mr-3 flex-shrink-0 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" 
-                              />
-                            ) : suggestion.icon ? (
-                              <suggestion.icon className="h-4 w-4 mr-3 flex-shrink-0 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" />
-                            ) : null}
-                            {suggestion.text}
-                          </motion.button>
-                        ))}
-                      </div>
+                    
+                    {/* Icon */}
+                    <div className="flex-shrink-0">
+                      {suggestion.isLabIcon && suggestion.iconNode ? (
+                        <Icon 
+                          iconNode={suggestion.iconNode} 
+                          className={cn(
+                            "h-5 w-5 transition-colors duration-200",
+                            selectedIndex === index 
+                              ? "text-primary" 
+                              : "text-muted-foreground/60"
+                          )} 
+                        />
+                      ) : suggestion.icon ? (
+                        <suggestion.icon 
+                          className={cn(
+                            "h-5 w-5 transition-colors duration-200",
+                            selectedIndex === index 
+                              ? "text-primary" 
+                              : "text-muted-foreground/60"
+                          )} 
+                        />
+                      ) : null}
                     </div>
-                  </div>
-                </div>
+                    
+                    {/* Text */}
+                    <span className={cn(
+                      "text-base transition-colors duration-200",
+                      selectedIndex === index 
+                        ? "text-foreground font-medium" 
+                        : "text-muted-foreground"
+                    )}>
+                      {suggestion.text}
+                    </span>
+                  </motion.div>
+                ))}
+              </div>
+              
+              {/* Navigation hint */}
+              <div className="mt-4 text-center">
+                <p className="text-xs text-muted-foreground/60">
+                  Use ↑↓ para navegar • Enter para confirmar • Esc para o campo de busca
+                </p>
               </div>
             </div>
           </div>

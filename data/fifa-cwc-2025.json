@@ -54,13 +54,13 @@
     },
     {
       "name": "Group E",
-      "teams": ["River Plate", "Urawa Red Diamonds", "Monterrey", "Inter Milan"],
+      "teams": ["River Plate", "Urawa Red Diamonds", "Monterrey", "Inter de Milão"],
       "fixtures": [
         { "date": "June 17", "ko": "12:00 p.m. PDT", "match": "River Plate x Urawa Red Diamonds", "venue": "Lumen Field, Seattle" },
-        { "date": "June 17", "ko": "6:00 p.m. PDT", "match": "Monterrey x Inter Milan", "venue": "Rose Bowl, Pasadena" },
-        { "date": "June 21", "ko": "12:00 p.m. PDT", "match": "Inter Milan x Urawa Red Diamonds", "venue": "Lumen Field, Seattle" },
+        { "date": "June 17", "ko": "6:00 p.m. PDT", "match": "Monterrey x Inter de Milão", "venue": "Rose Bowl, Pasadena" },
+        { "date": "June 21", "ko": "12:00 p.m. PDT", "match": "Inter de Milão x Urawa Red Diamonds", "venue": "Lumen Field, Seattle" },
         { "date": "June 21", "ko": "6:00 p.m. PDT", "match": "River Plate x Monterrey", "venue": "Rose Bowl, Pasadena" },
-        { "date": "June 25", "ko": "6:00 p.m. PDT", "match": "Inter Milan x River Plate", "venue": "Lumen Field, Seattle" },
+        { "date": "June 25", "ko": "6:00 p.m. PDT", "match": "Inter de Milão x River Plate", "venue": "Lumen Field, Seattle" },
         { "date": "June 25", "ko": "6:00 p.m. PDT", "match": "Urawa Red Diamonds x Monterrey", "venue": "Rose Bowl, Pasadena" }
       ]
     },

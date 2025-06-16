@@ -6,9 +6,7 @@ class TrendingService extends ClientBaseService {
   async getTrendingArticles() {
     return this.post({
       filters: {
-        name: "content-article",
-        "metadata.language": "br",
-        "metadata.content_type": "trendings-competition-trendings"
+        name: "content-trending-news",
       },
       pagination: {
         page: 1,

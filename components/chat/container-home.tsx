@@ -69,12 +69,13 @@ const ContainerHome = ({ query }: { query: string }) => {
   const router = useRouter()
 
   const [input, setInput] = useState(query)
+  const [selectedIndex, setSelectedIndex] = useState(-1) // -1 means input is focused
 
   const state = useGlobalState((state: any) => state.trending)
 
   const trendingArticle = state.trendingResults.data?.[0]?.value
 
-  const topQuestions = trendingArticle?.related_questions || []
+  const topQuestions = trendingArticle?.["trending-questions"] || []
 
   const user_id = "123"
 
@@ -88,117 +89,60 @@ const ContainerHome = ({ query }: { query: string }) => {
   // Get random title after client-side mount to avoid hydration errors
   const [randomTitle, setRandomTitle] = useState("Qual vai ser a sua aposta?")
   
+  const inputRef = useRef<HTMLInputElement>(null)
+
   useEffect(() => {
     setRandomTitle(titleOptions[Math.floor(Math.random() * titleOptions.length)])
   }, [])
 
-  // Animation states and refs for first row
-  const [isFirstRowScrolling, setIsFirstRowScrolling] = useState(true)
-  const firstRowRef = useRef<HTMLDivElement>(null)
-  const firstRowContentRef = useRef<HTMLDivElement>(null)
-  const firstRowPositionRef = useRef(0)
-  const firstAnimationFrameIdRef = useRef<number | null>(null)
-
-  // Animation states and refs for second row
-  const [isSecondRowScrolling, setIsSecondRowScrolling] = useState(true)
-  const secondRowRef = useRef<HTMLDivElement>(null)
-  const secondRowContentRef = useRef<HTMLDivElement>(null)
-  const secondRowPositionRef = useRef(0)
-  const secondAnimationFrameIdRef = useRef<number | null>(null)
-
-  // Animation effect for first row (LEFT TO RIGHT)
+  // Focus input on mount
   useEffect(() => {
-    const firstRowAnimation = () => {
-      if (!isFirstRowScrolling || !firstRowRef.current || !firstRowContentRef.current) {
-        return;
-      }
-      
-      const contentWidth = firstRowContentRef.current.offsetWidth;
-      firstRowPositionRef.current += 0.5;
-      if (firstRowPositionRef.current >= contentWidth) {
-        firstRowPositionRef.current = 0;
-      }
-      if (firstRowRef.current) { 
-        firstRowRef.current.style.transform = `translateX(${-contentWidth + firstRowPositionRef.current}px)`;
-      }
-      
-      firstAnimationFrameIdRef.current = requestAnimationFrame(firstRowAnimation);
-    };
-    
-    if (isFirstRowScrolling) {
-      if (firstAnimationFrameIdRef.current !== null) {
-        cancelAnimationFrame(firstAnimationFrameIdRef.current);
-      }
-      firstAnimationFrameIdRef.current = requestAnimationFrame(firstRowAnimation);
-    } else if (firstAnimationFrameIdRef.current !== null) {
-      cancelAnimationFrame(firstAnimationFrameIdRef.current);
-      firstAnimationFrameIdRef.current = null;
+    if (inputRef.current) {
+      inputRef.current.focus()
     }
+  }, [])
 
-    return () => {
-      if (firstAnimationFrameIdRef.current !== null) {
-        cancelAnimationFrame(firstAnimationFrameIdRef.current);
-        firstAnimationFrameIdRef.current = null;
-      }
-    };
-  }, [isFirstRowScrolling]);
-
-  // Animation effect for second row (RIGHT TO LEFT)
+  // Keyboard navigation
   useEffect(() => {
-    const secondRowAnimation = () => {
-      if (!isSecondRowScrolling || !secondRowRef.current || !secondRowContentRef.current) {
-        return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault()
+        setSelectedIndex(prev => {
+          const newIndex = prev + 1
+          if (newIndex >= topQuestions.length) return 0
+          return newIndex
+        })
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault()
+        setSelectedIndex(prev => {
+          const newIndex = prev - 1
+          if (newIndex < -1) return topQuestions.length - 1
+          return newIndex
+        })
+      } else if (e.key === 'Enter') {
+        e.preventDefault()
+        if (selectedIndex >= 0) {
+          handleSampleQuery(topQuestions[selectedIndex])
+        } else if (input.trim()) {
+          handleSubmit(e as any)
+        }
+      } else if (e.key === 'Escape') {
+        e.preventDefault()
+        setSelectedIndex(-1)
+        inputRef.current?.focus()
       }
-      
-      const contentWidth = secondRowContentRef.current.offsetWidth;
-      secondRowPositionRef.current += 0.5;
-      if (secondRowPositionRef.current >= contentWidth) {
-        secondRowPositionRef.current = 0;
-      }
-      
-      if (secondRowRef.current) { 
-        secondRowRef.current.style.transform = `translateX(${-secondRowPositionRef.current}px)`;
-      }
-      
-      secondAnimationFrameIdRef.current = requestAnimationFrame(secondRowAnimation);
-    };
-    
-    if (isSecondRowScrolling) {
-      if (secondAnimationFrameIdRef.current !== null) {
-        cancelAnimationFrame(secondAnimationFrameIdRef.current);
-      }
-      secondAnimationFrameIdRef.current = requestAnimationFrame(secondRowAnimation);
-    } else if (secondAnimationFrameIdRef.current !== null) {
-      cancelAnimationFrame(secondAnimationFrameIdRef.current);
-      secondAnimationFrameIdRef.current = null;
     }
 
-    return () => {
-      if (secondAnimationFrameIdRef.current !== null) {
-        cancelAnimationFrame(secondAnimationFrameIdRef.current);
-        secondAnimationFrameIdRef.current = null;
-      }
-    };
-  }, [isSecondRowScrolling]);
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [selectedIndex, input, topQuestions])
 
-  // Initialize positions
+  // Focus input when selectedIndex is -1
   useEffect(() => {
-    if (firstRowContentRef.current && firstRowRef.current) {
-      const width = firstRowContentRef.current.offsetWidth;
-      firstRowPositionRef.current = 0; // Start positionRef at 0
-      firstRowRef.current.style.transform = `translateX(${-width}px)`; // Initial transform for left-to-right
+    if (selectedIndex === -1 && inputRef.current) {
+      inputRef.current.focus()
     }
-    if (secondRowContentRef.current && secondRowRef.current) {
-      secondRowPositionRef.current = 0; // Start positionRef at 0
-      secondRowRef.current.style.transform = `translateX(0px)`; // Initial transform for right-to-left
-    }
-  }, []);
-
-  // Hover handlers
-  const pauseFirstRow = () => setIsFirstRowScrolling(false);
-  const resumeFirstRow = () => setIsFirstRowScrolling(true);
-  const pauseSecondRow = () => setIsSecondRowScrolling(false);
-  const resumeSecondRow = () => setIsSecondRowScrolling(true);
+  }, [selectedIndex])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -211,15 +155,13 @@ const ContainerHome = ({ query }: { query: string }) => {
   const handleSampleQuery = (text: string) => {
     trackSuggestedQuestionClick(text)
     setInput(text)
+    setSelectedIndex(-1)
+    // Don't submit immediately, just put in input field
   }
 
   const getInputPlaceholder = () => {
     return "O que você quer saber sobre apostas esportivas?"
   }
-
-  // Split questions into two groups
-  const firstHalf = topQuestions?.slice(0, Math.ceil(topQuestions.length / 2)) || []
-  const secondHalf = topQuestions?.slice(Math.ceil(topQuestions.length / 2)) || []
 
   // Prevent scroll on mobile only for home page
   useEffect(() => {
@@ -282,11 +224,13 @@ const ContainerHome = ({ query }: { query: string }) => {
           <div className="w-full max-w-xl mx-auto">
             <form onSubmit={handleSubmit} className="relative">
               <Input
+                ref={inputRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder={getInputPlaceholder()}
                 className={cn(
                   "w-full h-12 pl-4 pr-12 rounded-lg",
+                  selectedIndex === -1 && "ring-2 ring-primary/50",
                   isDarkMode ? "bg-[#051A35] text-[#D3ECFF] placeholder:text-[#D3ECFF]/50 border border-[#45CAFF]/30 focus:border-[#45CAFF]/50 transition-colors" : "bg-secondary border-0"
                 )}
               />
@@ -305,143 +249,77 @@ const ContainerHome = ({ query }: { query: string }) => {
               </div>
             </form>
           </div>
-          <div className="mt-4 sm:mt-6 w-full max-w-xl mx-auto px-1">
-            <div className="w-full relative flex flex-col gap-2 md:gap-3">
-              <div 
-                className="relative overflow-hidden rounded-lg"
-                onMouseEnter={pauseFirstRow}
-                onMouseLeave={resumeFirstRow}
-                onTouchStart={pauseFirstRow}
-                onTouchEnd={resumeFirstRow}
-              >
-                <div className={cn(
-                  "absolute left-0 top-0 h-full w-12 bg-gradient-to-r to-transparent z-10",
-                  isDarkMode ? "from-[#061F3F]" : "from-background"
-                )}></div>
-                <div className={cn(
-                  "absolute right-0 top-0 h-full w-12 bg-gradient-to-l to-transparent z-10",
-                  isDarkMode ? "from-[#061F3F]" : "from-background"
-                )}></div>
-                <div className="flex overflow-hidden scrolling-row">
-                  <div ref={firstRowRef} className="flex w-full touch-action-pan-y"> 
-                    <div ref={firstRowContentRef} className="flex gap-2 py-1">
-                      {firstHalf.map((text: string, index: number) => (
-                        <motion.button
-                          key={index}
-                          whileTap={{ scale: 0.97 }}
+          
+          {/* Questions List */}
+          {topQuestions.length > 0 && (
+            <div className="mt-6 w-full max-w-xl mx-auto">
+              <div className="space-y-2">
+                {topQuestions.map((question: string, index: number) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    className="flex items-center gap-4"
+                  >
+                    {/* Icon indicator - outside hover area */}
+                    <div className="flex-shrink-0 w-6 flex justify-center">
+                      {selectedIndex === index ? (
+                        <SportingbetDot 
+                          size={20} 
                           className={cn(
-                            "flex-shrink-0 whitespace-nowrap text-left px-3 py-2.5 text-sm transition-colors rounded-lg flex items-center group",
-                            isDarkMode 
-                              ? "text-[#D3ECFF]/60 hover:text-[#D3ECFF] hover:bg-[#45CAFF]/10 active:bg-[#45CAFF]/20" 
-                              : "text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 active:bg-secondary/60"
-                          )}
-                          onClick={() => handleSampleQuery(text)}
-                        >
-                          <Reply className={cn(
-                            "h-4 w-4 mr-3 transition-colors",
-                            isDarkMode 
-                              ? "text-[#D3ECFF]/40 group-hover:text-[#D3ECFF]" 
-                              : "text-muted-foreground/40 group-hover:text-muted-foreground"
-                          )} />
-                          {text}
-                        </motion.button>
-                      ))}
-                    </div>
-                    <div className="flex gap-2 py-1">
-                      {firstHalf.map((text: string, index: number) => (
-                        <motion.button
-                          key={`dup1-${index}`}
-                          whileTap={{ scale: 0.97 }}
+                            "transition-all duration-200",
+                            isDarkMode ? "text-[#45CAFF]" : "text-primary"
+                          )} 
+                        />
+                      ) : (
+                        <Reply 
                           className={cn(
-                            "flex-shrink-0 whitespace-nowrap text-left px-3 py-2.5 text-sm transition-colors rounded-lg flex items-center group",
-                            isDarkMode 
-                              ? "text-[#D3ECFF]/60 hover:text-[#D3ECFF] hover:bg-[#45CAFF]/10 active:bg-[#45CAFF]/20" 
-                              : "text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 active:bg-secondary/60"
-                          )}
-                          onClick={() => handleSampleQuery(text)}
-                        >
-                          <Reply className={cn(
-                            "h-4 w-4 mr-3 transition-colors",
-                            isDarkMode 
-                              ? "text-[#D3ECFF]/40 group-hover:text-[#D3ECFF]" 
-                              : "text-muted-foreground/40 group-hover:text-muted-foreground"
-                          )} />
-                          {text}
-                        </motion.button>
-                      ))}
+                            "h-5 w-5 transition-colors duration-200",
+                            isDarkMode ? "text-[#D3ECFF]/40" : "text-muted-foreground/40"
+                          )} 
+                        />
+                      )}
                     </div>
-                  </div>
-                </div>
+                    
+                    {/* Text with hover - clickable area */}
+                    <div
+                      className={cn(
+                        "flex-1 p-3 rounded-lg cursor-pointer transition-all duration-200",
+                        selectedIndex === index
+                          ? isDarkMode 
+                            ? "bg-[#45CAFF]/10 border-2 border-[#45CAFF]/50 shadow-sm"
+                            : "bg-primary/10 border-2 border-primary/50 shadow-sm"
+                          : isDarkMode
+                            ? "hover:bg-[#45CAFF]/5 border-2 border-transparent"
+                            : "hover:bg-secondary/40 border-2 border-transparent"
+                      )}
+                      onClick={() => handleSampleQuery(question)}
+                    >
+                      <span className={cn(
+                        "text-base transition-colors duration-200",
+                        selectedIndex === index 
+                          ? isDarkMode ? "text-[#D3ECFF]" : "text-foreground"
+                          : isDarkMode ? "text-[#D3ECFF]/80" : "text-muted-foreground"
+                      )}>
+                        {question}
+                      </span>
+                    </div>
+                  </motion.div>
+                ))}
               </div>
-
-              <div 
-                className="relative overflow-hidden rounded-lg"
-                onMouseEnter={pauseSecondRow}
-                onMouseLeave={resumeSecondRow}
-                onTouchStart={pauseSecondRow}
-                onTouchEnd={resumeSecondRow}
-              >
-                <div className={cn(
-                  "absolute left-0 top-0 h-full w-12 bg-gradient-to-r to-transparent z-10",
-                  isDarkMode ? "from-[#061F3F]" : "from-background"
-                )}></div>
-                <div className={cn(
-                  "absolute right-0 top-0 h-full w-12 bg-gradient-to-l to-transparent z-10",
-                  isDarkMode ? "from-[#061F3F]" : "from-background"
-                )}></div>
-                <div className="flex overflow-hidden scrolling-row">
-                  <div ref={secondRowRef} className="flex w-full touch-action-pan-y"> 
-                    <div ref={secondRowContentRef} className="flex gap-2 py-1 transform">
-                      {secondHalf.map((text: string, index: number) => (
-                        <motion.button
-                          key={index}
-                          whileTap={{ scale: 0.97 }}
-                          className={cn(
-                            "flex-shrink-0 whitespace-nowrap text-left px-3 py-2.5 text-sm transition-colors rounded-lg flex items-center group",
-                            isDarkMode 
-                              ? "text-[#D3ECFF]/60 hover:text-[#D3ECFF] hover:bg-[#45CAFF]/10 active:bg-[#45CAFF]/20" 
-                              : "text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 active:bg-secondary/60"
-                          )}
-                          onClick={() => handleSampleQuery(text)}
-                        >
-                          <Reply className={cn(
-                            "h-4 w-4 mr-3 transition-colors",
-                            isDarkMode 
-                              ? "text-[#D3ECFF]/40 group-hover:text-[#D3ECFF]" 
-                              : "text-muted-foreground/40 group-hover:text-muted-foreground"
-                          )} />
-                          {text}
-                        </motion.button>
-                      ))}
-                    </div>
-                    <div className="flex gap-2 py-1">
-                      {secondHalf.map((text: string, index: number) => (
-                        <motion.button
-                          key={`dup2-${index}`}
-                          whileTap={{ scale: 0.97 }}
-                          className={cn(
-                            "flex-shrink-0 whitespace-nowrap text-left px-3 py-2.5 text-sm transition-colors rounded-lg flex items-center group",
-                            isDarkMode 
-                              ? "text-[#D3ECFF]/60 hover:text-[#D3ECFF] hover:bg-[#45CAFF]/10 active:bg-[#45CAFF]/20" 
-                              : "text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/40 active:bg-secondary/60"
-                          )}
-                          onClick={() => handleSampleQuery(text)}
-                        >
-                          <Reply className={cn(
-                            "h-4 w-4 mr-3 transition-colors",
-                            isDarkMode 
-                              ? "text-[#D3ECFF]/40 group-hover:text-[#D3ECFF]" 
-                              : "text-muted-foreground/40 group-hover:text-muted-foreground"
-                          )} />
-                          {text}
-                        </motion.button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+              
+              {/* Navigation hint */}
+              <div className="mt-4 text-center">
+                <p className={cn(
+                  "text-xs",
+                  isDarkMode ? "text-[#D3ECFF]/40" : "text-muted-foreground/60"
+                )}>
+                  Use ↑↓ para navegar • Enter para confirmar • Esc para o campo de busca
+                </p>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
