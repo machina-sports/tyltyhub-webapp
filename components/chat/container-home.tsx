@@ -157,6 +157,17 @@ const ContainerHome = ({ query }: { query: string }) => {
     setInput(text)
     setSelectedIndex(-1)
     // Don't submit immediately, just put in input field
+    
+    // Scroll to input on mobile after selecting a question
+    setTimeout(() => {
+      if (inputRef.current) {
+        inputRef.current.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center' 
+        })
+        inputRef.current.focus()
+      }
+    }, 100)
   }
 
   const getInputPlaceholder = () => {
@@ -309,8 +320,8 @@ const ContainerHome = ({ query }: { query: string }) => {
                 ))}
               </div>
               
-              {/* Navigation hint */}
-              <div className="mt-4 text-center">
+              {/* Navigation hint - only show on desktop */}
+              <div className="mt-4 text-center hidden md:block">
                 <p className={cn(
                   "text-xs",
                   isDarkMode ? "text-[#D3ECFF]/40" : "text-muted-foreground/60"
