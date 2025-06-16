@@ -69,18 +69,8 @@ const parseDate = (dateStr: string, timeStr: string): Date => {
   const [month, day] = dateStr.split(' ');
   const monthNum = monthMap[month];
   
-  // Extract hour from time (assuming format like "8:00 p.m. EDT")
-  let [hourMin, period] = timeStr.split(' ');
-  let [hour, minute] = hourMin.split(':').map(Number);
-  
-  // Convert to 24-hour format if PM
-  if (period.toLowerCase().startsWith('p') && hour < 12) {
-    hour += 12;
-  }
-  // Convert 12 AM to 0
-  if (period.toLowerCase().startsWith('a') && hour === 12) {
-    hour = 0;
-  }
+  // Extract hour and minute from time (24-hour format)
+  const [hour, minute] = timeStr.split(':').map(Number);
   
   // Use 2025 as the year for FIFA CWC
   return new Date(2025, parseInt(monthNum) - 1, parseInt(day), hour, minute);

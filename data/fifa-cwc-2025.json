@@ -8,96 +8,96 @@
       "name": "Group A",
       "teams": ["Al Ahly", "Inter Miami", "Palmeiras", "Porto"],
       "fixtures": [
-        { "date": "June 14", "ko": "8:00 p.m. EDT", "match": "Al Ahly x Inter Miami", "venue": "Hard Rock Stadium, Miami Gardens" },
-        { "date": "June 15", "ko": "6:00 p.m. EDT", "match": "Palmeiras x Porto", "venue": "MetLife Stadium, East Rutherford" },
-        { "date": "June 19", "ko": "12:00 p.m. EDT", "match": "Palmeiras x Al Ahly", "venue": "MetLife Stadium, East Rutherford" },
-        { "date": "June 19", "ko": "3:00 p.m. EDT", "match": "Inter Miami x Porto", "venue": "Mercedes-Benz Stadium, Atlanta" },
-        { "date": "June 23", "ko": "9:00 p.m. EDT", "match": "Inter Miami x Palmeiras", "venue": "Hard Rock Stadium, Miami Gardens" },
-        { "date": "June 23", "ko": "9:00 p.m. EDT", "match": "Porto x Al Ahly", "venue": "MetLife Stadium, East Rutherford" }
+        { "date": "June 14", "ko": "21:00", "match": "Al Ahly x Inter Miami", "venue": "Hard Rock Stadium, Miami Gardens" },
+        { "date": "June 15", "ko": "19:00", "match": "Palmeiras x Porto", "venue": "MetLife Stadium, East Rutherford" },
+        { "date": "June 19", "ko": "13:00", "match": "Palmeiras x Al Ahly", "venue": "MetLife Stadium, East Rutherford" },
+        { "date": "June 19", "ko": "16:00", "match": "Inter Miami x Porto", "venue": "Mercedes-Benz Stadium, Atlanta" },
+        { "date": "June 23", "ko": "22:00", "match": "Inter Miami x Palmeiras", "venue": "Hard Rock Stadium, Miami Gardens" },
+        { "date": "June 23", "ko": "22:00", "match": "Porto x Al Ahly", "venue": "MetLife Stadium, East Rutherford" }
       ]
     },
     {
       "name": "Group B",
       "teams": ["Paris Saint-Germain", "Atletico Madrid", "Botafogo", "Seattle Sounders"],
       "fixtures": [
-        { "date": "June 15", "ko": "12:00 p.m. PDT", "match": "Paris Saint-Germain x Atletico Madrid", "venue": "Rose Bowl, Pasadena" },
-        { "date": "June 15", "ko": "7:00 p.m. PDT", "match": "Botafogo x Seattle Sounders", "venue": "Lumen Field, Seattle" },
-        { "date": "June 19", "ko": "3:00 p.m. PDT", "match": "Seattle Sounders x Atletico Madrid", "venue": "Lumen Field, Seattle" },
-        { "date": "June 19", "ko": "6:00 p.m. PDT", "match": "Paris Saint-Germain x Botafogo", "venue": "Rose Bowl, Pasadena" },
-        { "date": "June 23", "ko": "12:00 p.m. PDT", "match": "Seattle Sounders x Paris Saint-Germain", "venue": "Lumen Field, Seattle" },
-        { "date": "June 23", "ko": "12:00 p.m. PDT", "match": "Atletico Madrid x Botafogo", "venue": "Rose Bowl, Pasadena" }
+        { "date": "June 15", "ko": "16:00", "match": "Paris Saint-Germain x Atletico Madrid", "venue": "Rose Bowl, Pasadena" },
+        { "date": "June 15", "ko": "23:00", "match": "Botafogo x Seattle Sounders", "venue": "Lumen Field, Seattle" },
+        { "date": "June 19", "ko": "19:00", "match": "Seattle Sounders x Atletico Madrid", "venue": "Lumen Field, Seattle" },
+        { "date": "June 19", "ko": "22:00", "match": "Paris Saint-Germain x Botafogo", "venue": "Rose Bowl, Pasadena" },
+        { "date": "June 23", "ko": "16:00", "match": "Seattle Sounders x Paris Saint-Germain", "venue": "Lumen Field, Seattle" },
+        { "date": "June 23", "ko": "16:00", "match": "Atletico Madrid x Botafogo", "venue": "Rose Bowl, Pasadena" }
       ]
     },
     {
       "name": "Group C",
       "teams": ["Bayern Munich", "Auckland City", "Boca Juniors", "Benfica"],
       "fixtures": [
-        { "date": "June 15", "ko": "12:00 p.m. EDT", "match": "Bayern Munich x Auckland City", "venue": "TQL Stadium, Cincinnati" },
-        { "date": "June 16", "ko": "6:00 p.m. EDT", "match": "Boca Juniors x Benfica", "venue": "Hard Rock Stadium, Miami Gardens" },
-        { "date": "June 20", "ko": "12:00 p.m. EDT", "match": "Benfica x Auckland City", "venue": "Inter&Co Stadium, Orlando" },
-        { "date": "June 20", "ko": "9:00 p.m. EDT", "match": "Bayern Munich x Boca Juniors", "venue": "Hard Rock Stadium, Miami Gardens" },
-        { "date": "June 24", "ko": "2:00 p.m. CDT", "match": "Auckland City x Boca Juniors", "venue": "Geodis Park, Nashville" },
-        { "date": "June 24", "ko": "3:00 p.m. EDT", "match": "Benfica x Bayern Munich", "venue": "Bank of America Stadium, Charlotte" }
+        { "date": "June 15", "ko": "13:00", "match": "Bayern Munich x Auckland City", "venue": "TQL Stadium, Cincinnati" },
+        { "date": "June 16", "ko": "19:00", "match": "Boca Juniors x Benfica", "venue": "Hard Rock Stadium, Miami Gardens" },
+        { "date": "June 20", "ko": "13:00", "match": "Benfica x Auckland City", "venue": "Inter&Co Stadium, Orlando" },
+        { "date": "June 20", "ko": "22:00", "match": "Bayern Munich x Boca Juniors", "venue": "Hard Rock Stadium, Miami Gardens" },
+        { "date": "June 24", "ko": "16:00", "match": "Auckland City x Boca Juniors", "venue": "Geodis Park, Nashville" },
+        { "date": "June 24", "ko": "16:00", "match": "Benfica x Bayern Munich", "venue": "Bank of America Stadium, Charlotte" }
       ]
     },
     {
       "name": "Group D",
       "teams": ["Chelsea", "Los Angeles FC", "Flamengo", "Espérance de Tunis"],
       "fixtures": [
-        { "date": "June 16", "ko": "3:00 p.m. EDT", "match": "Chelsea x Los Angeles FC", "venue": "Mercedes-Benz Stadium, Atlanta" },
-        { "date": "June 16", "ko": "9:00 p.m. EDT", "match": "Flamengo x Espérance de Tunis", "venue": "Lincoln Financial Field, Philadelphia" },
-        { "date": "June 20", "ko": "2:00 p.m. EDT", "match": "Flamengo x Chelsea", "venue": "Lincoln Financial Field, Philadelphia" },
-        { "date": "June 20", "ko": "5:00 p.m. CDT", "match": "Los Angeles FC x Espérance de Tunis", "venue": "Geodis Park, Nashville" },
-        { "date": "June 24", "ko": "9:00 p.m. EDT", "match": "Los Angeles FC x Flamengo", "venue": "Camping World Stadium, Orlando" },
-        { "date": "June 24", "ko": "9:00 p.m. EDT", "match": "Espérance de Tunis x Chelsea", "venue": "Lincoln Financial Field, Philadelphia" }
+        { "date": "June 16", "ko": "16:00", "match": "Chelsea x Los Angeles FC", "venue": "Mercedes-Benz Stadium, Atlanta" },
+        { "date": "June 16", "ko": "22:00", "match": "Flamengo x Espérance de Tunis", "venue": "Lincoln Financial Field, Philadelphia" },
+        { "date": "June 20", "ko": "15:00", "match": "Flamengo x Chelsea", "venue": "Lincoln Financial Field, Philadelphia" },
+        { "date": "June 20", "ko": "19:00", "match": "Los Angeles FC x Espérance de Tunis", "venue": "Geodis Park, Nashville" },
+        { "date": "June 24", "ko": "22:00", "match": "Los Angeles FC x Flamengo", "venue": "Camping World Stadium, Orlando" },
+        { "date": "June 24", "ko": "22:00", "match": "Espérance de Tunis x Chelsea", "venue": "Lincoln Financial Field, Philadelphia" }
       ]
     },
     {
       "name": "Group E",
       "teams": ["River Plate", "Urawa Red Diamonds", "Monterrey", "Inter de Milão"],
       "fixtures": [
-        { "date": "June 17", "ko": "12:00 p.m. PDT", "match": "River Plate x Urawa Red Diamonds", "venue": "Lumen Field, Seattle" },
-        { "date": "June 17", "ko": "6:00 p.m. PDT", "match": "Monterrey x Inter de Milão", "venue": "Rose Bowl, Pasadena" },
-        { "date": "June 21", "ko": "12:00 p.m. PDT", "match": "Inter de Milão x Urawa Red Diamonds", "venue": "Lumen Field, Seattle" },
-        { "date": "June 21", "ko": "6:00 p.m. PDT", "match": "River Plate x Monterrey", "venue": "Rose Bowl, Pasadena" },
-        { "date": "June 25", "ko": "6:00 p.m. PDT", "match": "Inter de Milão x River Plate", "venue": "Lumen Field, Seattle" },
-        { "date": "June 25", "ko": "6:00 p.m. PDT", "match": "Urawa Red Diamonds x Monterrey", "venue": "Rose Bowl, Pasadena" }
+        { "date": "June 17", "ko": "16:00", "match": "River Plate x Urawa Red Diamonds", "venue": "Lumen Field, Seattle" },
+        { "date": "June 17", "ko": "22:00", "match": "Monterrey x Inter de Milão", "venue": "Rose Bowl, Pasadena" },
+        { "date": "June 21", "ko": "16:00", "match": "Inter de Milão x Urawa Red Diamonds", "venue": "Lumen Field, Seattle" },
+        { "date": "June 21", "ko": "22:00", "match": "River Plate x Monterrey", "venue": "Rose Bowl, Pasadena" },
+        { "date": "June 25", "ko": "22:00", "match": "Inter de Milão x River Plate", "venue": "Lumen Field, Seattle" },
+        { "date": "June 25", "ko": "22:00", "match": "Urawa Red Diamonds x Monterrey", "venue": "Rose Bowl, Pasadena" }
       ]
     },
     {
       "name": "Group F",
       "teams": ["Fluminense", "Borussia Dortmund", "Ulsan HD", "Mamelodi Sundowns"],
       "fixtures": [
-        { "date": "June 14", "ko": "8:00 p.m. EDT", "match": "Fluminense x Borussia Dortmund", "venue": "MetLife Stadium, East Rutherford" },
-        { "date": "June 15", "ko": "6:00 p.m. EDT", "match": "Ulsan HD x Mamelodi Sundowns", "venue": "Inter&Co Stadium, Orlando" },
-        { "date": "June 19", "ko": "12:00 p.m. EDT", "match": "Mamelodi Sundowns x Borussia Dortmund", "venue": "TQL Stadium, Cincinnati" },
-        { "date": "June 19", "ko": "3:00 p.m. EDT", "match": "Fluminense x Ulsan HD", "venue": "MetLife Stadium, East Rutherford" },
-        { "date": "June 23", "ko": "9:00 p.m. EDT", "match": "Borussia Dortmund x Ulsan HD", "venue": "TQL Stadium, Cincinnati" },
-        { "date": "June 23", "ko": "9:00 p.m. EDT", "match": "Mamelodi Sundowns x Fluminense", "venue": "Hard Rock Stadium, Miami Gardens" }
+        { "date": "June 17", "ko": "13:00", "match": "Fluminense x Borussia Dortmund", "venue": "MetLife Stadium, East Rutherford" },
+        { "date": "June 17", "ko": "19:00", "match": "Ulsan HD x Mamelodi Sundowns", "venue": "Inter&Co Stadium, Orlando" },
+        { "date": "June 21", "ko": "13:00", "match": "Mamelodi Sundowns x Borussia Dortmund", "venue": "TQL Stadium, Cincinnati" },
+        { "date": "June 21", "ko": "19:00", "match": "Fluminense x Ulsan HD", "venue": "MetLife Stadium, East Rutherford" },
+        { "date": "June 25", "ko": "16:00", "match": "Borussia Dortmund x Ulsan HD", "venue": "TQL Stadium, Cincinnati" },
+        { "date": "June 25", "ko": "16:00", "match": "Mamelodi Sundowns x Fluminense", "venue": "Hard Rock Stadium, Miami Gardens" }
       ]
     },
     {
       "name": "Group G",
       "teams": ["Manchester City", "Wydad AC", "Al Ain", "Juventus"],
       "fixtures": [
-        { "date": "June 18", "ko": "12:00 p.m. EDT", "match": "Manchester City x Wydad AC", "venue": "Lincoln Financial Field, Philadelphia" },
-        { "date": "June 18", "ko": "9:00 p.m. EDT", "match": "Al Ain x Juventus", "venue": "Audi Field, Washington, D.C." },
-        { "date": "June 22", "ko": "12:00 p.m. EDT", "match": "Juventus x Wydad AC", "venue": "Lincoln Financial Field, Philadelphia" },
-        { "date": "June 22", "ko": "9:00 p.m. EDT", "match": "Manchester City x Al Ain", "venue": "Mercedes-Benz Stadium, Atlanta" },
-        { "date": "June 26", "ko": "3:00 p.m. EDT", "match": "Juventus x Manchester City", "venue": "Camping World Stadium, Orlando" },
-        { "date": "June 26", "ko": "3:00 p.m. EDT", "match": "Wydad AC x Al Ain", "venue": "Audi Field, Washington, D.C." }
+        { "date": "June 18", "ko": "13:00", "match": "Manchester City x Wydad AC", "venue": "Lincoln Financial Field, Philadelphia" },
+        { "date": "June 18", "ko": "22:00", "match": "Al Ain x Juventus", "venue": "Audi Field, Washington, D.C." },
+        { "date": "June 22", "ko": "13:00", "match": "Juventus x Wydad AC", "venue": "Lincoln Financial Field, Philadelphia" },
+        { "date": "June 22", "ko": "22:00", "match": "Manchester City x Al Ain", "venue": "Mercedes-Benz Stadium, Atlanta" },
+        { "date": "June 26", "ko": "16:00", "match": "Juventus x Manchester City", "venue": "Camping World Stadium, Orlando" },
+        { "date": "June 26", "ko": "16:00", "match": "Wydad AC x Al Ain", "venue": "Audi Field, Washington, D.C." }
       ]
     },
     {
       "name": "Group H",
       "teams": ["Real Madrid", "Al Hilal", "Pachuca", "Red Bull Salzburg"],
       "fixtures": [
-        { "date": "June 18", "ko": "3:00 p.m. EDT", "match": "Real Madrid x Al Hilal", "venue": "Hard Rock Stadium, Miami Gardens" },
-        { "date": "June 18", "ko": "6:00 p.m. EDT", "match": "Pachuca x Red Bull Salzburg", "venue": "TQL Stadium, Cincinnati" },
-        { "date": "June 22", "ko": "3:00 p.m. EDT", "match": "Real Madrid x Pachuca", "venue": "Bank of America Stadium, Charlotte" },
-        { "date": "June 22", "ko": "6:00 p.m. EDT", "match": "Red Bull Salzburg x Al Hilal", "venue": "Audi Field, Washington, D.C." },
-        { "date": "June 26", "ko": "8:00 p.m. CDT", "match": "Al Hilal x Pachuca", "venue": "Geodis Park, Nashville" },
-        { "date": "June 26", "ko": "9:00 p.m. EDT", "match": "Red Bull Salzburg x Real Madrid", "venue": "Lincoln Financial Field, Philadelphia" }
+        { "date": "June 18", "ko": "16:00", "match": "Real Madrid x Al Hilal", "venue": "Hard Rock Stadium, Miami Gardens" },
+        { "date": "June 18", "ko": "19:00", "match": "Pachuca x Red Bull Salzburg", "venue": "TQL Stadium, Cincinnati" },
+        { "date": "June 22", "ko": "16:00", "match": "Real Madrid x Pachuca", "venue": "Bank of America Stadium, Charlotte" },
+        { "date": "June 22", "ko": "19:00", "match": "Red Bull Salzburg x Al Hilal", "venue": "Audi Field, Washington, D.C." },
+        { "date": "June 26", "ko": "22:00", "match": "Al Hilal x Pachuca", "venue": "Geodis Park, Nashville" },
+        { "date": "June 26", "ko": "22:00", "match": "Red Bull Salzburg x Real Madrid", "venue": "Lincoln Financial Field, Philadelphia" }
       ]
     }
   ]
