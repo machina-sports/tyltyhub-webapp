@@ -82,7 +82,7 @@ const ContainerHome = ({ query }: { query: string }) => {
   // Random title options
   const titleOptions = [
     "Como posso entrar em campo para te ajudar hoje?",
-    "Vamos jogar juntos? Me diz onde você precisa de reforço!",
+    "Vamos jogar? Me diz onde você precisa de reforço!",
     "Bola rolando! Em que jogada posso te ajudar?",
   ]
 
