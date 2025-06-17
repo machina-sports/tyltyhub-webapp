@@ -63,10 +63,15 @@ export default function RootLayout({
     <html lang="pt-BR">
       <head>
         <link rel="icon" href="/favicon.ico" />
-        {/* Google tag (gtag.js) */}
+        {/* Google tag (gtag.js) - GA4 Property */}
         <script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-RP42Y35MC2"
+        />
+        {/* Google tag (gtag.js) - Secondary GA4 Property */}
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-9F6CHT1XS6"
         />
         <script
           dangerouslySetInnerHTML={{
@@ -75,6 +80,7 @@ export default function RootLayout({
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
           gtag('config', 'G-RP42Y35MC2');
+          gtag('config', 'G-9F6CHT1XS6');
           `,
           }}
         />
