@@ -184,7 +184,7 @@ const ContainerHome = ({ query }: { query: string }) => {
   }
 
   const getInputPlaceholder = () => {
-    return "Quais apostas você quer fazer?"
+    return "Converse com o SportingBOT..."
   }
 
   // Prevent scroll on mobile only for home page
