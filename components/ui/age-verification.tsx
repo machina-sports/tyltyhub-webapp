@@ -15,7 +15,7 @@ export function AgeVerification() {
   
   useEffect(() => {
     const hasVerification = localStorage.getItem('age-verification')
-    if (hasVerification) {
+    if (!hasVerification) {
       setIsVisible(true)
     }
   }, [])
