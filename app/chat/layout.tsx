@@ -1,31 +1,40 @@
-"use client"
-// import Footer from "@/components/footer"
+import { Metadata } from "next"
+import ChatClientLayout from "./client-layout"
 
-import { useTheme } from "@/components/theme-provider"
-import { cn } from "@/lib/utils"
+export const metadata: Metadata = {
+  title: "Chat | SportingBOT - Mundial de Clubes 2025",
+  description: "Converse com a Inteligência Artificial da Sportingbet sobre o Mundial de Clubes FIFA 2025. Tire dúvidas, veja odds e faça suas apostas.",
+  openGraph: {
+    title: "Chat | SportingBOT - Mundial de Clubes 2025",
+    description: "Converse com a Inteligência Artificial da Sportingbet sobre o Mundial de Clubes FIFA 2025. Tire dúvidas, veja odds e faça suas apostas.",
+    type: "website",
+    locale: "pt_BR",
+    siteName: "SportingBOT",
+    images: [
+      {
+        url: "/kv-txt-op1_980x250px_bot_.gif",
+        width: 980,
+        height: 250,
+        alt: "SportingBOT: a IA da Sportingbet",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Chat | SportingBOT - Mundial de Clubes 2025",
+    description: "Converse com a Inteligência Artificial da Sportingbet sobre o Mundial de Clubes FIFA 2025. Tire dúvidas, veja odds e faça suas apostas.",
+    images: ["/kv-txt-op1_980x250px_bot_.gif"],
+  },
+}
 
-// import InteractiveAvatar from "@/components/chat/video"
-
-// import { Sidebar } from "@/components/sidebar"
-
-export default function DiscoverLayout({
+export default function ChatLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const { isDarkMode } = useTheme() 
   return (
-    <div className={cn(
-      "h-full flex flex-col",
-      isDarkMode ? "bg-[#061F3F]" : "bg-background"
-    )}>
-      <div className="flex-1 pt-16 md:pt-0">
-        {children}
-      </div>
-      {/* <div className="fixed bottom-4 right-[0] xl:right-[150px] bottom-[150px] -translate-x-1/2 border rounded-full">
-        {process.env.FEATURE_TOGGLE_ENABLE_AVATAR === '1' && <InteractiveAvatar />}
-      </div> */}
-      {/* <Footer /> */}
-    </div>
+    <ChatClientLayout>
+      {children}
+    </ChatClientLayout>
   )
 }

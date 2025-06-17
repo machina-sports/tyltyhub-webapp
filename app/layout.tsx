@@ -19,10 +19,31 @@ declare global {
 }
 
 export const metadata: Metadata = {
-  title: "SportingBOT, a Inteligência Artificial da Sportingbet",
-  description: "SportingBOT, a Inteligência Artificial da Sportingbet",
+  title: "SportingBOT: a IA da Sportingbet no Mundial de Clubes 2025",
+  description: "Aposte junto com a Inteligência Artificial da Sportingbet. Pergunte ao nosso chat sobre as notícias e odds do Mundial de Clubes 2025 e veja como apostar melhor.",
   icons: {
-    icon: "/sb-new.ico",
+    icon: "/favicon.ico",
+  },
+  openGraph: {
+    title: "SportingBOT: a IA da Sportingbet no Mundial de Clubes 2025",
+    description: "Aposte junto com a Inteligência Artificial da Sportingbet. Pergunte ao nosso chat sobre as notícias e odds do Mundial de Clubes 2025 e veja como apostar melhor.",
+    type: "website",
+    locale: "pt_BR",
+    siteName: "SportingBOT",
+    images: [
+      {
+        url: "/kv-txt-op1_980x250px_bot_.gif",
+        width: 980,
+        height: 250,
+        alt: "SportingBOT: a IA da Sportingbet",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SportingBOT: a IA da Sportingbet no Mundial de Clubes 2025",
+    description: "Aposte junto com a Inteligência Artificial da Sportingbet. Pergunte ao nosso chat sobre as notícias e odds do Mundial de Clubes 2025 e veja como apostar melhor.",
+    images: ["/kv-txt-op1_980x250px_bot_.gif"],
   },
 };
 
@@ -41,6 +62,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <head>
+        <link rel="icon" href="/favicon.ico" />
         {/* Google tag (gtag.js) */}
         <script
           async

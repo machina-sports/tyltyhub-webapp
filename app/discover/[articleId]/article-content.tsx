@@ -210,7 +210,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
   if (!article || !articleData) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <h1 className="text-2xl font-bold">Artigo não encontrado</h1>
+        <h2 className="text-2xl font-bold">Artigo não encontrado</h2>
       </div>
     );
   }
@@ -263,18 +263,20 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 pt-20 md:pt-6 pb-32 sm:pb-36 space-y-6 sm:space-y-8">
+      {/* Main heading for SEO - visually hidden but accessible */}
+      <h1 className="sr-only">A Inteligência Artificial da Sportingbet</h1>
 
       <RenderImageComponent imageUrl={mainImageUrl} alt={articleData.title} />
 
       <div className="space-y-6">
         {/* <Badge variant="secondary">{articleData.eventType}</Badge> */}
 
-        <h1 className={cn(
+        <h2 className={cn(
           "text-2xl sm:text-4xl font-bold",
           isDarkMode ? "text-[#fff]" : ""
         )}>
           {articleData.title}
-        </h1>
+        </h2>
         {/* Header Meta & Sharing */}
         <div className="flex flex-row items-center justify-between gap-3 sm:gap-6 mb-6">
           {/* Meta information */}

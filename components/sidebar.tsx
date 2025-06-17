@@ -54,6 +54,17 @@ export function Sidebar() {
     setIsOpen(false)
   }
 
+  const handleLogoClick = () => {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'navigation_click', {
+        event_category: 'sidebar_logo',
+        event_label: 'Clicked Logo',
+        value: '/',
+      });
+    }
+    handleNavigation('/')
+  }
+
   useEffect(() => {
     // Close sidebar when route changes (mobile)
     setIsOpen(false)
@@ -97,31 +108,19 @@ export function Sidebar() {
           {/* Fixed height logo container */}
           <div className="h-[80px] min-h-[80px] flex flex-col items-center justify-center mb-8">
             <div
-              onClick={() => handleNavigation('/')}
+              onClick={handleLogoClick}
               className="flex items-center justify-center pl-3 cursor-pointer ml-[-10px]"
               role="button"
               aria-label="Go to home"
             >
-              {typeof window !== 'undefined' && window.gtag && (
-                <span
-                  onClick={() => {
-                    window.gtag('event', 'navigation_click', {
-                      event_category: 'sidebar_logo',
-                      event_label: 'Clicked Logo',
-                      value: '/',
-                    });
-                  }}
-                >
-                  <Image
-                    src="/outline.png"
-                    alt="Logo Sportingbet"
-                    width={250}
-                    height={120}
-                    priority
-                    className="ml-[-4px]"
-                  />
-                </span>
-              )}
+              <Image
+                src="/outline.png"
+                alt="Sportingbot"
+                width={250}
+                height={120}
+                priority
+                className="ml-[-4px]"
+              />
             </div>
             <AnimatedShinyText className="text-xs text-white/50 pt-3">A Inteligência Artificial da Sportingbet</AnimatedShinyText>
             <div className="text-[10px] text-white/40 pt-1 font-sportingbet">Versão Beta</div>
@@ -148,7 +147,7 @@ export function Sidebar() {
         </div>
         <div className="px-8 py-2 pb-4 pt-2">
           <a
-            href="https://www.sportingbet.bet.br/pt-br/mobileportal/register?utm_source=sportingbot.com"
+            href="https://www.sportingbet.bet.br/pt-br/myaccount/register?utm_source=spbot&utm_medium=botao&utm_campaign=5530097&utm_content=registrar&utm_term=5530097-botmundial-spbet-sprts-br-2025-06-17-pt-botao--acq-web&wm=5530097"
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => setIsOpen(false)}
@@ -162,7 +161,7 @@ export function Sidebar() {
             Registre-se Agora
           </a>
           <a
-            href="https://www.sportingbet.bet.br/pt-br/labelhost/login?utm_source=sportingbot.com"
+            href="https://www.sportingbet.bet.br/pt-br/labelhost/login?utm_source=spbot&utm_medium=botao&utm_campaign=5530097&utm_content=entrar&utm_term=5530097-botmundial-spbet-sprts-br-2025-06-17-pt-botao--acq-web&wm=5530097"
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => setIsOpen(false)}

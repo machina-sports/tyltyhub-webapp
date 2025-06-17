@@ -173,6 +173,9 @@ export function ContainerChat() {
 
   return (
     <>
+      {/* Main heading for SEO - visually hidden but accessible */}
+      <h1 className="sr-only">A Inteligência Artificial da Sportingbet</h1>
+      
       {/* Share button section */}
       <div className={cn(
         "sticky top-0 z-10 px-4 py-2 flex justify-end items-center border-b",
