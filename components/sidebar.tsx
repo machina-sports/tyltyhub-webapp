@@ -124,6 +124,7 @@ export function Sidebar() {
               )}
             </div>
             <AnimatedShinyText className="text-xs text-white/50 pt-3">A Inteligência Artificial da Sportingbet</AnimatedShinyText>
+            <div className="text-[10px] text-white/40 pt-1 font-sportingbet">Versão Beta</div>
           </div>
           {/* Navigation buttons with fixed position */}
           <div className="space-y-4 border-t border-white/10 pt-4">
