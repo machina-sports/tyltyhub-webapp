@@ -1,0 +1,57 @@
+name: Build Prod
+run-name: Build ${{ github.ref_name }}
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create .env file
+        run: |
+          echo " " >> .env
+          echo "FEATURE_TOGGLE_ENABLE_AVATAR=0" >> .env
+          echo " " >> .env
+          echo "FEATURE_TOGGLE_ENABLE_BETS=0" >> .env
+          echo " " >> .env
+          echo "FEATURE_TOGGLE_ENABLE_CHAT=1" >> .env
+          echo " " >> .env
+          echo "MACHINA_API_KEY=${{ secrets.PROD_MACHINA_API_KEY }}" >> .env
+          echo " " >> .env
+          echo "MACHINA_CLIENT_URL=${{ vars.PROD_MACHINA_CLIENT_URL }}" >> .env
+          echo " " >> .env
+          echo "IMAGE_CONTAINER_ADDRESS=${{ vars.IMAGE_CONTAINER_ADDRESS }}" >> .env
+          echo " " >> .env
+          echo "NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS=${{ vars.IMAGE_CONTAINER_ADDRESS }}" >> .env
+          echo " " >> .env
+          echo "NEXT_PUBLIC_GOOGLE_ANALYTICS_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_ANALYTICS_KEY }}" >> .env
+          echo " " >> .env
+
+      - name: Get version from package.json
+        id: package_version
+        run: echo "PACKAGE_VERSION=$(jq -r '.version' package.json)" >> $GITHUB_ENV
+
+      - name: Set branch name
+        id: branch_name
+        run: echo "BRANCH_NAME=${{ github.ref_name }}" >> $GITHUB_ENV
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.REGISTRY_URL }}/sportingbet-cwc:${{ env.PACKAGE_VERSION }}-${{ env.BRANCH_NAME }}
+            ${{ secrets.REGISTRY_URL }}/sportingbet-cwc:${{ env.BRANCH_NAME }}
+            ${{ secrets.REGISTRY_URL }}/sportingbet-cwc:latest
