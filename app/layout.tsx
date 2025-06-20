@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     siteName: "SportingBOT",
     images: [
       {
-        url: "/og_image_3.png",
+        url: "/og_image_1.png",
         width: 1200,
         height: 630,
         alt: "SportingBOT: a IA da Sportingbet",
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "SportingBOT: a IA da Sportingbet no Mundial de Clubes 2025",
     description: "Aposte junto com a Inteligência Artificial da Sportingbet. Pergunte ao nosso chat sobre as notícias e odds do Mundial de Clubes 2025 e veja como apostar melhor.",
-    images: ["/og_image_3.png"],
+    images: ["/og_image_1.png"],
   },
 };
 
