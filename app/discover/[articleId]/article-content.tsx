@@ -344,7 +344,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
             <ArticleSharing
               articleId={articleData.articleId}
               title={articleData.title}
-              url={`${typeof window !== 'undefined' ? window.location.origin : ''}/discover/${articleData.slug || articleData.articleId}`}
+              url={`https://sportingbot.com/discover/${articleData.slug || articleData.articleId}`}
               shareImageUrl={mainImageUrl}
             />
           </div>

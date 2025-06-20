@@ -30,7 +30,7 @@ export function ChatMetadata({ threadId }: ChatMetadataProps) {
     }
   }, [state.item.data])
 
-  const shareImageUrl = `https://sportingbot.com/og_image_1.png`
+  const shareImageUrl = `https://sportingbot.com/og_image_4.png`
 
   return (
     <Head>
@@ -48,7 +48,7 @@ export function ChatMetadata({ threadId }: ChatMetadataProps) {
       <meta property="og:image:alt" content="SportingBOT: a IA da Sportingbet" />
       <meta property="og:locale" content="pt_BR" />
       <meta property="og:site_name" content="SportingBOT" />
-      <meta property="og:logo" content="https://sportingbot.com/og_image_1.png" />
+      <meta property="og:logo" content="https://sportingbot.com/og_image_4.png" />
       
       <meta property="twitter:card" content="summary_large_image" />
       <meta property="twitter:url" content={`https://sportingbot.com/chat/${threadId}`} />
