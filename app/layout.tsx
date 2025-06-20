@@ -30,6 +30,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "pt_BR",
     siteName: "SportingBOT",
+    url: "https://sportingbot.com",
     images: [
       {
         url: "/og_image_1.png",
@@ -92,6 +93,7 @@ export default function RootLayout({
           data-tallysight-widget-loading="lazy"
           data-tallysight-observer="true"
         />
+        <meta property="og:logo" content="https://sportingbot.com/og_image_1.png" />
       </head>
       <body className={inter.className}>
         <Providers>
