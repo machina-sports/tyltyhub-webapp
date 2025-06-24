@@ -5,6 +5,9 @@ import DiscoverClientLayout from "./client-layout"
 export const metadata: Metadata = {
   title: "Descobrir | SportingBOT - Mundial de Clubes 2025",
   description: "Descubra as últimas notícias, estatísticas e análises do Mundial de Clubes FIFA 2025. Acompanhe os times, jogos e apostas com a IA da Sportingbet.",
+  icons: {
+    icon: "/favicon.ico",
+  },
   openGraph: {
     title: "Descobrir | SportingBOT - Mundial de Clubes 2025",
     description: "Descubra as últimas notícias, estatísticas e análises do Mundial de Clubes FIFA 2025. Acompanhe os times, jogos e apostas com a IA da Sportingbet.",
@@ -13,9 +16,9 @@ export const metadata: Metadata = {
     siteName: "SportingBOT",
     images: [
       {
-        url: "/kv-txt-op1_980x250px_bot_.gif",
-        width: 980,
-        height: 250,
+        url: "/og_image_1.png",
+        width: 1200,
+        height: 630,
         alt: "SportingBOT: a IA da Sportingbet",
       },
     ],
@@ -24,7 +27,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Descobrir | SportingBOT - Mundial de Clubes 2025",
     description: "Descubra as últimas notícias, estatísticas e análises do Mundial de Clubes FIFA 2025. Acompanhe os times, jogos e apostas com a IA da Sportingbet.",
-    images: ["/kv-txt-op1_980x250px_bot_.gif"],
+    images: ["/og_image_1.png"],
   },
 }
 
