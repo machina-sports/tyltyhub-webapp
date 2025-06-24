@@ -11,9 +11,30 @@ export function LGPDConsent() {
   const { isDarkMode } = useTheme()
   
   useEffect(() => {
-    const hasConsent = localStorage.getItem('lgpd-consent')
-    if (!hasConsent) {
-      setIsVisible(true)
+    const checkVisibility = () => {
+      const hasConsent = localStorage.getItem('lgpd-consent')
+      const hasAgeVerification = localStorage.getItem('age-verification')
+      
+      // Only show LGPD consent if age verification is complete
+      if (!hasConsent && hasAgeVerification) {
+        setIsVisible(true)
+      } else {
+        setIsVisible(false)
+      }
+    }
+
+    // Check on mount
+    checkVisibility()
+
+    // Listen for storage changes
+    window.addEventListener('storage', checkVisibility)
+    
+    // Custom event for local storage changes in same tab
+    window.addEventListener('ageVerificationComplete', checkVisibility)
+
+    return () => {
+      window.removeEventListener('storage', checkVisibility)
+      window.removeEventListener('ageVerificationComplete', checkVisibility)
     }
   }, [])
 
