@@ -21,10 +21,10 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
       siteName: 'SportingBOT',
       images: [
         {
-          url: '/kv-txt-op1_980x250px_bot_.gif',
-          width: 980,
-          height: 250,
-          alt: 'SportingBOT: a IA da Sportingbet',
+          url: "/og_image_1.png",
+          width: 1200,
+          height: 630,
+          alt: "SportingBOT: a IA da Sportingbet",
         },
       ],
     },
@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
       card: 'summary_large_image',
       title: 'SportingBOT | Chat',
       description: 'A Inteligência Artificial da Sportingbet',
-      images: ['/kv-txt-op1_980x250px_bot_.gif'],
+      images: ["/og_image_1.png"],
     }
   }
 }
