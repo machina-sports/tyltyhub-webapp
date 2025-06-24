@@ -96,16 +96,6 @@ const ContainerHome = ({ query }: { query: string }) => {
     setRandomTitle(titleOptions[Math.floor(Math.random() * titleOptions.length)])
   }, [])
 
-  // Focus input on mount, only if age verification is complete
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const verified = localStorage.getItem('age-verification') === 'true';
-      if (verified && inputRef.current) {
-        inputRef.current.focus();
-      }
-    }
-  }, []);
-
   // Auto-scroll to selected item
   useEffect(() => {
     if (selectedIndex >= 0 && questionRefs.current[selectedIndex]) {

@@ -55,13 +55,6 @@ export default function Home() {
   const inputRef = useRef<HTMLInputElement>(null)
   const prepareTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-  // Focus input on mount
-  useEffect(() => {
-    if (showInitial && inputRef.current) {
-      inputRef.current.focus()
-    }
-  }, [showInitial])
-
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

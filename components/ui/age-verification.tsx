@@ -77,7 +77,7 @@ export function AgeVerification() {
                     variant="outline"
                     className="flex-1 h-14 text-lg font-semibold border border-gray-400 text-gray-700 bg-white hover:bg-gray-100 rounded-lg transition-colors"
                   >
-                    Não tenho 18 anos.
+                    Não tenho.
                   </Button>
                   <Button
                     onClick={handleAccept}
