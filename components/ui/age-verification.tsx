@@ -40,13 +40,13 @@ export function AgeVerification() {
       <div className="fixed inset-0 z-[100] bg-gray-900/80 backdrop-blur-md" />
       
       {/* Modal Content */}
-      <div className="fixed inset-0 z-[101] flex items-start justify-center pt-[30vh] p-4">
-        <Card className="mx-auto max-w-sm w-full shadow-2xl relative overflow-hidden border-0">
+      <div className="fixed inset-0 z-[101] flex items-center justify-center p-4">
+        <Card className="mx-auto max-w-md w-full shadow-2xl relative overflow-hidden border-0">
           {!showUnderage ? (
             <div className="bg-white">
               {/* Logo/Brand Header */}
               <div className="bg-[#013DC4] text-white py-4 px-6">
-                <div className="h-[80px] min-h-[80px] flex flex-col items-center justify-center">
+                <div className="h-[80px] min-h-[80px] flex flex-col items-center justify-center py-4">
                   <div className="flex items-center justify-center pl-3 ml-[-10px]">
                     <Image
                       src="/outline.png"
@@ -58,7 +58,6 @@ export function AgeVerification() {
                     />
                   </div>
                   <AnimatedShinyText className="text-xs text-white/50 pt-3">A Inteligência Artificial da Sportingbet</AnimatedShinyText>
-                  <div className="text-[10px] text-white/40 pt-1 font-sportingbet">Versão Beta</div>
                 </div>
               </div>
               
@@ -67,7 +66,7 @@ export function AgeVerification() {
                 {/* Message */}
                 <div className="mb-8">
                   <h2 className="text-2xl font-bold text-gray-700 leading-tight">
-                    VOCÊ TEM MAIS DE 18<br />ANOS?
+                    Você tem 18 anos ou mais?
                   </h2>
                 </div>
                 
@@ -76,15 +75,15 @@ export function AgeVerification() {
                   <Button
                     onClick={handleReject}
                     variant="outline"
-                    className="flex-1 h-14 text-lg font-semibold border-gray-400 text-gray-700 hover:bg-gray-100 rounded-lg"
+                    className="flex-1 h-14 text-lg font-semibold border border-gray-400 text-gray-700 bg-white hover:bg-gray-100 rounded-lg transition-colors"
                   >
-                    NÃO
+                    Não tenho 18 anos.
                   </Button>
                   <Button
                     onClick={handleAccept}
-                    className="flex-1 h-14 text-lg font-semibold bg-[#0066CC] hover:bg-[#0052A3] text-white rounded-lg"
+                    className="flex-1 h-14 text-lg font-semibold border border-[#0066CC] bg-[#0066CC] hover:bg-[#0052A3] text-white rounded-lg transition-colors"
                   >
-                    SIM
+                    Sim, tenho.
                   </Button>
                 </div>
               </div>
@@ -115,7 +114,7 @@ export function AgeVerification() {
                 {/* Underage Message */}
                 <div className="mb-8">
                   <h2 className="text-2xl font-bold text-gray-700 leading-tight">
-                    Desculpe. Você ainda não<br />tem idade suficiente para<br />acessar este material.
+                    Desculpe, você ainda não<br />tem idade suficiente para<br />acessar este conteúdo.
                   </h2>
                 </div>
               </div>
