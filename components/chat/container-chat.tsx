@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 
-import { Send, Share2, X, Linkedin, Check, Copy } from "lucide-react"
+import { Send, Share2, X, MessageCircle, Check, Copy } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
@@ -127,8 +127,9 @@ export function ContainerChat() {
   }
   
   const handleShare = async (platform?: string) => {
-    if (platform === 'linkedin') {
-      window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, '_blank')
+    if (platform === 'whatsapp') {
+      const shareText = 'Veja este chat do SportingBOT'
+      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(`${shareText} ${shareUrl}`)}`, '_blank')
       return
     }
       
@@ -240,14 +241,14 @@ export function ContainerChat() {
               variant="outline" 
               className={cn(
                 "flex flex-col items-center justify-center h-16 sm:h-20 space-y-2 py-3", 
-                isDarkMode ? "bg-[#0077b5] border-[#0077b5] text-white hover:bg-[#0077b5]/10 hover:text-[#fff]" : ""  
+                isDarkMode ? "bg-[#25d366] border-[#25d366] text-white hover:bg-[#25d366]/10 hover:text-[#fff]" : ""  
               )}
-              onClick={() => handleShare('linkedin')}
+              onClick={() => handleShare('whatsapp')}
             >
-              <div className="h-12 w-12 rounded-full bg-[#0077b5] flex items-center justify-center">
-                <Linkedin className="h-6 w-6 text-white" />
+              <div className="h-12 w-12 rounded-full bg-[#25d366] flex items-center justify-center">
+                <MessageCircle className="h-6 w-6 text-white" />
               </div>
-              <span className="text-xs font-medium">LinkedIn</span>
+              <span className="text-xs font-medium">WhatsApp</span>
             </Button>
             
             <Button 
