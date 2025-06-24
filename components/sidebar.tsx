@@ -65,6 +65,28 @@ export function Sidebar() {
     handleNavigation('/')
   }
 
+  const handleRegisterClick = () => {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'button_click', {
+        event_category: 'sidebar_register',
+        event_label: 'Clicked Register Button',
+        value: 'register',
+      });
+    }
+    setIsOpen(false)
+  }
+
+  const handleLoginClick = () => {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'button_click', {
+        event_category: 'sidebar_login',
+        event_label: 'Clicked Login Button',
+        value: 'login',
+      });
+    }
+    setIsOpen(false)
+  }
+
   useEffect(() => {
     // Close sidebar when route changes (mobile)
     setIsOpen(false)
@@ -150,7 +172,7 @@ export function Sidebar() {
             href="https://www.sportingbet.bet.br/pt-br/myaccount/register?utm_source=spbot&utm_medium=botao&utm_campaign=5530097&utm_content=registrar&utm_term=5530097-botmundial-spbet-sprts-br-2025-06-17-pt-botao--acq-web&wm=5530097"
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => setIsOpen(false)}
+            onClick={handleRegisterClick}
             className={cn(
               "block w-full py-3 text-white font-medium rounded-md text-sm text-center shadow-sm transition-colors duration-200 mb-4",
               isDarkMode
@@ -164,7 +186,7 @@ export function Sidebar() {
             href="https://www.sportingbet.bet.br/pt-br/labelhost/login?utm_source=spbot&utm_medium=botao&utm_campaign=5530097&utm_content=entrar&utm_term=5530097-botmundial-spbet-sprts-br-2025-06-17-pt-botao--acq-web&wm=5530097"
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => setIsOpen(false)}
+            onClick={handleLoginClick}
             className="block w-full py-3 bg-white/10 hover:bg-white/15 active:bg-white/20 text-white font-medium rounded-md text-sm text-center border border-white/20 transition-colors duration-200 mb-2"
           >
             Entrar
