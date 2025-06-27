@@ -21,6 +21,9 @@ type Fixture = {
   match: string;
   venue: string;
   groupName: string;
+  homeScore?: number;
+  awayScore?: number;
+  isFinished?: boolean;
 };
 
 type PlayoffFixture = {
@@ -30,6 +33,9 @@ type PlayoffFixture = {
   venue: string;
   phase: 'Round of 16' | 'Quarter-finals' | 'Semi-finals' | 'Final';
   matchNumber?: number;
+  homeScore?: number;
+  awayScore?: number;
+  isFinished?: boolean;
 };
 
 type StandingsTeam = {
@@ -98,20 +104,21 @@ const generatePlayoffFixtures = (standingsData?: StandingsData): PlayoffFixture[
   firstPlaceTeams.sort((a, b) => a.groupName.localeCompare(b.groupName));
   secondPlaceTeams.sort((a, b) => a.groupName.localeCompare(b.groupName));
 
+  // Criar matchups únicos - 1º lugar vs 2º lugar de outros grupos
   const roundOf16Matchups = [
-    { first: 'A', second: 'B', venue: 'Hard Rock Stadium, Miami Gardens', date: 'June 29', time: '13:00' },
-    { first: 'C', second: 'D', venue: 'MetLife Stadium, East Rutherford', date: 'June 29', time: '16:00' },
-    { first: 'E', second: 'F', venue: 'Rose Bowl, Pasadena', date: 'June 29', time: '19:00' },
-    { first: 'G', second: 'H', venue: 'Mercedes-Benz Stadium, Atlanta', date: 'June 29', time: '22:00' },
-    { first: 'B', second: 'A', venue: 'Lumen Field, Seattle', date: 'June 30', time: '13:00' },
-    { first: 'D', second: 'C', venue: 'Lincoln Financial Field, Philadelphia', date: 'June 30', time: '16:00' },
-    { first: 'F', second: 'E', venue: 'TQL Stadium, Cincinnati', date: 'June 30', time: '19:00' },
-    { first: 'H', second: 'G', venue: 'Bank of America Stadium, Charlotte', date: 'June 30', time: '22:00' },
+    { firstGroup: 'A', secondGroup: 'B', venue: 'Lincoln Financial Field, Philadelphia', date: 'June 28', time: '13:00' },
+    { firstGroup: 'C', secondGroup: 'D', venue: 'Bank of America Stadium, Charlotte', date: 'June 28', time: '17:00' },
+    { firstGroup: 'E', secondGroup: 'F', venue: 'Bank of America Stadium, Charlotte', date: 'June 30', time: '16:00' },
+    { firstGroup: 'G', secondGroup: 'H', venue: 'Camping World Stadium, Orlando', date: 'June 30', time: '22:00' },
+    { firstGroup: 'B', secondGroup: 'A', venue: 'Mercedes-Benz Stadium, Atlanta', date: 'June 29', time: '13:00' },
+    { firstGroup: 'D', secondGroup: 'C', venue: 'Hard Rock Stadium, Miami Gardens', date: 'June 29', time: '17:00' },
+    { firstGroup: 'F', secondGroup: 'E', venue: 'Mercedes-Benz Stadium, Atlanta', date: 'July 1', time: '22:00' },
+    { firstGroup: 'H', secondGroup: 'G', venue: 'Hard Rock Stadium, Miami Gardens', date: 'July 1', time: '16:00' },
   ];
 
   roundOf16Matchups.forEach((matchup, index) => {
-    const firstPlaceTeam = firstPlaceTeams.find(t => t.groupName === matchup.first);
-    const secondPlaceTeam = secondPlaceTeams.find(t => t.groupName === matchup.second);
+    const firstPlaceTeam = firstPlaceTeams.find(t => t.groupName === matchup.firstGroup);
+    const secondPlaceTeam = secondPlaceTeams.find(t => t.groupName === matchup.secondGroup);
     
     if (firstPlaceTeam && secondPlaceTeam) {
       fixtures.push({
@@ -126,10 +133,10 @@ const generatePlayoffFixtures = (standingsData?: StandingsData): PlayoffFixture[
   });
 
   const quarterFinalMatchups = [
-    { date: 'July 4', time: '13:00', venue: 'Hard Rock Stadium, Miami Gardens' },
-    { date: 'July 4', time: '16:00', venue: 'MetLife Stadium, East Rutherford' },
-    { date: 'July 5', time: '13:00', venue: 'Rose Bowl, Pasadena' },
-    { date: 'July 5', time: '16:00', venue: 'Mercedes-Benz Stadium, Atlanta' },
+    { date: 'July 4', time: '22:00', venue: 'Lincoln Financial Field, Philadelphia' },
+    { date: 'July 4', time: '16:00', venue: 'Camping World Stadium, Orlando' },
+    { date: 'July 5', time: '13:00', venue: 'Mercedes-Benz Stadium, Atlanta' },
+    { date: 'July 5', time: '17:00', venue: 'MetLife Stadium, East Rutherford' },
   ];
 
   quarterFinalMatchups.forEach((matchup, index) => {
@@ -147,7 +154,7 @@ const generatePlayoffFixtures = (standingsData?: StandingsData): PlayoffFixture[
 
   const semiFinalMatchups = [
     { date: 'July 8', time: '16:00', venue: 'MetLife Stadium, East Rutherford' },
-    { date: 'July 9', time: '16:00', venue: 'Rose Bowl, Pasadena' },
+    { date: 'July 9', time: '16:00', venue: 'MetLife Stadium, East Rutherford' },
   ];
 
   semiFinalMatchups.forEach((matchup, index) => {
@@ -198,6 +205,7 @@ interface MatchesCalendarProps {
   maxWidth?: string;
   standingsData?: StandingsData;
   showPlayoffs?: boolean;
+  gamesData?: any[];
 }
 
 const translateDate = (date: string): string => {
@@ -329,11 +337,28 @@ const convertEdtToLocal = (dateStr: string, timeStr: string) => {
   };
 };
 
+// Função auxiliar para obter resultado da partida
+const getMatchResult = (fixture: EnhancedFixture, gameData?: any) => {
+  // Se o jogo tem resultado disponível
+  if (fixture.isFinished && typeof fixture.homeScore === 'number' && typeof fixture.awayScore === 'number') {
+    return `${fixture.homeScore} - ${fixture.awayScore}`;
+  }
+  
+  // Se temos dados da API e o jogo está finalizado
+  if (gameData?.value?.sport_event_status?.home_score !== undefined && 
+      gameData?.value?.sport_event_status?.away_score !== undefined) {
+    return `${gameData.value.sport_event_status.home_score} - ${gameData.value.sport_event_status.away_score}`;
+  }
+  
+  return 'x';
+};
+
 // Match Card Component for both mobile and desktop
-export const MatchCard = ({ fixture, useAbbreviation = false, compact = false }: { 
+export const MatchCard = ({ fixture, useAbbreviation = false, compact = false, gameData }: { 
   fixture: EnhancedFixture; 
   useAbbreviation?: boolean; 
-  compact?: boolean; 
+  compact?: boolean;
+  gameData?: any;
 }) => {
   const { isDarkMode } = useTheme();
   const { getTeamLogo } = useTeamDisplay();
@@ -342,6 +367,9 @@ export const MatchCard = ({ fixture, useAbbreviation = false, compact = false }:
   
   // Convert time to local timezone
   const timeInfo = convertEdtToLocal(fixture.date, fixture.ko);
+  
+  // Obter resultado da partida
+  const matchResult = getMatchResult(fixture, gameData);
   
   return (
     <TooltipProvider>
@@ -364,7 +392,7 @@ export const MatchCard = ({ fixture, useAbbreviation = false, compact = false }:
             "font-bold px-2",
             compact ? "text-sm" : "text-base",
             isDarkMode ? "text-[#D3ECFF]" : "text-muted-foreground"
-          )}>x</span>
+          )}>{matchResult}</span>
           <TeamMatch 
             teamName={teams[1]} 
             logo={teamLogos[1]} 
@@ -434,28 +462,31 @@ export function MatchesCalendar({
   maxMatches,
   maxWidth,
   standingsData,
-  showPlayoffs = false
+  showPlayoffs = false,
+  gamesData = []
 }: MatchesCalendarProps = {}) {
-  const { isDarkMode } = useTheme();
+  const { isDarkMode } = useTheme()
 
   const allFixtures = useMemo(() => {
     const fixtures: EnhancedFixture[] = [];
     
-    fifaCwcData.groups.forEach(group => {
-      group.fixtures.forEach(fixture => {
-        fixtures.push({
-          ...fixture,
-          groupName: group.name
-        });
-      });
-    });
-    
     if (showPlayoffs && standingsData) {
+      // Se showPlayoffs for true, mostrar APENAS as partidas dos playoffs
       const playoffFixtures = generatePlayoffFixtures(standingsData);
       playoffFixtures.forEach(fixture => {
         fixtures.push({
           ...fixture,
           groupName: translatePhase(fixture.phase)
+        });
+      });
+    } else {
+      // Caso contrário, mostrar as partidas da fase de grupos
+      fifaCwcData.groups.forEach(group => {
+        group.fixtures.forEach(fixture => {
+          fixtures.push({
+            ...fixture,
+            groupName: group.name
+          });
         });
       });
     }
@@ -528,6 +559,10 @@ export function MatchesCalendar({
                 fixture={fixture} 
                 useAbbreviation={useAbbreviations}
                 compact={compact}
+                gameData={gamesData?.find(game => 
+                  game.value?.name?.shortText?.includes(fixture.match.split(' x ')[0]) &&
+                  game.value?.name?.shortText?.includes(fixture.match.split(' x ')[1])
+                )}
               />
             ))}
           </div>
