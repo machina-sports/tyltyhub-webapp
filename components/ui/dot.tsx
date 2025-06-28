@@ -2,8 +2,9 @@
 
 import * as React from 'react';
 import { cn } from '@/lib/utils';
+import { useTheme } from '@/components/theme-provider';
 
-export interface DotProps extends React.SVGProps<SVGSVGElement> {
+export interface DotProps extends React.SVGAttributes<SVGSVGElement> {
   size?: number | string; // Represents the desired visual width of the unskewed base rectangle part
   className?: string;
   color?: string;
@@ -21,9 +22,14 @@ export interface DotProps extends React.SVGProps<SVGSVGElement> {
 export function Dot({
   size = 24,
   className,
-  color = '#0A5EEA', // Default to Sportingbet Bright Blue
+  color,
   ...props
 }: DotProps) {
+  const { isDarkMode } = useTheme();
+  // Default color now depends on theme
+  const defaultColor = isDarkMode ? '#45CAFF' : '#0A5EEA';
+  const dotColor = color || defaultColor;
+  
   const sizeNum = typeof size === 'string' ? parseInt(size, 10) : size;
   const originalWidth = 900;
   const originalHeight = 700;
@@ -68,15 +74,18 @@ export function Dot({
       {...props}
     >
       {/* Path uses scaled radius, then skew is applied */}
-      <path d={pathData} fill={color} transform={`skewX(-12)`} />
+      <path d={pathData} fill={dotColor} transform={`skewX(-12)`} />
     </svg>
   );
 }
 
-// Export variants (no change needed here)
+// Export variants with theme awareness
 export function SportingbetDot(props: Omit<DotProps, 'color'>) {
-  return <Dot color="#0A5EEA" {...props} />;
+  const { isDarkMode } = useTheme();
+  return <Dot color={isDarkMode ? "#45CAFF" : "#0A5EEA"} {...props} />;
 }
+
 export function SportingbetDarkDot(props: Omit<DotProps, 'color'>) {
-  return <Dot color="#001F3F" {...props} />;
+  const { isDarkMode } = useTheme();
+  return <Dot color={isDarkMode ? "#D3ECFF" : "#061F3F"} {...props} />;
 } 

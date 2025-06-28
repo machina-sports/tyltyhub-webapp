@@ -66,6 +66,20 @@ export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: B
 
   const handleSelectOption = (market: string, option: { name: string, odds: string }) => {
     if (isCompleted) return
+    
+    // Track odds information viewing interest
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'odds_information_interest', {
+        event_category: 'odds_information',
+        event_action: 'view_betting_option_details',
+        event_label: `${event} - ${market} - ${option.name}`,
+        event_name: event,
+        market_name: market,
+        option_name: option.name,
+        odds_value: option.odds
+      });
+    }
+
     setSelectedBet({
       market,
       selection: option.name,
@@ -77,9 +91,25 @@ export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: B
   const handlePlaceBet = async () => {
     if (!selectedBet || !stake) return
 
+    // Track educational interest in betting information
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'betting_education_interest', {
+        event_category: 'betting_education',
+        event_action: 'view_betting_calculation',
+        event_label: `${event} - ${selectedBet.market} - ${selectedBet.selection}`,
+        event_name: event,
+        market_name: selectedBet.market,
+        selection_name: selectedBet.selection,
+        odds_value: selectedBet.odds,
+        stake_amount: Number(stake),
+        potential_winnings: Number(potentialWinnings)
+      });
+    }
+
     setIsPlacing(true)
     await new Promise(resolve => setTimeout(resolve, 1000))
     
+    // Simulate educational demo - not real betting
     onPlaceBet({
       event,
       market: selectedBet.market,
@@ -87,6 +117,21 @@ export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: B
       odds: selectedBet.odds,
       stake: Number(stake)
     })
+
+    // Track educational demo completion
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'betting_demo_completed', {
+        event_category: 'betting_education',
+        event_action: 'complete_betting_demo',
+        event_label: `${event} - ${selectedBet.market} - ${selectedBet.selection}`,
+        event_name: event,
+        market_name: selectedBet.market,
+        selection_name: selectedBet.selection,
+        odds_value: selectedBet.odds,
+        stake_amount: Number(stake),
+        potential_winnings: Number(potentialWinnings)
+      });
+    }
 
     setIsCompleted(true)
     setIsPlacing(false)
@@ -127,6 +172,15 @@ export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: B
             variant="ghost"
             size="sm"
             onClick={() => {
+              // Track educational navigation
+              if (typeof window !== 'undefined' && window.gtag) {
+                window.gtag('event', 'betting_education_navigation', {
+                  event_category: 'betting_education',
+                  event_action: 'navigate_back_from_demo',
+                  event_label: `${event} - Back from confirmation`
+                });
+              }
+              
               setShowConfirmation(false)
               setSelectedBet(null)
             }}

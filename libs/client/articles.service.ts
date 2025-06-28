@@ -51,7 +51,12 @@ class ArticlesService extends ClientBaseService {
     return mappedArticle;
   }
 
-  async getArticles() {
+  async getArticles(params = {
+    page: 1, 
+    pageSize: 10,
+    language: 'br',
+    filters: {}
+  }) {
     try {
       const options = {
         headers: {
@@ -63,20 +68,25 @@ class ArticlesService extends ClientBaseService {
       const body = {
         "filters": {
           "name": "content-article",
-          "metadata.language": "br"
+          "metadata.language": params.language,
+          ...params.filters
         },
         "sorters": [
           "_id",
           -1
         ],
-        "page": 1,
-        "page_size": 100,
+        "page": params.page,
+        "page_size": params.pageSize,
       }
 
       const result = await this.post(body, this.prefix, options)
       
       if (result && result.status === true) {
-        return { error: false, data: result.data || [] }
+        return { 
+          error: false, 
+          data: result.data || [],
+          total_documents: result.total_documents || 0
+        }
       }
       
       console.error("API request failed:", result);

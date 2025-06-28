@@ -1,41 +1,116 @@
+import "./globals.css";
+import type { Metadata, Viewport } from "next";
+import { Inter } from "next/font/google";
+import Script from "next/script";
+import { Sidebar } from "@/components/sidebar";
+import { Toaster } from "@/components/ui/toaster";
+import { Providers } from "@/providers/provider";
+import DiscoveryProvider from "@/providers/discover/provider";
+import { MainProvider } from "@/components/use-provider";
+import { LGPDConsent } from "@/components/ui/lgpd-consent";
+import { AgeVerification } from "@/components/ui/age-verification";
 
-import './globals.css'
-import type { Metadata } from 'next'
-import { Sidebar } from '@/components/sidebar'
-import { Toaster } from '@/components/ui/toaster'
-import { ThemeProvider } from "@/components/theme-provider"
-import DataProvider from '@/providers/DataProvider'
+const inter = Inter({ subsets: ["latin"] });
+
+declare global {
+  interface Window {
+    dataLayer: any[];
+    gtag: (...args: any[]) => void;
+  }
+}
 
 export const metadata: Metadata = {
-  title: 'Sportingbet AI',
-  description: 'Sua Aposta Inteligente com IA',
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',
-}
+  title: "SportingBOT: a IA da Sportingbet no Mundial de Clubes 2025",
+  description: "Aposte junto com a Inteligência Artificial da Sportingbet. Pergunte ao nosso chat sobre as notícias e odds do Mundial de Clubes 2025 e veja como apostar melhor.",
+  icons: {
+    icon: "/favicon.ico",
+  },
+  openGraph: {
+    title: "SportingBOT: a IA da Sportingbet no Mundial de Clubes 2025",
+    description: "Aposte junto com a Inteligência Artificial da Sportingbet. Pergunte ao nosso chat sobre as notícias e odds do Mundial de Clubes 2025 e veja como apostar melhor.",
+    type: "website",
+    locale: "pt_BR",
+    siteName: "SportingBOT",
+    url: "https://sportingbot.com",
+    images: [
+      {
+        url: "https://sportingbot.com/og_image_4.png",
+        width: 1200,
+        height: 630,
+        alt: "SportingBOT: a IA da Sportingbet",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SportingBOT: a IA da Sportingbet no Mundial de Clubes 2025",
+    description: "Aposte junto com a Inteligência Artificial da Sportingbet. Pergunte ao nosso chat sobre as notícias e odds do Mundial de Clubes 2025 e veja como apostar melhor.",
+    images: ["https://sportingbot.com/og_image_4.png"],
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
-      <body className="antialiased overflow-hidden">
-        <DataProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem={false}
-        >
-          <div className="flex h-screen flex-col md:flex-row">
-            <Sidebar />
-            <main className="flex-1 overflow-auto pb-safe">
-              {children}
-            </main>
-          </div>
-          <Toaster />
-        </ThemeProvider>
-        </DataProvider>
+    <html lang="pt-BR">
+      <head>
+        <link rel="icon" href="/favicon.ico" />
+        {/* Google tag (gtag.js) - GA4 Property */}
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-RP42Y35MC2"
+        />
+        {/* Google tag (gtag.js) - Secondary GA4 Property */}
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-9F6CHT1XS6"
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+           window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RP42Y35MC2');
+          gtag('config', 'G-9F6CHT1XS6');
+          `,
+          }}
+        />
+        <script 
+          async
+          type="module" 
+          data-tallysight-defaults-widget-config-workspace="sporting-bet" 
+          src="https://storage.googleapis.com/tallysight-widgets/dist/tallysight.min.js"
+          data-tallysight-widget-loading="lazy"
+          data-tallysight-observer="true"
+        />
+        <meta property="og:logo" content="https://sportingbot.com/og_image_4.png" />
+      </head>
+      <body className={inter.className}>
+        <Providers>
+          <MainProvider>
+            <DiscoveryProvider>
+              <div className="flex h-screen flex-col md:flex-row">
+                <Sidebar />
+                <main className="flex-1 overflow-auto pb-safe">{children}</main>
+              </div>
+              <Toaster />
+            </DiscoveryProvider>
+            <AgeVerification />
+            <LGPDConsent />
+          </MainProvider>
+        </Providers>
       </body>
     </html>
-  )
+  );
 }

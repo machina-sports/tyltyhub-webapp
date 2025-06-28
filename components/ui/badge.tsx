@@ -1,6 +1,7 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
+import { useTheme } from "@/components/theme-provider"
 
 const badgeVariants = cva(
   "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
@@ -15,7 +16,9 @@ const badgeVariants = cva(
           "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
         outline: "text-foreground",
         sportingbet: "border-transparent bg-[#0A5EEA] text-white hover:bg-[#003DC4]",
-        sportingbetOutline: "border-[#0A5EEA] text-[#0A5EEA] hover:bg-[#0A5EEA]/10"
+        sportingbetOutline: "border-[#0A5EEA] text-[#0A5EEA] hover:bg-[#0A5EEA]/10",
+        dark: "border-transparent bg-[#45CAFF] text-[#061F3F] hover:bg-[#D3ECFF]",
+        darkOutline: "border-[#45CAFF] text-[#45CAFF] hover:bg-[#45CAFF]/10"
       },
     },
     defaultVariants: {
@@ -29,8 +32,22 @@ export interface BadgeProps
     VariantProps<typeof badgeVariants> {}
 
 function Badge({ className, variant, ...props }: BadgeProps) {
+  const { isDarkMode } = useTheme();
+  
+  // Auto-convert Sportingbet variants to dark mode variants when theme is active
+  if (isDarkMode) {
+    if (variant === 'sportingbet') {
+      variant = 'dark';
+    } else if (variant === 'sportingbetOutline') {
+      variant = 'darkOutline';
+    }
+  }
+  
   return (
-    <div className={cn(badgeVariants({ variant }), className)} {...props} />
+    <div
+      className={cn(badgeVariants({ variant }), className)}
+      {...props}
+    />
   )
 }
 

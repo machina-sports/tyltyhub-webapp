@@ -50,6 +50,11 @@
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
   }
+  
+  /* Custom shape for age verification component */
+  .clip-path-diagonal {
+    clip-path: polygon(0 0, 100% 100%, 0 100%);
+  }
 }
 
 /* Import Sportingbet fonts - you'll need to host these or use similar alternatives */
@@ -144,6 +149,12 @@
     --sb-bright-red: 0 87% 57%;               /* #F13131 */
     --sb-white: 0 0% 100%;                    /* #FFFFFF */
     --sb-light-grey: 220 8% 94%;              /* #EEEFF1 */
+    
+    /* Palmeiras Colors */
+    --palmeiras-green: 142 100% 24%;          /* #006B3D */
+    --palmeiras-dark-green: 142 100% 18%;     /* #00502E */
+    --palmeiras-light-green: 142 85% 35%;     /* #0F9B59 */
+    --palmeiras-accent: 142 85% 42%;          /* #12B869 */
 
     /* Map Sportingbet colors to shadcn variables */
     --background: var(--sb-white);
@@ -220,8 +231,16 @@
   }
   
   /* Prevent iOS Safari auto-zoom on input focus */
-  input, textarea, select {
-    font-size: 16px; /* Minimum font size to prevent auto-zoom on iOS */
+  input, textarea, select, button {
+    font-size: 16px !important; /* Force minimum font size to prevent auto-zoom */
+    max-height: none !important; /* Prevent iOS from adjusting input height */
+    -webkit-text-size-adjust: 100%; /* Prevent iOS text size adjustment */
+  }
+  
+  @media screen and (max-width: 768px) {
+    input, textarea, select, button {
+      font-size: 16px !important;
+    }
   }
   
   /* Typography based on Sportingbet guidelines */
@@ -256,6 +275,26 @@
   .sb-cta {
     @apply rounded-lg bg-primary text-primary-foreground hover:brightness-110 transition-all;
     padding: 0.75rem 1.5rem;
+  }
+
+  /* Palmeiras Theme */
+  .palmeiras {
+    --primary: var(--palmeiras-green);
+    --primary-foreground: var(--sb-white);
+    --secondary: 142 90% 85%;
+    --secondary-foreground: var(--palmeiras-dark-green);
+    --accent: var(--palmeiras-light-green);
+    --accent-foreground: var(--sb-white);
+    --ring: var(--palmeiras-green);
+    --muted: 142 20% 94%;
+    --muted-foreground: 142 40% 30%;
+    
+    /* Chart colors for Palmeiras theme */
+    --chart-1: var(--palmeiras-green);
+    --chart-2: var(--palmeiras-light-green);
+    --chart-3: var(--palmeiras-accent);
+    --chart-4: var(--palmeiras-dark-green);
+    --chart-5: 142 70% 50%;
   }
 }
 
@@ -320,6 +359,16 @@ a {
   ::-webkit-scrollbar-thumb:hover {
     background: hsl(var(--muted-foreground) / 0.3);
   }
+  
+  /* Palmeiras theme scrollbar */
+  .palmeiras ::-webkit-scrollbar-thumb {
+    background: hsl(var(--palmeiras-green) / 0.4);
+    border-radius: 4px;
+  }
+
+  .palmeiras ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--palmeiras-green) / 0.6);
+  }
 }
 
 /* Hide scrollbars on mobile but keep functionality */
@@ -332,4 +381,38 @@ a {
   .hide-scrollbar::-webkit-scrollbar {
     display: none;
   }
+}
+
+/* Remove focus outlines for Search and Theme selectors */
+input[type="search"]:focus-visible,
+.theme-selector:focus-visible,
+.select-trigger:focus-visible,
+[role="combobox"]:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  ring: none !important;
+  ring-offset: none !important;
+  ring-offset-background: none !important;
+}
+
+input[type="search"],
+.theme-selector,
+.select-trigger,
+[role="combobox"] {
+  @apply focus-visible:ring-0 focus-visible:ring-offset-0;
+}
+
+/* Add meta viewport tag to prevent zoom */
+@viewport {
+  zoom: 1.0;
+  min-zoom: 1.0;
+  max-zoom: 1.0;
+  user-zoom: fixed;
+}
+
+.widget-embed iframe {
+  max-height: none !important;
+  height: 300px !important;
+  min-height: 300px !important;
+  width: 100% !important;
 }

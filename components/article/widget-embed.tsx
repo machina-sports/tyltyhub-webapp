@@ -30,6 +30,17 @@ export default function WidgetEmbed({ embedCode }: WidgetEmbedProps) {
       
       containerRef.current.innerHTML = htmlContent;
 
+      // Track widget load event
+      if (typeof window !== 'undefined' && window.gtag) {
+        window.gtag('event', 'widget_information_load', {
+          event_category: 'odds_information',
+          event_action: 'load_odds_widget',
+          event_label: 'Odds information widget loaded',
+          widget_type: htmlContent.includes('odds') ? 'odds_information_widget' : 'information_widget',
+          widget_size: htmlContent.length
+        });
+      }
+
       const scripts = containerRef.current.querySelectorAll('script');
       scripts.forEach((oldScript) => {
         const newScript = document.createElement('script');
@@ -39,8 +50,46 @@ export default function WidgetEmbed({ embedCode }: WidgetEmbedProps) {
         newScript.appendChild(document.createTextNode(oldScript.innerHTML));
         oldScript.parentNode?.replaceChild(newScript, oldScript);
       });
+
+      // Add click tracking to embedded content
+      const addClickTracking = () => {
+        const clickableElements = containerRef.current?.querySelectorAll('button, a, [onclick], [data-bet], .odds-button, .bet-button');
+        clickableElements?.forEach((element, index) => {
+          element.addEventListener('click', (event) => {
+            if (typeof window !== 'undefined' && window.gtag) {
+              const elementText = element.textContent?.trim() || '';
+              const elementClass = element.className || '';
+              const elementTag = element.tagName.toLowerCase();
+              
+              window.gtag('event', 'widget_information_interaction', {
+                event_category: 'odds_information',
+                event_action: 'interact_with_odds_element',
+                event_label: `${elementTag}: ${elementText}`,
+                element_index: index,
+                element_class: elementClass,
+                element_text: elementText,
+                widget_type: htmlContent.includes('odds') ? 'odds_information_widget' : 'information_widget'
+              });
+            }
+          });
+        });
+      };
+
+      // Add tracking after a short delay to ensure DOM is ready
+      setTimeout(addClickTracking, 100);
+
     } catch (error) {
       console.error('Error rendering widget embed:', error);
+      
+      // Track widget error event
+      if (typeof window !== 'undefined' && window.gtag) {
+        window.gtag('event', 'widget_information_error', {
+          event_category: 'odds_information',
+          event_action: 'widget_load_error',
+          event_label: error instanceof Error ? error.message : 'Unknown error',
+          error_type: error instanceof Error ? error.name : 'UnknownError'
+        });
+      }
     }
   }, [embedCode]);
 
