@@ -1,18 +1,18 @@
-name: Release Staging
+name: Release Production
 
 on:
   push:
     tags:
-      - "v.staging-*.*"
+      - "v.release-*.*"
 
 env:
   AKS_CLUSTER_NAME: mks-community-cluster
   AKS_RESOURCE_GROUP: mks-community-group
   NAMESPACE: tenant-entain-organization
   APP_NAME: sportingbet-cwc
-  DEPLOYMENT_NAME: sportingbet-cwc-staging
-  MACHINA_API_KEY: ${{ secrets.MACHINA_API_KEY }}
-  MACHINA_CLIENT_URL: ${{ vars.MACHINA_CLIENT_URL }}
+  DEPLOYMENT_NAME: sportingbet-cwc-prod
+  MACHINA_API_KEY: ${{ secrets.PROD_MACHINA_API_KEY }}
+  MACHINA_CLIENT_URL: ${{ vars.PROD_MACHINA_CLIENT_URL }}
 
 jobs:
   build-and-deploy:
@@ -24,9 +24,9 @@ jobs:
       - name: Create .env file
         run: |
           echo " " >> .env
-          echo "FEATURE_TOGGLE_ENABLE_AVATAR=0" >> .env
+          echo "FEATURE_TOGGLE_ENABLE_AVATAR=1" >> .env
           echo " " >> .env
-          echo "FEATURE_TOGGLE_ENABLE_BETS=0" >> .env
+          echo "FEATURE_TOGGLE_ENABLE_BETS=1" >> .env
           echo " " >> .env
           echo "FEATURE_TOGGLE_ENABLE_CHAT=1" >> .env
           echo " " >> .env
@@ -70,8 +70,8 @@ jobs:
           SLACK_CHANNEL: your-slack-channel
           SLACK_USERNAME: GitHub Actions
           SLACK_COLOR: 'good'
-          SLACK_TITLE: 'Build Successful'
-          SLACK_MESSAGE: 'Build of ${{ env.APP_NAME }}:${{ env.RELEASE_NAME }} finished successfully.'
+          SLACK_TITLE: 'Production Build Successful'
+          SLACK_MESSAGE: 'Production build of ${{ env.APP_NAME }}:${{ env.RELEASE_NAME }} finished successfully.'
           SLACK_ICON: ':heavy_check_mark:'
         if: success()
   
@@ -82,8 +82,8 @@ jobs:
           SLACK_CHANNEL: your-slack-channel
           SLACK_USERNAME: GitHub Actions
           SLACK_COLOR: 'danger'
-          SLACK_TITLE: 'Build Failed'
-          SLACK_MESSAGE: 'Build of ${{ env.APP_NAME }}:${{ env.RELEASE_NAME }} finished with errors.'
+          SLACK_TITLE: 'Production Build Failed'
+          SLACK_MESSAGE: 'Production build of ${{ env.APP_NAME }}:${{ env.RELEASE_NAME }} finished with errors.'
           SLACK_ICON: ':x:'
         if: failure()
 
@@ -92,12 +92,11 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Set up Kubectl
-        uses: azure/setup-kubectl@v1
-
       - name: Get AKS credentials
-        run: |
-          az aks get-credentials --name gb-aks-cluster --resource-group gb-container-app --overwrite-existing
+        uses: azure/aks-set-context@v3
+        with:
+          cluster-name: ${{ env.AKS_CLUSTER_NAME }}
+          resource-group: ${{ env.AKS_RESOURCE_GROUP }}
 
       - name: Deploy to AKS
         run: |
@@ -111,8 +110,8 @@ jobs:
           SLACK_CHANNEL: your-slack-channel
           SLACK_USERNAME: GitHub Actions
           SLACK_COLOR: 'good'
-          SLACK_TITLE: 'Staging Deployment Successful'
-          SLACK_MESSAGE: 'Staging deployment of ${{ env.APP_NAME }}:${{ env.RELEASE_NAME }} completed successfully.'
+          SLACK_TITLE: 'Production Deployment Successful'
+          SLACK_MESSAGE: 'Production deployment of ${{ env.APP_NAME }}:${{ env.RELEASE_NAME }} completed successfully.'
           SLACK_ICON: ':rocket:'
         if: success()
 
@@ -123,7 +122,7 @@ jobs:
           SLACK_CHANNEL: your-slack-channel
           SLACK_USERNAME: GitHub Actions
           SLACK_COLOR: 'danger'
-          SLACK_TITLE: 'Staging Deployment Failed'
-          SLACK_MESSAGE: 'Staging deployment of ${{ env.APP_NAME }}:${{ env.RELEASE_NAME }} failed.'
+          SLACK_TITLE: 'Production Deployment Failed'
+          SLACK_MESSAGE: 'Production deployment of ${{ env.APP_NAME }}:${{ env.RELEASE_NAME }} failed.'
           SLACK_ICON: ':warning:'
         if: failure()
