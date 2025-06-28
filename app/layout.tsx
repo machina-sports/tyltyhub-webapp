@@ -8,6 +8,7 @@ import { Providers } from "@/providers/provider";
 import DiscoveryProvider from "@/providers/discover/provider";
 import { MainProvider } from "@/components/use-provider";
 import { LGPDConsent } from "@/components/ui/lgpd-consent";
+import { AgeVerification } from "@/components/ui/age-verification";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -105,6 +106,7 @@ export default function RootLayout({
               </div>
               <Toaster />
             </DiscoveryProvider>
+            <AgeVerification />
             <LGPDConsent />
           </MainProvider>
         </Providers>
