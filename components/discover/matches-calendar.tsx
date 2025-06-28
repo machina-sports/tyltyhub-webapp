@@ -21,6 +21,181 @@ type Fixture = {
   match: string;
   venue: string;
   groupName: string;
+  homeScore?: number;
+  awayScore?: number;
+  isFinished?: boolean;
+};
+
+type PlayoffFixture = {
+  date: string;
+  ko: string;
+  match: string;
+  venue: string;
+  phase: 'Round of 16' | 'Quarter-finals' | 'Semi-finals' | 'Final';
+  matchNumber?: number;
+  homeScore?: number;
+  awayScore?: number;
+  isFinished?: boolean;
+};
+
+type StandingsTeam = {
+  competitor: {
+    name: string;
+    abbreviation: string;
+    country: string;
+    country_code: string;
+    id: string;
+  };
+  rank: number;
+  points: number;
+  current_outcome?: string;
+  goals_for: number;
+  goals_against: number;
+  goals_diff: number;
+  win: number;
+  draw: number;
+  loss: number;
+  played: number;
+};
+
+type GroupStanding = {
+  group_name: string;
+  name: string;
+  standings: StandingsTeam[];
+};
+
+type StandingsData = {
+  standings: {
+    value: {
+      data: Array<{
+        groups: GroupStanding[];
+      }>;
+    };
+  };
+};
+
+const generatePlayoffFixtures = (standingsData?: StandingsData): PlayoffFixture[] => {
+  if (!standingsData?.standings?.value?.data?.[0]?.groups) {
+    return [];
+  }
+
+  const groups = standingsData.standings.value.data[0].groups;
+  const fixtures: PlayoffFixture[] = [];
+  
+  const qualifiedTeams: { team: StandingsTeam; groupName: string }[] = [];
+  
+  groups.forEach(group => {
+    const sortedStandings = [...group.standings]
+      .sort((a, b) => {
+        return a.rank - b.rank;
+      })
+      .slice(0, 2);
+    
+    sortedStandings.forEach(team => {
+      if (team.current_outcome === 'Playoffs') {
+        qualifiedTeams.push({ team, groupName: group.group_name });
+      }
+    });
+  });
+
+  const firstPlaceTeams = qualifiedTeams.filter(({ team }) => team.rank === 1);
+  const secondPlaceTeams = qualifiedTeams.filter(({ team }) => team.rank === 2);
+
+  firstPlaceTeams.sort((a, b) => a.groupName.localeCompare(b.groupName));
+  secondPlaceTeams.sort((a, b) => a.groupName.localeCompare(b.groupName));
+
+  // Criar matchups únicos - 1º lugar vs 2º lugar de outros grupos
+  const roundOf16Matchups = [
+    { firstGroup: 'A', secondGroup: 'B', venue: 'Lincoln Financial Field, Philadelphia', date: 'June 28', time: '13:00' },
+    { firstGroup: 'C', secondGroup: 'D', venue: 'Bank of America Stadium, Charlotte', date: 'June 28', time: '17:00' },
+    { firstGroup: 'E', secondGroup: 'F', venue: 'Bank of America Stadium, Charlotte', date: 'June 30', time: '16:00' },
+    { firstGroup: 'G', secondGroup: 'H', venue: 'Camping World Stadium, Orlando', date: 'June 30', time: '22:00' },
+    { firstGroup: 'B', secondGroup: 'A', venue: 'Mercedes-Benz Stadium, Atlanta', date: 'June 29', time: '13:00' },
+    { firstGroup: 'D', secondGroup: 'C', venue: 'Hard Rock Stadium, Miami Gardens', date: 'June 29', time: '17:00' },
+    { firstGroup: 'F', secondGroup: 'E', venue: 'Mercedes-Benz Stadium, Atlanta', date: 'July 1', time: '22:00' },
+    { firstGroup: 'H', secondGroup: 'G', venue: 'Hard Rock Stadium, Miami Gardens', date: 'July 1', time: '16:00' },
+  ];
+
+  roundOf16Matchups.forEach((matchup, index) => {
+    const firstPlaceTeam = firstPlaceTeams.find(t => t.groupName === matchup.firstGroup);
+    const secondPlaceTeam = secondPlaceTeams.find(t => t.groupName === matchup.secondGroup);
+    
+    if (firstPlaceTeam && secondPlaceTeam) {
+      fixtures.push({
+        date: matchup.date,
+        ko: matchup.time,
+        match: `${firstPlaceTeam.team.competitor.name} x ${secondPlaceTeam.team.competitor.name}`,
+        venue: matchup.venue,
+        phase: 'Round of 16',
+        matchNumber: index + 1
+      });
+    }
+  });
+
+  const quarterFinalMatchups = [
+    { date: 'July 4', time: '22:00', venue: 'Lincoln Financial Field, Philadelphia' },
+    { date: 'July 4', time: '16:00', venue: 'Camping World Stadium, Orlando' },
+    { date: 'July 5', time: '13:00', venue: 'Mercedes-Benz Stadium, Atlanta' },
+    { date: 'July 5', time: '17:00', venue: 'MetLife Stadium, East Rutherford' },
+  ];
+
+  quarterFinalMatchups.forEach((matchup, index) => {
+    const match1 = index * 2 + 1;
+    const match2 = index * 2 + 2;
+    fixtures.push({
+      date: matchup.date,
+      ko: matchup.time,
+      match: `Vencedor Oitava ${match1} x Vencedor Oitava ${match2}`,
+      venue: matchup.venue,
+      phase: 'Quarter-finals',
+      matchNumber: index + 1
+    });
+  });
+
+  const semiFinalMatchups = [
+    { date: 'July 8', time: '16:00', venue: 'MetLife Stadium, East Rutherford' },
+    { date: 'July 9', time: '16:00', venue: 'MetLife Stadium, East Rutherford' },
+  ];
+
+  semiFinalMatchups.forEach((matchup, index) => {
+    const quarter1 = index * 2 + 1;
+    const quarter2 = index * 2 + 2;
+    fixtures.push({
+      date: matchup.date,
+      ko: matchup.time,
+      match: `Vencedor Quarta ${quarter1} x Vencedor Quarta ${quarter2}`,
+      venue: matchup.venue,
+      phase: 'Semi-finals',
+      matchNumber: index + 1
+    });
+  });
+
+  fixtures.push({
+    date: 'July 13',
+    ko: '16:00',
+    match: 'Vencedor Semifinal 1 x Vencedor Semifinal 2',
+    venue: 'MetLife Stadium, East Rutherford',
+    phase: 'Final',
+    matchNumber: 1
+  });
+
+  return fixtures;
+};
+
+type EnhancedFixture = Fixture | (PlayoffFixture & { groupName: string });
+
+const isPlayoffFixture = (fixture: EnhancedFixture): fixture is PlayoffFixture & { groupName: string } => {
+  return 'phase' in fixture;
+};
+
+const translatePhase = (phase: string): string => {
+  const translations: Record<string, string> = {
+    'Round of 16': 'Oitavas de Final',
+    'Quarter-finals': 'Quartas de Final',
+    'Semi-finals': 'Semifinais',
+    'Final': 'Final'
+  };
+  return translations[phase] || phase;
 };
 
 interface MatchesCalendarProps {
@@ -28,9 +203,11 @@ interface MatchesCalendarProps {
   compact?: boolean;
   maxMatches?: number;
   maxWidth?: string;
+  standingsData?: StandingsData;
+  showPlayoffs?: boolean;
+  gamesData?: any[];
 }
 
-// Helper to translate month names in dates
 const translateDate = (date: string): string => {
   return date
     .replace('June', 'Junho')
@@ -47,9 +224,7 @@ const translateDate = (date: string): string => {
     .replace('May', 'Maio')
 }
 
-// Helper to parse and sort dates
 const parseDate = (dateStr: string, timeStr: string): Date => {
-  // Convert month names to their numeric values
   const monthMap: Record<string, string> = {
     'June': '06',
     'July': '07',
@@ -65,18 +240,14 @@ const parseDate = (dateStr: string, timeStr: string): Date => {
     'May': '05'
   };
   
-  // Parse the date string (e.g., "June 15")
   const [month, day] = dateStr.split(' ');
   const monthNum = monthMap[month];
   
-  // Extract hour and minute from time (24-hour format)
   const [hour, minute] = timeStr.split(':').map(Number);
   
-  // Use 2025 as the year for FIFA CWC
   return new Date(2025, parseInt(monthNum) - 1, parseInt(day), hour, minute);
 }
 
-// Function to group fixtures by date
 const groupByDate = (fixtures: Fixture[]): Record<string, Fixture[]> => {
   const grouped: Record<string, Fixture[]> = {};
   
@@ -98,12 +269,10 @@ interface TeamMatchProps {
   compact?: boolean;
 }
 
-// Component for team in match
 const TeamMatch = ({ teamName, logo, isSecond, useAbbreviation = false, compact = false }: TeamMatchProps) => {
   const { isDarkMode } = useTheme();
   const { getDisplayName, shouldUseAbbreviation } = useTeamDisplay();
   
-  // Use abbreviation based on props or screen constraints
   const displayName = getDisplayName(teamName, {
     preferAbbreviation: useAbbreviation || shouldUseAbbreviation(teamName, undefined, compact),
     maxLength: compact ? 8 : 15
@@ -168,11 +337,28 @@ const convertEdtToLocal = (dateStr: string, timeStr: string) => {
   };
 };
 
+// Função auxiliar para obter resultado da partida
+const getMatchResult = (fixture: EnhancedFixture, gameData?: any) => {
+  // Se o jogo tem resultado disponível
+  if (fixture.isFinished && typeof fixture.homeScore === 'number' && typeof fixture.awayScore === 'number') {
+    return `${fixture.homeScore} - ${fixture.awayScore}`;
+  }
+  
+  // Se temos dados da API e o jogo está finalizado
+  if (gameData?.value?.sport_event_status?.home_score !== undefined && 
+      gameData?.value?.sport_event_status?.away_score !== undefined) {
+    return `${gameData.value.sport_event_status.home_score} - ${gameData.value.sport_event_status.away_score}`;
+  }
+  
+  return 'x';
+};
+
 // Match Card Component for both mobile and desktop
-export const MatchCard = ({ fixture, useAbbreviation = false, compact = false }: { 
-  fixture: Fixture; 
+export const MatchCard = ({ fixture, useAbbreviation = false, compact = false, gameData }: { 
+  fixture: EnhancedFixture; 
   useAbbreviation?: boolean; 
-  compact?: boolean; 
+  compact?: boolean;
+  gameData?: any;
 }) => {
   const { isDarkMode } = useTheme();
   const { getTeamLogo } = useTeamDisplay();
@@ -181,6 +367,9 @@ export const MatchCard = ({ fixture, useAbbreviation = false, compact = false }:
   
   // Convert time to local timezone
   const timeInfo = convertEdtToLocal(fixture.date, fixture.ko);
+  
+  // Obter resultado da partida
+  const matchResult = getMatchResult(fixture, gameData);
   
   return (
     <TooltipProvider>
@@ -203,7 +392,7 @@ export const MatchCard = ({ fixture, useAbbreviation = false, compact = false }:
             "font-bold px-2",
             compact ? "text-sm" : "text-base",
             isDarkMode ? "text-[#D3ECFF]" : "text-muted-foreground"
-          )}>x</span>
+          )}>{matchResult}</span>
           <TeamMatch 
             teamName={teams[1]} 
             logo={teamLogos[1]} 
@@ -256,7 +445,10 @@ export const MatchCard = ({ fixture, useAbbreviation = false, compact = false }:
             "overflow-wrap-normal word-break-normal",
             isDarkMode ? "text-[#D3ECFF]" : "text-muted-foreground"
           )}>
-            {fixture.groupName.replace('Group', 'Grupo')}
+            {isPlayoffFixture(fixture) 
+              ? translatePhase(fixture.phase)
+              : fixture.groupName.replace('Group', 'Grupo')
+            }
           </span>
         </div>
       </div>
@@ -268,40 +460,50 @@ export function MatchesCalendar({
   useAbbreviations = false, 
   compact = false, 
   maxMatches,
-  maxWidth 
+  maxWidth,
+  standingsData,
+  showPlayoffs = false,
+  gamesData = []
 }: MatchesCalendarProps = {}) {
-  const { isDarkMode } = useTheme();
+  const { isDarkMode } = useTheme()
 
-  // Combine and sort all fixtures by date and time
   const allFixtures = useMemo(() => {
-    const fixtures: Fixture[] = [];
+    const fixtures: EnhancedFixture[] = [];
     
-    fifaCwcData.groups.forEach(group => {
-      group.fixtures.forEach(fixture => {
+    if (showPlayoffs && standingsData) {
+      // Se showPlayoffs for true, mostrar APENAS as partidas dos playoffs
+      const playoffFixtures = generatePlayoffFixtures(standingsData);
+      playoffFixtures.forEach(fixture => {
         fixtures.push({
           ...fixture,
-          groupName: group.name
+          groupName: translatePhase(fixture.phase)
         });
       });
-    });
+    } else {
+      // Caso contrário, mostrar as partidas da fase de grupos
+      fifaCwcData.groups.forEach(group => {
+        group.fixtures.forEach(fixture => {
+          fixtures.push({
+            ...fixture,
+            groupName: group.name
+          });
+        });
+      });
+    }
     
-    // Sort by date and time
     const sorted = fixtures.sort((a, b) => {
       const dateA = parseDate(a.date, a.ko);
       const dateB = parseDate(b.date, b.ko);
       return dateA.getTime() - dateB.getTime();
     });
 
-    // Limit matches if maxMatches is specified
     return maxMatches ? sorted.slice(0, maxMatches) : sorted;
-  }, [maxMatches]);
+  }, [maxMatches, standingsData, showPlayoffs]);
   
-  // Group fixtures by date for display
   const fixturesByDate = useMemo(() => {
     return groupByDate(allFixtures);
   }, [allFixtures]);
   
-  // Get sorted dates
   const sortedDates = useMemo(() => {
     const dates = Object.keys(fixturesByDate);
     return dates.sort((a, b) => {
@@ -357,6 +559,10 @@ export function MatchesCalendar({
                 fixture={fixture} 
                 useAbbreviation={useAbbreviations}
                 compact={compact}
+                gameData={gamesData?.find(game => 
+                  game.value?.name?.shortText?.includes(fixture.match.split(' x ')[0]) &&
+                  game.value?.name?.shortText?.includes(fixture.match.split(' x ')[1])
+                )}
               />
             ))}
           </div>

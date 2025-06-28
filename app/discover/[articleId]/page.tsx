@@ -51,7 +51,12 @@ export async function generateMetadata({ params }: { params: { articleId: string
           type: 'article',
           publishedTime: article.created || article.date,
           authors: ['Machina Sports'],
-          images: ogImages,
+          images: ogImages.length > 0 ? [{
+            ...ogImages[0],
+            width: 1200,
+            height: 630,
+            alt: article.value.title
+          }] : [],
         }
       };
     }
