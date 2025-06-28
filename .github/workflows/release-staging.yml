@@ -37,7 +37,7 @@ jobs:
 
       - name: Deploy to AKS
         run: |
-          kubectl set image deployment/${{ env.DEPLOYMENT_NAME }} ${{ env.APP_NAME }}=${{ secrets.REGISTRY_URL }}/${{ env.APP_NAME }}:${{ env.IMAGE_TAG }} -n ${{ env.NAMESPACE }}
+          kubectl set image deployment/${{ env.DEPLOYMENT_NAME }} ${{ env.DEPLOYMENT_NAME }}=${{ secrets.REGISTRY_URL }}/${{ env.APP_NAME }}:${{ env.IMAGE_TAG }} -n ${{ env.NAMESPACE }}
           kubectl rollout status deployment/${{ env.DEPLOYMENT_NAME }} -n ${{ env.NAMESPACE }}
 
       - name: Notify Slack - Deployment Success
