@@ -47,7 +47,7 @@ jobs:
           SLACK_USERNAME: GitHub Actions
           SLACK_COLOR: 'good'
           SLACK_TITLE: 'Production Deployment Successful'
-          SLACK_MESSAGE: 'Production deployment of ${{ env.APP_NAME }}:${{ env.IMAGE_TAG }} completed successfully.'
+          SLACK_MESSAGE: 'Production deployment of ${{ env.DEPLOYMENT_NAME }}:${{ env.IMAGE_TAG }} completed successfully.'
           SLACK_ICON: ':rocket:'
         if: success()
 
@@ -59,6 +59,6 @@ jobs:
           SLACK_USERNAME: GitHub Actions
           SLACK_COLOR: 'danger'
           SLACK_TITLE: 'Production Deployment Failed'
-          SLACK_MESSAGE: 'Production deployment of ${{ env.APP_NAME }}:${{ env.IMAGE_TAG }} failed.'
+          SLACK_MESSAGE: 'Production deployment of ${{ env.DEPLOYMENT_NAME }}:${{ env.IMAGE_TAG }} failed.'
           SLACK_ICON: ':warning:'
         if: failure()
