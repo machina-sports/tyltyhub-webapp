@@ -1,0 +1,80 @@
+name: Build Staging
+
+on:
+  push:
+    tags:
+      - "v.staging-*.*"
+
+env:
+  APP_NAME: sportingbet-cwc
+  MACHINA_API_KEY: ${{ secrets.MACHINA_API_KEY }}
+  MACHINA_CLIENT_URL: ${{ vars.MACHINA_CLIENT_URL }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create .env file
+        run: |
+          echo " " >> .env
+          echo "FEATURE_TOGGLE_ENABLE_AVATAR=0" >> .env
+          echo " " >> .env
+          echo "FEATURE_TOGGLE_ENABLE_BETS=0" >> .env
+          echo " " >> .env
+          echo "FEATURE_TOGGLE_ENABLE_CHAT=1" >> .env
+          echo " " >> .env
+          echo "MACHINA_API_KEY=${{ env.MACHINA_API_KEY }}" >> .env
+          echo " " >> .env
+          echo "MACHINA_CLIENT_URL=${{ env.MACHINA_CLIENT_URL }}" >> .env
+          echo " " >> .env
+          echo "IMAGE_CONTAINER_ADDRESS=${{ vars.IMAGE_CONTAINER_ADDRESS }}" >> .env
+          echo " " >> .env
+          echo "NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS=${{ vars.IMAGE_CONTAINER_ADDRESS }}" >> .env
+          echo " " >> .env
+          echo "NEXT_PUBLIC_GOOGLE_ANALYTICS_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_ANALYTICS_KEY }}" >> .env
+          echo " " >> .env
+
+      - name: Get tag name as release name
+        run: echo "RELEASE_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.REGISTRY_URL }}/${{ env.APP_NAME }}:${{ env.RELEASE_NAME }}
+
+      - name: Notify Slack - Build Success
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: your-slack-channel
+          SLACK_USERNAME: GitHub Actions
+          SLACK_COLOR: 'good'
+          SLACK_TITLE: 'Staging Build Successful'
+          SLACK_MESSAGE: 'Build of ${{ env.APP_NAME }}:${{ env.RELEASE_NAME }} completed successfully and pushed to registry.'
+          SLACK_ICON: ':heavy_check_mark:'
+        if: success()
+  
+      - name: Notify Slack - Build Failed
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: your-slack-channel
+          SLACK_USERNAME: GitHub Actions
+          SLACK_COLOR: 'danger'
+          SLACK_TITLE: 'Staging Build Failed'
+          SLACK_MESSAGE: 'Build of ${{ env.APP_NAME }}:${{ env.RELEASE_NAME }} failed.'
+          SLACK_ICON: ':x:'
+        if: failure() 
