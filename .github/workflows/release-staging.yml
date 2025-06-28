@@ -13,8 +13,8 @@ env:
   AKS_RESOURCE_GROUP: mks-community-group
   NAMESPACE: tenant-entain-organization
   APP_NAME: sportingbet-cwc
-  DEPLOYMENT_NAME: sportingbet-cwc-staging
-  CONTAINER_NAME: tenant-entain-organization-sportingbet-cwc-staging
+  DEPLOYMENT_NAME: sportingbet-cwc-development
+  CONTAINER_NAME: tenant-entain-organization-sportingbet-cwc-development
 
 jobs:
   deploy:
