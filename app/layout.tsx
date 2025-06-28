@@ -8,6 +8,7 @@ import { Providers } from "@/providers/provider";
 import DiscoveryProvider from "@/providers/discover/provider";
 import { MainProvider } from "@/components/use-provider";
 import { LGPDConsent } from "@/components/ui/lgpd-consent";
+import { AgeVerification } from "@/components/ui/age-verification";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,9 +31,10 @@ export const metadata: Metadata = {
     type: "website",
     locale: "pt_BR",
     siteName: "SportingBOT",
+    url: "https://sportingbot.com",
     images: [
       {
-        url: "/og_image_1.png",
+        url: "https://sportingbot.com/og_image_4.png",
         width: 1200,
         height: 630,
         alt: "SportingBOT: a IA da Sportingbet",
@@ -43,7 +45,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "SportingBOT: a IA da Sportingbet no Mundial de Clubes 2025",
     description: "Aposte junto com a Inteligência Artificial da Sportingbet. Pergunte ao nosso chat sobre as notícias e odds do Mundial de Clubes 2025 e veja como apostar melhor.",
-    images: ["/og_image_1.png"],
+    images: ["https://sportingbot.com/og_image_4.png"],
   },
 };
 
@@ -92,6 +94,7 @@ export default function RootLayout({
           data-tallysight-widget-loading="lazy"
           data-tallysight-observer="true"
         />
+        <meta property="og:logo" content="https://sportingbot.com/og_image_4.png" />
       </head>
       <body className={inter.className}>
         <Providers>
@@ -103,6 +106,7 @@ export default function RootLayout({
               </div>
               <Toaster />
             </DiscoveryProvider>
+            <AgeVerification />
             <LGPDConsent />
           </MainProvider>
         </Providers>

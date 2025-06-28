@@ -69,7 +69,7 @@ const ContainerHome = ({ query }: { query: string }) => {
   const router = useRouter()
 
   const [input, setInput] = useState(query)
-  const [selectedIndex, setSelectedIndex] = useState(-1) // -1 means input is focused
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null) // null means no selection, -1 means input is focused
 
   const state = useGlobalState((state: any) => state.trending)
 
@@ -96,16 +96,9 @@ const ContainerHome = ({ query }: { query: string }) => {
     setRandomTitle(titleOptions[Math.floor(Math.random() * titleOptions.length)])
   }, [])
 
-  // Focus input on mount
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus()
-    }
-  }, [])
-
   // Auto-scroll to selected item
   useEffect(() => {
-    if (selectedIndex >= 0 && questionRefs.current[selectedIndex]) {
+    if (selectedIndex !== null && selectedIndex >= 0 && questionRefs.current[selectedIndex]) {
       questionRefs.current[selectedIndex]?.scrollIntoView({
         behavior: 'smooth',
         block: 'nearest'
@@ -129,20 +122,22 @@ const ContainerHome = ({ query }: { query: string }) => {
       if (e.key === 'ArrowDown') {
         e.preventDefault()
         setSelectedIndex(prev => {
-          const newIndex = prev + 1
+          const currentIndex = prev ?? -1
+          const newIndex = currentIndex + 1
           if (newIndex >= topQuestions.length) return 0
           return newIndex
         })
       } else if (e.key === 'ArrowUp') {
         e.preventDefault()
         setSelectedIndex(prev => {
-          const newIndex = prev - 1
+          const currentIndex = prev ?? -1
+          const newIndex = currentIndex - 1
           if (newIndex < -1) return topQuestions.length - 1
           return newIndex
         })
       } else if (e.key === 'Enter') {
         e.preventDefault()
-        if (selectedIndex >= 0) {
+        if (selectedIndex !== null && selectedIndex >= 0) {
           handleSampleQuery(topQuestions[selectedIndex])
         } else if (input.trim()) {
           handleSubmit(e as any)
@@ -257,7 +252,7 @@ const ContainerHome = ({ query }: { query: string }) => {
                 placeholder={getInputPlaceholder()}
                 className={cn(
                   "w-full h-12 pl-12 pr-12 rounded-lg",
-                  selectedIndex === -1 && "ring-2 ring-primary/50",
+                  selectedIndex === null && "ring-2 ring-primary/50",
                   isDarkMode ? "bg-[#051A35] text-[#D3ECFF] placeholder:text-[#D3ECFF]/50 border border-[#45CAFF]/30 focus:border-[#45CAFF]/50 transition-colors" : "bg-secondary border-0"
                 )}
               />

@@ -23,10 +23,10 @@ export function ArticleSharing({ articleId, title, url, shareImageUrl }: Article
   const [isOpen, setIsOpen] = useState(false)
   
   // Generate full URL if only articleId is provided
-  const fullUrl = url || `${typeof window !== 'undefined' ? window.location.origin : ''}/discover/${articleId}`
+  const fullUrl = url || `https://sportingbot.com/discover/${articleId}`
   
   const shareText = `Confira este artigo: ${title}`
-  const shareImage = shareImageUrl || `${typeof window !== 'undefined' ? window.location.origin : ''}/kv-txt-op1_980x250px_bot_.gif`
+  const shareImage = shareImageUrl || `https://sportingbot.com/og_image_4.png`
   
   const handleShare = (platform: string) => {
     let shareUrl = ''

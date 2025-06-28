@@ -43,7 +43,7 @@ export default function Home() {
   const [isRecording, setIsRecording] = useState(false)
   const [isPreparing, setIsPreparing] = useState(false)
   const [isTranscribing, setIsTranscribing] = useState(false)
-  const [selectedIndex, setSelectedIndex] = useState(-1) // -1 means input is focused
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null) // null means no selection, -1 means input is focused
   const { 
     messages, 
     showInitial, 
@@ -55,13 +55,6 @@ export default function Home() {
   const inputRef = useRef<HTMLInputElement>(null)
   const prepareTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-  // Focus input on mount
-  useEffect(() => {
-    if (showInitial && inputRef.current) {
-      inputRef.current.focus()
-    }
-  }, [showInitial])
-
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -70,27 +63,25 @@ export default function Home() {
       if (e.key === 'ArrowDown') {
         e.preventDefault()
         setSelectedIndex(prev => {
-          const newIndex = prev + 1
-          if (newIndex >= suggestions.length) return 0
+          const newIndex = prev === null ? 0 : (prev + 1) % suggestions.length
           return newIndex
         })
       } else if (e.key === 'ArrowUp') {
         e.preventDefault()
         setSelectedIndex(prev => {
-          const newIndex = prev - 1
-          if (newIndex < -1) return suggestions.length - 1
+          const newIndex = prev === null ? suggestions.length - 1 : (prev - 1 + suggestions.length) % suggestions.length
           return newIndex
         })
       } else if (e.key === 'Enter') {
         e.preventDefault()
-        if (selectedIndex >= 0) {
+        if (selectedIndex !== null) {
           handleSampleQuery(suggestions[selectedIndex].text)
         } else if (input.trim()) {
           handleSubmit(e as any)
         }
       } else if (e.key === 'Escape') {
         e.preventDefault()
-        setSelectedIndex(-1)
+        setSelectedIndex(null)
         inputRef.current?.focus()
       }
     }
@@ -98,13 +89,6 @@ export default function Home() {
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [showInitial, selectedIndex, input])
-
-  // Focus input when selectedIndex is -1
-  useEffect(() => {
-    if (selectedIndex === -1 && inputRef.current) {
-      inputRef.current.focus()
-    }
-  }, [selectedIndex])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -125,7 +109,7 @@ export default function Home() {
     // Add user message immediately
     addMessage({ role: 'user', content: input })
     setInput('')
-    setSelectedIndex(-1)
+    setSelectedIndex(null)
 
     // Show typing indicator for assistant response
     setIsTyping(true)
@@ -142,7 +126,7 @@ export default function Home() {
 
   const handleSampleQuery = (query: string) => {
     setInput(query)
-    setSelectedIndex(-1)
+    setSelectedIndex(null)
     // Submit immediately
     setTimeout(() => {
       handleSubmit({ preventDefault: () => {} } as any)
@@ -233,7 +217,7 @@ export default function Home() {
                   placeholder={getInputPlaceholder()}
                   className={cn(
                     "w-full h-10 md:h-12 pl-4 pr-12 rounded-lg bg-secondary/50 border-0 shadow-sm text-base",
-                    selectedIndex === -1 && "ring-2 ring-primary/50",
+                    selectedIndex === null && "ring-2 ring-primary/50",
                     isPreparing && "animate-pulse text-amber-600",
                     isRecording && "animate-pulse text-red-600",
                     isTranscribing && "animate-pulse"

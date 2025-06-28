@@ -99,7 +99,7 @@ export function ContainerChat() {
           expirationDays
         })).unwrap()
           .then((result) => {
-            const baseUrl = window.location.origin
+            const baseUrl = "https://sportingbot.com"
             const shareLink = `${baseUrl}/chat/${result.chatId}`
             setShareUrl(shareLink)
             setIsSaving(false)

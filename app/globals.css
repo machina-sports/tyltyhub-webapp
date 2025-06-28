@@ -50,6 +50,11 @@
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
   }
+  
+  /* Custom shape for age verification component */
+  .clip-path-diagonal {
+    clip-path: polygon(0 0, 100% 100%, 0 100%);
+  }
 }
 
 /* Import Sportingbet fonts - you'll need to host these or use similar alternatives */
