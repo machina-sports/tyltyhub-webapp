@@ -5,10 +5,6 @@ on:
     tags:
       - "v.staging-*.*"
 
-env:
-  AKS_CLUSTER_NAME: mks-community-cluster
-  AKS_RESOURCE_GROUP: mks-community-group
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -87,11 +83,12 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Set up Kubectl
+        uses: azure/setup-kubectl@v1
+
       - name: Get AKS credentials
-        uses: azure/aks-set-context@v3
-        with:
-          cluster-name: ${{ env.AKS_CLUSTER_NAME }}
-          resource-group: ${{ env.AKS_RESOURCE_GROUP }}
+        run: |
+          az aks get-credentials --name gb-aks-cluster --resource-group gb-container-app --overwrite-existing
 
       - name: Deploy to AKS
         run: |
