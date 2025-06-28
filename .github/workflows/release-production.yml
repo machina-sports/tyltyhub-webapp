@@ -1,9 +1,18 @@
-name: Release Staging
+name: Release Production
 
 on:
   push:
     tags:
-      - "v.staging-*.*"
+      - "v.release-*.*"
+
+env:
+  AKS_CLUSTER_NAME: mks-community-cluster
+  AKS_RESOURCE_GROUP: mks-community-group
+  NAMESPACE: tenant-entain-organization
+  APP_NAME: sportingbet-cwc
+  DEPLOYMENT_NAME: sportingbet-cwc-prod
+  MACHINA_API_KEY: ${{ secrets.PROD_MACHINA_API_KEY }}
+  MACHINA_CLIENT_URL: ${{ vars.PROD_MACHINA_CLIENT_URL }}
 
 jobs:
   build-and-deploy:
@@ -15,15 +24,15 @@ jobs:
       - name: Create .env file
         run: |
           echo " " >> .env
-          echo "FEATURE_TOGGLE_ENABLE_AVATAR=0" >> .env
+          echo "FEATURE_TOGGLE_ENABLE_AVATAR=1" >> .env
           echo " " >> .env
-          echo "FEATURE_TOGGLE_ENABLE_BETS=0" >> .env
+          echo "FEATURE_TOGGLE_ENABLE_BETS=1" >> .env
           echo " " >> .env
           echo "FEATURE_TOGGLE_ENABLE_CHAT=1" >> .env
           echo " " >> .env
-          echo "MACHINA_API_KEY=${{ secrets.MACHINA_API_KEY }}" >> .env
+          echo "MACHINA_API_KEY=${{ env.MACHINA_API_KEY }}" >> .env
           echo " " >> .env
-          echo "MACHINA_CLIENT_URL=${{ vars.MACHINA_CLIENT_URL }}" >> .env
+          echo "MACHINA_CLIENT_URL=${{ env.MACHINA_CLIENT_URL }}" >> .env
           echo " " >> .env
           echo "IMAGE_CONTAINER_ADDRESS=${{ vars.IMAGE_CONTAINER_ADDRESS }}" >> .env
           echo " " >> .env
@@ -32,8 +41,8 @@ jobs:
           echo "NEXT_PUBLIC_GOOGLE_ANALYTICS_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_ANALYTICS_KEY }}" >> .env
           echo " " >> .env
 
-      - name: Get tag name as release version
-        run: echo "PACKAGE_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+      - name: Get tag name as release name
+        run: echo "RELEASE_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
       - name: Set branch name
         id: branch_name
@@ -52,7 +61,7 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ${{ secrets.REGISTRY_URL }}/sportingbet-cwc:${{ env.PACKAGE_VERSION }}
+            ${{ secrets.REGISTRY_URL }}/${{ env.APP_NAME }}:${{ env.RELEASE_NAME }}
 
       - name: Notify Slack - Build Success
         uses: rtCamp/action-slack-notify@v2
@@ -61,8 +70,8 @@ jobs:
           SLACK_CHANNEL: your-slack-channel
           SLACK_USERNAME: GitHub Actions
           SLACK_COLOR: 'good'
-          SLACK_TITLE: 'Build Successful'
-          SLACK_MESSAGE: 'Build of sportingbet-cwc:${{ env.PACKAGE_VERSION }} finished successfully.'
+          SLACK_TITLE: 'Production Build Successful'
+          SLACK_MESSAGE: 'Production build of ${{ env.APP_NAME }}:${{ env.RELEASE_NAME }} finished successfully.'
           SLACK_ICON: ':heavy_check_mark:'
         if: success()
   
@@ -73,8 +82,8 @@ jobs:
           SLACK_CHANNEL: your-slack-channel
           SLACK_USERNAME: GitHub Actions
           SLACK_COLOR: 'danger'
-          SLACK_TITLE: 'Build Failed'
-          SLACK_MESSAGE: 'Build of sportingbet-cwc:${{ env.PACKAGE_VERSION }} finished with errors.'
+          SLACK_TITLE: 'Production Build Failed'
+          SLACK_MESSAGE: 'Production build of ${{ env.APP_NAME }}:${{ env.RELEASE_NAME }} finished with errors.'
           SLACK_ICON: ':x:'
         if: failure()
 
@@ -83,17 +92,16 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Set up Kubectl
-        uses: azure/setup-kubectl@v1
-
       - name: Get AKS credentials
-        run: |
-          az aks get-credentials --name gb-aks-cluster --resource-group gb-container-app --overwrite-existing
+        uses: azure/aks-set-context@v3
+        with:
+          cluster-name: ${{ env.AKS_CLUSTER_NAME }}
+          resource-group: ${{ env.AKS_RESOURCE_GROUP }}
 
       - name: Deploy to AKS
         run: |
-          kubectl set image deployment/sportingbet-cwc-staging sportingbet-cwc=${{ secrets.REGISTRY_URL }}/sportingbet-cwc:${{ env.PACKAGE_VERSION }} -n tenant-entain-organization
-          kubectl rollout status deployment/sportingbet-cwc-staging -n tenant-entain-organization
+          kubectl set image deployment/${{ env.DEPLOYMENT_NAME }} ${{ env.APP_NAME }}=${{ secrets.REGISTRY_URL }}/${{ env.APP_NAME }}:${{ env.RELEASE_NAME }} -n ${{ env.NAMESPACE }}
+          kubectl rollout status deployment/${{ env.DEPLOYMENT_NAME }} -n ${{ env.NAMESPACE }}
 
       - name: Notify Slack - Deployment Success
         uses: rtCamp/action-slack-notify@v2
@@ -102,8 +110,8 @@ jobs:
           SLACK_CHANNEL: your-slack-channel
           SLACK_USERNAME: GitHub Actions
           SLACK_COLOR: 'good'
-          SLACK_TITLE: 'Deployment Successful'
-          SLACK_MESSAGE: 'Deployment of sportingbet-cwc:${{ env.PACKAGE_VERSION }} to staging completed successfully.'
+          SLACK_TITLE: 'Production Deployment Successful'
+          SLACK_MESSAGE: 'Production deployment of ${{ env.APP_NAME }}:${{ env.RELEASE_NAME }} completed successfully.'
           SLACK_ICON: ':rocket:'
         if: success()
 
@@ -114,7 +122,7 @@ jobs:
           SLACK_CHANNEL: your-slack-channel
           SLACK_USERNAME: GitHub Actions
           SLACK_COLOR: 'danger'
-          SLACK_TITLE: 'Deployment Failed'
-          SLACK_MESSAGE: 'Deployment of sportingbet-cwc:${{ env.PACKAGE_VERSION }} to staging failed.'
+          SLACK_TITLE: 'Production Deployment Failed'
+          SLACK_MESSAGE: 'Production deployment of ${{ env.APP_NAME }}:${{ env.RELEASE_NAME }} failed.'
           SLACK_ICON: ':warning:'
         if: failure()
