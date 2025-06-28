@@ -5,6 +5,9 @@ import DiscoverClientLayout from "./client-layout"
 export const metadata: Metadata = {
   title: "Descobrir | SportingBOT - Mundial de Clubes 2025",
   description: "Descubra as últimas notícias, estatísticas e análises do Mundial de Clubes FIFA 2025. Acompanhe os times, jogos e apostas com a IA da Sportingbet.",
+  icons: {
+    icon: "/favicon.ico",
+  },
   openGraph: {
     title: "Descobrir | SportingBOT - Mundial de Clubes 2025",
     description: "Descubra as últimas notícias, estatísticas e análises do Mundial de Clubes FIFA 2025. Acompanhe os times, jogos e apostas com a IA da Sportingbet.",
