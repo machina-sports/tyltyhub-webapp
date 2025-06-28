@@ -1,0 +1,120 @@
+name: Release Staging
+
+on:
+  push:
+    tags:
+      - "v.staging-*.*"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create .env file
+        run: |
+          echo " " >> .env
+          echo "FEATURE_TOGGLE_ENABLE_AVATAR=0" >> .env
+          echo " " >> .env
+          echo "FEATURE_TOGGLE_ENABLE_BETS=0" >> .env
+          echo " " >> .env
+          echo "FEATURE_TOGGLE_ENABLE_CHAT=1" >> .env
+          echo " " >> .env
+          echo "MACHINA_API_KEY=${{ secrets.MACHINA_API_KEY }}" >> .env
+          echo " " >> .env
+          echo "MACHINA_CLIENT_URL=${{ vars.MACHINA_CLIENT_URL }}" >> .env
+          echo " " >> .env
+          echo "IMAGE_CONTAINER_ADDRESS=${{ vars.IMAGE_CONTAINER_ADDRESS }}" >> .env
+          echo " " >> .env
+          echo "NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS=${{ vars.IMAGE_CONTAINER_ADDRESS }}" >> .env
+          echo " " >> .env
+          echo "NEXT_PUBLIC_GOOGLE_ANALYTICS_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_ANALYTICS_KEY }}" >> .env
+          echo " " >> .env
+
+      - name: Get tag name as release version
+        run: echo "PACKAGE_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Set branch name
+        id: branch_name
+        run: echo "BRANCH_NAME=${{ github.ref_name }}" >> $GITHUB_ENV
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.REGISTRY_URL }}/sportingbet-cwc:${{ env.PACKAGE_VERSION }}
+
+      - name: Notify Slack - Build Success
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: your-slack-channel
+          SLACK_USERNAME: GitHub Actions
+          SLACK_COLOR: 'good'
+          SLACK_TITLE: 'Build Successful'
+          SLACK_MESSAGE: 'Build of sportingbet-cwc:${{ env.PACKAGE_VERSION }} finished successfully.'
+          SLACK_ICON: ':heavy_check_mark:'
+        if: success()
+  
+      - name: Notify Slack - Build Failed
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: your-slack-channel
+          SLACK_USERNAME: GitHub Actions
+          SLACK_COLOR: 'danger'
+          SLACK_TITLE: 'Build Failed'
+          SLACK_MESSAGE: 'Build of sportingbet-cwc:${{ env.PACKAGE_VERSION }} finished with errors.'
+          SLACK_ICON: ':x:'
+        if: failure()
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set up Kubectl
+        uses: azure/setup-kubectl@v1
+
+      - name: Get AKS credentials
+        run: |
+          az aks get-credentials --name gb-aks-cluster --resource-group gb-container-app --overwrite-existing
+
+      - name: Deploy to AKS
+        run: |
+          kubectl set image deployment/sportingbet-cwc-staging sportingbet-cwc=${{ secrets.REGISTRY_URL }}/sportingbet-cwc:${{ env.PACKAGE_VERSION }} -n tenant-entain-organization
+          kubectl rollout status deployment/sportingbet-cwc-staging -n tenant-entain-organization
+
+      - name: Notify Slack - Deployment Success
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: your-slack-channel
+          SLACK_USERNAME: GitHub Actions
+          SLACK_COLOR: 'good'
+          SLACK_TITLE: 'Deployment Successful'
+          SLACK_MESSAGE: 'Deployment of sportingbet-cwc:${{ env.PACKAGE_VERSION }} to staging completed successfully.'
+          SLACK_ICON: ':rocket:'
+        if: success()
+
+      - name: Notify Slack - Deployment Failed
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: your-slack-channel
+          SLACK_USERNAME: GitHub Actions
+          SLACK_COLOR: 'danger'
+          SLACK_TITLE: 'Deployment Failed'
+          SLACK_MESSAGE: 'Deployment of sportingbet-cwc:${{ env.PACKAGE_VERSION }} to staging failed.'
+          SLACK_ICON: ':warning:'
+        if: failure()
