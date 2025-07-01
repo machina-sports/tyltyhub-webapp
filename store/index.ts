@@ -10,6 +10,7 @@ import StandingsReducer from "@/providers/standings/reducer"
 import ThreadsReducer from "@/providers/threads/reducer"
 import TrendingReducer from "@/providers/trending/reducer"
 import ShareReducer from "@/providers/share/reducer"
+import CalendarReducer from "@/providers/calendar/reducer"
 
 export function makeStore() {
   return configureStore({
@@ -20,6 +21,7 @@ export function makeStore() {
       threads: ThreadsReducer.reducer,
       trending: TrendingReducer.reducer,
       share: ShareReducer.reducer,
+      calendar: CalendarReducer.reducer,
     },
     middleware: (getDefaultMiddlewares) => getDefaultMiddlewares().concat()
   })

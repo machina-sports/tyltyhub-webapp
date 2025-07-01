@@ -1,16 +1,165 @@
 "use client"
 
 import fifaCwcData from "@/data/fifa-cwc-2025.json"
+import teamsData from "@/data/teams.json"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 import { useTheme } from "@/components/theme-provider"
 import { StandingsTable } from "./standings-table"
-import { MatchesCalendar } from "./matches-calendar"
+import { MatchesCalendar, MatchCard } from "./matches-calendar"
 import { TeamsGrid } from "./teams-grid"
+import { useGlobalState } from "@/store/useState";
+import { useAppDispatch } from "@/store/dispatch";
+import { AppState } from "@/store"
+import { useMemo } from "react"
+import { processPlayoffMatches, advanceWinners, resolveVirtualTeams } from "./playoff"
+import { Badge } from "@/components/ui/badge"
+import { Calendar } from "lucide-react"
+
+// Helper function to convert playoff match to MatchCard format
+const convertPlayoffMatchToFixture = (match: any) => {
+  const translatePhase = (round: string) => {
+    const phases: { [key: string]: string } = {
+      'round_of_16': 'Round of 16',
+      'quarterfinal': 'Quarter-finals', 
+      'semifinal': 'Semi-finals',
+      'final': 'Final'
+    }
+    return phases[round] || round
+  }
+
+  const getDisplayTeamName = (competitor: any, index: number) => {
+    if (competitor?.resolvedName && !competitor.resolvedName.startsWith('Winner')) {
+      return competitor.resolvedName
+    }
+    
+    if (competitor?.name && !competitor.name.startsWith('Winner')) {
+      return competitor.name
+    }
+    
+    if (match.round === 'round_of_16') {
+      if (competitor?.resolvedName) {
+        return competitor.resolvedName
+      }
+      if (competitor?.name) {
+        return competitor.name
+      }
+      return competitor?.qualifier || `TBD ${index + 1}`
+    }
+    
+    if (match.matchNumber) {
+      if (match.round === 'quarterfinal') {
+        const quarterBracket = [
+          { match1: 49, match2: 50 },
+          { match1: 51, match2: 52 }, 
+          { match1: 53, match2: 54 },
+          { match1: 55, match2: 56 }
+        ]
+        
+        const bracketIndex = [57, 58, 59, 60].indexOf(match.matchNumber)
+        if (bracketIndex >= 0) {
+          const bracket = quarterBracket[bracketIndex]
+          return index === 0 ? `Vencedor da Partida ${bracket.match1}` : `Vencedor da Partida ${bracket.match2}`
+        }
+      }
+      
+      if (match.round === 'semifinal') {
+        const semiBracket = [
+          { quarter1: 57, quarter2: 58 },
+          { quarter1: 59, quarter2: 60 }
+        ]
+        
+        const bracketIndex = [61, 62].indexOf(match.matchNumber)
+        if (bracketIndex >= 0) {
+          const bracket = semiBracket[bracketIndex]
+          return index === 0 ? `Vencedor da Partida ${bracket.quarter1}` : `Vencedor da Partida ${bracket.quarter2}`
+        }
+      }
+      
+      if (match.round === 'final') {
+        return index === 0 ? `Vencedor da Partida 61` : `Vencedor da Partida 62`
+      }
+    }
+    
+    return competitor?.resolvedName || competitor?.name || `TBD ${index + 1}`
+  }
+
+  const team1 = getDisplayTeamName(match.competitors?.[0], 0)
+  const team2 = getDisplayTeamName(match.competitors?.[1], 1)
+
+  // Convert date to the format expected by MatchCard
+  const date = new Date(match.date)
+  const dateStr = date.toLocaleDateString('pt-BR', { 
+    month: 'long', 
+    day: 'numeric' 
+  }).replace('de ', '')
+  
+  const timeStr = date.toLocaleTimeString('pt-BR', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  })
+
+  return {
+    date: dateStr,
+    ko: timeStr,
+    match: `${team1} x ${team2}`,
+    venue: match.venue || '',
+    phase: translatePhase(match.round),
+    matchNumber: match.matchNumber,
+    homeScore: match.homeScore,
+    awayScore: match.awayScore,
+    isFinished: match.status === 'closed',
+    groupName: translatePhase(match.round)
+  }
+}
 
 export function FifaCwcSchedule() {
   const { isDarkMode } = useTheme()
+  const { data: standingsData, status: standingsStatus } = useGlobalState(state => state.standings)
+  const { data: calendarData } = useGlobalState(state => state.calendar as any)
+  const groups = standingsData?.value?.data[0]?.groups || []
+
+  const teams = useMemo(() => {
+    if (!groups.length) return []
+    
+    const uniqueTeams = new Map()
+    groups.forEach(group => {
+      group.standings.forEach(standing => {
+        const team = standing.competitor
+        if (!uniqueTeams.has(team.id)) {
+          uniqueTeams.set(team.id, {
+            id: team.id,
+            name: team.name,
+            abbreviation: team.abbreviation,
+            country: team.country,
+            country_code: team.country_code,
+            form: team.form
+          })
+        }
+      })
+    })
+    return Array.from(uniqueTeams.values())
+  }, [groups])
+
+  const playoffMatches = useMemo(() => {
+    const matchesArray = calendarData?.data || calendarData
+    
+    if (!matchesArray || !standingsData) {
+      return null
+    }
+    
+    const matchesByDate = processPlayoffMatches(calendarData, standingsData)
+    
+    const resolvedMatches = resolveVirtualTeams(matchesByDate, standingsData)
+    
+    return resolvedMatches
+  }, [calendarData, standingsData])
+  
+  const matchesArray = calendarData?.data || calendarData
+  const hasCalendarData = matchesArray && Array.isArray(matchesArray) && matchesArray.length > 0
+  const hasStandingsData = standingsData?.value?.data?.[0]?.groups && standingsData.value.data[0].groups.length > 0
 
   return (
     <div className="space-y-8">
@@ -77,133 +226,63 @@ export function FifaCwcSchedule() {
               <h3 className={cn("text-xl font-semibold mb-4", isDarkMode && "text-[#45CAFF]")}>
                 Fase Eliminatória
               </h3>
-              <MatchesCalendar 
-                showPlayoffs={true}
-                standingsData={{
-                  standings: {
-                    value: {
-                      data: [
-                        {
-                          groups: [
-                            {
-                              group_name: "A",
-                              name: "Group A",
-                              standings: [
-                                {
-                                  competitor: { name: "SE Palmeiras SP", abbreviation: "PAL", country: "Brazil", country_code: "BRA", id: "sr:competitor:1963" },
-                                  rank: 1, points: 5, current_outcome: "Playoffs", goals_for: 4, goals_against: 2, goals_diff: 2, win: 1, draw: 2, loss: 0, played: 3
-                                },
-                                {
-                                  competitor: { name: "Inter Miami CF", abbreviation: "MIA", country: "USA", country_code: "USA", id: "sr:competitor:659691" },
-                                  rank: 2, points: 5, current_outcome: "Playoffs", goals_for: 4, goals_against: 3, goals_diff: 1, win: 1, draw: 2, loss: 0, played: 3
-                                }
-                              ]
-                            },
-                            {
-                              group_name: "B",
-                              name: "Group B",
-                              standings: [
-                                {
-                                  competitor: { name: "Paris Saint-Germain", abbreviation: "PSG", country: "France", country_code: "FRA", id: "sr:competitor:1644" },
-                                  rank: 1, points: 6, current_outcome: "Playoffs", goals_for: 6, goals_against: 1, goals_diff: 5, win: 2, draw: 0, loss: 1, played: 3
-                                },
-                                {
-                                  competitor: { name: "Botafogo FR RJ", abbreviation: "BOT", country: "Brazil", country_code: "BRA", id: "sr:competitor:1958" },
-                                  rank: 2, points: 6, current_outcome: "Playoffs", goals_for: 3, goals_against: 2, goals_diff: 1, win: 2, draw: 0, loss: 1, played: 3
-                                }
-                              ]
-                            },
-                            {
-                              group_name: "C",
-                              name: "Group C",
-                              standings: [
-                                {
-                                  competitor: { name: "SL Benfica", abbreviation: "BEN", country: "Portugal", country_code: "PRT", id: "sr:competitor:3006" },
-                                  rank: 1, points: 7, current_outcome: "Playoffs", goals_for: 9, goals_against: 2, goals_diff: 7, win: 2, draw: 1, loss: 0, played: 3
-                                },
-                                {
-                                  competitor: { name: "Bayern Munich", abbreviation: "BMU", country: "Germany", country_code: "DEU", id: "sr:competitor:2672" },
-                                  rank: 2, points: 6, current_outcome: "Playoffs", goals_for: 12, goals_against: 2, goals_diff: 10, win: 2, draw: 0, loss: 1, played: 3
-                                }
-                              ]
-                            },
-                            {
-                              group_name: "D",
-                              name: "Group D",
-                              standings: [
-                                {
-                                  competitor: { name: "CR Flamengo RJ", abbreviation: "FLA", country: "Brazil", country_code: "BRA", id: "sr:competitor:5981" },
-                                  rank: 1, points: 7, current_outcome: "Playoffs", goals_for: 6, goals_against: 2, goals_diff: 4, win: 2, draw: 1, loss: 0, played: 3
-                                },
-                                {
-                                  competitor: { name: "Chelsea FC", abbreviation: "CHE", country: "England", country_code: "ENG", id: "sr:competitor:38" },
-                                  rank: 2, points: 6, current_outcome: "Playoffs", goals_for: 6, goals_against: 3, goals_diff: 3, win: 2, draw: 0, loss: 1, played: 3
-                                }
-                              ]
-                            },
-                            {
-                              group_name: "E",
-                              name: "Group E",
-                              standings: [
-                                {
-                                  competitor: { name: "Inter Milano", abbreviation: "INT", country: "Italy", country_code: "ITA", id: "sr:competitor:2697" },
-                                  rank: 1, points: 7, current_outcome: "Playoffs", goals_for: 5, goals_against: 2, goals_diff: 3, win: 2, draw: 1, loss: 0, played: 3
-                                },
-                                {
-                                  competitor: { name: "CF Monterrey", abbreviation: "MON", country: "Mexico", country_code: "MEX", id: "sr:competitor:1932" },
-                                  rank: 2, points: 5, current_outcome: "Playoffs", goals_for: 5, goals_against: 1, goals_diff: 4, win: 1, draw: 2, loss: 0, played: 3
-                                }
-                              ]
-                            },
-                            {
-                              group_name: "F",
-                              name: "Group F",
-                              standings: [
-                                {
-                                  competitor: { name: "Borussia Dortmund", abbreviation: "BVB", country: "Germany", country_code: "DEU", id: "sr:competitor:2673" },
-                                  rank: 1, points: 7, current_outcome: "Playoffs", goals_for: 5, goals_against: 3, goals_diff: 2, win: 2, draw: 1, loss: 0, played: 3
-                                },
-                                {
-                                  competitor: { name: "Fluminense FC RJ", abbreviation: "FLU", country: "Brazil", country_code: "BRA", id: "sr:competitor:1961" },
-                                  rank: 2, points: 5, current_outcome: "Playoffs", goals_for: 4, goals_against: 2, goals_diff: 2, win: 1, draw: 2, loss: 0, played: 3
-                                }
-                              ]
-                            },
-                            {
-                              group_name: "G",
-                              name: "Group G",
-                              standings: [
-                                {
-                                  competitor: { name: "Manchester City", abbreviation: "MCI", country: "England", country_code: "ENG", id: "sr:competitor:17" },
-                                  rank: 1, points: 9, current_outcome: "Playoffs", goals_for: 10, goals_against: 1, goals_diff: 9, win: 3, draw: 0, loss: 0, played: 3
-                                },
-                                {
-                                  competitor: { name: "Juventus Turin", abbreviation: "JUV", country: "Italy", country_code: "ITA", id: "sr:competitor:2687" },
-                                  rank: 2, points: 6, current_outcome: "Playoffs", goals_for: 10, goals_against: 3, goals_diff: 7, win: 2, draw: 0, loss: 1, played: 3
-                                }
-                              ]
-                            },
-                            {
-                              group_name: "H",
-                              name: "Group H",
-                              standings: [
-                                {
-                                  competitor: { name: "Real Madrid", abbreviation: "RMA", country: "Spain", country_code: "ESP", id: "sr:competitor:2829" },
-                                  rank: 1, points: 4, current_outcome: "Playoffs", goals_for: 4, goals_against: 2, goals_diff: 2, win: 1, draw: 1, loss: 0, played: 2
-                                },
-                                {
-                                  competitor: { name: "FC Salzburg", abbreviation: "RBS", country: "Austria", country_code: "AUT", id: "sr:competitor:2046" },
-                                  rank: 2, points: 4, current_outcome: "Playoffs", goals_for: 2, goals_against: 1, goals_diff: 1, win: 1, draw: 1, loss: 0, played: 2
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  }
-                }}
-              />
+              {playoffMatches && playoffMatches.matchesByDate && Object.keys(playoffMatches.matchesByDate).length > 0 ? (
+                <div className="space-y-8">
+                  {playoffMatches.dateOrder.map((date: string) => (
+                    <div key={date} className="space-y-4">
+                      <div className={cn(
+                        "sticky top-0 z-10 bg-background border-b py-4 px-2",
+                        isDarkMode && "bg-[#061F3F] border-[#45CAFF]/30"
+                      )}>
+                        <h4 className={cn("text-lg font-semibold flex items-center")}>
+                          <Calendar className={cn(
+                            "mr-2 h-5 w-5",
+                            isDarkMode ? "text-[#45CAFF]" : "text-primary"
+                          )} />
+                          <span className={cn(isDarkMode && "text-[#45CAFF]")}>
+                            {new Date(date + 'T12:00:00').toLocaleDateString('pt-BR', {
+                              weekday: 'long',
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric'
+                            })}
+                          </span>
+                          <Badge 
+                            variant="outline" 
+                            className={cn(
+                              "ml-2",
+                              isDarkMode && "border-[#45CAFF]/30 text-[#D3ECFF]"
+                            )}
+                          >
+                            {playoffMatches.matchesByDate[date].length} partidas
+                          </Badge>
+                        </h4>
+                      </div>
+                      
+                      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+                        {playoffMatches.matchesByDate[date].map((match: any, index: number) => {
+                          const fixture = convertPlayoffMatchToFixture(match)
+                          return (
+                            <div key={match.id || index} className={cn(
+                              match.round === 'final' && "ring-2 ring-yellow-500/20 rounded-md"
+                            )}>
+                              <MatchCard 
+                                fixture={fixture}
+                                useAbbreviation={false}
+                                compact={false}
+                              />
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className={cn("text-center p-8", isDarkMode ? "text-[#D3ECFF]" : "text-muted-foreground")}>
+                  Carregando jogos da fase eliminatória...
+                </div>
+              )}
             </div>
           </div>
         </TabsContent>

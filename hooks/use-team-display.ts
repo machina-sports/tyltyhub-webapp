@@ -11,10 +11,8 @@ interface TeamDisplayInfo {
 
 export const useTeamDisplay = () => {
   
-  // Helper function to normalize team names for logo lookup
   const normalizeTeamName = useMemo(() => (name: string): string => {
     const nameMap: Record<string, string> = {
-      // Mapeamento de abreviações para nomes de arquivo
       "UCH": "placeholder",
       "ELP": "placeholder",
       "BOT": "botafogo",
@@ -30,13 +28,11 @@ export const useTeamDisplay = () => {
       "LIB": "placeholder",
       "PAL": "palmeiras",
 
-      // Nomes completos
       "Botafogo FR RJ": "botafogo",
       "CR Flamengo RJ": "flamengo",
       "SE Palmeiras SP": "palmeiras",
       "CA River Plate (ARG)": "river-plate",
       
-      // Mapeamentos adicionais para times específicos
       "Espérance de Tunis": "espérance-de-tunis",
       "Esperance de Tunis": "espérance-de-tunis",
       "Esperance Sportive de Tunis": "espérance-de-tunis",
@@ -49,12 +45,10 @@ export const useTeamDisplay = () => {
       "LAF": "los-angeles-fc"
     };
 
-    // Check if we have a direct mapping
     if (nameMap[name]) {
       return nameMap[name];
     }
 
-    // Try to find a partial match
     const lowerName = name.toLowerCase();
     for (const [key, value] of Object.entries(nameMap)) {
       if (lowerName.includes(key.toLowerCase())) {
@@ -62,22 +56,18 @@ export const useTeamDisplay = () => {
       }
     }
 
-    // If no match is found, return a placeholder
     return "placeholder";
   }, [])
 
-  // Helper function to find team by name or abbreviation
   const findTeam = useMemo(() => (teamName: string): TeamDisplayInfo | null => {
     const normalizedName = teamName.toLowerCase().replace(/ /g, '-')
     
-    // First try to find by exact match
     let team = teamsData.teams.find(t => 
       t.name.toLowerCase() === teamName.toLowerCase() || 
       t.abbreviation === teamName ||
       t.id === normalizedName
     )
     
-    // If not found, try partial matches
     if (!team) {
       team = teamsData.teams.find(t => 
         t.name.toLowerCase().includes(teamName.toLowerCase()) ||
@@ -85,7 +75,6 @@ export const useTeamDisplay = () => {
       )
     }
     
-    // Special cases for teams with different naming conventions
     if (!team) {
       const specialCases: Record<string, string> = {
         "espérance de tunis": "espérance-de-tunis",
@@ -97,7 +86,10 @@ export const useTeamDisplay = () => {
         "lafc": "los-angeles-fc",
         "lac": "los-angeles-fc",
         "la": "los-angeles-fc",
-        "laf": "los-angeles-fc"
+        "laf": "los-angeles-fc",
+        "inter milano": "inter-milan",
+        "inter de milano": "inter-milan",
+        "fc internazionale milano": "inter-milan"
       }
       
       const specialId = specialCases[teamName.toLowerCase()]
@@ -119,7 +111,6 @@ export const useTeamDisplay = () => {
     return null
   }, [])
 
-  // Function to get display name (abbreviation or full name based on screen size)
   const getDisplayName = useMemo(() => (
     teamName: string, 
     options: {
@@ -148,7 +139,6 @@ export const useTeamDisplay = () => {
       return team.name
     }
     
-    // If team not found, return original name or truncated version
     if (fallbackToOriginal) {
       if (maxLength && teamName.length > maxLength) {
         return teamName.substring(0, maxLength) + '...'
@@ -159,30 +149,25 @@ export const useTeamDisplay = () => {
     return teamName
   }, [findTeam])
 
-  // Function to get team logo
   const getTeamLogo = useMemo(() => (teamName: string): string | undefined => {
     const team = findTeam(teamName)
     return team?.logo
   }, [findTeam])
 
-  // Function to get team league
   const getTeamLeague = useMemo(() => (teamName: string): string | undefined => {
     const team = findTeam(teamName)
     return team?.league
   }, [findTeam])
 
-  // Function to get team abbreviation
   const getTeamAbbreviation = useMemo(() => (teamName: string): string | undefined => {
     const team = findTeam(teamName)
     return team?.abbreviation
   }, [findTeam])
 
-  // Function to get full team info
   const getTeamInfo = useMemo(() => (teamName: string): TeamDisplayInfo | null => {
     return findTeam(teamName)
   }, [findTeam])
 
-  // Function to determine if abbreviation should be used based on screen constraints
   const shouldUseAbbreviation = useMemo(() => (
     teamName: string,
     containerWidth?: number,
@@ -194,23 +179,80 @@ export const useTeamDisplay = () => {
       return false
     }
     
-    // Always use abbreviation on mobile if available
     if (isMobile) {
       return true
     }
     
-    // Use abbreviation if container is too small
     if (containerWidth && containerWidth < 120) {
       return true
     }
     
-    // Use abbreviation for very long team names
     if (team.name.length > 15) {
       return true
     }
     
     return false
   }, [findTeam])
+
+  const getSimplifiedName = useMemo(() => (teamName: string): string => {
+    const simplifiedNames: Record<string, string> = {
+      "SE Palmeiras SP": "Palmeiras",
+      "CR Flamengo RJ": "Flamengo", 
+      "Botafogo FR RJ": "Botafogo",
+      "Fluminense FC RJ": "Fluminense",
+      
+      "Paris Saint-Germain": "PSG",
+      "Manchester City": "Manchester City",
+      "Real Madrid": "Real Madrid",
+      "Bayern Munich": "Bayern",
+      "Borussia Dortmund": "Dortmund",
+      "Chelsea FC": "Chelsea",
+      "SL Benfica": "Benfica",
+      "Juventus Turin": "Juventus",
+      
+      "Inter Milano": "Inter de Milão",
+      "Inter de Milano": "Inter de Milão",
+      "FC Internazionale Milano": "Inter de Milão",
+      
+      "Inter Miami CF": "Inter Miami",
+      "CF Monterrey": "Monterrey",
+      "Los Angeles FC": "LAFC",
+      
+      "Al Hilal SFC": "Al Hilal",
+      "Al Ain FC": "Al Ain",
+      
+      "CA River Plate (ARG)": "River Plate",
+      "Boca Juniors": "Boca Juniors",
+      
+      "Esperance Sportive de Tunis": "Esperance",
+      "Espérance de Tunis": "Esperance",
+      "Mamelodi Sundowns": "Sundowns",
+      "Wydad AC": "Wydad",
+      
+      "Auckland City FC": "Auckland City",
+      "Urawa Red Diamonds": "Urawa",
+      "Seattle Sounders": "Seattle",
+      "FC Salzburg": "Salzburg",
+      "Red Bull Salzburg": "RB Salzburg",
+      "Atletico Madrid": "Atlético Madrid",
+      "FC Porto": "Porto",
+      "CF Pachuca": "Pachuca"
+    }
+    
+    if (simplifiedNames[teamName]) {
+      return simplifiedNames[teamName]
+    }
+    
+    let simplified = teamName
+    
+    simplified = simplified.replace(/^(SE|CR|CA|CF|FC|SC|SL|AC)\s+/, '')
+    
+    simplified = simplified.replace(/\s+(SP|RJ|FC|CF|SFC|AC)$/, '')
+    
+    simplified = simplified.replace(/\s+\([A-Z]{3}\)$/, '')
+    
+    return simplified
+  }, [])
 
   return {
     normalizeTeamName,
@@ -220,6 +262,7 @@ export const useTeamDisplay = () => {
     getTeamLeague,
     getTeamAbbreviation,
     getTeamInfo,
-    shouldUseAbbreviation
+    shouldUseAbbreviation,
+    getSimplifiedName
   }
 } 

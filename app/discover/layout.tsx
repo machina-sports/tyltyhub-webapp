@@ -1,6 +1,7 @@
 import { Metadata } from "next"
 import StandingsProvider from "@/providers/standings/provider"
 import DiscoverClientLayout from "./client-layout"
+import CalendarProvider from "@/providers/calendar/provider"
 
 export const metadata: Metadata = {
   title: "Descobrir | SportingBOT - Mundial de Clubes 2025",
@@ -39,7 +40,9 @@ export default function DiscoverLayout({
   return (
     <StandingsProvider>
       <DiscoverClientLayout>
-        {children}
+          <CalendarProvider>
+            {children}
+          </CalendarProvider>
       </DiscoverClientLayout>
     </StandingsProvider>
   )
