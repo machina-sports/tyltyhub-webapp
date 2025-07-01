@@ -18,7 +18,6 @@ const CalendarProvider = ({
   useEffect(() => {
     dispatch(fetchCalendar({ filters, pagination, sorters }))
   }, [dispatch])
-  console.log(data)
 
   return children
 }
