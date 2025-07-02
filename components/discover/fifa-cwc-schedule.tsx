@@ -17,76 +17,15 @@ import { processPlayoffMatches, advanceWinners, resolveVirtualTeams } from "./pl
 import { Badge } from "@/components/ui/badge"
 import { Calendar } from "lucide-react"
 
-// Helper function to convert playoff match to MatchCard format
+// Simplified helper function to convert playoff match to MatchCard format
 const convertPlayoffMatchToFixture = (match: any) => {
-  const translatePhase = (round: string) => {
-    const phases: { [key: string]: string } = {
-      'round_of_16': 'Round of 16',
-      'quarterfinal': 'Quarter-finals', 
-      'semifinal': 'Semi-finals',
-      'final': 'Final'
-    }
-    return phases[round] || round
+  // Simple function to get team name from competitor
+  const getDisplayTeamName = (competitor: any) => {
+    return competitor?.name || competitor?.id || 'TBD'
   }
 
-  const getDisplayTeamName = (competitor: any, index: number) => {
-    if (competitor?.resolvedName && !competitor.resolvedName.startsWith('Winner')) {
-      return competitor.resolvedName
-    }
-    
-    if (competitor?.name && !competitor.name.startsWith('Winner')) {
-      return competitor.name
-    }
-    
-    if (match.round === 'round_of_16') {
-      if (competitor?.resolvedName) {
-        return competitor.resolvedName
-      }
-      if (competitor?.name) {
-        return competitor.name
-      }
-      return competitor?.qualifier || `TBD ${index + 1}`
-    }
-    
-    if (match.matchNumber) {
-      if (match.round === 'quarterfinal') {
-        const quarterBracket = [
-          { match1: 49, match2: 50 },
-          { match1: 51, match2: 52 }, 
-          { match1: 53, match2: 54 },
-          { match1: 55, match2: 56 }
-        ]
-        
-        const bracketIndex = [57, 58, 59, 60].indexOf(match.matchNumber)
-        if (bracketIndex >= 0) {
-          const bracket = quarterBracket[bracketIndex]
-          return index === 0 ? `Vencedor da Partida ${bracket.match1}` : `Vencedor da Partida ${bracket.match2}`
-        }
-      }
-      
-      if (match.round === 'semifinal') {
-        const semiBracket = [
-          { quarter1: 57, quarter2: 58 },
-          { quarter1: 59, quarter2: 60 }
-        ]
-        
-        const bracketIndex = [61, 62].indexOf(match.matchNumber)
-        if (bracketIndex >= 0) {
-          const bracket = semiBracket[bracketIndex]
-          return index === 0 ? `Vencedor da Partida ${bracket.quarter1}` : `Vencedor da Partida ${bracket.quarter2}`
-        }
-      }
-      
-      if (match.round === 'final') {
-        return index === 0 ? `Vencedor da Partida 61` : `Vencedor da Partida 62`
-      }
-    }
-    
-    return competitor?.resolvedName || competitor?.name || `TBD ${index + 1}`
-  }
-
-  const team1 = getDisplayTeamName(match.competitors?.[0], 0)
-  const team2 = getDisplayTeamName(match.competitors?.[1], 1)
+  const team1 = getDisplayTeamName(match.competitors?.[0])
+  const team2 = getDisplayTeamName(match.competitors?.[1])
 
   // Convert date to the format expected by MatchCard
   const date = new Date(match.date)
@@ -106,12 +45,11 @@ const convertPlayoffMatchToFixture = (match: any) => {
     ko: timeStr,
     match: `${team1} x ${team2}`,
     venue: match.venue || '',
-    phase: translatePhase(match.round),
-    matchNumber: match.matchNumber,
+    phase: match.title || 'Playoff Match', // Use the original title as phase
     homeScore: match.homeScore,
     awayScore: match.awayScore,
     isFinished: match.status === 'closed',
-    groupName: translatePhase(match.round)
+    groupName: match.title || 'Playoff Match'
   }
 }
 
@@ -264,7 +202,7 @@ export function FifaCwcSchedule() {
                           const fixture = convertPlayoffMatchToFixture(match)
                           return (
                             <div key={match.id || index} className={cn(
-                              match.round === 'final' && "ring-2 ring-yellow-500/20 rounded-md"
+                              match.title?.toLowerCase().includes('final') && "ring-2 ring-yellow-500/20 rounded-md"
                             )}>
                               <MatchCard 
                                 fixture={fixture}

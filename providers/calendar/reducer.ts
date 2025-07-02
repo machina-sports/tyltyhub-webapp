@@ -18,9 +18,6 @@ const initialState: DiscoverState = {
   data: [],
   filters: {
     name: 'soccer-game',
-    'value.sport_event.sport_event_context.stage.phase': {
-      '$ne': 'qualification'
-    },
     'value.sport_event.sport_event_context.competition.id': 'sr:competition:357'
   },
   pagination: {
