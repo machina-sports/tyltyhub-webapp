@@ -17,76 +17,15 @@ import { processPlayoffMatches, advanceWinners, resolveVirtualTeams } from "./pl
 import { Badge } from "@/components/ui/badge"
 import { Calendar } from "lucide-react"
 
-// Helper function to convert playoff match to MatchCard format
+// Simplified helper function to convert playoff match to MatchCard format
 const convertPlayoffMatchToFixture = (match: any) => {
-  const translatePhase = (round: string) => {
-    const phases: { [key: string]: string } = {
-      'round_of_16': 'Round of 16',
-      'quarterfinal': 'Quarter-finals', 
-      'semifinal': 'Semi-finals',
-      'final': 'Final'
-    }
-    return phases[round] || round
+  // Simple function to get team name from competitor
+  const getDisplayTeamName = (competitor: any) => {
+    return competitor?.name || competitor?.id || 'TBD'
   }
 
-  const getDisplayTeamName = (competitor: any, index: number) => {
-    if (competitor?.resolvedName && !competitor.resolvedName.startsWith('Winner')) {
-      return competitor.resolvedName
-    }
-    
-    if (competitor?.name && !competitor.name.startsWith('Winner')) {
-      return competitor.name
-    }
-    
-    if (match.round === 'round_of_16') {
-      if (competitor?.resolvedName) {
-        return competitor.resolvedName
-      }
-      if (competitor?.name) {
-        return competitor.name
-      }
-      return competitor?.qualifier || `TBD ${index + 1}`
-    }
-    
-    if (match.matchNumber) {
-      if (match.round === 'quarterfinal') {
-        const quarterBracket = [
-          { match1: 49, match2: 50 },
-          { match1: 51, match2: 52 }, 
-          { match1: 53, match2: 54 },
-          { match1: 55, match2: 56 }
-        ]
-        
-        const bracketIndex = [57, 58, 59, 60].indexOf(match.matchNumber)
-        if (bracketIndex >= 0) {
-          const bracket = quarterBracket[bracketIndex]
-          return index === 0 ? `Vencedor da Partida ${bracket.match1}` : `Vencedor da Partida ${bracket.match2}`
-        }
-      }
-      
-      if (match.round === 'semifinal') {
-        const semiBracket = [
-          { quarter1: 57, quarter2: 58 },
-          { quarter1: 59, quarter2: 60 }
-        ]
-        
-        const bracketIndex = [61, 62].indexOf(match.matchNumber)
-        if (bracketIndex >= 0) {
-          const bracket = semiBracket[bracketIndex]
-          return index === 0 ? `Vencedor da Partida ${bracket.quarter1}` : `Vencedor da Partida ${bracket.quarter2}`
-        }
-      }
-      
-      if (match.round === 'final') {
-        return index === 0 ? `Vencedor da Partida 61` : `Vencedor da Partida 62`
-      }
-    }
-    
-    return competitor?.resolvedName || competitor?.name || `TBD ${index + 1}`
-  }
-
-  const team1 = getDisplayTeamName(match.competitors?.[0], 0)
-  const team2 = getDisplayTeamName(match.competitors?.[1], 1)
+  const team1 = getDisplayTeamName(match.competitors?.[0])
+  const team2 = getDisplayTeamName(match.competitors?.[1])
 
   // Convert date to the format expected by MatchCard
   const date = new Date(match.date)
@@ -106,12 +45,11 @@ const convertPlayoffMatchToFixture = (match: any) => {
     ko: timeStr,
     match: `${team1} x ${team2}`,
     venue: match.venue || '',
-    phase: translatePhase(match.round),
-    matchNumber: match.matchNumber,
+    phase: match.title || 'Playoff Match', // Use the original title as phase
     homeScore: match.homeScore,
     awayScore: match.awayScore,
     isFinished: match.status === 'closed',
-    groupName: translatePhase(match.round)
+    groupName: match.title || 'Playoff Match'
   }
 }
 
@@ -157,6 +95,24 @@ export function FifaCwcSchedule() {
     return resolvedMatches
   }, [calendarData, standingsData])
   
+  const getPhaseForDate = (date: string, allDates: string[]) => {
+    const dateIndex = allDates.indexOf(date)
+    const totalDates = allDates.length
+    
+    if (dateIndex === totalDates - 1) {
+      return 'Final'
+    }
+    else if (dateIndex >= totalDates - 3) {
+      return 'Semifinais'
+    }
+    else if (dateIndex >= totalDates - 5) {
+      return 'Quartas de Final'
+    }
+    else {
+      return 'Oitavas de Final'
+    }
+  }
+
   const matchesArray = calendarData?.data || calendarData
   const hasCalendarData = matchesArray && Array.isArray(matchesArray) && matchesArray.length > 0
   const hasStandingsData = standingsData?.value?.data?.[0]?.groups && standingsData.value.data[0].groups.length > 0
@@ -228,55 +184,68 @@ export function FifaCwcSchedule() {
               </h3>
               {playoffMatches && playoffMatches.matchesByDate && Object.keys(playoffMatches.matchesByDate).length > 0 ? (
                 <div className="space-y-8">
-                  {playoffMatches.dateOrder.map((date: string) => (
-                    <div key={date} className="space-y-4">
-                      <div className={cn(
-                        "sticky top-0 z-10 bg-background border-b py-4 px-2",
-                        isDarkMode && "bg-[#061F3F] border-[#45CAFF]/30"
-                      )}>
-                        <h4 className={cn("text-lg font-semibold flex items-center")}>
-                          <Calendar className={cn(
-                            "mr-2 h-5 w-5",
-                            isDarkMode ? "text-[#45CAFF]" : "text-primary"
-                          )} />
-                          <span className={cn(isDarkMode && "text-[#45CAFF]")}>
-                            {new Date(date + 'T12:00:00').toLocaleDateString('pt-BR', {
-                              weekday: 'long',
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric'
-                            })}
-                          </span>
-                          <Badge 
-                            variant="outline" 
-                            className={cn(
-                              "ml-2",
-                              isDarkMode && "border-[#45CAFF]/30 text-[#D3ECFF]"
-                            )}
-                          >
-                            {playoffMatches.matchesByDate[date].length} partidas
-                          </Badge>
-                        </h4>
+                  {playoffMatches.dateOrder.map((date: string) => {
+                    const phase = getPhaseForDate(date, playoffMatches.dateOrder)
+                    return (
+                      <div key={date} className="space-y-4">
+                        <div className={cn(
+                          "sticky top-0 z-10 bg-background border-b py-4 px-2",
+                          isDarkMode && "bg-[#061F3F] border-[#45CAFF]/30"
+                        )}>
+                          <h4 className={cn("text-lg font-semibold flex items-center")}>
+                            <Calendar className={cn(
+                              "mr-2 h-5 w-5",
+                              isDarkMode ? "text-[#45CAFF]" : "text-primary"
+                            )} />
+                            <span className={cn(isDarkMode && "text-[#45CAFF]")}>
+                              {new Date(date + 'T12:00:00').toLocaleDateString('pt-BR', {
+                                weekday: 'long',
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                              })}
+                            </span>
+                            <Badge 
+                              variant="outline" 
+                              className={cn(
+                                "ml-2",
+                                isDarkMode && "border-[#45CAFF]/30 text-[#D3ECFF]"
+                              )}
+                            >
+                              {playoffMatches.matchesByDate[date].length} partidas
+                            </Badge>
+                            <Badge 
+                              variant="secondary" 
+                              className={cn(
+                                "ml-2",
+                                isDarkMode && "bg-[#45CAFF]/20 text-[#45CAFF] border-[#45CAFF]/30",
+                                phase === 'Final' && "bg-yellow-500/20 text-yellow-600 border-yellow-500/50"
+                              )}
+                            >
+                              {phase}
+                            </Badge>
+                          </h4>
+                        </div>
+                        
+                        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+                          {playoffMatches.matchesByDate[date].map((match: any, index: number) => {
+                            const fixture = convertPlayoffMatchToFixture(match)
+                            return (
+                              <div key={match.id || index} className={cn(
+                                phase === 'Final' && "ring-2 ring-yellow-500/20 rounded-md"
+                              )}>
+                                <MatchCard 
+                                  fixture={fixture}
+                                  useAbbreviation={false}
+                                  compact={false}
+                                />
+                              </div>
+                            )
+                          })}
+                        </div>
                       </div>
-                      
-                      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-                        {playoffMatches.matchesByDate[date].map((match: any, index: number) => {
-                          const fixture = convertPlayoffMatchToFixture(match)
-                          return (
-                            <div key={match.id || index} className={cn(
-                              match.round === 'final' && "ring-2 ring-yellow-500/20 rounded-md"
-                            )}>
-                              <MatchCard 
-                                fixture={fixture}
-                                useAbbreviation={false}
-                                compact={false}
-                              />
-                            </div>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               ) : (
                 <div className={cn("text-center p-8", isDarkMode ? "text-[#D3ECFF]" : "text-muted-foreground")}>
