@@ -104,7 +104,6 @@ const generatePlayoffFixtures = (standingsData?: StandingsData): PlayoffFixture[
   firstPlaceTeams.sort((a, b) => a.groupName.localeCompare(b.groupName));
   secondPlaceTeams.sort((a, b) => a.groupName.localeCompare(b.groupName));
 
-  // Criar matchups únicos - 1º lugar vs 2º lugar de outros grupos
   const roundOf16Matchups = [
     { firstGroup: 'A', secondGroup: 'B', venue: 'Lincoln Financial Field, Philadelphia', date: 'June 28', time: '13:00' },
     { firstGroup: 'C', secondGroup: 'D', venue: 'Bank of America Stadium, Charlotte', date: 'June 28', time: '17:00' },
@@ -316,15 +315,11 @@ const TeamMatch = ({ teamName, logo, isSecond, useAbbreviation = false, compact 
   );
 };
 
-// Helper to convert EDT time to user's local timezone
 const convertEdtToLocal = (dateStr: string, timeStr: string) => {
-  // Parse the EDT time (EDT is UTC-4)
   const edtDate = parseDate(dateStr, timeStr);
   
-  // EDT is UTC-4, so we need to add 4 hours to get UTC, then convert to local
   const utcTime = new Date(edtDate.getTime() + (4 * 60 * 60 * 1000));
   
-  // Format local time
   const localTimeStr = utcTime.toLocaleTimeString('pt-BR', {
     hour: '2-digit',
     minute: '2-digit',
@@ -337,23 +332,23 @@ const convertEdtToLocal = (dateStr: string, timeStr: string) => {
   };
 };
 
-// Função auxiliar para obter resultado da partida
 const getMatchResult = (fixture: EnhancedFixture, gameData?: any) => {
-  // Se o jogo tem resultado disponível
   if (fixture.isFinished && typeof fixture.homeScore === 'number' && typeof fixture.awayScore === 'number') {
     return `${fixture.homeScore} - ${fixture.awayScore}`;
   }
   
-  // Se temos dados da API e o jogo está finalizado
   if (gameData?.value?.sport_event_status?.home_score !== undefined && 
       gameData?.value?.sport_event_status?.away_score !== undefined) {
     return `${gameData.value.sport_event_status.home_score} - ${gameData.value.sport_event_status.away_score}`;
   }
   
+  if (typeof fixture.homeScore === 'number' && typeof fixture.awayScore === 'number') {
+    return `${fixture.homeScore} - ${fixture.awayScore}`;
+  }
+  
   return 'x';
 };
 
-// Match Card Component for both mobile and desktop
 export const MatchCard = ({ fixture, useAbbreviation = false, compact = false, gameData }: { 
   fixture: EnhancedFixture; 
   useAbbreviation?: boolean; 
@@ -365,10 +360,8 @@ export const MatchCard = ({ fixture, useAbbreviation = false, compact = false, g
   const teams = fixture.match.split(" x ").map(t => t.trim());
   const teamLogos = teams.map(t => getTeamLogo(t));
   
-  // Convert time to local timezone
   const timeInfo = convertEdtToLocal(fixture.date, fixture.ko);
   
-  // Obter resultado da partida
   const matchResult = getMatchResult(fixture, gameData);
   
   return (
@@ -471,7 +464,6 @@ export function MatchesCalendar({
     const fixtures: EnhancedFixture[] = [];
     
     if (showPlayoffs && standingsData) {
-      // Se showPlayoffs for true, mostrar APENAS as partidas dos playoffs
       const playoffFixtures = generatePlayoffFixtures(standingsData);
       playoffFixtures.forEach(fixture => {
         fixtures.push({
@@ -480,7 +472,6 @@ export function MatchesCalendar({
         });
       });
     } else {
-      // Caso contrário, mostrar as partidas da fase de grupos
       fifaCwcData.groups.forEach(group => {
         group.fixtures.forEach(fixture => {
           fixtures.push({
