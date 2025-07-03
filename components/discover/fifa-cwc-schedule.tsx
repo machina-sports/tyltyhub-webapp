@@ -95,6 +95,24 @@ export function FifaCwcSchedule() {
     return resolvedMatches
   }, [calendarData, standingsData])
   
+  const getPhaseForDate = (date: string, allDates: string[]) => {
+    const dateIndex = allDates.indexOf(date)
+    const totalDates = allDates.length
+    
+    if (dateIndex === totalDates - 1) {
+      return 'Final'
+    }
+    else if (dateIndex >= totalDates - 3) {
+      return 'Semifinais'
+    }
+    else if (dateIndex >= totalDates - 5) {
+      return 'Quartas de Final'
+    }
+    else {
+      return 'Oitavas de Final'
+    }
+  }
+
   const matchesArray = calendarData?.data || calendarData
   const hasCalendarData = matchesArray && Array.isArray(matchesArray) && matchesArray.length > 0
   const hasStandingsData = standingsData?.value?.data?.[0]?.groups && standingsData.value.data[0].groups.length > 0
@@ -166,55 +184,68 @@ export function FifaCwcSchedule() {
               </h3>
               {playoffMatches && playoffMatches.matchesByDate && Object.keys(playoffMatches.matchesByDate).length > 0 ? (
                 <div className="space-y-8">
-                  {playoffMatches.dateOrder.map((date: string) => (
-                    <div key={date} className="space-y-4">
-                      <div className={cn(
-                        "sticky top-0 z-10 bg-background border-b py-4 px-2",
-                        isDarkMode && "bg-[#061F3F] border-[#45CAFF]/30"
-                      )}>
-                        <h4 className={cn("text-lg font-semibold flex items-center")}>
-                          <Calendar className={cn(
-                            "mr-2 h-5 w-5",
-                            isDarkMode ? "text-[#45CAFF]" : "text-primary"
-                          )} />
-                          <span className={cn(isDarkMode && "text-[#45CAFF]")}>
-                            {new Date(date + 'T12:00:00').toLocaleDateString('pt-BR', {
-                              weekday: 'long',
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric'
-                            })}
-                          </span>
-                          <Badge 
-                            variant="outline" 
-                            className={cn(
-                              "ml-2",
-                              isDarkMode && "border-[#45CAFF]/30 text-[#D3ECFF]"
-                            )}
-                          >
-                            {playoffMatches.matchesByDate[date].length} partidas
-                          </Badge>
-                        </h4>
+                  {playoffMatches.dateOrder.map((date: string) => {
+                    const phase = getPhaseForDate(date, playoffMatches.dateOrder)
+                    return (
+                      <div key={date} className="space-y-4">
+                        <div className={cn(
+                          "sticky top-0 z-10 bg-background border-b py-4 px-2",
+                          isDarkMode && "bg-[#061F3F] border-[#45CAFF]/30"
+                        )}>
+                          <h4 className={cn("text-lg font-semibold flex items-center")}>
+                            <Calendar className={cn(
+                              "mr-2 h-5 w-5",
+                              isDarkMode ? "text-[#45CAFF]" : "text-primary"
+                            )} />
+                            <span className={cn(isDarkMode && "text-[#45CAFF]")}>
+                              {new Date(date + 'T12:00:00').toLocaleDateString('pt-BR', {
+                                weekday: 'long',
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                              })}
+                            </span>
+                            <Badge 
+                              variant="outline" 
+                              className={cn(
+                                "ml-2",
+                                isDarkMode && "border-[#45CAFF]/30 text-[#D3ECFF]"
+                              )}
+                            >
+                              {playoffMatches.matchesByDate[date].length} partidas
+                            </Badge>
+                            <Badge 
+                              variant="secondary" 
+                              className={cn(
+                                "ml-2",
+                                isDarkMode && "bg-[#45CAFF]/20 text-[#45CAFF] border-[#45CAFF]/30",
+                                phase === 'Final' && "bg-yellow-500/20 text-yellow-600 border-yellow-500/50"
+                              )}
+                            >
+                              {phase}
+                            </Badge>
+                          </h4>
+                        </div>
+                        
+                        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+                          {playoffMatches.matchesByDate[date].map((match: any, index: number) => {
+                            const fixture = convertPlayoffMatchToFixture(match)
+                            return (
+                              <div key={match.id || index} className={cn(
+                                phase === 'Final' && "ring-2 ring-yellow-500/20 rounded-md"
+                              )}>
+                                <MatchCard 
+                                  fixture={fixture}
+                                  useAbbreviation={false}
+                                  compact={false}
+                                />
+                              </div>
+                            )
+                          })}
+                        </div>
                       </div>
-                      
-                      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-                        {playoffMatches.matchesByDate[date].map((match: any, index: number) => {
-                          const fixture = convertPlayoffMatchToFixture(match)
-                          return (
-                            <div key={match.id || index} className={cn(
-                              match.title?.toLowerCase().includes('final') && "ring-2 ring-yellow-500/20 rounded-md"
-                            )}>
-                              <MatchCard 
-                                fixture={fixture}
-                                useAbbreviation={false}
-                                compact={false}
-                              />
-                            </div>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               ) : (
                 <div className={cn("text-center p-8", isDarkMode ? "text-[#D3ECFF]" : "text-muted-foreground")}>
