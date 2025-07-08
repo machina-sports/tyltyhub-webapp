@@ -202,8 +202,7 @@ export default function Home() {
         {showInitial ? (
           <div className="flex flex-col items-center justify-center min-h-[calc(100vh-12rem)] p-4">
             {/* Banner */}
-            <img className="w-full mb-0 max-w-[980px] mt-12 md:mt-0" src="/kv-txt-op1_980x250px_bot_.gif" alt="Sportingbot: a IA da Sportingbet" />
-            
+            <img className="w-full mb-0 max-w-[980px] mt-12 md:mt-0" src="/header.png" alt="Sportingbot: a IA da Sportingbet" />
             <h2 className="text-center mb-4 sm:mb-6 flex items-center gap-3 justify-center pt-10 pb-6 sm:pt-14 sm:pb-10">
               Vamos jogar juntos? Me diz onde você precisa de reforço!
               <SportingbetDot size={28} className="ml-1" />
