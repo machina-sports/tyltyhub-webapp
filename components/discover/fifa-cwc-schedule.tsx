@@ -1,25 +1,20 @@
 "use client"
 
 import fifaCwcData from "@/data/fifa-cwc-2025.json"
-import teamsData from "@/data/teams.json"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 import { useTheme } from "@/components/theme-provider"
 import { StandingsTable } from "./standings-table"
-import { MatchesCalendar, MatchCard } from "./matches-calendar"
+import { MatchCard } from "./matches-calendar"
 import { TeamsGrid } from "./teams-grid"
 import { useGlobalState } from "@/store/useState";
-import { useAppDispatch } from "@/store/dispatch";
-import { AppState } from "@/store"
 import { useMemo } from "react"
-import { processPlayoffMatches, advanceWinners, resolveVirtualTeams } from "./playoff"
+import { processPlayoffMatches, processGroupStageMatches, resolveVirtualTeams } from "./playoff"
 import { Badge } from "@/components/ui/badge"
 import { Calendar } from "lucide-react"
 
-// Simplified helper function to convert playoff match to MatchCard format
-const convertPlayoffMatchToFixture = (match: any) => {
-  // Simple function to get team name from competitor
+const convertPlayoffMatchToFixture = (match: any, phase: string) => {
   const getDisplayTeamName = (competitor: any) => {
     return competitor?.name || competitor?.id || 'TBD'
   }
@@ -27,7 +22,6 @@ const convertPlayoffMatchToFixture = (match: any) => {
   const team1 = getDisplayTeamName(match.competitors?.[0])
   const team2 = getDisplayTeamName(match.competitors?.[1])
 
-  // Convert date to the format expected by MatchCard
   const date = new Date(match.date)
   const dateStr = date.toLocaleDateString('pt-BR', { 
     month: 'long', 
@@ -45,11 +39,44 @@ const convertPlayoffMatchToFixture = (match: any) => {
     ko: timeStr,
     match: `${team1} x ${team2}`,
     venue: match.venue || '',
-    phase: match.title || 'Playoff Match', // Use the original title as phase
+    phase: phase,
     homeScore: match.homeScore,
     awayScore: match.awayScore,
-    isFinished: match.status === 'closed',
-    groupName: match.title || 'Playoff Match'
+    isFinished: match.isFinished || (match.homeScore !== undefined && match.awayScore !== undefined),
+    groupName: phase
+  }
+}
+
+const convertGroupStageMatchToFixture = (match: any) => {
+  const getDisplayTeamName = (competitor: any) => {
+    return competitor?.name || competitor?.id || 'TBD'
+  }
+
+  const team1 = getDisplayTeamName(match.competitors?.[0])
+  const team2 = getDisplayTeamName(match.competitors?.[1])
+
+  const date = new Date(match.date)
+  const dateStr = date.toLocaleDateString('pt-BR', { 
+    month: 'long', 
+    day: 'numeric' 
+  }).replace('de ', '')
+  
+  const timeStr = date.toLocaleTimeString('pt-BR', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  })
+
+
+  return {
+    date: dateStr,
+    ko: timeStr,
+    match: `${team1} x ${team2}`,
+    venue: match.venue || '',
+    homeScore: match.homeScore,
+    awayScore: match.awayScore,
+    isFinished: match.isFinished || (match.homeScore !== undefined && match.awayScore !== undefined),
+    groupName: match.group ? `Grupo ${match.group}` : 'Group Stage'
   }
 }
 
@@ -58,6 +85,7 @@ export function FifaCwcSchedule() {
   const { data: standingsData, status: standingsStatus } = useGlobalState(state => state.standings)
   const { data: calendarData } = useGlobalState(state => state.calendar as any)
   const groups = standingsData?.value?.data[0]?.groups || []
+
 
   const teams = useMemo(() => {
     if (!groups.length) return []
@@ -89,6 +117,20 @@ export function FifaCwcSchedule() {
     }
     
     const matchesByDate = processPlayoffMatches(calendarData, standingsData)
+    
+    const resolvedMatches = resolveVirtualTeams(matchesByDate, standingsData)
+    
+    return resolvedMatches
+  }, [calendarData, standingsData])
+
+  const groupStageMatches = useMemo(() => {
+    const matchesArray = calendarData?.data || calendarData
+    
+    if (!matchesArray) {
+      return null
+    }
+    
+    const matchesByDate = processGroupStageMatches(calendarData, standingsData)
     
     const resolvedMatches = resolveVirtualTeams(matchesByDate, standingsData)
     
@@ -175,7 +217,60 @@ export function FifaCwcSchedule() {
               <h3 className={cn("text-xl font-semibold mb-4", isDarkMode && "text-[#45CAFF]")}>
                 Fase de Grupos
               </h3>
-              <MatchesCalendar showPlayoffs={false} />
+              {groupStageMatches && groupStageMatches.matchesByDate && Object.keys(groupStageMatches.matchesByDate).length > 0 ? (
+                <div className="space-y-8">
+                  {groupStageMatches.dateOrder.map((date: string) => (
+                    <div key={date} className="space-y-4">
+                      <div className={cn(
+                        "sticky top-0 z-10 bg-background border-b py-4 px-2",
+                        isDarkMode && "bg-[#061F3F] border-[#45CAFF]/30"
+                      )}>
+                        <h4 className={cn("text-lg font-semibold flex items-center")}>
+                          <Calendar className={cn(
+                            "mr-2 h-5 w-5",
+                            isDarkMode ? "text-[#45CAFF]" : "text-primary"
+                          )} />
+                          <span className={cn(isDarkMode && "text-[#45CAFF]")}>
+                            {new Date(date + 'T12:00:00').toLocaleDateString('pt-BR', {
+                              weekday: 'long',
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric'
+                            })}
+                          </span>
+                          <Badge 
+                            variant="outline" 
+                            className={cn(
+                              "ml-2",
+                              isDarkMode && "border-[#45CAFF]/30 text-[#D3ECFF]"
+                            )}
+                          >
+                            {groupStageMatches.matchesByDate[date].length} partidas
+                          </Badge>
+                        </h4>
+                      </div>
+                      
+                      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+                        {groupStageMatches.matchesByDate[date].map((match: any, index: number) => {
+                          const fixture = convertGroupStageMatchToFixture(match)
+                          return (
+                            <MatchCard 
+                              key={match.id || index}
+                              fixture={fixture}
+                              useAbbreviation={false}
+                              compact={false}
+                            />
+                          )
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className={cn("text-center p-8", isDarkMode ? "text-[#D3ECFF]" : "text-muted-foreground")}>
+                  Carregando jogos da fase de grupos...
+                </div>
+              )}
             </div>
             
             <div>
@@ -214,22 +309,12 @@ export function FifaCwcSchedule() {
                             >
                               {playoffMatches.matchesByDate[date].length} partidas
                             </Badge>
-                            <Badge 
-                              variant="secondary" 
-                              className={cn(
-                                "ml-2",
-                                isDarkMode && "bg-[#45CAFF]/20 text-[#45CAFF] border-[#45CAFF]/30",
-                                phase === 'Final' && "bg-yellow-500/20 text-yellow-600 border-yellow-500/50"
-                              )}
-                            >
-                              {phase}
-                            </Badge>
                           </h4>
                         </div>
                         
                         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
                           {playoffMatches.matchesByDate[date].map((match: any, index: number) => {
-                            const fixture = convertPlayoffMatchToFixture(match)
+                            const fixture = convertPlayoffMatchToFixture(match, phase)
                             return (
                               <div key={match.id || index} className={cn(
                                 phase === 'Final' && "ring-2 ring-yellow-500/20 rounded-md"

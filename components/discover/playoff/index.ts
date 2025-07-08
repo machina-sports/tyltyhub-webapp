@@ -1,2 +1,2 @@
 export { TeamMatch } from "./team-match"
-export { processPlayoffMatches, advanceWinners, resolveVirtualTeams } from "./playoff-utils" 
+export { processPlayoffMatches, processGroupStageMatches, advanceWinners, resolveVirtualTeams } from "./playoff-utils" 
