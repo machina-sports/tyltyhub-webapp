@@ -4,6 +4,9 @@ import ChatClientLayout from "./client-layout"
 export const metadata: Metadata = {
   title: "Chat | SportingBOT - Mundial de Clubes 2025",
   description: "Converse com a Inteligência Artificial da Sportingbet sobre o Mundial de Clubes FIFA 2025. Tire dúvidas, veja odds e faça suas apostas.",
+  icons: {
+    icon: "/favicon.ico",
+  },
   openGraph: {
     title: "Chat | SportingBOT - Mundial de Clubes 2025",
     description: "Converse com a Inteligência Artificial da Sportingbet sobre o Mundial de Clubes FIFA 2025. Tire dúvidas, veja odds e faça suas apostas.",

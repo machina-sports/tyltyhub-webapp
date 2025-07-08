@@ -1,10 +1,10 @@
-name: Release Staging
+name: Release Production
 
 on:
   workflow_dispatch:
     inputs:
       image_tag:
-        description: 'Image tag to deploy (e.g., v.staging-86a9rje6b.2)'
+        description: 'Image tag to deploy (e.g., v.release-1.2)'
         required: true
         type: string
 
@@ -13,8 +13,8 @@ env:
   AKS_RESOURCE_GROUP: mks-community-group
   NAMESPACE: tenant-entain-organization
   APP_NAME: sportingbet-cwc
-  DEPLOYMENT_NAME: sportingbet-cwc-development
-  CONTAINER_NAME: tenant-entain-organization-sportingbet-cwc-development
+  DEPLOYMENT_NAME: sportingbet-cwc-prod
+  CONTAINER_NAME: tenant-entain-organization-sportingbet-cwc-prod
 
 jobs:
   deploy:
@@ -47,8 +47,8 @@ jobs:
           SLACK_CHANNEL: your-slack-channel
           SLACK_USERNAME: GitHub Actions
           SLACK_COLOR: 'good'
-          SLACK_TITLE: 'Staging Deployment Successful'
-          SLACK_MESSAGE: 'Staging deployment of ${{ env.DEPLOYMENT_NAME }}:${{ env.IMAGE_TAG }} completed successfully.'
+          SLACK_TITLE: 'Production Deployment Successful'
+          SLACK_MESSAGE: 'Production deployment of ${{ env.DEPLOYMENT_NAME }}:${{ env.IMAGE_TAG }} completed successfully.'
           SLACK_ICON: ':rocket:'
         if: success()
 
@@ -59,7 +59,7 @@ jobs:
           SLACK_CHANNEL: your-slack-channel
           SLACK_USERNAME: GitHub Actions
           SLACK_COLOR: 'danger'
-          SLACK_TITLE: 'Staging Deployment Failed'
-          SLACK_MESSAGE: 'Staging deployment of ${{ env.DEPLOYMENT_NAME }}:${{ env.IMAGE_TAG }} failed.'
+          SLACK_TITLE: 'Production Deployment Failed'
+          SLACK_MESSAGE: 'Production deployment of ${{ env.DEPLOYMENT_NAME }}:${{ env.IMAGE_TAG }} failed.'
           SLACK_ICON: ':warning:'
         if: failure()

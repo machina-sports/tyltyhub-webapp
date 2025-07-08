@@ -1,11 +1,17 @@
-name: Build Image
-run-name: Build ${{ github.ref_name }}
+name: Build Production
 
 on:
-  workflow_dispatch:
+  push:
+    tags:
+      - "v.release-*.*"
+
+env:
+  APP_NAME: sportingbet-cwc
+  MACHINA_API_KEY: ${{ secrets.PROD_MACHINA_API_KEY }}
+  MACHINA_CLIENT_URL: ${{ vars.PROD_MACHINA_CLIENT_URL }}
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -14,15 +20,15 @@ jobs:
       - name: Create .env file
         run: |
           echo " " >> .env
-          echo "FEATURE_TOGGLE_ENABLE_AVATAR=0" >> .env
+          echo "FEATURE_TOGGLE_ENABLE_AVATAR=1" >> .env
           echo " " >> .env
-          echo "FEATURE_TOGGLE_ENABLE_BETS=0" >> .env
+          echo "FEATURE_TOGGLE_ENABLE_BETS=1" >> .env
           echo " " >> .env
           echo "FEATURE_TOGGLE_ENABLE_CHAT=1" >> .env
           echo " " >> .env
-          echo "MACHINA_API_KEY=${{ secrets.MACHINA_API_KEY }}" >> .env
+          echo "MACHINA_API_KEY=${{ env.MACHINA_API_KEY }}" >> .env
           echo " " >> .env
-          echo "MACHINA_CLIENT_URL=${{ vars.MACHINA_CLIENT_URL }}" >> .env
+          echo "MACHINA_CLIENT_URL=${{ env.MACHINA_CLIENT_URL }}" >> .env
           echo " " >> .env
           echo "IMAGE_CONTAINER_ADDRESS=${{ vars.IMAGE_CONTAINER_ADDRESS }}" >> .env
           echo " " >> .env
@@ -31,13 +37,8 @@ jobs:
           echo "NEXT_PUBLIC_GOOGLE_ANALYTICS_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_ANALYTICS_KEY }}" >> .env
           echo " " >> .env
 
-      - name: Get version from package.json
-        id: package_version
-        run: echo "PACKAGE_VERSION=$(jq -r '.version' package.json)" >> $GITHUB_ENV
-
-      - name: Set branch name
-        id: branch_name
-        run: echo "BRANCH_NAME=${{ github.ref_name }}" >> $GITHUB_ENV
+      - name: Get tag name as release name
+        run: echo "RELEASE_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
       - name: Login to Docker Hub
         uses: docker/login-action@v1
@@ -52,9 +53,7 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ${{ secrets.REGISTRY_URL }}/sportingbet-cwc:${{ env.PACKAGE_VERSION }}-${{ env.BRANCH_NAME }}
-            ${{ secrets.REGISTRY_URL }}/sportingbet-cwc:${{ env.BRANCH_NAME }}
-            ${{ secrets.REGISTRY_URL }}/sportingbet-cwc:latest
+            ${{ secrets.REGISTRY_URL }}/${{ env.APP_NAME }}:${{ env.RELEASE_NAME }}
 
       - name: Notify Slack - Build Success
         uses: rtCamp/action-slack-notify@v2
@@ -63,8 +62,8 @@ jobs:
           SLACK_CHANNEL: your-slack-channel
           SLACK_USERNAME: GitHub Actions
           SLACK_COLOR: 'good'
-          SLACK_TITLE: 'Build Successful'
-          SLACK_MESSAGE: 'Build of sportingbet-cwc:${{ env.PACKAGE_VERSION }}-${{ env.BRANCH_NAME }} finished successfully.'
+          SLACK_TITLE: 'Production Build Successful'
+          SLACK_MESSAGE: 'Build of ${{ env.APP_NAME }}:${{ env.RELEASE_NAME }} completed successfully and pushed to registry.'
           SLACK_ICON: ':heavy_check_mark:'
         if: success()
   
@@ -75,8 +74,7 @@ jobs:
           SLACK_CHANNEL: your-slack-channel
           SLACK_USERNAME: GitHub Actions
           SLACK_COLOR: 'danger'
-          SLACK_TITLE: 'Build Failed'
-          SLACK_MESSAGE: 'Build of sportingbet-cwc:${{ env.PACKAGE_VERSION }}-${{ env.BRANCH_NAME }} finished with errors.'
+          SLACK_TITLE: 'Production Build Failed'
+          SLACK_MESSAGE: 'Build of ${{ env.APP_NAME }}:${{ env.RELEASE_NAME }} failed.'
           SLACK_ICON: ':x:'
-        if: failure()
-      
+        if: failure() 

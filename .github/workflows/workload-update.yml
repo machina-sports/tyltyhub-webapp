@@ -1,4 +1,4 @@
-name: Update Deployment
+name: Workload Update
 
 on:
   workflow_dispatch:

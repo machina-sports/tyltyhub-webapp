@@ -1,10 +1,14 @@
 import { Metadata } from "next"
 import StandingsProvider from "@/providers/standings/provider"
 import DiscoverClientLayout from "./client-layout"
+import CalendarProvider from "@/providers/calendar/provider"
 
 export const metadata: Metadata = {
   title: "Descobrir | SportingBOT - Mundial de Clubes 2025",
   description: "Descubra as últimas notícias, estatísticas e análises do Mundial de Clubes FIFA 2025. Acompanhe os times, jogos e apostas com a IA da Sportingbet.",
+  icons: {
+    icon: "/favicon.ico",
+  },
   openGraph: {
     title: "Descobrir | SportingBOT - Mundial de Clubes 2025",
     description: "Descubra as últimas notícias, estatísticas e análises do Mundial de Clubes FIFA 2025. Acompanhe os times, jogos e apostas com a IA da Sportingbet.",
@@ -36,7 +40,9 @@ export default function DiscoverLayout({
   return (
     <StandingsProvider>
       <DiscoverClientLayout>
-        {children}
+          <CalendarProvider>
+            {children}
+          </CalendarProvider>
       </DiscoverClientLayout>
     </StandingsProvider>
   )

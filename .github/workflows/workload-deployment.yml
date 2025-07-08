@@ -1,4 +1,4 @@
-name: Create Deployment
+name: Workload Deployment
 
 on:
   workflow_dispatch:
