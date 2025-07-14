@@ -36,7 +36,7 @@ export default function SiteOffline() {
         <div className="bg-white rounded-xl shadow-2xl px-6 md:px-6 py-8 md:py-12 space-y-6">
           {/* Main Heading */}
           <h1 className="text-3xl md:text-5xl font-black text-gray-900 mb-4">
-            SITE FORA DO AR
+            Voltamos logo!
           </h1>
 
           {/* Secondary Heading */}
