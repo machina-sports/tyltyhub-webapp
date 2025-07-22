@@ -1,25 +1,19 @@
-"use client"
+"use client";
 
-import { User, Bot } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn } from "@/lib/utils";
 
-interface ChatAvatarProps {
-  role: 'user' | 'assistant'
+interface AvatarProps {
+  className?: string;
 }
 
-export function ChatAvatar({ role }: ChatAvatarProps) {
+export function Avatar({ className }: AvatarProps) {
   return (
     <div className={cn(
-      "flex items-center justify-center w-10 h-10 rounded-full",
-      role === 'assistant'
-        ? "bg-primary/10 text-primary"
-        : "bg-blue-500/10 text-blue-500"
+      "w-8 h-8 rounded-full bg-bwin-brand-primary flex items-center justify-center",
+      "text-bwin-neutral-0 text-xs font-bold",
+      className
     )}>
-      {role === 'assistant' ? (
-        <img src="/sb-new.png" alt="SB Logo" className="object-contain" />
-      ) : (
-        <User className="w-5 h-5" />
-      )}
+      BW
     </div>
-  )
+  );
 }

@@ -15,10 +15,11 @@ const badgeVariants = cva(
         destructive:
           "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
         outline: "text-foreground",
-        sportingbet: "border-transparent bg-[#0A5EEA] text-white hover:bg-[#003DC4]",
-        sportingbetOutline: "border-[#0A5EEA] text-[#0A5EEA] hover:bg-[#0A5EEA]/10",
-        dark: "border-transparent bg-[#45CAFF] text-[#061F3F] hover:bg-[#D3ECFF]",
-        darkOutline: "border-[#45CAFF] text-[#45CAFF] hover:bg-[#45CAFF]/10"
+        bwin: "border-transparent bg-bwin-brand-primary text-bwin-neutral-0 hover:bg-bwin-brand-secondary",
+        bwinOutline: "border-bwin-brand-primary text-bwin-brand-primary hover:bg-bwin-brand-primary/10",
+        bwinSecondary: "border-transparent bg-bwin-brand-secondary text-bwin-neutral-0 hover:bg-bwin-brand-primary",
+        bwinDark: "border-transparent bg-bwin-neutral-40 text-bwin-neutral-90 hover:bg-bwin-neutral-50",
+        bwinDarkOutline: "border-bwin-neutral-40 text-bwin-neutral-90 hover:bg-bwin-neutral-40/10"
       },
     },
     defaultVariants: {
@@ -32,22 +33,8 @@ export interface BadgeProps
     VariantProps<typeof badgeVariants> {}
 
 function Badge({ className, variant, ...props }: BadgeProps) {
-  const { isDarkMode } = useTheme();
-  
-  // Auto-convert Sportingbet variants to dark mode variants when theme is active
-  if (isDarkMode) {
-    if (variant === 'sportingbet') {
-      variant = 'dark';
-    } else if (variant === 'sportingbetOutline') {
-      variant = 'darkOutline';
-    }
-  }
-  
   return (
-    <div
-      className={cn(badgeVariants({ variant }), className)}
-      {...props}
-    />
+    <div className={cn(badgeVariants({ variant }), className)} {...props} />
   )
 }
 

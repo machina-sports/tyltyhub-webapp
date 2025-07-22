@@ -1,49 +1,34 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { cn } from '@/lib/utils'
-import { Button } from './button'
 import { Card, CardContent } from './card'
+import { Button } from './button'
+import { cn } from '@/lib/utils'
 import { useTheme } from '@/components/theme-provider'
 
 export function LGPDConsent() {
   const [isVisible, setIsVisible] = useState(false)
   const { isDarkMode } = useTheme()
-  
+
   useEffect(() => {
-    const checkVisibility = () => {
-      const hasConsent = localStorage.getItem('lgpd-consent')
-      const hasAgeVerification = localStorage.getItem('age-verification')
-      
-      // Only show LGPD consent if age verification is complete
-      if (!hasConsent && hasAgeVerification) {
+    const hasConsent = localStorage.getItem('lgpd-consent')
+    if (!hasConsent) {
+      // Show after a small delay to prevent layout shift
+      const timer = setTimeout(() => {
         setIsVisible(true)
-      } else {
-        setIsVisible(false)
-      }
-    }
-
-    // Check on mount
-    checkVisibility()
-
-    // Listen for storage changes
-    window.addEventListener('storage', checkVisibility)
-    
-    // Custom event for local storage changes in same tab
-    window.addEventListener('ageVerificationComplete', checkVisibility)
-
-    return () => {
-      window.removeEventListener('storage', checkVisibility)
-      window.removeEventListener('ageVerificationComplete', checkVisibility)
+      }, 1000)
+      
+      return () => clearTimeout(timer)
     }
   }, [])
 
   const handleAccept = () => {
-    localStorage.setItem('lgpd-consent', 'true')
+    localStorage.setItem('lgpd-consent', 'accepted')
     setIsVisible(false)
   }
 
   const handleDismiss = () => {
+    localStorage.setItem('lgpd-consent', 'dismissed')
     setIsVisible(false)
   }
 
@@ -54,28 +39,28 @@ export function LGPDConsent() {
       <Card className={cn(
         "mx-auto max-w-2xl shadow-lg",
         isDarkMode 
-          ? "bg-[#061F3F] border-[#1E3A5F]" 
+          ? "bg-bwin-neutral-20 border-bwin-neutral-30" 
           : "bg-white"
       )}>
         <CardContent className="p-4 md:p-6">
           <div className="space-y-4">
             <div className={cn(
               "prose prose-sm max-w-none",
-              isDarkMode ? "prose-invert text-[#D3ECFF]" : ""
+              isDarkMode ? "prose-invert text-bwin-neutral-90" : ""
             )}>
-              <h3 className="text-lg font-semibold mb-2">Privacidade e Cookies</h3>
+              <h3 className="text-lg font-semibold mb-2">Privacidad y Cookies</h3>
               <p>
-                Utilizamos cookies e tecnologias similares para melhorar sua experiência de navegação, 
-                personalizar conteúdo e anúncios, e analisar o tráfego do site. 
-                Ao continuar navegando, você concorda com nossa política de privacidade.
+                Utilizamos cookies y tecnologías similares para mejorar tu experiencia de navegación, 
+                personalizar contenido y anuncios, y analizar el tráfico del sitio. 
+                Al continuar navegando, aceptas nuestra política de privacidad.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-3 pt-2">
               <Button
                 onClick={handleAccept}
-                className="flex-1 bg-[#0066CC] hover:bg-[#0052A3] text-white"
+                className="flex-1 bg-bwin-brand-primary hover:bg-bwin-brand-secondary text-bwin-neutral-0"
               >
-                Aceitar
+                Aceptar
               </Button>
               <Button
                 onClick={handleDismiss}
@@ -87,7 +72,7 @@ export function LGPDConsent() {
                     : "text-gray-600 hover:bg-gray-100"
                 )}
               >
-                Agora não
+                Ahora no
               </Button>
             </div>
           </div>

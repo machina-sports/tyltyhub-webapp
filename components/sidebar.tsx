@@ -1,219 +1,188 @@
-"use client"
+"use client";
 
-import Link from 'next/link'
-import Image from 'next/image'
-import { usePathname, useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
-import { MessageSquare, Compass, History, X } from 'lucide-react'
-import { MobileHeader } from './mobile-header'
-import { useChatState } from '@/hooks/use-chat-state'
-import { ThemeToggle } from './theme-toggle'
-import { useTheme } from './theme-provider'
-import AnimatedShinyText from './magicui/animated-shiny-text'
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { useRouter, usePathname } from "next/navigation";
+import { MessageSquare, Compass } from "lucide-react";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
+import AnimatedShinyText from "@/components/magicui/animated-shiny-text";
+import { trackEvent } from "@/lib/analytics";
 
-interface Route {
-  label: string
-  icon: React.ElementType
-  href: string
-}
-
-const routes: Route[] = [
+const routes = [
   {
-    label: 'Conversar',
+    label: "Chat",
     icon: MessageSquare,
-    href: '/',
+    href: "/chat/new",
   },
   {
-    label: 'Descobrir',
+    label: "Descubrir",
     icon: Compass,
-    href: '/discover',
-  }
-]
+    href: "/discover",
+  },
+];
 
 export function Sidebar() {
-  const pathname = usePathname()
-  const router = useRouter()
-  const { resetChat } = useChatState()
-  const [isOpen, setIsOpen] = useState(false)
-  const { isDarkMode } = useTheme()
+  const router = useRouter();
+  const pathname = usePathname();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleNavigation = (href: string) => {
-    if (href === '/') {
-      resetChat()
-    }
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'navigation_click', {
-        event_category: 'sidebar_menu',
-        event_label: `Clicked ${href}`,
-        value: href,
-      });
-    }
-    router.push(href)
-    setIsOpen(false)
-  }
+    router.push(href);
+  };
 
   const handleLogoClick = () => {
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'navigation_click', {
-        event_category: 'sidebar_logo',
-        event_label: 'Clicked Logo',
-        value: '/',
-      });
-    }
-    handleNavigation('/')
-  }
+    router.push("/");
+  };
 
   const handleRegisterClick = () => {
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'button_click', {
-        event_category: 'sidebar_register',
-        event_label: 'Clicked Register Button',
-        value: 'register',
-      });
-    }
-    setIsOpen(false)
-  }
+    trackEvent(
+      'cta_click',
+      'sidebar',
+      'User clicked register button from sidebar'
+    );
+  };
 
   const handleLoginClick = () => {
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'button_click', {
-        event_category: 'sidebar_login',
-        event_label: 'Clicked Login Button',
-        value: 'login',
-      });
-    }
-    setIsOpen(false)
-  }
+    trackEvent(
+      'login_click', 
+      'sidebar',
+      'User clicked login button from sidebar'
+    );
+  };
 
-  useEffect(() => {
-    // Close sidebar when route changes (mobile)
-    setIsOpen(false)
-  }, [pathname])
-
-  // Lock body scroll when sidebar is open on mobile
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [isOpen])
-
-  return (
-    <>
-      <MobileHeader onMenuClick={() => setIsOpen(true)} />
-
-      <div className={cn(
-        "fixed inset-y-0 left-0 z-50 transform transition-transform duration-200 ease-in-out md:translate-x-0 md:static w-72",
-        "space-y-4 pt-16 md:pt-4 flex flex-col h-full bg-sportingbet-bright-deep-blue border-r",
-        isDarkMode ? "bg-[#061F3F] border-[#D3ECFF]/20" : "bg-sportingbet-bright-deep-blue border-white/10",
-        isOpen ? "translate-x-0" : "-translate-x-full"
-      )}>
-        <div className="pr-4 pl-2 absolute top-4 right-0 md:hidden">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsOpen(false)}
-            className="h-10 w-10 text-white hover:bg-white/20 active:bg-white/30"
-            aria-label="Close menu"
+  if (isMobile) {
+    return (
+      <div className="fixed top-0 left-0 right-0 h-16 z-50 border-b bg-bwin-neutral-10 border-bwin-neutral-30">
+        <div className="flex items-center justify-between h-full px-6">
+          <div 
+            onClick={handleLogoClick}
+            className="flex items-center cursor-pointer"
+            role="button"
+            aria-label="Ir al inicio"
           >
-            <X className="h-5 w-5" />
-          </Button>
+            <Image
+              src="/bwin-logo.png"
+              alt="bwin"
+              width={80}
+              height={32}
+              priority
+              className="h-8 w-auto"
+            />
+          </div>
         </div>
-
-        <div className="px-8 py-2 flex-1 flex flex-col">
-          {/* Fixed height logo container */}
-          <div className="h-[80px] min-h-[80px] flex flex-col items-center justify-center mb-8">
-            <div
-              onClick={handleLogoClick}
-              className="flex items-center justify-center pl-3 cursor-pointer ml-[-10px]"
-              role="button"
-              aria-label="Go to home"
+        
+        <div className="fixed bottom-0 left-0 right-0 h-20 border-t flex items-center justify-around px-4 pb-safe bg-bwin-neutral-10 border-bwin-neutral-30">
+          {routes.map((route) => (
+            <Button
+              key={route.href}
+              variant="ghost"
+              size="sm"
+              className={cn(
+                "flex flex-col items-center gap-2 h-auto py-3 px-6 rounded-xl transition-all duration-200",
+                pathname === route.href || (route.href === "/chat/new" && pathname.startsWith("/chat"))
+                  ? "text-bwin-brand-primary bg-bwin-brand-primary/10"
+                  : "text-bwin-neutral-80 hover:text-bwin-brand-primary hover:bg-bwin-neutral-20"
+              )}
+              onClick={() => handleNavigation(route.href)}
             >
-              <Image
-                src="/outline.png"
-                alt="Sportingbot"
-                width={250}
-                height={120}
-                priority
-                className="ml-[-4px]"
-              />
-            </div>
-            <AnimatedShinyText className="text-xs text-white/50 pt-3">A Inteligência Artificial da Sportingbet</AnimatedShinyText>
-            <div className="text-[10px] text-white/40 pt-1 font-sportingbet">Versão Beta</div>
-          </div>
-          {/* Navigation buttons with fixed position */}
-          <div className="space-y-4 border-t border-white/10 pt-4">
-            {routes.map((route) => (
-              <Button
-                key={route.href}
-                variant={pathname === route.href ? "secondary" : "ghost"}
-                className={cn(
-                  "w-full justify-start text-base text-white hover:text-white rounded-lg h-16 px-8",
-                  pathname === route.href
-                    ? "bg-white/20 text-white hover:bg-white/30 font-medium"
-                    : "hover:bg-white/10 active:bg-white/15 transition-colors duration-200"
-                )}
-                onClick={() => handleNavigation(route.href)}
-              >
-                <route.icon className="h-5 w-5 mr-3" />
-                {route.label}
-              </Button>
-            ))}
-          </div>
-        </div>
-        <div className="px-8 py-2 pb-4 pt-2">
-          <a
-            href="https://www.sportingbet.bet.br/pt-br/myaccount/register?utm_source=spbot&utm_medium=botao&utm_campaign=5530097&utm_content=registrar&utm_term=5530097-botmundial-spbet-sprts-br-2025-06-17-pt-botao--acq-web&wm=5530097"
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={handleRegisterClick}
-            className={cn(
-              "block w-full py-3 text-white font-medium rounded-md text-sm text-center shadow-sm transition-colors duration-200 mb-4",
-              isDarkMode
-                ? "bg-[#0078B3] hover:bg-[#006699] active:bg-[#005580]"
-                : "bg-[#0066CC] hover:bg-[#0052A3] active:bg-[#004080]"
-            )}
-          >
-            Registre-se Agora
-          </a>
-          <a
-            href="https://www.sportingbet.bet.br/pt-br/labelhost/login?utm_source=spbot&utm_medium=botao&utm_campaign=5530097&utm_content=entrar&utm_term=5530097-botmundial-spbet-sprts-br-2025-06-17-pt-botao--acq-web&wm=5530097"
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={handleLoginClick}
-            className="block w-full py-3 bg-white/10 hover:bg-white/15 active:bg-white/20 text-white font-medium rounded-md text-sm text-center border border-white/20 transition-colors duration-200 mb-2"
-          >
-            Entrar
-          </a>
-          <div className="mt-3 border-t border-white/10 pt-3 flex justify-center">
-            <ThemeToggle />
-          </div>
-        </div>
-        <div className="px-4 py-3 border-t border-[#D3ECFF]/20">
-          <div className="text-[#D3ECFF]/70 text-[11px] leading-tight text-center">
-            18+. Apostar pode causar dependência e transtornos do jogo patológico. Jogue com responsabilidade. Autorizada pela SPA/MF sob licença nº 247.
-          </div>
-        </div>
-        <div className="px-4 py-2 border-t border-[#D3ECFF]/20">
-          <div className="text-[#D3ECFF]/70 text-xs text-center">
-            © {new Date().getFullYear()} Sportingbet
-          </div>
+              <route.icon className="h-5 w-5" />
+              <span className="text-xs font-medium">{route.label}</span>
+            </Button>
+          ))}
         </div>
       </div>
+    );
+  }
 
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm"
-          onClick={() => setIsOpen(false)}
-          aria-hidden="true"
-        />
-      )}
-    </>
-  )
+  return (
+    <div className="flex flex-col h-screen w-80 border-r bg-bwin-neutral-10 border-bwin-neutral-30">
+      <div className="px-8 py-6 flex-1 flex flex-col">
+        {/* Logo container with proper spacing */}
+        <div className="h-24 flex flex-col items-center justify-center mb-12">
+          <div
+            onClick={handleLogoClick}
+            className="flex items-center justify-center cursor-pointer transition-transform duration-200 hover:scale-105"
+            role="button"
+            aria-label="Ir al inicio"
+          >
+            <Image
+              src="/bwin-logo.png"
+              alt="bwin"
+              width={120}
+              height={48}
+              priority
+              className="h-12 w-auto"
+            />
+          </div>
+          <AnimatedShinyText className="text-sm text-bwin-neutral-70 pt-4 font-medium">
+            La Inteligencia Artificial de bwin
+          </AnimatedShinyText>
+          <div className="text-xs text-bwin-neutral-60 pt-2 font-roboto">
+            Versión Beta
+          </div>
+        </div>
+
+        {/* Navigation with improved spacing */}
+        <div className="space-y-3 border-t border-bwin-neutral-30 pt-8">
+          {routes.map((route) => (
+            <Button
+              key={route.href}
+              variant="ghost"
+              className={cn(
+                "w-full justify-start text-base rounded-xl h-14 px-6 transition-all duration-200",
+                pathname === route.href || (route.href === "/chat/new" && pathname.startsWith("/chat"))
+                  ? "bg-bwin-brand-primary/15 text-bwin-brand-primary hover:bg-bwin-brand-primary/20 font-semibold"
+                  : "text-bwin-neutral-80 hover:bg-bwin-neutral-20 hover:text-bwin-brand-primary active:bg-bwin-neutral-30"
+              )}
+              onClick={() => handleNavigation(route.href)}
+            >
+              <route.icon className="h-5 w-5 mr-4" />
+              {route.label}
+            </Button>
+          ))}
+        </div>
+      </div>
+      
+      {/* CTA buttons without shadows */}
+      <div className="px-8 py-6 space-y-4">
+        <a
+          href="https://sports.bwin.es/es/sports/registro?utm_source=bwbot&utm_medium=botao&utm_campaign=5530097&utm_content=registrar&utm_term=5530097-botmundial-bwin-sprts-es-2025-06-17-es-botao--acq-web&wm=5530097"
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={handleRegisterClick}
+          className="block w-full py-4 px-6 font-semibold rounded-xl text-sm text-center transition-all duration-200 bg-bwin-brand-primary hover:bg-bwin-brand-secondary text-bwin-neutral-0 transform hover:scale-[1.02]"
+        >
+          Regístrate Ahora
+        </a>
+        <a
+          href="https://sports.bwin.es/es/sports/login?utm_source=bwbot&utm_medium=botao&utm_campaign=5530097&utm_content=entrar&utm_term=5530097-botmundial-bwin-sprts-es-2025-06-17-es-botao--acq-web&wm=5530097"
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={handleLoginClick}
+          className="block w-full py-4 px-6 font-semibold rounded-xl text-sm text-center border-2 transition-all duration-200 bg-transparent hover:bg-bwin-neutral-20 text-bwin-neutral-90 border-bwin-neutral-40 hover:border-bwin-brand-primary hover:text-bwin-brand-primary"
+        >
+          Iniciar Sesión
+        </a>
+      </div>
+
+      {/* Legal disclaimer with better spacing */}
+      <div className="px-8 py-6 border-t border-bwin-neutral-30">
+        <div className="text-xs leading-relaxed text-center text-bwin-neutral-60">
+          18+. Apostar puede causar dependencia. Juega de forma responsable.
+        </div>
+      </div>
+    </div>
+  );
 }

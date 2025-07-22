@@ -20,41 +20,41 @@ declare global {
 }
 
 export const metadata: Metadata = {
-  title: "SportingBOT: a IA da Sportingbet no Mundial de Clubes 2025",
-  description: "Aposte junto com a Inteligência Artificial da Sportingbet. Pergunte ao nosso chat sobre as notícias e odds do Mundial de Clubes 2025 e veja como apostar melhor.",
+  title: "bwinBOT: la IA de bwin para la Copa Mundial de Clubes 2025",
+  description: "Apuesta junto con la Inteligencia Artificial de bwin. Pregunta a nuestro chat sobre las noticias y cuotas de la Copa Mundial de Clubes 2025 y descubre cómo apostar mejor.",
   icons: {
     icon: "/favicon.ico",
   },
   openGraph: {
-    title: "SportingBOT: a IA da Sportingbet no Mundial de Clubes 2025",
-    description: "Aposte junto com a Inteligência Artificial da Sportingbet. Pergunte ao nosso chat sobre as notícias e odds do Mundial de Clubes 2025 e veja como apostar melhor.",
+    title: "bwinBOT: la IA de bwin para la Copa Mundial de Clubes 2025",
+    description: "Apuesta junto con la Inteligencia Artificial de bwin. Pregunta a nuestro chat sobre las noticias y cuotas de la Copa Mundial de Clubes 2025 y descubre cómo apostar mejor.",
     type: "website",
-    locale: "pt_BR",
-    siteName: "SportingBOT",
-    url: "https://sportingbot.com",
+    locale: "es_ES",
+    siteName: "bwinBOT",
+    url: "https://bwinbot.com",
     images: [
       {
-        url: "https://sportingbot.com/og_image_4.png",
+        url: "https://bwinbot.com/og_image_4.png",
         width: 1200,
         height: 630,
-        alt: "SportingBOT: a IA da Sportingbet",
+        alt: "bwinBOT: la IA de bwin",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "SportingBOT: a IA da Sportingbet no Mundial de Clubes 2025",
-    description: "Aposte junto com a Inteligência Artificial da Sportingbet. Pergunte ao nosso chat sobre as notícias e odds do Mundial de Clubes 2025 e veja como apostar melhor.",
-    images: ["https://sportingbot.com/og_image_4.png"],
+    title: "bwinBOT: la IA de bwin para la Copa Mundial de Clubes 2025",
+    description: "Apuesta junto con la Inteligencia Artificial de bwin. Pregunta a nuestro chat sobre las noticias y cuotas de la Copa Mundial de Clubes 2025 y descubre cómo apostar mejor.",
+    images: ["https://bwinbot.com/og_image_4.png"],
   },
 };
 
 export const viewport: Viewport = {
-  width: "device-width",
+  width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-};
+}
 
 export default function RootLayout({
   children,
@@ -62,7 +62,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR">
+    <html lang="es-ES">
       <head>
         <link rel="icon" href="/favicon.ico" />
         {/* Google tag (gtag.js) - GA4 Property */}
@@ -89,12 +89,12 @@ export default function RootLayout({
         <script 
           async
           type="module" 
-          data-tallysight-defaults-widget-config-workspace="sporting-bet" 
+          data-tallysight-defaults-widget-config-workspace="bwin-spain" 
           src="https://storage.googleapis.com/tallysight-widgets/dist/tallysight.min.js"
           data-tallysight-widget-loading="lazy"
           data-tallysight-observer="true"
         />
-        <meta property="og:logo" content="https://sportingbot.com/og_image_4.png" />
+        <meta property="og:logo" content="https://bwinbot.com/og_image_4.png" />
       </head>
       <body className={inter.className}>
         <Providers>

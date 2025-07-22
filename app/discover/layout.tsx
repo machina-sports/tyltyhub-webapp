@@ -4,31 +4,31 @@ import DiscoverClientLayout from "./client-layout"
 import CalendarProvider from "@/providers/calendar/provider"
 
 export const metadata: Metadata = {
-  title: "Descobrir | SportingBOT - Mundial de Clubes 2025",
-  description: "Descubra as últimas notícias, estatísticas e análises do Mundial de Clubes FIFA 2025. Acompanhe os times, jogos e apostas com a IA da Sportingbet.",
+  title: "Descubrir | bwinBOT - Copa Mundial de Clubes 2025",
+  description: "Descubre las últimas noticias, estadísticas y análisis de la Copa Mundial de Clubes FIFA 2025. Sigue a los equipos, partidos y apuestas con la IA de bwin.",
   icons: {
     icon: "/favicon.ico",
   },
   openGraph: {
-    title: "Descobrir | SportingBOT - Mundial de Clubes 2025",
-    description: "Descubra as últimas notícias, estatísticas e análises do Mundial de Clubes FIFA 2025. Acompanhe os times, jogos e apostas com a IA da Sportingbet.",
+    title: "Descubrir | bwinBOT - Copa Mundial de Clubes 2025",
+    description: "Descubre las últimas noticias, estadísticas y análisis de la Copa Mundial de Clubes FIFA 2025. Sigue a los equipos, partidos y apuestas con la IA de bwin.",
     type: "website",
-    locale: "pt_BR",
-    siteName: "SportingBOT",
+    locale: "es_ES",
+    siteName: "bwinBOT",
     images: [
       {
-        url: "https://sportingbot.com/og_image_4.png",
+        url: "https://bwinbot.com/og_image_4.png",
         width: 980,
         height: 250,
-        alt: "SportingBOT: a IA da Sportingbet",
+        alt: "bwinBOT: la IA de bwin",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Descobrir | SportingBOT - Mundial de Clubes 2025",
-    description: "Descubra as últimas notícias, estatísticas e análises do Mundial de Clubes FIFA 2025. Acompanhe os times, jogos e apostas com a IA da Sportingbet.",
-    images: ["https://sportingbot.com/og_image_4.png"],
+    title: "Descubrir | bwinBOT - Copa Mundial de Clubes 2025",
+    description: "Descubre las últimas noticias, estadísticas y análisis de la Copa Mundial de Clubes FIFA 2025. Sigue a los equipos, partidos y apuestas con la IA de bwin.",
+    images: ["https://bwinbot.com/og_image_4.png"],
   },
 }
 

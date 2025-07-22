@@ -46,24 +46,14 @@ export const WidgetCarousel = React.memo(({
 
   if (widgets.length === 1) {
     return (
-      <div className={cn(
-        "rounded-lg border p-4",
-        isDarkMode
-          ? "border-[#45CAFF]/30 bg-card"
-          : "border-border bg-card"
-      )}>
+      <div className="rounded-lg border p-4 border-bwin-neutral-30 bg-bwin-neutral-20">
         {renderWidget(widgets[0])}
       </div>
     );
   }
 
   return (
-    <div className={cn(
-      "rounded-lg border p-4",
-      isDarkMode
-        ? "border-[#45CAFF]/30 bg-card"
-        : "border-border bg-card"
-    )}>
+    <div className="rounded-lg border p-4 border-bwin-neutral-30 bg-bwin-neutral-20">
       {/* Widget Display */}
       <div className="overflow-hidden rounded-md ">
         {renderWidget(widgets[currentIndex])}
@@ -74,12 +64,7 @@ export const WidgetCarousel = React.memo(({
         {/* Left Arrow */}
         <button
           onClick={prevWidget}
-          className={cn(
-            "p-1.5 rounded-full transition-colors",
-            isDarkMode
-              ? "hover:bg-[#45CAFF]/20 text-[#45CAFF] hover:text-[#45CAFF]"
-              : "hover:bg-primary/20 text-primary hover:text-primary"
-          )}
+          className="p-1.5 rounded-full transition-colors hover:bg-bwin-brand-primary/20 text-bwin-brand-primary hover:text-bwin-brand-primary"
           aria-label="Widget anterior"
         >
           <ChevronLeft className="h-4 w-4" />
@@ -94,14 +79,10 @@ export const WidgetCarousel = React.memo(({
               className={cn(
                 "w-2 h-2 rounded-full transition-colors",
                 index === currentIndex
-                  ? isDarkMode
-                    ? "bg-[#45CAFF]"
-                    : "bg-primary"
-                  : isDarkMode
-                  ? "bg-white/30 hover:bg-white/50"
-                  : "bg-black/30 hover:bg-black/50"
+                  ? "bg-bwin-brand-primary"
+                  : "bg-bwin-neutral-60 hover:bg-bwin-neutral-80"
               )}
-              aria-label={`Ir para widget ${index + 1}`}
+              aria-label={`Ir al widget ${index + 1}`}
             />
           ))}
         </div>
@@ -109,13 +90,8 @@ export const WidgetCarousel = React.memo(({
         {/* Right Arrow */}
         <button
           onClick={nextWidget}
-          className={cn(
-            "p-1.5 rounded-full transition-colors",
-            isDarkMode
-              ? "hover:bg-[#45CAFF]/20 text-[#45CAFF] hover:text-[#45CAFF]"
-              : "hover:bg-primary/20 text-primary hover:text-primary"
-          )}
-          aria-label="Próximo widget"
+          className="p-1.5 rounded-full transition-colors hover:bg-bwin-brand-primary/20 text-bwin-brand-primary hover:text-bwin-brand-primary"
+          aria-label="Siguiente widget"
         >
           <ChevronRight className="h-4 w-4" />
         </button>

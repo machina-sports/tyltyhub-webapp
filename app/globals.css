@@ -57,71 +57,62 @@
   }
 }
 
-/* Import Sportingbet fonts - you'll need to host these or use similar alternatives */
-@font-face {
-  font-family: 'Sportingbet Sans';
-  src: url('/fonts/SportingbetSans-Medium.woff2') format('woff2');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Sportingbet Sans';
-  src: url('/fonts/SportingbetSans-Black.woff2') format('woff2');
-  font-weight: 900;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Sportingbet Sans';
-  src: url('/fonts/SportingbetSans-Italic.woff2') format('woff2');
-  font-weight: normal;
-  font-style: italic;
-  font-display: swap;
-}
-
-/* Frutiger alternative using system fonts */
-@font-face {
-  font-family: 'Frutiger LT';
-  src: local('Arial'), local('Helvetica Neue');
-  font-weight: normal;
-  font-style: normal;
-}
+/* Import Roboto font for Bwin branding */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
 :root {
-  --background: 200 25% 98%;
-  --foreground: 222.2 84% 4.9%;
+  /* Bwin Brand Colors */
+  --bwin-brand-primary: 51 100% 50%;        /* #FFCB00 */
+  --bwin-brand-secondary: 40 98% 54%;       /* #FDBA12 */
+  
+  /* Bwin Neutrals */
+  --bwin-neutral-100: 0 0% 100%;            /* #FFFFFF */
+  --bwin-neutral-90: 0 0% 90%;              /* #E6E6E6 */
+  --bwin-neutral-80: 0 0% 70%;              /* #B3B3B3 */
+  --bwin-neutral-70: 0 0% 55%;              /* #8C8C8C */
+  --bwin-neutral-60: 0 0% 40%;              /* #666666 */
+  --bwin-neutral-50: 0 0% 29%;              /* #4A4A4A */
+  --bwin-neutral-40: 0 0% 24%;              /* #3E3E3E */
+  --bwin-neutral-30: 0 0% 18%;              /* #2F2F2F */
+  --bwin-neutral-20: 0 0% 12%;              /* #1E1E1E */
+  --bwin-neutral-10: 0 0% 7%;               /* #121212 */
+  --bwin-neutral-0: 0 0% 0%;                /* #000000 */
+  
+  /* Bwin Semantic Colors */
+  --bwin-success: 145 63% 49%;              /* #2ECC71 */
+  --bwin-warning: 40 98% 54%;               /* #FDBA12 */
+  --bwin-danger: 4 100% 59%;                /* #FF3B30 */
+  --bwin-info: 204 81% 53%;                 /* #209CEE */
 
-  --muted: 210 40% 96.1%;
-  --muted-foreground: 215.4 16.3% 46.9%;
+  /* Force dark mode globally */
+  --background: var(--bwin-neutral-10);
+  --foreground: var(--bwin-neutral-100);
+  --card: var(--bwin-neutral-20);
+  --card-foreground: var(--bwin-neutral-100);
+  --popover: var(--bwin-neutral-20);
+  --popover-foreground: var(--bwin-neutral-100);
+  --primary: var(--bwin-brand-primary);
+  --primary-foreground: var(--bwin-neutral-0);
+  --secondary: var(--bwin-neutral-30);
+  --secondary-foreground: var(--bwin-neutral-100);
+  --muted: var(--bwin-neutral-30);
+  --muted-foreground: var(--bwin-neutral-80);
+  --accent: var(--bwin-brand-secondary);
+  --accent-foreground: var(--bwin-neutral-0);
+  --destructive: var(--bwin-danger);
+  --destructive-foreground: var(--bwin-neutral-100);
+  --border: var(--bwin-neutral-30);
+  --input: var(--bwin-neutral-40);
+  --ring: var(--bwin-brand-primary);
 
-  --popover: 0 0% 100%;
-  --popover-foreground: 222.2 84% 4.9%;
+  /* Chart colors using Bwin palette */
+  --chart-1: var(--bwin-brand-primary);
+  --chart-2: var(--bwin-brand-secondary);
+  --chart-3: var(--bwin-success);
+  --chart-4: var(--bwin-info);
+  --chart-5: var(--bwin-neutral-60);
 
-  --card: 0 0% 100%;
-  --card-foreground: 222.2 84% 4.9%;
-
-  --border: 214.3 31.8% 91.4%;
-  --input: 214.3 31.8% 91.4%;
-
-  --primary: 212 100% 48%;
-  --primary-foreground: 210 40% 98%;
-
-  --secondary: 210 40% 96.1%;
-  --secondary-foreground: 222.2 47.4% 11.2%;
-
-  --accent: 210 40% 96.1%;
-  --accent-foreground: 222.2 47.4% 11.2%;
-
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 210 40% 98%;
-
-  --sportingbet-bright-deep-blue: #0A5EEA;
-  --sportingbet-deep-blue: #061F3F;
-
-  --radius: 0.5rem;
+  --radius: 0.75rem;
   
   /* Mobile Safe Areas */
   --sat: env(safe-area-inset-top, 0px);
@@ -130,171 +121,92 @@
   --sar: env(safe-area-inset-right, 0px);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
-
 @layer base {
-  :root {
-    /* Sportingbet Brand Colors - Marketing */
-    --sb-bright-deep-blue: 225 100% 38%;      /* #003DC4 */
-    --sb-bright-dark-blue: 218 83% 14%;       /* #061F3F */
-    --sb-bright-extra-light-blue: 206 100% 91%; /* #D3ECFF */
-    --sb-bright-light-blue: 196 100% 63%;     /* #45CAFF */
-    --sb-bright-blue: 217 93% 48%;            /* #0A5EEA */
-    --sb-bright-red: 0 87% 57%;               /* #F13131 */
-    --sb-white: 0 0% 100%;                    /* #FFFFFF */
-    --sb-light-grey: 220 8% 94%;              /* #EEEFF1 */
-    
-    /* Palmeiras Colors */
-    --palmeiras-green: 142 100% 24%;          /* #006B3D */
-    --palmeiras-dark-green: 142 100% 18%;     /* #00502E */
-    --palmeiras-light-green: 142 85% 35%;     /* #0F9B59 */
-    --palmeiras-accent: 142 85% 42%;          /* #12B869 */
-
-    /* Map Sportingbet colors to shadcn variables */
-    --background: var(--sb-white);
-    --foreground: var(--sb-bright-dark-blue);
-    --card: var(--sb-white);
-    --card-foreground: var(--sb-bright-dark-blue);
-    --popover: var(--sb-white);
-    --popover-foreground: var(--sb-bright-dark-blue);
-    --primary: var(--sb-bright-blue);
-    --primary-foreground: var(--sb-white);
-    --secondary: var(--sb-bright-extra-light-blue);
-    --secondary-foreground: var(--sb-bright-dark-blue);
-    --muted: var(--sb-light-grey);
-    --muted-foreground: 218 40% 30%;
-    --accent: var(--sb-bright-light-blue);
-    --accent-foreground: var(--sb-bright-dark-blue);
-    --destructive: var(--sb-bright-red);
-    --destructive-foreground: var(--sb-white);
-    --border: var(--sb-light-grey);
-    --input: var(--sb-light-grey);
-    --ring: var(--sb-bright-blue);
-
-    /* Chart colors using Sportingbet palette */
-    --chart-1: var(--sb-bright-blue);
-    --chart-2: var(--sb-bright-deep-blue);
-    --chart-3: var(--sb-bright-dark-blue);
-    --chart-4: var(--sb-bright-light-blue);
-    --chart-5: var(--sb-bright-extra-light-blue);
-
-    /* Match rounded corners from Sportingbet guidelines */
-    --radius: 0.65rem;
-  }
-
-  .dark {
-    --background: var(--sb-bright-dark-blue);
-    --foreground: var(--sb-white);
-    --card: 218 80% 18%;
-    --card-foreground: var(--sb-white);
-    --popover: 218 80% 18%;
-    --popover-foreground: var(--sb-white);
-    --primary: var(--sb-bright-blue);
-    --primary-foreground: var(--sb-white);
-    --secondary: 218 70% 25%;
-    --secondary-foreground: var(--sb-white);
-    --muted: 218 60% 20%;
-    --muted-foreground: 218 20% 70%;
-    --accent: 218 60% 20%;
-    --accent-foreground: var(--sb-white);
-    --destructive: 0 70% 45%;
-    --destructive-foreground: var(--sb-white);
-    --border: 218 50% 30%;
-    --input: 218 50% 30%;
-    --ring: var(--sb-bright-blue);
-    
-    /* Chart colors for dark mode */
-    --chart-1: var(--sb-bright-blue);
-    --chart-2: var(--sb-bright-light-blue);
-    --chart-3: var(--sb-bright-extra-light-blue);
-    --chart-4: var(--sb-bright-deep-blue);
-    --chart-5: 218 40% 60%;
-  }
-
   * {
     @apply border-border;
   }
-  body {
-    @apply bg-background text-foreground;
-    overscroll-behavior: none;
-    -webkit-tap-highlight-color: transparent;
-  }
-  
+
   html {
-    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
   }
-  
-  /* Prevent iOS Safari auto-zoom on input focus */
-  input, textarea, select, button {
-    font-size: 16px !important; /* Force minimum font size to prevent auto-zoom */
-    max-height: none !important; /* Prevent iOS from adjusting input height */
-    -webkit-text-size-adjust: 100%; /* Prevent iOS text size adjustment */
-  }
-  
-  @media screen and (max-width: 768px) {
-    input, textarea, select, button {
-      font-size: 16px !important;
-    }
-  }
-  
-  /* Typography based on Sportingbet guidelines */
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Sportingbet Sans', system-ui, sans-serif;
-  }
-  
+
   body {
-    font-family: 'Frutiger LT', Arial, 'Helvetica Neue', sans-serif;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Roboto', system-ui, sans-serif;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
-  
-  /* Base responsive typography */
+
+  /* Force dark mode */
+  html {
+    color-scheme: dark;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Roboto', system-ui, sans-serif;
+    font-weight: 500;
+    letter-spacing: -0.025em;
+  }
+
   h1 {
-    @apply text-2xl sm:text-4xl font-bold;
+    @apply text-3xl sm:text-5xl font-bold;
   }
   
   h2 {
-    @apply text-xl sm:text-2xl font-semibold;
+    @apply text-2xl sm:text-3xl font-semibold;
   }
   
   h3 {
-    @apply text-lg sm:text-xl font-semibold;
+    @apply text-xl sm:text-2xl font-semibold;
   }
 
-  /* Add disclaimer styling per brand guidelines */
-  .sb-disclaimer {
-    @apply text-center text-sm text-muted-foreground mt-6 mb-4;
+  /* Professional disclaimer styling */
+  .bw-disclaimer {
+    @apply text-center text-sm text-muted-foreground mt-8 mb-6 leading-relaxed;
     min-width: 130px;
   }
   
-  /* Call-to-action buttons styled per brand guidelines */
-  .sb-cta {
-    @apply rounded-lg bg-primary text-primary-foreground hover:brightness-110 transition-all;
-    padding: 0.75rem 1.5rem;
+  /* Enhanced CTA buttons without shadows */
+  .bw-cta {
+    @apply rounded-xl bg-primary text-primary-foreground hover:brightness-110 transition-all duration-300;
+    padding: 1rem 2rem;
   }
 
-  /* Palmeiras Theme */
-  .palmeiras {
-    --primary: var(--palmeiras-green);
-    --primary-foreground: var(--sb-white);
-    --secondary: 142 90% 85%;
-    --secondary-foreground: var(--palmeiras-dark-green);
-    --accent: var(--palmeiras-light-green);
-    --accent-foreground: var(--sb-white);
-    --ring: var(--palmeiras-green);
-    --muted: 142 20% 94%;
-    --muted-foreground: 142 40% 30%;
-    
-    /* Chart colors for Palmeiras theme */
-    --chart-1: var(--palmeiras-green);
-    --chart-2: var(--palmeiras-light-green);
-    --chart-3: var(--palmeiras-accent);
-    --chart-4: var(--palmeiras-dark-green);
-    --chart-5: 142 70% 50%;
+  /* Enhanced animations and transitions */
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.6s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { 
+      opacity: 0; 
+      transform: translateY(20px); 
+    }
+    to { 
+      opacity: 1; 
+      transform: translateY(0); 
+    }
+  }
+
+  /* Chat interface enhancements */
+  .chat-container {
+    @apply space-y-6;
+  }
+
+  .chat-input-focus {
+    @apply ring-2 ring-bwin-brand-primary ring-offset-2 ring-offset-bwin-neutral-10;
   }
 }
 
@@ -315,7 +227,7 @@
   padding-right: var(--sar);
 }
 
-/* Improved touch targets */
+/* Professional touch interactions */
 @layer utilities {
   .touch-action-none {
     touch-action: none;
@@ -328,6 +240,11 @@
   .momentum-scroll {
     -webkit-overflow-scrolling: touch;
   }
+
+  .glass-effect {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
 }
 
 /* Remove blue highlight on mobile */
@@ -339,80 +256,26 @@ a {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Scrollbar customization */
-@media (min-width: 768px) {
-  /* Only apply custom scrollbars on desktop */
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: hsl(var(--muted-foreground) / 0.2);
-    border-radius: 4px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--muted-foreground) / 0.3);
-  }
-  
-  /* Palmeiras theme scrollbar */
-  .palmeiras ::-webkit-scrollbar-thumb {
-    background: hsl(var(--palmeiras-green) / 0.4);
-    border-radius: 4px;
-  }
-
-  .palmeiras ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--palmeiras-green) / 0.6);
-  }
+/* Enhanced scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
 }
 
-/* Hide scrollbars on mobile but keep functionality */
-@media (max-width: 767px) {
-  .hide-scrollbar {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-  
-  .hide-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
+::-webkit-scrollbar-track {
+  background: hsl(var(--bwin-neutral-20));
 }
 
-/* Remove focus outlines for Search and Theme selectors */
-input[type="search"]:focus-visible,
-.theme-selector:focus-visible,
-.select-trigger:focus-visible,
-[role="combobox"]:focus-visible {
-  outline: none !important;
-  box-shadow: none !important;
-  ring: none !important;
-  ring-offset: none !important;
-  ring-offset-background: none !important;
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--bwin-brand-primary));
+  border-radius: 4px;
 }
 
-input[type="search"],
-.theme-selector,
-.select-trigger,
-[role="combobox"] {
-  @apply focus-visible:ring-0 focus-visible:ring-offset-0;
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--bwin-brand-secondary));
 }
 
-/* Add meta viewport tag to prevent zoom */
-@viewport {
-  zoom: 1.0;
-  min-zoom: 1.0;
-  max-zoom: 1.0;
-  user-zoom: fixed;
-}
-
-.widget-embed iframe {
-  max-height: none !important;
-  height: 300px !important;
-  min-height: 300px !important;
-  width: 100% !important;
+/* Professional selection styling */
+::selection {
+  background: hsl(var(--bwin-brand-primary) / 0.3);
+  color: hsl(var(--bwin-neutral-100));
 }

@@ -175,7 +175,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
       imageUrl: getImageUrl(article),
       eventType: getEventType(article),
       readTime: getReadTime(article),
-      title: article.value?.title || "Sem título",
+      title: article.value?.title || "Sin título",
       subtitle: article.value?.subtitle || "",
       section_1_title: article.value?.["section_1_title"] || "",
       section_1_content: article.value?.["section_1_content"] || "",
@@ -210,7 +210,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
   if (!article || !articleData) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <h2 className="text-2xl font-bold">Artigo não encontrado</h2>
+        <h2 className="text-2xl font-bold">Artículo no encontrado</h2>
       </div>
     );
   }

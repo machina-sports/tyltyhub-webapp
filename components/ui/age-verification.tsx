@@ -5,13 +5,11 @@ import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { Button } from './button'
 import { Card, CardContent } from './card'
-import { useTheme } from '@/components/theme-provider'
 import AnimatedShinyText from '@/components/magicui/animated-shiny-text'
 
 export function AgeVerification() {
   const [isVisible, setIsVisible] = useState(false)
   const [showUnderage, setShowUnderage] = useState(false)
-  const { isDarkMode } = useTheme()
   
   useEffect(() => {
     const hasVerification = localStorage.getItem('age-verification')
@@ -37,85 +35,88 @@ export function AgeVerification() {
   return (
     <>
       {/* Backdrop with blur */}
-      <div className="fixed inset-0 z-[100] bg-gray-900/80 backdrop-blur-md" />
+      <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md" />
       
       {/* Modal Content */}
       <div className="fixed inset-0 z-[101] flex items-center justify-center p-4">
-        <Card className="mx-auto max-w-md w-full shadow-2xl relative overflow-hidden border-0">
+        <Card className="mx-auto max-w-md w-full shadow-2xl relative overflow-hidden border-0 bg-white">
           {!showUnderage ? (
-            <div className="bg-white">
+            <div>
               {/* Logo/Brand Header */}
-              <div className="bg-[#013DC4] text-white py-4 px-6">
-                <div className="h-[80px] min-h-[80px] flex flex-col items-center justify-center py-4">
-                  <div className="flex items-center justify-center pl-3 ml-[-10px]">
-                    <Image
-                      src="/outline.png"
-                      alt="Sportingbot"
-                      width={250}
-                      height={120}
-                      priority
-                      className="ml-[-4px]"
-                    />
-                  </div>
-                  <AnimatedShinyText className="text-xs text-white/50 pt-3">A Inteligência Artificial da Sportingbet</AnimatedShinyText>
+              <div className="bg-bwin-neutral-0 text-white py-8 px-8">
+                <div className="flex flex-col items-center justify-center space-y-4">
+                  <Image
+                    src="/bwin-logo.png"
+                    alt="bwin"
+                    width={140}
+                    height={56}
+                    priority
+                    className="h-14 w-auto"
+                  />
+                  <AnimatedShinyText className="text-sm text-bwin-brand-primary font-medium">
+                    Inteligencia Artificial de bwin
+                  </AnimatedShinyText>
                 </div>
               </div>
               
               {/* Content */}
-              <div className="p-8 text-center bg-gray-50">
-                {/* Message */}
+              <div className="p-8 text-center bg-white">
                 <div className="mb-8">
-                  <h2 className="text-2xl font-bold text-gray-700 leading-tight">
-                    Você tem 18 anos ou mais?
+                  <h2 className="text-2xl font-bold text-gray-800 leading-tight mb-2">
+                    ¿Tienes 18 años o más?
                   </h2>
+                  <p className="text-gray-600 text-sm">
+                    Para acceder a este contenido debes ser mayor de edad
+                  </p>
                 </div>
                 
-                {/* Buttons */}
+                {/* Buttons without shadows */}
                 <div className="flex gap-4">
                   <Button
                     onClick={handleReject}
                     variant="outline"
-                    className="flex-1 h-14 text-lg font-semibold border border-gray-400 text-gray-700 bg-white hover:bg-gray-100 rounded-lg transition-colors"
+                    className="flex-1 h-14 text-base font-semibold border-2 border-gray-300 text-gray-700 bg-white hover:bg-gray-50 rounded-xl transition-all duration-200"
                   >
-                    Não tenho.
+                    No
                   </Button>
                   <Button
                     onClick={handleAccept}
-                    className="flex-1 h-14 text-lg font-semibold border border-[#0066CC] bg-[#0066CC] hover:bg-[#0052A3] text-white rounded-lg transition-colors"
+                    className="flex-1 h-14 text-base font-semibold rounded-xl transition-all duration-200 bg-bwin-brand-primary hover:bg-bwin-brand-secondary text-bwin-neutral-0"
                   >
-                    Sim, tenho.
+                    Sí, tengo 18+
                   </Button>
                 </div>
               </div>
-              
             </div>
           ) : (
-            <div className="bg-white">
+            <div>
               {/* Logo/Brand Header */}
-              <div className="bg-[#013DC4] text-white py-4 px-6">
-                <div className="h-[80px] min-h-[80px] flex flex-col items-center justify-center">
-                  <div className="flex items-center justify-center pl-3 ml-[-10px]">
-                    <Image
-                      src="/outline.png"
-                      alt="Sportingbot"
-                      width={250}
-                      height={120}
-                      priority
-                      className="ml-[-4px]"
-                    />
-                  </div>
-                  <AnimatedShinyText className="text-xs text-white/50 pt-3">A Inteligência Artificial da Sportingbet</AnimatedShinyText>
-                  <div className="text-[10px] text-white/40 pt-1 font-sportingbet">Versão Beta</div>
+              <div className="bg-bwin-neutral-0 text-white py-8 px-8">
+                <div className="flex flex-col items-center justify-center space-y-4">
+                  <Image
+                    src="/bwin-logo.png"
+                    alt="bwin"
+                    width={140}
+                    height={56}
+                    priority
+                    className="h-14 w-auto"
+                  />
+                  <AnimatedShinyText className="text-sm text-bwin-brand-primary font-medium">
+                    Inteligencia Artificial de bwin
+                  </AnimatedShinyText>
+                  <div className="text-xs text-bwin-neutral-60 font-roboto">Versión Beta</div>
                 </div>
               </div>
               
               {/* Content */}
-              <div className="p-8 text-center bg-gray-50">
-                {/* Underage Message */}
+              <div className="p-8 text-center bg-white">
                 <div className="mb-8">
-                  <h2 className="text-2xl font-bold text-gray-700 leading-tight">
-                    Desculpe, você ainda não<br />tem idade suficiente para<br />acessar este conteúdo.
+                  <h2 className="text-2xl font-bold text-gray-800 leading-tight mb-4">
+                    Lo siento, aún no tienes<br />la edad suficiente para<br />acceder a este contenido.
                   </h2>
+                  <p className="text-gray-600 text-sm">
+                    Este sitio es solo para mayores de 18 años
+                  </p>
                 </div>
               </div>
             </div>

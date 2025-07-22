@@ -1,37 +1,46 @@
-"use client"
+"use client";
 
-import { cn } from '@/lib/utils'
-import { ChatAvatar } from './avatar'
-import { useTheme } from '@/components/theme-provider'
+import { ReactNode } from "react";
+import { cn } from "@/lib/utils";
+import { Avatar } from "./avatar";
 
 interface ChatBubbleProps {
-  role: 'user' | 'assistant'
-  children: React.ReactNode
+  role: "user" | "assistant";
+  children: ReactNode;
+  className?: string;
 }
 
-export function ChatBubble({ role, children }: ChatBubbleProps) {
-  const { isDarkMode } = useTheme();
+export function ChatBubble({ role, children, className }: ChatBubbleProps) {
+  const isUser = role === "user";
 
   return (
     <div className={cn(
-      "flex items-start gap-3 px-4 w-full",
-      role === 'user' && "flex-row-reverse"
+      "flex w-full gap-4",
+      isUser ? "justify-end" : "justify-start",
+      className
     )}>
-      <ChatAvatar role={role} />
-      <div className={cn(
-        "relative flex flex-col w-full md:max-w-[70%] px-4 py-3 rounded-2xl overflow-x-hidden break-words",
-        role === 'assistant' 
-          ? isDarkMode 
-            ? "bg-[#061F3F] text-[#D3ECFF] rounded-tl-none border border-[#45CAFF]/30" 
-            : "bg-secondary text-foreground rounded-tl-none"
-          : isDarkMode
-            ? "bg-[#45CAFF]/10 text-[#D3ECFF] rounded-tr-none ml-auto border border-[#45CAFF]/30"
-            : "bg-blue-50 text-foreground rounded-tr-none ml-auto"
-      )}>
-        <div className="w-full overflow-hidden break-words">
-          {children}
+      {!isUser && (
+        <div className="flex-shrink-0">
+          <Avatar />
         </div>
+      )}
+      
+      <div className={cn(
+        "max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed",
+        isUser 
+          ? "bg-bwin-brand-primary text-bwin-neutral-0 ml-auto" 
+          : "bg-bwin-neutral-20 text-bwin-neutral-90 border border-bwin-neutral-30"
+      )}>
+        {children}
       </div>
+      
+      {isUser && (
+        <div className="flex-shrink-0">
+          <div className="w-8 h-8 rounded-full bg-bwin-neutral-30 flex items-center justify-center">
+            <span className="text-xs font-medium text-bwin-neutral-90">Tú</span>
+          </div>
+        </div>
+      )}
     </div>
-  )
+  );
 }

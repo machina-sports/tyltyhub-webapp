@@ -9,15 +9,12 @@ import { actionRetrieve, silentRetrieve } from "@/providers/threads/actions"
 import { clear } from "@/providers/threads/reducer"
 
 import { useAppDispatch } from "@/store/dispatch"
-import { useTheme } from "@/components/theme-provider"
-import { cn } from "@/lib/utils"
 
 import { useEffect } from "react"
 
 // import NavbarHeader from "@/components/navbar-header"
 
-export default function ContainerView({ threadId }: { threadId: string }) {
-  const { isDarkMode } = useTheme() 
+export default function ContainerView({ threadId }: { threadId: string }) { 
 
   const state = useGlobalState((state: any) => state.threads)
 
@@ -53,13 +50,8 @@ export default function ContainerView({ threadId }: { threadId: string }) {
   }, [threadId, state.item.data?.value?.status])
 
   return (
-    <div className={cn(
-      "min-h-screen w-full overflow-x-hidden",
-      isDarkMode ? "bg-[#061F3F]" : "bg-background"
-    )}>
-      <div className={cn(
-        "mobile-container md:pt-0 space-y-6 md:max-w-[1200px] mx-auto min-h-screen flex flex-col"
-      )}>
+    <div className="min-h-screen w-full overflow-x-hidden bg-bwin-neutral-10">
+      <div className="mobile-container md:pt-0 space-y-6 md:max-w-[1200px] mx-auto min-h-screen flex flex-col">
         <ContainerChat />
       </div>
     </div>

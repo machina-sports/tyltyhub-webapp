@@ -12,7 +12,6 @@ import { Input } from "@/components/ui/input";
 import teamsData from "@/data/teams.json";
 import { searchArticles } from "@/providers/discover/actions";
 import { Loading } from "@/components/ui/loading";
-import { useTheme } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -23,57 +22,54 @@ interface Team {
   league: string;
 }
 
-interface SearchFilters extends Record<string, any> {
+interface SearchFilters {
   name: string;
   "metadata.language": string;
-  team?: string;
-  "value.title"?: { 
-    $regex: string; 
-    $options: string; 
-  };
+  "metadata.content_type"?: { "$ne": string };
+  "$and"?: Array<{ "value.title": { $regex: string; $options: string } }>;
+  "value.title"?: { $regex: string; $options: string };
 }
 
 interface SearchResults {
-  data: Article[];
+  data: any[];
+  status: string;
   pagination: {
     page: number;
-    page_size: number;
-    total: number;
     hasMore: boolean;
   };
-  status: "idle" | "loading" | "failed";
-  error: string | null;
-}
-
-interface Article {
-  _id?: string;
-  id?: string;
-  value?: {
-    title?: string;
-    subtitle?: string;
-    [key: string]: any;
-  };
-  metadata?: {
-    language?: string;
-    [key: string]: any;
-  };
-  [key: string]: any;
 }
 
 interface ArticleSection {
   type: 'fullWidth' | 'threeCards';
-  articles: Article[];
+  articles: any[];
+}
+
+// Custom hook for search debouncing
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
 }
 
 const SPORTS = [
-  "Todos os Esportes",
-  "Futebol",
-  "Basquete",
-  "Tênis",
-  "Beisebol",
+  "Todos los Deportes",
+  "Fútbol",
+  "Baloncesto",
+  "Tenis",
+  "Béisbol",
   "Fórmula 1",
   "MMA",
-  "Boxe"
+  "Boxeo"
 ];
 
 interface TeamFilterProps {
@@ -82,27 +78,18 @@ interface TeamFilterProps {
 }
 
 const SportFilter = ({ value, onChange }: TeamFilterProps) => {
-  const { isDarkMode } = useTheme();
   return (
-    <div className={cn(
-      "w-[220px]",
-      isDarkMode ? "text-[#45CAFF]" : ""
-    )}>
+    <div className="w-[220px]">
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className={cn(
-          "bg-background",
-          isDarkMode ? "border-[#45CAFF]/30" : ""
-        )}>
-          <SelectValue placeholder="Selecionar Esporte" />
+        <SelectTrigger className="bg-bwin-neutral-20 border-bwin-neutral-30 text-bwin-neutral-100">
+          <SelectValue placeholder="Seleccionar Deporte" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="bg-bwin-neutral-20 border-bwin-neutral-30">
           {SPORTS.map((sport) => (
             <SelectItem 
               key={sport} 
               value={sport.toLowerCase()}
-              className={cn(
-                isDarkMode ? "text-[#D3ECFF] hover:bg-[#45CAFF]/10" : ""
-              )}
+              className="text-bwin-neutral-100 hover:bg-bwin-neutral-30 focus:bg-bwin-neutral-30"
             >
               {sport}
             </SelectItem>
@@ -140,24 +127,7 @@ const buildSearchFilters = (
   return baseFilters;
 };
 
-function useDebounce<T>(value: T, delay: number): T {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value);
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
-
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [value, delay]);
-
-  return debouncedValue;
-}
-
 export default function DiscoverPage() {
-  const { isDarkMode } = useTheme();
   const [selectedTeam, setSelectedTeam] = useState("all-teams");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("news");
@@ -318,7 +288,7 @@ export default function DiscoverPage() {
 
   return (
     <div className="mobile-container pb-4 space-y-6 max-w-5xl mx-auto">
-      <h1 className="sr-only">A Inteligência Artificial da Sportingbet</h1>
+      <h1 className="sr-only">La Inteligencia Artificial de bwin</h1>
       <Tabs
         value={activeTab}
         onValueChange={handleTabChange}
@@ -330,60 +300,38 @@ export default function DiscoverPage() {
             "md:sticky z-20 transition-shadow duration-200",
             isScrolled ? "shadow-md shadow-black/5" : "shadow-none",
             "top-[64px] md:top-0",
-            isDarkMode ? "bg-[#061F3F]" : "bg-background",
+            "bg-bwin-neutral-10",
             "pt-24 md:pt-8 pb-4"
           )}
-          // style={{ position: "sticky" }}
         >
-          <div className={cn(
-            "border-b pb-4",
-            isDarkMode && "border-[#D3ECFF]/20"
-          )}>
-            <TabsList className={cn(
-              "w-full justify-start overflow-x-auto",
-              isDarkMode ? "bg-[#45CAFF] border-[#D3ECFF]/20" : "bg-background"
-            )}>
+          <div className="border-b pb-4 border-bwin-neutral-30">
+            <TabsList className="w-full justify-start overflow-x-auto bg-bwin-neutral-20 border-bwin-neutral-30">
               <TabsTrigger 
                 value="news" 
-                className={cn(
-                  "flex items-center gap-2",
-                  isDarkMode && "text-[#061F3F] data-[state=active]:bg-[#061F3F] data-[state=active]:text-[#D3ECFF]"
-                )}
+                className="flex items-center gap-2 text-bwin-neutral-100 data-[state=active]:bg-bwin-brand-primary data-[state=active]:text-bwin-neutral-0"
               >
                 <Newspaper className="h-4 w-4" />
-                Notícias
+                Noticias
               </TabsTrigger>
               <TabsTrigger 
                 value="teams" 
-                className={cn(
-                  "flex items-center gap-2",
-                  isDarkMode && "text-[#061F3F] data-[state=active]:bg-[#061F3F] data-[state=active]:text-[#D3ECFF]"
-                )}
+                className="flex items-center gap-2 text-bwin-neutral-100 data-[state=active]:bg-bwin-brand-primary data-[state=active]:text-bwin-neutral-0"
               >
                 <Table2 className="h-4 w-4" />
-                Estatísticas
+                Estadísticas
               </TabsTrigger>
             </TabsList>
           </div>
 
           {activeTab === "news" && (
-            <div className={cn(
-              "py-4 px-0 sm:px-0",
-              isDarkMode ? "bg-[#061F3F]" : "bg-background"
-            )}>
+            <div className="py-4 px-0 sm:px-0 bg-bwin-neutral-10">
               <div className="flex justify-between items-center gap-4">
                 <TeamFilterComponent value={selectedTeam} onChange={handleTeamChange} />
                 <div className="relative w-full md:w-[232px]">
-                  <Search className={cn(
-                    "absolute left-2 top-2.5 h-4 w-4",
-                    isDarkMode ? "text-[#D3ECFF]" : "text-muted-foreground"
-                  )} />
+                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-bwin-neutral-80" />
                   <Input
-                    placeholder="Buscar artigos..."
-                    className={cn(
-                      "pl-8 text-base max-w-[232px]",
-                      isDarkMode && "bg-[#061F3F] border-[#D3ECFF]/20 text-[#D3ECFF] placeholder:text-[#D3ECFF]/50"
-                    )}
+                    placeholder="Buscar artículos..."
+                    className="pl-8 text-base max-w-[232px] bg-bwin-neutral-20 border-bwin-neutral-30 text-bwin-neutral-100 placeholder:text-bwin-neutral-60 focus:border-bwin-brand-primary"
                     value={searchQuery}
                     onChange={handleSearchChange}
                     onKeyPress={handleSearchKeyPress}
@@ -433,17 +381,17 @@ export default function DiscoverPage() {
                   {searchResults.status !== "loading" &&
                     !searchResults.pagination.hasMore &&
                     searchResults.data.length > 0 && (
-                      <p className="text-sm text-muted-foreground py-2">
-                        Não há mais artigos para carregar
+                      <p className="text-sm text-bwin-neutral-60 py-2">
+                        No hay más artículos para cargar
                       </p>
                     )}
                 </div>
               </>
             ) : (
-              <div className="py-8 text-center text-muted-foreground">
+              <div className="py-8 text-center text-bwin-neutral-60">
                 {searchResults.status === "loading"
-                  ? "Carregando artigos..."
-                  : "Nenhum artigo encontrado"}
+                  ? "Cargando artículos..."
+                  : "No se encontraron artículos"}
               </div>
             )}
           </div>

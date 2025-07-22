@@ -1,8 +1,6 @@
 "use client"
 
 import TrendingProvider from "@/providers/trending/provider"
-import { useTheme } from "@/components/theme-provider"
-import { cn } from "@/lib/utils"
 
 // import Footer from "@/components/footer"
 
@@ -15,18 +13,12 @@ export default function DiscoverLayout({
 }: {
   children: React.ReactNode
 }) {
-  const { isDarkMode } = useTheme() 
   return (
     <TrendingProvider>
-      <div className="min-h-screen bg-background flex flex-col">
+      <div className="min-h-screen bg-bwin-neutral-10 flex flex-col">
         {/* <Sidebar /> */}
         <main className="flex-1 overflow-y-auto min-h-0">
-          <div
-            className={cn(
-              "flex-1",
-              isDarkMode ? "bg-[#061F3F]" : ""
-            )}
-          >
+          <div className="flex-1 bg-bwin-neutral-10">
             {children}
           </div>
         </main>

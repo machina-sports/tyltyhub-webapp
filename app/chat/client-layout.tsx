@@ -1,19 +1,12 @@
 "use client"
 
-import { useTheme } from "@/components/theme-provider"
-import { cn } from "@/lib/utils"
-
 export default function ChatClientLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const { isDarkMode } = useTheme() 
   return (
-    <div className={cn(
-      "h-full flex flex-col",
-      isDarkMode ? "bg-[#061F3F]" : "bg-background"
-    )}>
+    <div className="h-full flex flex-col bg-bwin-neutral-10">
       <div className="flex-1 pt-16 md:pt-0">
         {children}
       </div>

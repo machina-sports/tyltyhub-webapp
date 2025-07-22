@@ -51,7 +51,7 @@ export default function FollowUpQuestionForm() {
       setIsTranscribing(true);
       
       setTimeout(() => {
-        const mockTranscription = "Como faço pra apostar no próximo jogo do Flamengo?";
+        const mockTranscription = "¿Cómo puedo apostar en el próximo partido del Real Madrid?";
         setInput(mockTranscription);
         setIsTranscribing(false);
       }, 1500);
@@ -60,75 +60,70 @@ export default function FollowUpQuestionForm() {
 
   const getInputPlaceholder = () => {
     if (isPreparing) return "Preparando...";
-    if (isRecording) return "Gravando...";
-    if (isTranscribing) return "Transcrevendo...";
-    return "Curtiu? Quer saber mais? Fala aí!";
+    if (isRecording) return "Grabando...";
+    if (isTranscribing) return "Transcribiendo...";
+    return "¿Te gustó? ¿Quieres saber más? ¡Dímelo!";
+  };
+
+  const getMicButtonText = () => {
+    if (isPreparing) return "Preparando...";
+    if (isRecording) return "Suelta para enviar";
+    if (isTranscribing) return "Transcribiendo...";
+    return "Mantén presionado para hablar";
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 border-t bg-secondary/30 backdrop-blur-sm pb-safe z-10">
-      <div className="mx-auto max-w-2xl px-4 py-2 md:py-4">
-        <form onSubmit={handleSubmit} className="relative">
-          <Input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder={getInputPlaceholder()}
-            className={cn(
-              "w-full py-6 pl-4 pr-12 rounded-lg bg-white shadow-sm border-0 text-base",
-              isPreparing && "animate-pulse text-amber-600",
-              isRecording && "animate-pulse text-red-600",
-              isTranscribing && "animate-pulse"
-            )}
-            readOnly={isPreparing || isRecording || isTranscribing}
-          />
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-            {input.trim() ? (
-              <motion.div whileTap={{ scale: 0.95 }}>
-                <Button 
-                  type="submit" 
-                  size="icon" 
-                  variant="ghost" 
-                  className="h-9 w-9 hover:bg-secondary active:bg-secondary/80 transition-colors"
-                >
-                  <Send className="h-4 w-4" />
-                </Button>
-              </motion.div>
-            ) : isTranscribing ? (
-              <motion.div>
-                <Button 
-                  type="button" 
-                  size="icon" 
-                  variant="ghost" 
-                  className="h-9 w-9 hover:bg-secondary active:bg-secondary/80 transition-colors opacity-50"
-                  disabled
-                >
-                  <span className="h-4 w-4 block rounded-full bg-muted-foreground/30 animate-pulse"></span>
-                </Button>
-              </motion.div>
-            ) : (
-              <motion.div whileTap={{ scale: 0.95 }}>
-                <Button 
-                  type="button" 
-                  size="icon" 
-                  variant="ghost" 
-                  className={cn(
-                    "h-9 w-9 hover:bg-secondary active:bg-secondary/80 transition-colors hidden",
-                    isPreparing && "bg-amber-500/20 text-amber-500 hover:bg-amber-500/30 hover:text-amber-600",
-                    isRecording && "bg-red-500/20 text-red-500 hover:bg-red-500/30 hover:text-red-600"
-                  )}
-                  onMouseDown={handleMicPress}
-                  onMouseUp={handleMicRelease}
-                  onTouchStart={handleMicPress}
-                  onTouchEnd={handleMicRelease}
-                  aria-label="Hold to record voice message"
-                >
-                  <Mic className="h-4 w-4" />
-                </Button>
-              </motion.div>
-            )}
+    <div className="w-full max-w-4xl mx-auto p-4">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="relative">
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder={getInputPlaceholder()}
+                className="pl-9 pr-4 py-2 rounded-lg border-2 focus:border-primary"
+                disabled={isPreparing || isRecording || isTranscribing}
+              />
+            </div>
+            <Button 
+              type="submit" 
+              size="icon"
+              disabled={!input.trim() || isPreparing || isRecording || isTranscribing}
+              className="rounded-lg"
+            >
+              <Send className="h-4 w-4" />
+            </Button>
           </div>
-        </form>
-      </div>
+        </div>
+        
+        <div className="flex justify-center">
+          <motion.button
+            type="button"
+            onMouseDown={handleMicPress}
+            onMouseUp={handleMicRelease}
+            onTouchStart={handleMicPress}
+            onTouchEnd={handleMicRelease}
+            className={cn(
+              "flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-200",
+              isPreparing || isRecording 
+                ? "bg-primary text-primary-foreground scale-105" 
+                : "bg-muted hover:bg-muted/80"
+            )}
+            whileTap={{ scale: 0.95 }}
+            disabled={isTranscribing}
+          >
+            <Mic className={cn(
+              "h-4 w-4",
+              isRecording && "animate-pulse"
+            )} />
+            <span className="text-sm font-medium">
+              {getMicButtonText()}
+            </span>
+          </motion.button>
+        </div>
+      </form>
     </div>
   );
 }

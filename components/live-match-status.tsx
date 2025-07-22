@@ -40,21 +40,21 @@ export const LiveMatchStatus = React.memo(({
   const formatMatchStatus = (status: string) => {
     switch (status) {
       case "1st_half":
-        return "1º Tempo"
+        return "1er Tiempo"
       case "2nd_half":
-        return "2º Tempo"
+        return "2do Tiempo"
       case "halftime":
-        return "Intervalo"
+        return "Descanso"
       case "extra_time_1st":
-        return "1º Prorrogação"
+        return "1er Tiempo Extra"
       case "extra_time_2nd":
-        return "2º Prorrogação"
+        return "2do Tiempo Extra"
       case "penalty_shootout":
-        return "Pênaltis"
+        return "Penales"
       case "full_time":
-        return "Fim de Jogo"
+        return "Tiempo Completo"
       case "postponed":
-        return "Adiado"
+        return "Aplazado"
       case "cancelled":
         return "Cancelado"
       default:
@@ -63,29 +63,18 @@ export const LiveMatchStatus = React.memo(({
   }
 
   return (
-    <div className={cn(
-      "max-w-[350px]",
-      "rounded-lg",
-      isDarkMode
-        ? "dark bg-card"
-        : "bg-card"
-    )}>
+    <div className="max-w-[350px] rounded-lg bg-bwin-neutral-20 border border-bwin-neutral-30">
       {/* Live Indicator */}
       {isLive && (
         <div className="flex items-center gap-2 mb-2">
           <div className="flex items-center gap-1">
             <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></div>
             <span className="text-xs font-medium text-red-500 uppercase tracking-wide">
-              AO VIVO
+              EN VIVO
             </span>
           </div>
           {matchTime && (
-            <span className={cn(
-              "text-xs px-1.5 py-0.5 rounded-full font-medium",
-              isDarkMode 
-                ? "bg-blue-500/20 text-blue-400 border border-blue-500/30" 
-                : "bg-blue-50 text-blue-600 border border-blue-200"
-            )}>
+            <span className="text-xs px-1.5 py-0.5 rounded-full font-medium bg-bwin-brand-primary/20 text-bwin-brand-primary border border-bwin-brand-primary/30">
               {matchTime}
             </span>
           )}
@@ -99,32 +88,23 @@ export const LiveMatchStatus = React.memo(({
             {homeTeamLogo && (
               <img
                 src={homeTeamLogo}
-                alt={teamHomeName || "Casa"}
+                alt={teamHomeName || "Local"}
                 className="w-8 h-8 object-contain"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none'
                 }}
               />
             )}
-            <div className={cn(
-              "text-xs font-medium truncate",
-              isDarkMode ? "text-gray-200" : "text-gray-700"
-            )}>
-              {teamHomeName || "Casa"}
+            <div className="text-xs font-medium truncate text-bwin-neutral-80">
+              {teamHomeName || "Local"}
             </div>
           </div>
-          <div className={cn(
-            "text-2xl font-bold",
-            isDarkMode ? "text-white" : "text-gray-900"
-          )}>
+          <div className="text-2xl font-bold text-bwin-neutral-100">
             {homeScore}
           </div>
         </div>
         
-        <div className={cn(
-          "text-lg font-bold px-1",
-          isDarkMode ? "text-gray-400" : "text-gray-500"
-        )}>
+        <div className="text-lg font-bold px-1 text-bwin-neutral-60">
           ×
         </div>
         
@@ -140,17 +120,11 @@ export const LiveMatchStatus = React.memo(({
                 }}
               />
             )}
-            <div className={cn(
-              "text-xs font-medium truncate",
-              isDarkMode ? "text-gray-200" : "text-gray-700"
-            )}>
+            <div className="text-xs font-medium truncate text-bwin-neutral-80">
               {teamAwayName || "Visitante"}
             </div>
           </div>
-          <div className={cn(
-            "text-2xl font-bold",
-            isDarkMode ? "text-white" : "text-gray-900"
-          )}>
+          <div className="text-2xl font-bold text-bwin-neutral-100">
             {awayScore}
           </div>
         </div>
@@ -160,12 +134,7 @@ export const LiveMatchStatus = React.memo(({
       <div className="space-y-1">
         {matchStatus && (
           <div className="flex items-center justify-center">
-            <span className={cn(
-              "text-xs px-2 py-1 rounded-full border font-medium",
-              isDarkMode
-                ? "border-gray-600 text-gray-300 bg-gray-800/50"
-                : "border-gray-300 text-gray-600 bg-gray-50"
-            )}>
+            <span className="text-xs px-2 py-1 rounded-full border font-medium border-bwin-neutral-40 text-bwin-neutral-80 bg-bwin-neutral-30">
               {formatMatchStatus(matchStatus)}
             </span>
           </div>

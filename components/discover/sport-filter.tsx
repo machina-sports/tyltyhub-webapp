@@ -13,12 +13,11 @@ import {
 import teamsData from "@/data/teams.json"
 import fifaCwcData from "@/data/fifa-cwc-2025.json"
 import { cn } from "@/lib/utils"
-import { useTheme } from "@/components/theme-provider"
 import { useAppDispatch } from "@/store/dispatch"
 import { useTeamDisplay } from "@/hooks/use-team-display"
 
 const TEAMS = [
-  { id: "all-teams", name: "Todos os Times", logo: null },
+  { id: "all-teams", name: "Todos los Equipos", logo: null },
   ...teamsData.teams
 ]
 
@@ -33,62 +32,51 @@ const getTeamDetails = (teamName: string) => {
   return team || { id: "unknown", name: teamName, logo: null }
 }
 
-// Process FIFA CWC groups data for the filter component
-const CWC_GROUPS = fifaCwcData.groups.map(group => {
-  return {
-    name: group.name,
-    teams: group.teams.map(teamName => getTeamDetails(teamName))
-  }
-})
-
-// Additional option for "All Teams"
-const ALL_TEAMS_OPTION = { id: "all-teams", name: "Todos os Times", logo: null }
+// Create team list from CWC groups
+const CWC_GROUPS = fifaCwcData.groups.map(group => ({
+  name: group.name,
+  teams: group.teams.map(teamName => getTeamDetails(teamName))
+}))
 
 interface TeamFilterProps {
-  value: string
-  onChange: (value: string) => void
+  value: string;
+  onChange: (value: string) => void;
 }
 
 export function TeamFilter({ value, onChange }: TeamFilterProps) {
-  const [activeGroup, setActiveGroup] = useState(CWC_GROUPS[0].name)
   const [open, setOpen] = useState(false)
+  const [activeGroup, setActiveGroup] = useState('A')
   const [isMobile, setIsMobile] = useState(false)
-  const { isDarkMode } = useTheme();
-  const dispatch = useAppDispatch();
-  const { getDisplayName, shouldUseAbbreviation } = useTeamDisplay();
+  const { getDisplayName, shouldUseAbbreviation } = useTeamDisplay()
 
-  // Check if screen is mobile size
   useEffect(() => {
-    const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 640) // sm breakpoint
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
     }
     
-    checkScreenSize()
-    window.addEventListener('resize', checkScreenSize)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
     
-    return () => window.removeEventListener('resize', checkScreenSize)
+    return () => window.removeEventListener('resize', checkMobile)
   }, [])
-  
 
-   const selectedTeam = TEAMS.find(team => team.id === value) || ALL_TEAMS_OPTION
+  const selectedTeam = useMemo(() => {
+    return TEAMS.find(team => team.id === value) || TEAMS[0]
+  }, [value])
 
- 
-   // Handle reset separately to avoid dropdown opening
-   const handleReset = (e: React.MouseEvent) => {
-     e.preventDefault();
-     e.stopPropagation();
-     onChange("all-teams");
-   };
- 
-   const handleTeamSelect = (teamId: string) => {
-     onChange(teamId);
-     setOpen(false);
-   };
+  const handleTeamSelect = (teamId: string) => {
+    onChange(teamId)
+    setOpen(false)
+  }
 
-   // Se o nome do time for muito extenso, aumentamos o padding right do trigger
-  const memoizeTeamsLengh = useMemo(() => TEAMS.length, [TEAMS.length]);
-  const triggerPaddingRight = memoizeTeamsLengh > 10 ? "pr-14" : "pr-10";
+  const handleReset = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    onChange('all-teams')
+  }
 
+  // Calculate dynamic padding based on whether reset button is visible
+  const triggerPaddingRight = value !== 'all-teams' ? 'pr-16' : 'pr-10'
 
   return (
     <div className="relative w-[220px]">
@@ -101,9 +89,7 @@ export function TeamFilter({ value, onChange }: TeamFilterProps) {
         <div className="relative">
           <SelectTrigger className={cn(
             `cursor-pointer pr-10 flex [&>span]:flex-grow [&>span]:mr-0 [&>svg]:hidden ${triggerPaddingRight}`,
-            isDarkMode 
-              ? "bg-[#061F3F] border-[#45CAFF]/30 text-[#D3ECFF] hover:bg-[#45CAFF]/10" 
-              : "bg-background hover:bg-accent hover:text-accent-foreground"
+            "bg-bwin-neutral-20 border-bwin-neutral-30 text-bwin-neutral-100 hover:bg-bwin-neutral-30"
           )}>
             <SelectValue>
               <div className="flex items-center gap-2 overflow-hidden w-full">
@@ -126,10 +112,7 @@ export function TeamFilter({ value, onChange }: TeamFilterProps) {
               </div>
             </SelectValue>
             <div className="absolute right-3 top-0 bottom-0 flex items-center pointer-events-none">
-              <ChevronDown className={cn(
-                "h-4 w-4",
-                isDarkMode ? "text-[#45CAFF]" : "opacity-50"
-              )} />
+              <ChevronDown className="h-4 w-4 text-bwin-brand-primary opacity-70" />
             </div>
           </SelectTrigger>
           
@@ -137,10 +120,7 @@ export function TeamFilter({ value, onChange }: TeamFilterProps) {
           {value !== 'all-teams' && (
             <button 
               onClick={handleReset}
-              className={cn(
-                "absolute right-8 top-0 bottom-0 flex items-center justify-center w-6 h-full hover:opacity-100 z-10",
-                isDarkMode ? "text-[#45CAFF] opacity-70" : "opacity-70"
-              )}
+              className="absolute right-8 top-0 bottom-0 flex items-center justify-center w-6 h-full hover:opacity-100 z-10 text-bwin-brand-primary opacity-70"
               aria-label="Reset filter"
             >
               <X className="h-4 w-4" />
@@ -148,26 +128,16 @@ export function TeamFilter({ value, onChange }: TeamFilterProps) {
           )}
         </div>
         
-        <SelectContent className={cn(
-          "p-0 w-[380px]",
-          isDarkMode && "bg-[#061F3F] border-[#45CAFF]/30"
-        )}>
-          <div className={cn(
-            "flex flex-wrap p-3 border-b gap-2 justify-center",
-            isDarkMode && "border-[#45CAFF]/30"
-          )}>
+        <SelectContent className="p-0 w-[380px] bg-bwin-neutral-20 border-bwin-neutral-30">
+          <div className="flex flex-wrap p-3 border-b gap-2 justify-center border-bwin-neutral-30">
             {CWC_GROUPS.map((group, index) => (
               <button
                 key={group.name}
                 className={cn(
                   "w-8 h-8 rounded-md text-xs font-medium transition-colors flex items-center justify-center",
                   activeGroup === group.name
-                    ? isDarkMode 
-                      ? "bg-[#45CAFF] text-[#061F3F] shadow-sm" 
-                      : "bg-primary text-primary-foreground shadow-sm"
-                    : isDarkMode
-                      ? "bg-[#061F3F] text-[#D3ECFF] border border-[#45CAFF]/30 hover:bg-[#45CAFF]/10"
-                      : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
+                    ? "bg-bwin-brand-primary text-bwin-neutral-0"
+                    : "bg-bwin-neutral-30 text-bwin-neutral-100 border border-bwin-neutral-40 hover:bg-bwin-neutral-40"
                 )}
                 onClick={() => setActiveGroup(group.name)}
               >
@@ -176,20 +146,12 @@ export function TeamFilter({ value, onChange }: TeamFilterProps) {
             ))}
           </div>
           
-          <div className={cn(
-            "grid grid-cols-4 gap-3 p-4 max-h-[280px] overflow-y-auto",
-            isDarkMode && "bg-[#061F3F]"
-          )}>
+          <div className="grid grid-cols-4 gap-3 p-4 max-h-[280px] overflow-y-auto bg-bwin-neutral-20">
             {CWC_GROUPS.find(g => g.name === activeGroup)?.teams.map((team) => (
               <SelectItem 
                 key={team.id} 
                 value={team.id} 
-                className={cn(
-                  "flex justify-center items-center w-full h-[80px] p-1 cursor-pointer rounded-md transition-colors data-[highlighted]:outline-none",
-                  isDarkMode 
-                    ? "hover:bg-[#45CAFF]/10 data-[state=checked]:bg-[#45CAFF]/20 data-[highlighted]:bg-[#45CAFF]/10" 
-                    : "hover:bg-accent data-[highlighted]:bg-accent"
-                )}
+                className="flex justify-center items-center w-full h-[80px] p-1 cursor-pointer rounded-md transition-colors data-[highlighted]:outline-none hover:bg-bwin-neutral-30 data-[state=checked]:bg-bwin-brand-primary/20 data-[highlighted]:bg-bwin-neutral-30"
               >
                 <div className="flex flex-col items-center justify-center text-center h-full">
                   {team.logo ? (
@@ -202,24 +164,16 @@ export function TeamFilter({ value, onChange }: TeamFilterProps) {
                       />
                     </div>
                   ) : (
-                    <div className={cn(
-                      "h-10 w-10 rounded-full mb-2 flex items-center justify-center flex-shrink-0",
-                      isDarkMode ? "bg-[#45CAFF]/10" : "bg-muted"
-                    )}>
-                      <span className={cn(
-                        "text-xs font-medium",
-                        isDarkMode && "text-[#D3ECFF]"
-                      )}>{team.name.substring(0, 2)}</span>
+                    <div className="h-10 w-10 rounded-full mb-2 flex items-center justify-center flex-shrink-0 bg-bwin-neutral-30">
+                      <span className="text-xs font-medium text-bwin-neutral-100">{team.name.substring(0, 2)}</span>
                     </div>
                   )}
-                  <div className="min-h-[2.5em] flex items-center">
-                    <span className={cn(
-                      "text-[11px] line-clamp-2 w-full font-medium",
-                      isDarkMode ? "text-[#D3ECFF]" : ""
-                    )}>
-                      {team.name}
-                    </span>
-                  </div>
+                  <span className="text-xs font-medium text-center leading-tight text-bwin-neutral-100">
+                    {getDisplayName(team.name, { 
+                      preferAbbreviation: shouldUseAbbreviation(team.name, undefined, true),
+                      maxLength: 12
+                    })}
+                  </span>
                 </div>
               </SelectItem>
             ))}
@@ -230,16 +184,15 @@ export function TeamFilter({ value, onChange }: TeamFilterProps) {
   )
 }
 
-// Keep the original SportFilter for backward compatibility
 const SPORTS = [
-  "Todos os Esportes",
-  "Futebol",
-  "Basquete",
-  "Tênis",
-  "Beisebol",
+  "Todos los Deportes",
+  "Fútbol", 
+  "Baloncesto",
+  "Tenis",
+  "Béisbol",
   "Fórmula 1",
   "MMA",
-  "Boxe"
+  "Boxeo"
 ]
 
 interface SportFilterProps {
@@ -251,12 +204,12 @@ export function SportFilter({ value, onChange }: SportFilterProps) {
   return (
     <div className="w-[220px]">
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="bg-background">
-          <SelectValue placeholder="Selecionar Esporte" />
+        <SelectTrigger className="bg-bwin-neutral-20 border-bwin-neutral-30 text-bwin-neutral-100">
+          <SelectValue placeholder="Seleccionar Deporte" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="bg-bwin-neutral-20 border-bwin-neutral-30">
           {SPORTS.map((sport) => (
-            <SelectItem key={sport} value={sport.toLowerCase()}>
+            <SelectItem key={sport} value={sport.toLowerCase()} className="text-bwin-neutral-100 hover:bg-bwin-neutral-30">
               {sport}
             </SelectItem>
           ))}

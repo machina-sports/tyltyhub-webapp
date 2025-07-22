@@ -10,7 +10,6 @@ import React, { useMemo, useState } from "react"
 import Link from "next/link"
 import { trackRelatedQuestionClick } from "@/lib/analytics"
 import { cn } from "@/lib/utils"
-import { useTheme } from '@/components/theme-provider'
 
 import { RelatedOdds } from "@/components/article/related-odds";
 import { StandingsTable } from "@/components/discover/standings-table";
@@ -29,7 +28,6 @@ interface ChatMessageProps {
 
 export function ChatMessage({ role, content, date, isTyping, onNewMessage }: ChatMessageProps) {
   const [showWidget, setShowWidget] = useState(false)
-  const { isDarkMode } = useTheme();
 
   const currentMessage = content?.["question_answer"] || (typeof content === 'string' ? content : JSON.stringify(content))
 
@@ -111,7 +109,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
         component: (
           <LiveMatchStatus 
             eventStatus={eventStatus}
-            isDarkMode={isDarkMode}
+            isDarkMode={true}
             teamHomeName={teamHomeName}
             teamAwayName={teamAwayName}
             teamHomeAbbreviation={teamHomeAbbreviation}
@@ -131,14 +129,14 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
     }
     
     return widgets;
-  }, [parsedWidgetContent, eventStatus, isDarkMode, teamHomeName, teamAwayName, teamHomeAbbreviation, teamAwayAbbreviation]);
+  }, [parsedWidgetContent, eventStatus, teamHomeName, teamAwayName, teamHomeAbbreviation, teamAwayAbbreviation]);
 
   return (
     <div className="mb-2 last:mb-0">
       <ChatBubble role={role}>
         <div className="space-y-2">
           {isTyping ? (
-            <div className="flex items-center gap-2 text-muted-foreground">
+            <div className="flex items-center gap-2 text-bwin-neutral-60">
               <span className="text-sm">{content || "Pensando..."}</span>
               <img src="/soccer.gif" alt="Pensando..." className="w-6 h-6" />
             </div>
@@ -150,7 +148,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
 
       {/* {marketSelected && (
         <div className="mt-4 pl-4 sm:pl-14">
-          <div className="mt-2 space-y-2 text-sm text-muted-foreground">
+          <div className="mt-2 space-y-2 text-sm text-bwin-neutral-60">
             <div className="text-sm">
               <RelatedOdds
                 currentArticleId={marketSelected}
@@ -170,7 +168,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
           <MatchCard
             fixture={{
               date: "",
-              ko: haveSportsContext?.["start_time"] ? new Date(haveSportsContext["start_time"]).toLocaleString('pt-BR', {
+              ko: haveSportsContext?.["start_time"] ? new Date(haveSportsContext["start_time"]).toLocaleString('es-ES', {
                 hour: '2-digit',
                 minute: '2-digit',
                 day: '2-digit',
@@ -192,21 +190,15 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
         <div className="mt-6 pl-14">
           <div className="space-y-8">
             <div>
-              <h3 className={cn(
-                "text-lg font-semibold mb-4",
-                isDarkMode ? "text-[#45CAFF]" : "text-foreground"
-              )}>
-                📊 Classificação dos Grupos
+              <h3 className="text-lg font-semibold mb-4 text-bwin-brand-primary">
+                📊 Clasificación de los Grupos
               </h3>
               <StandingsTable />
             </div>
             
             <div>
-              <h3 className={cn(
-                "text-lg font-semibold mb-4",
-                isDarkMode ? "text-[#45CAFF]" : "text-foreground"
-              )}>
-                📅 Calendário de Partidas
+              <h3 className="text-lg font-semibold mb-4 text-bwin-brand-primary">
+                📅 Calendario de Partidos
               </h3>
               <MatchesCalendar 
                 useAbbreviations={true} 
@@ -217,11 +209,8 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
             </div>
             
             <div>
-              <h3 className={cn(
-                "text-lg font-semibold mb-4",
-                isDarkMode ? "text-[#45CAFF]" : "text-foreground"
-              )}>
-                ⚽ Times Participantes
+              <h3 className="text-lg font-semibold mb-4 text-bwin-brand-primary">
+                ⚽ Equipos Participantes
               </h3>
               <TeamsGrid />
             </div>
@@ -235,14 +224,9 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
           <div className="mt-2 ml-2 sm:ml-4">
             <Link
               href={`/discover/${relatedArticle.slug}`}
-              className={cn(
-                "flex items-center gap-3 p-3 rounded-lg transition-colors max-w-[420px] border overflow-hidden",
-                isDarkMode
-                  ? "border-[#45CAFF]/30 hover:border-[#45CAFF]/50 hover:bg-[#45CAFF]/10"
-                  : "border-border hover:border-primary/30 hover:bg-muted/50"
-              )}
+              className="flex items-center gap-3 p-3 rounded-lg transition-colors max-w-[420px] border overflow-hidden border-bwin-neutral-30 hover:border-bwin-brand-primary hover:bg-bwin-brand-primary/10"
             >
-              <div className="flex-shrink-0 w-16 h-16 bg-muted rounded-md overflow-hidden">
+              <div className="flex-shrink-0 w-16 h-16 bg-bwin-neutral-20 rounded-md overflow-hidden">
                 {getRelatedArticleImageUrl(relatedArticle) ? (
                   <img
                     src={getRelatedArticleImageUrl(relatedArticle)}
@@ -251,16 +235,16 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <Newspaper className="h-6 w-6 text-muted-foreground" />
+                    <Newspaper className="h-6 w-6 text-bwin-neutral-60" />
                   </div>
                 )}
               </div>
               <div className="flex-1 min-w-0 overflow-hidden">
-                <h4 className="text-sm font-medium text-primary line-clamp-2 leading-tight">
+                <h4 className="text-sm font-medium text-bwin-brand-primary line-clamp-2 leading-tight">
                   {relatedArticle.title}
                 </h4>
                 {relatedArticle.subtitle && (
-                  <p className="text-xs text-muted-foreground mt-1 line-clamp-1">
+                  <p className="text-xs text-bwin-neutral-60 mt-1 line-clamp-1">
                     {relatedArticle.subtitle}
                   </p>
                 )}
@@ -277,22 +261,17 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
               href={promotion.link}
               target="_blank"
               rel="noopener noreferrer"
-              className={cn(
-                "block rounded-lg transition-colors max-w-[420px] border overflow-hidden",
-                isDarkMode
-                  ? "border-[#45CAFF]/30 hover:border-[#45CAFF]/50 hover:bg-[#45CAFF]/10"
-                  : "border-border hover:border-primary/30 hover:bg-muted/50"
-              )}
+              className="block rounded-lg transition-colors max-w-[420px] border overflow-hidden border-bwin-neutral-30 hover:border-bwin-brand-primary hover:bg-bwin-brand-primary/10"
             >
               {getPromotionImageUrl(promotion.image) ? (
                 <img
                   src={getPromotionImageUrl(promotion.image)}
-                  alt="Promoção"
+                  alt="Promoción"
                   className="w-full h-auto object-cover"
                 />
               ) : (
-                <div className="w-full h-32 flex items-center justify-center bg-muted">
-                  <Gift className="h-8 w-8 text-muted-foreground" />
+                <div className="w-full h-32 flex items-center justify-center bg-bwin-neutral-20">
+                  <Gift className="h-8 w-8 text-bwin-neutral-60" />
                 </div>
               )}
             </a>
@@ -301,21 +280,18 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
       )}
 
       {(widgetArray.length > 0) && !hideWidgetOdds && (
-        <div className={cn("mt-4 pl-4 sm:pl-[68px] max-w-[420px]", isDarkMode && "dark")}>
-          <WidgetCarousel widgets={widgetArray} isDarkMode={isDarkMode} />
+        <div className="mt-4 pl-4 sm:pl-[68px] max-w-[420px] dark">
+          <WidgetCarousel widgets={widgetArray} isDarkMode={true} />
         </div>
       )}
 
       {relatedQuestions.length > 0 && (
         <div className="mt-4 pl-4 sm:pl-14">
-          <div className="mt-2 space-y-2 text-sm text-muted-foreground">
+          <div className="mt-2 space-y-2 text-sm text-bwin-neutral-60">
             {relatedQuestions.slice(0, 2).map((question: any, index: number) => (
               <div key={index} className="text-sm hover:underline cursor-pointer pr-2">
                 <button
-                  className={cn(
-                    "flex items-start gap-2 ml-2 sm:ml-4 text-left w-full bg-transparent border-none p-0 hover:underline break-words",
-                    isDarkMode ? "text-[#D3ECFF]/70 hover:text-[#D3ECFF]" : "text-muted-foreground hover:text-foreground"
-                  )}
+                  className="flex items-start gap-2 ml-2 sm:ml-4 text-left w-full bg-transparent border-none p-0 hover:underline break-words text-bwin-neutral-70 hover:text-bwin-neutral-100"
                   onClick={(e) => {
                     e.preventDefault()
                     trackRelatedQuestionClick(question)
@@ -333,7 +309,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
 
       {/* {isRelatedBettingsEnabled && (
         <div className="mt-4 pl-14 ml-3">
-          <div className="mt-2 space-y-2 text-md text-muted-foreground">
+          <div className="mt-2 space-y-2 text-md text-bwin-neutral-60">
             {relatedBettings.slice(0, 3).map((bet: any, index: number) => (
               <BetBox key={index} bet={bet} />
             ))}

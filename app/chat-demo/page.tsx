@@ -20,22 +20,22 @@ type SuggestionItem = {
 }
 
 const suggestions: SuggestionItem[] = [
-  { icon: Zap, text: "Como apostar no Mundial de Clubes?" },
-  { icon: TrendingUp, text: "Quais as odds pro Real Madrid no Mundial?" },
-  { icon: Trophy, text: "Quem deve marcar em City vs Flamengo?" },
-  { icon: Calendar, text: "Quando começa o Mundial de Clubes 2025?" },
-  { icon: Star, text: "Quais times são favoritos no Mundial?" },
+  { icon: Zap, text: "¿Cómo apostar en la Copa Mundial de Clubes?" },
+  { icon: TrendingUp, text: "¿Cuáles son las cuotas para el Real Madrid en el Mundial?" },
+  { icon: Trophy, text: "¿Quién debería marcar en City vs Flamengo?" },
+  { icon: Calendar, text: "¿Cuándo comienza la Copa Mundial de Clubes 2025?" },
+  { icon: Star, text: "¿Qué equipos son favoritos en el Mundial?" },
   { 
     iconNode: soccerBall, 
-    text: "Melhores apostas para gols no Mundial?",
+    text: "¿Mejores apuestas para goles en el Mundial?",
     isLabIcon: true 
   },
-  { icon: Users, text: "Quais jogadores vão participar do Mundial?" },
-  { icon: Globe, text: "Onde será o Mundial de Clubes 2025?" },
-  { icon: Target, text: "Chances do Fluminense no Mundial?" },
-  { icon: DollarSign, text: "Qual a premiação do Mundial de Clubes?" },
-  { icon: Medal, text: "Quem foi o artilheiro do último Mundial?" },
-  { icon: Award, text: "Qual time tem mais títulos no Mundial?" },
+  { icon: Users, text: "¿Qué jugadores van a participar en el Mundial?" },
+  { icon: Globe, text: "¿Dónde será la Copa Mundial de Clubes 2025?" },
+  { icon: Target, text: "¿Posibilidades del Fluminense en el Mundial?" },
+  { icon: DollarSign, text: "¿Cuál es la premiación de la Copa Mundial de Clubes?" },
+  { icon: Medal, text: "¿Quién fue el goleador del último Mundial?" },
+  { icon: Award, text: "¿Qué equipo tiene más títulos en el Mundial?" },
 ]
 
 export default function Home() {
@@ -118,7 +118,7 @@ export default function Home() {
     // Add assistant response with oddsType
     addMessage({ 
       role: 'assistant', 
-      content: `Com base nos últimos dados e odds do Mundial de Clubes da FIFA, achei isso aqui pra "${input}". Destaquei as melhores oportunidades de aposta pra você.`,
+              content: `Basándome en los últimos datos y cuotas de la Copa Mundial de Clubes FIFA, encontré esto para "${input}". Destaqué las mejores oportunidades de apuesta para ti.`,
       oddsType: oddsType
     })
     setIsTyping(false)
@@ -178,7 +178,7 @@ export default function Home() {
       // Simulate speech-to-text processing after a delay
       setTimeout(() => {
         // Mock result from speech-to-text
-        const mockTranscription = "Quais são as odds para o Real Madrid ganhar o Mundial?"
+        const mockTranscription = "¿Cuáles son las cuotas para que el Real Madrid gane el Mundial?"
         setInput(mockTranscription)
         setIsTranscribing(false)
       }, 1500)
@@ -196,15 +196,15 @@ export default function Home() {
   return (
     <div className="flex flex-col h-screen bg-background pt-16 md:pt-0">
       {/* Main heading for SEO - visually hidden but accessible */}
-      <h1 className="sr-only">A Inteligência Artificial da Sportingbet</h1>
+      <h1 className="sr-only">La Inteligencia Artificial de bwin</h1>
       
       <div className="flex-1 overflow-auto hide-scrollbar momentum-scroll pb-32 pt-4 md:pb-24">
         {showInitial ? (
           <div className="flex flex-col items-center justify-center min-h-[calc(100vh-12rem)] p-4">
             {/* Banner */}
-            <img className="w-full mb-0 max-w-[980px] mt-12 md:mt-0" src="/SBOT_FINAL.jpg" alt="Sportingbot: a IA da Sportingbet" />
+            <img className="w-full mb-0 max-w-[980px] mt-12 md:mt-0" src="/SBOT_FINAL.jpg" alt="bwinbot: la IA de bwin" />
             <h2 className="text-center mb-4 sm:mb-6 flex items-center gap-3 justify-center pt-10 pb-6 sm:pt-14 sm:pb-10">
-              Vamos jogar juntos? Me diz onde você precisa de reforço!
+              ¿Vamos a jugar juntos? ¡Dime dónde necesitas refuerzo!
               <SportingbetDot size={28} className="ml-1" />
             </h2>
             <div className="w-full max-w-xl mx-auto">
@@ -334,7 +334,7 @@ export default function Home() {
               {/* Navigation hint */}
               <div className="mt-4 text-center">
                 <p className="text-xs text-muted-foreground/60">
-                  Use ↑↓ para navegar • Enter para confirmar • Esc para o campo de busca
+                  Usa ↑↓ para navegar • Enter para confirmar • Esc para el campo de búsqueda
                 </p>
               </div>
             </div>
@@ -347,7 +347,7 @@ export default function Home() {
                   key={index} 
                   role={message.role}
                   content={message.content}
-                  oddsType={message.oddsType}
+                  oddsType={message.oddsType === 'football' ? 'football' : undefined}
                   messagesEndRef={index === messages.length - 1 ? messagesEndRef : undefined} 
                 />
               ))}
