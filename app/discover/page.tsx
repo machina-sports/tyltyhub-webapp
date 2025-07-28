@@ -1,11 +1,9 @@
 "use client";
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import { Newspaper, Table2, Search } from "lucide-react";
+import { Newspaper, Search } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TeamFilter as TeamFilterComponent } from "@/components/discover/sport-filter";
 import { ArticleGrid } from "@/components/discover/article-grid";
-import { ArticleSkeleton } from "@/components/discover/article-skeleton";
-import { FifaCwcSchedule } from "@/components/discover/fifa-cwc-schedule";
 import { useGlobalState } from "@/store/useState";
 import { useAppDispatch } from "@/store/dispatch";
 import { Input } from "@/components/ui/input";
@@ -111,7 +109,8 @@ const buildSearchFilters = (
     "metadata.content_type": { "$ne": "trendings-competition-trendings" }
   };
   
-  if (selectedTeam !== "all-teams") {
+  // Sempre aplicar filtro de equipe, já que não há mais opção "all-teams"
+  if (selectedTeam) {
     const team = teams.find((t: Team) => t.id === selectedTeam);
     if (team) {
       baseFilters["$and"] = [
@@ -128,7 +127,10 @@ const buildSearchFilters = (
 };
 
 export default function DiscoverPage() {
-  const [selectedTeam, setSelectedTeam] = useState("all-teams");
+  const [selectedTeam, setSelectedTeam] = useState(() => {
+    const teams = teamsData.teams || [];
+    return teams.length > 0 ? teams[0].id : "";
+  });
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("news");
   const [isScrolled, setIsScrolled] = useState(false);
@@ -313,13 +315,7 @@ export default function DiscoverPage() {
                 <Newspaper className="h-4 w-4" />
                 Noticias
               </TabsTrigger>
-              <TabsTrigger 
-                value="teams" 
-                className="flex items-center gap-2 text-bwin-neutral-100 data-[state=active]:bg-bwin-brand-primary data-[state=active]:text-bwin-neutral-0"
-              >
-                <Table2 className="h-4 w-4" />
-                Estadísticas
-              </TabsTrigger>
+              {/* Removido o botão de Estatísticas */}
             </TabsList>
           </div>
 
@@ -397,11 +393,7 @@ export default function DiscoverPage() {
           </div>
         </TabsContent>
 
-        <TabsContent value="teams" className="pt-4">
-          <div className="pt-2">
-            <FifaCwcSchedule />
-          </div>
-        </TabsContent>
+        {/* Removido o TabsContent de teams */}
       </Tabs>
     </div>
   );
