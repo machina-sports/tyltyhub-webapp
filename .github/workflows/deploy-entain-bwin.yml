@@ -1,0 +1,94 @@
+name: Deploy Entain Bwin
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: 'Image tag to deploy (e.g., v.bwin-1.0)'
+        required: true
+        type: string
+      environment:
+        description: 'Target Environment'
+        required: true
+        default: 'development'
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+
+env:
+  NAMESPACE: machina-workspace
+  AKS_CLUSTER_NAME: mks-community-cluster
+  AKS_RESOURCE_GROUP: mks-community-group
+  APP_NAME: entain-bwin
+  DEPLOYMENT_NAME: machina-workspace-entain-bwin-app
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set image tag
+        run: echo "IMAGE_TAG=${{ github.event.inputs.image_tag }}" >> $GITHUB_ENV
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Get AKS Credentials
+        uses: azure/aks-set-context@v3
+        with:
+          cluster-name: ${{ env.AKS_CLUSTER_NAME }}
+          resource-group: ${{ env.AKS_RESOURCE_GROUP }}
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Create namespace
+        run: |
+          kubectl create namespace ${{ env.NAMESPACE }} --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Apply Kubernetes manifests
+        run: |
+          # Update image tag in deployment
+          sed -i 's|machinasports/entain-bwin:latest|${{ secrets.REGISTRY_URL }}/${{ env.APP_NAME }}:${{ env.IMAGE_TAG }}|g' deployment/entain-bwin-deployment.yaml
+          
+          # Apply all manifests
+          kubectl apply -f deployment/entain-bwin-deployment.yaml
+          kubectl apply -f deployment/entain-bwin-service.yaml
+          kubectl apply -f deployment/entain-bwin-ingress.yaml
+
+      - name: Wait for deployment rollout
+        run: |
+          kubectl rollout status deployment/${{ env.DEPLOYMENT_NAME }} -n ${{ env.NAMESPACE }}
+
+      - name: Notify Slack - Deployment Success
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: your-slack-channel
+          SLACK_USERNAME: GitHub Actions
+          SLACK_COLOR: 'good'
+          SLACK_TITLE: 'Entain Bwin Deployment Successful'
+          SLACK_MESSAGE: 'Deployment of ${{ env.APP_NAME }}:${{ env.IMAGE_TAG }} to ${{ github.event.inputs.environment }} completed successfully.'
+          SLACK_ICON: ':rocket:'
+        if: success()
+
+      - name: Notify Slack - Deployment Failed
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: your-slack-channel
+          SLACK_USERNAME: GitHub Actions
+          SLACK_COLOR: 'danger'
+          SLACK_TITLE: 'Entain Bwin Deployment Failed'
+          SLACK_MESSAGE: 'Deployment of ${{ env.APP_NAME }}:${{ env.IMAGE_TAG }} to ${{ github.event.inputs.environment }} failed.'
+          SLACK_ICON: ':x:'
+        if: failure() 

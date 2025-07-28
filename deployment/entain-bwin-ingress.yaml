@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  name: machina-workspace-ingress-entain-bwin-app
+  namespace: machina-workspace
+spec:
+  rules:
+  - host: entain-bwin.org.machina.gg
+    http:
+      paths:
+      - backend:
+          service:
+            name: machina-workspace-entain-bwin-app
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - entain-bwin.org.machina.gg
+    secretName: entain-bwin-tls 
