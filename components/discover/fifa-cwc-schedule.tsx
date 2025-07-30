@@ -103,7 +103,7 @@ export function FifaCwcSchedule() {
       <Card className="bg-bwin-neutral-20 border-bwin-neutral-30">
         <CardHeader className="text-center space-y-2">
           <CardTitle className="text-2xl font-bold text-bwin-neutral-100">
-            Copa Mundial de Clubes FIFA 2025
+            LaLiga 2025/2026
           </CardTitle>
           <CardDescription className="text-bwin-neutral-80">
             15 de junio - 13 de julio • Estados Unidos

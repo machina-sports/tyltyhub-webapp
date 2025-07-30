@@ -20,14 +20,14 @@ declare global {
 }
 
 export const metadata: Metadata = {
-  title: "bwinBOT: la IA de bwin para la Copa Mundial de Clubes 2025",
-  description: "Apuesta junto con la Inteligencia Artificial de bwin. Pregunta a nuestro chat sobre las noticias y cuotas de la Copa Mundial de Clubes 2025 y descubre cómo apostar mejor.",
+  title: "bwinBOT: la IA de bwin para LaLiga 2025/2026",
+  description: "Apuesta junto con la Inteligencia Artificial de bwin. Pregunta a nuestro chat sobre las noticias y cuotas de LaLiga 2025/2026 y descubre cómo apostar mejor.",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/bwin-logo-icon.png",
   },
   openGraph: {
-    title: "bwinBOT: la IA de bwin para la Copa Mundial de Clubes 2025",
-    description: "Apuesta junto con la Inteligencia Artificial de bwin. Pregunta a nuestro chat sobre las noticias y cuotas de la Copa Mundial de Clubes 2025 y descubre cómo apostar mejor.",
+    title: "bwinBOT: la IA de bwin para LaLiga 2025/2026",
+    description: "Apuesta junto con la Inteligencia Artificial de bwin. Pregunta a nuestro chat sobre las noticias y cuotas de LaLiga 2025/2026 y descubre cómo apostar mejor.",
     type: "website",
     locale: "es_ES",
     siteName: "bwinBOT",
@@ -43,8 +43,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "bwinBOT: la IA de bwin para la Copa Mundial de Clubes 2025",
-    description: "Apuesta junto con la Inteligencia Artificial de bwin. Pregunta a nuestro chat sobre las noticias y cuotas de la Copa Mundial de Clubes 2025 y descubre cómo apostar mejor.",
+    title: "bwinBOT: la IA de bwin para LaLiga 2025/2026",
+    description: "Apuesta junto con la Inteligencia Artificial de bwin. Pregunta a nuestro chat sobre las noticias y cuotas de LaLiga 2025/2026 y descubre cómo apostar mejor.",
     images: ["https://bwinbot.com/og_image_4.png"],
   },
 };
@@ -64,7 +64,7 @@ export default function RootLayout({
   return (
     <html lang="es-ES">
       <head>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/bwin-logo-icon.png" />
         {/* Google tag (gtag.js) - GA4 Property */}
         <script
           async

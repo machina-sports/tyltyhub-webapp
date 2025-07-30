@@ -20,22 +20,22 @@ type SuggestionItem = {
 }
 
 const suggestions: SuggestionItem[] = [
-  { icon: Zap, text: "¿Cómo apostar en la Copa Mundial de Clubes?" },
-  { icon: TrendingUp, text: "¿Cuáles son las cuotas para el Real Madrid en el Mundial?" },
-  { icon: Trophy, text: "¿Quién debería marcar en City vs Flamengo?" },
-  { icon: Calendar, text: "¿Cuándo comienza la Copa Mundial de Clubes 2025?" },
-  { icon: Star, text: "¿Qué equipos son favoritos en el Mundial?" },
+  { icon: Zap, text: "¿Cómo apostar en LaLiga?" },
+  { icon: TrendingUp, text: "¿Cuáles son las cuotas para el Real Madrid en LaLiga?" },
+  { icon: Trophy, text: "¿Quién debería marcar en el próximo partido?" },
+  { icon: Calendar, text: "¿Cuándo comienza LaLiga 2025/2026?" },
+  { icon: Star, text: "¿Qué equipos son favoritos en LaLiga?" },
   { 
     iconNode: soccerBall, 
-    text: "¿Mejores apuestas para goles en el Mundial?",
+    text: "¿Mejores apuestas para goles en LaLiga?",
     isLabIcon: true 
   },
-  { icon: Users, text: "¿Qué jugadores van a participar en el Mundial?" },
-  { icon: Globe, text: "¿Dónde será la Copa Mundial de Clubes 2025?" },
-  { icon: Target, text: "¿Posibilidades del Fluminense en el Mundial?" },
-  { icon: DollarSign, text: "¿Cuál es la premiación de la Copa Mundial de Clubes?" },
-  { icon: Medal, text: "¿Quién fue el goleador del último Mundial?" },
-  { icon: Award, text: "¿Qué equipo tiene más títulos en el Mundial?" },
+  { icon: Users, text: "¿Qué jugadores van a participar en LaLiga?" },
+  { icon: Globe, text: "¿Dónde será LaLiga 2025/2026?" },
+  { icon: Target, text: "¿Posibilidades del Barcelona en LaLiga?" },
+  { icon: DollarSign, text: "¿Cuál es la premiación de LaLiga?" },
+  { icon: Medal, text: "¿Quién fue el goleador de la última LaLiga?" },
+  { icon: Award, text: "¿Qué equipo tiene más títulos en LaLiga?" },
 ]
 
 export default function Home() {
@@ -118,7 +118,7 @@ export default function Home() {
     // Add assistant response with oddsType
     addMessage({ 
       role: 'assistant', 
-              content: `Basándome en los últimos datos y cuotas de la Copa Mundial de Clubes FIFA, encontré esto para "${input}". Destaqué las mejores oportunidades de apuesta para ti.`,
+              content: `Basándome en los últimos datos y cuotas de LaLiga 2025/2026, encontré esto para "${input}". Destaqué las mejores oportunidades de apuesta para ti.`,
       oddsType: oddsType
     })
     setIsTyping(false)

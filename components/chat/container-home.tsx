@@ -251,7 +251,7 @@ const ContainerHome = ({ query }: { query: string }) => {
               <Input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Pregúntame sobre la Copa Mundial de Clubes..."
+                placeholder="Pregúntame sobre LaLiga..."
                 className="w-full py-6 pl-6 pr-14 rounded-2xl bg-bwin-neutral-20 border-2 border-bwin-neutral-30 text-base text-bwin-neutral-100 placeholder:text-bwin-neutral-60 focus:border-bwin-brand-primary focus:ring-0 focus:bg-bwin-neutral-20 transition-colors duration-200"
                 disabled={isSubmitting}
               />
