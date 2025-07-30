@@ -7,8 +7,8 @@ on:
 
 env:
   APP_NAME: entain-bwin
-  MACHINA_API_KEY: ${{ secrets.MACHINA_API_KEY }}
-  MACHINA_CLIENT_URL: ${{ vars.MACHINA_CLIENT_URL }}
+  MACHINA_API_KEY: ${{ secrets.BWIN_MACHINA_API_KEY }}
+  MACHINA_CLIENT_URL: ${{ vars.BWIN_MACHINA_CLIENT_URL }}
 
 jobs:
   build:
