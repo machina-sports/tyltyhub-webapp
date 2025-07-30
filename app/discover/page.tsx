@@ -2,29 +2,18 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { Newspaper, Search } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TeamFilter as TeamFilterComponent } from "@/components/discover/sport-filter";
 import { ArticleGrid } from "@/components/discover/article-grid";
 import { useGlobalState } from "@/store/useState";
 import { useAppDispatch } from "@/store/dispatch";
 import { Input } from "@/components/ui/input";
-import teamsData from "@/data/teams.json";
 import { searchArticles } from "@/providers/discover/actions";
 import { Loading } from "@/components/ui/loading";
 import { cn } from "@/lib/utils";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
-interface Team {
-  id: string;
-  name: string;
-  logo?: string;
-  league: string;
-}
 
 interface SearchFilters {
   name: string;
   "metadata.language": string;
   "metadata.content_type"?: { "$ne": string };
-  "$and"?: Array<{ "value.title": { $regex: string; $options: string } }>;
   "value.title"?: { $regex: string; $options: string };
 }
 
@@ -59,65 +48,12 @@ function useDebounce<T>(value: T, delay: number): T {
   return debouncedValue;
 }
 
-const SPORTS = [
-  "Todos los Deportes",
-  "Fútbol",
-  "Baloncesto",
-  "Tenis",
-  "Béisbol",
-  "Fórmula 1",
-  "MMA",
-  "Boxeo"
-];
-
-interface TeamFilterProps {
-  value: string;
-  onChange: (value: string) => void;
-}
-
-const SportFilter = ({ value, onChange }: TeamFilterProps) => {
-  return (
-    <div className="w-[220px]">
-      <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="bg-bwin-neutral-20 border-bwin-neutral-30 text-bwin-neutral-100">
-          <SelectValue placeholder="Seleccionar Deporte" />
-        </SelectTrigger>
-        <SelectContent className="bg-bwin-neutral-20 border-bwin-neutral-30">
-          {SPORTS.map((sport) => (
-            <SelectItem 
-              key={sport} 
-              value={sport.toLowerCase()}
-              className="text-bwin-neutral-100 hover:bg-bwin-neutral-30 focus:bg-bwin-neutral-30"
-            >
-              {sport}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
-  );
-};
-
-const buildSearchFilters = (
-  selectedTeam: string,
-  teams: Team[],
-  searchQuery: string
-): SearchFilters => {
+const buildSearchFilters = (searchQuery: string): SearchFilters => {
   const baseFilters: SearchFilters = {
     name: "content-article",
-    "metadata.language": "br",
+    "metadata.language": "es",
     "metadata.content_type": { "$ne": "trendings-competition-trendings" }
   };
-  
-  // Sempre aplicar filtro de equipe, já que não há mais opção "all-teams"
-  if (selectedTeam) {
-    const team = teams.find((t: Team) => t.id === selectedTeam);
-    if (team) {
-      baseFilters["$and"] = [
-        { "value.title": { $regex: team.name, $options: "i" } }
-      ];
-    }
-  }
 
   if (searchQuery) {
     baseFilters["value.title"] = { $regex: searchQuery, $options: "i" };
@@ -127,10 +63,6 @@ const buildSearchFilters = (
 };
 
 export default function DiscoverPage() {
-  const [selectedTeam, setSelectedTeam] = useState(() => {
-    const teams = teamsData.teams || [];
-    return teams.length > 0 ? teams[0].id : "";
-  });
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("news");
   const [isScrolled, setIsScrolled] = useState(false);
@@ -142,7 +74,6 @@ export default function DiscoverPage() {
   const dispatch = useAppDispatch();
   const searchResults = useGlobalState((state: any) => state.discover.searchResults) as SearchResults;
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
-  const teams = useMemo(() => teamsData.teams || [], []);
   const pageSize = 6;
 
   const handleScroll = useCallback(() => {
@@ -159,7 +90,7 @@ export default function DiscoverPage() {
       
       if (!newValue) {
         setIsSearching(true);
-        const filters = buildSearchFilters(selectedTeam, teams, "");
+        const filters = buildSearchFilters("");
         dispatch(searchArticles({ 
           filters,
           pagination: { page: 1, page_size: pageSize },
@@ -167,14 +98,14 @@ export default function DiscoverPage() {
         })).finally(() => setIsSearching(false));
       }
     },
-    [selectedTeam, teams, dispatch, pageSize]
+    [dispatch, pageSize]
   );
 
   const handleSearchKeyPress = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Enter' && searchQuery.trim()) {
         setIsSearching(true);
-        const filters = buildSearchFilters(selectedTeam, teams, searchQuery);
+        const filters = buildSearchFilters(searchQuery);
         dispatch(searchArticles({ 
           filters,
           pagination: { page: 1, page_size: pageSize },
@@ -182,19 +113,8 @@ export default function DiscoverPage() {
         })).finally(() => setIsSearching(false));
       }
     },
-    [searchQuery, selectedTeam, teams, dispatch, pageSize]
+    [searchQuery, dispatch, pageSize]
   );
-
-  const handleTeamChange = useCallback((value: string) => {
-    setSelectedTeam(value);
-    setIsSearching(true);
-    const filters = buildSearchFilters(value, teams, searchQuery);
-    dispatch(searchArticles({ 
-      filters,
-      pagination: { page: 1, page_size: pageSize },
-      sorters: ["_id", -1]
-    })).finally(() => setIsSearching(false));
-  }, [teams, searchQuery, dispatch, pageSize]);
 
   const handleTabChange = useCallback((value: string) => {
     setActiveTab(value);
@@ -213,13 +133,13 @@ export default function DiscoverPage() {
   }, [handleScroll]);
 
   useEffect(() => {
-    const filters = buildSearchFilters(selectedTeam, teams, "");
+    const filters = buildSearchFilters("");
     dispatch(searchArticles({ 
       filters,
       pagination: { page: 1, page_size: pageSize },
       sorters: ["_id", -1]
     }));
-  }, [selectedTeam, dispatch, teams, pageSize]);
+  }, [dispatch, pageSize]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -227,7 +147,7 @@ export default function DiscoverPage() {
         const target = entries[0];
         if (target.isIntersecting && searchResults.status !== "loading" && searchResults.pagination.hasMore) {
           const nextPage = searchResults.pagination.page + 1;
-          const filters = buildSearchFilters(selectedTeam, teams, debouncedSearchQuery);
+          const filters = buildSearchFilters(debouncedSearchQuery);
 
           dispatch(searchArticles({ 
             filters,
@@ -254,8 +174,6 @@ export default function DiscoverPage() {
     searchResults.pagination,
     dispatch,
     debouncedSearchQuery,
-    selectedTeam,
-    teams,
     pageSize
   ]);
 
@@ -321,8 +239,7 @@ export default function DiscoverPage() {
 
           {activeTab === "news" && (
             <div className="py-4 px-0 sm:px-0 bg-bwin-neutral-10">
-              <div className="flex justify-between items-center gap-4">
-                <TeamFilterComponent value={selectedTeam} onChange={handleTeamChange} />
+              <div className="flex justify-end items-center">
                 <div className="relative w-full md:w-[232px]">
                   <Search className="absolute left-2 top-2.5 h-4 w-4 text-bwin-neutral-80" />
                   <Input

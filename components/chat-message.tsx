@@ -17,6 +17,7 @@ import { MatchCard, MatchesCalendar } from "@/components/discover/matches-calend
 import { TeamsGrid } from "@/components/discover/teams-grid";
 import { LiveMatchStatus } from "@/components/live-match-status";
 import { WidgetCarousel } from "@/components/carousel/container";
+import { BettingRecommendationsWidget } from "@/components/betting-recommendations-widget";
 
 interface ChatMessageProps {
   role: "user" | "assistant"
@@ -96,6 +97,9 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
   };
 
   const haveSportsContext = content?.["sport_event"]
+  
+  // Handle betting recommendations
+  const bettingRecommendations = content?.["betting_recommendations"] || content?.["markets"]
 
   // Handle both single widget and array of widgets
   const parsedWidgetContent = content?.["selected-widgets"]
@@ -134,7 +138,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
   return (
     <div className="mb-2 last:mb-0">
       <ChatBubble role={role}>
-        <div className="space-y-2">
+        <div className="space-2">
           {isTyping ? (
             <div className="flex items-center gap-2 text-bwin-neutral-60">
               <span className="text-sm">{content || "Pensando..."}</span>
@@ -181,6 +185,16 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
             }}
             useAbbreviation={true}
             compact={true}
+          />
+        </div>
+      )}
+
+      {/* Betting Recommendations Section */}
+      {bettingRecommendations && Array.isArray(bettingRecommendations) && bettingRecommendations.length > 0 && (
+        <div className="mt-4 pl-6 sm:pl-12 max-w-[550px]">
+          <BettingRecommendationsWidget 
+            markets={bettingRecommendations}
+            title="Recomendaciones de Apuestas"
           />
         </div>
       )}
@@ -286,7 +300,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
       )}
 
       {relatedQuestions.length > 0 && (
-        <div className="mt-4 pl-4 sm:pl-14">
+        <div className="mt-4 pl-4 sm:pl-10">
           <div className="mt-2 space-y-2 text-sm text-bwin-neutral-60">
             {relatedQuestions.slice(0, 2).map((question: any, index: number) => (
               <div key={index} className="text-sm hover:underline cursor-pointer pr-2">

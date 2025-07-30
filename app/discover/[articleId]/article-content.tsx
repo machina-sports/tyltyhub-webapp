@@ -334,7 +334,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
                     isDarkMode && "text-[#45CAFF]"
                   )}
                 />
-                SportingBOT
+                Bwin BOT
               </span>
             </div>
           </div>
