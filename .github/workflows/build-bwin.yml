@@ -26,15 +26,15 @@ jobs:
           echo " " >> .env
           echo "FEATURE_TOGGLE_ENABLE_CHAT=1" >> .env
           echo " " >> .env
-          echo "MACHINA_API_KEY=${{ env.MACHINA_API_KEY }}" >> .env
+          echo "MACHINA_API_KEY=${{ env.BWIN_MACHINA_API_KEY }}" >> .env
           echo " " >> .env
-          echo "MACHINA_CLIENT_URL=${{ env.MACHINA_CLIENT_URL }}" >> .env
+          echo "MACHINA_CLIENT_URL=${{ env.BWIN_MACHINA_CLIENT_URL }}" >> .env
           echo " " >> .env
           echo "IMAGE_CONTAINER_ADDRESS=${{ vars.IMAGE_CONTAINER_ADDRESS }}" >> .env
           echo " " >> .env
           echo "NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS=${{ vars.IMAGE_CONTAINER_ADDRESS }}" >> .env
           echo " " >> .env
-          echo "NEXT_PUBLIC_SITE_OFFLINE=${{ vars.SITE_OFFLINE }}" >> .env
+          echo "NEXT_PUBLIC_SITE_OFFLINE=${{ vars.BWIN_SITE_OFFLINE }}" >> .env
           echo " " >> .env
           echo "NEXT_PUBLIC_GOOGLE_ANALYTICS_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_ANALYTICS_KEY }}" >> .env
           echo " " >> .env
