@@ -9,6 +9,19 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      keyframes: {
+        shimmer: {
+          '0%': { backgroundPosition: 'calc(-1 * var(--shimmer-width)) 0' },
+          // Move the shimmer across in ~2s of a 10s cycle (leaves ~8s pause)
+          '20%': { backgroundPosition: 'calc(100% + var(--shimmer-width)) 0' },
+          // Hold position for the remainder to create the pause
+          '100%': { backgroundPosition: 'calc(100% + var(--shimmer-width)) 0' },
+        },
+      },
+      animation: {
+        // Total 10s: ~2s movement (faster) + ~8s pause
+        shimmer: 'shimmer 10s linear infinite',
+      },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':

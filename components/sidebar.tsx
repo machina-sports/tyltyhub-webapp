@@ -120,8 +120,8 @@ export function Sidebar() {
             <Image
               src="/bwin-logo.png"
               alt="bwin"
-              width={120}
-              height={48}
+              width={90}
+              height={36}
               priority
               className="h-12 w-auto"
             />
@@ -179,8 +179,21 @@ export function Sidebar() {
 
       {/* Legal disclaimer with better spacing */}
       <div className="px-8 py-6 border-t border-bwin-neutral-30">
-        <div className="text-xs leading-relaxed text-center text-bwin-neutral-60">
-          18+. Apostar puede causar dependencia. Juega de forma responsable.
+        <div className="flex flex-col items-center gap-3">
+          <Image
+            src="/+18.png"
+            alt="+18"
+            width={32}
+            height={32}
+            className="w-8 h-8"
+          />
+          <Image
+            src="/Juego Seguro.png"
+            alt="Juego Seguro"
+            width={100}
+            height={20}
+            className="w-[100px] h-auto"
+          />
         </div>
       </div>
     </div>
