@@ -65,7 +65,12 @@
   --bwin-brand-primary: 51 100% 50%;        /* #FFCB00 */
   --bwin-brand-secondary: 40 98% 54%;       /* #FDBA12 */
   
-  /* Bwin Neutrals */
+  /* Custom subtle yellow tones for better readability */
+  --bwin-yellow-subtle: 45 85% 65%;         /* More opaque yellow */
+  --bwin-yellow-muted: 45 70% 55%;          /* Even more muted */
+  --bwin-yellow-soft: 45 60% 45%;           /* Very soft yellow */
+
+  /* Neutral colors */
   --bwin-neutral-100: 0 0% 100%;            /* #FFFFFF */
   --bwin-neutral-90: 0 0% 90%;              /* #E6E6E6 */
   --bwin-neutral-80: 0 0% 70%;              /* #B3B3B3 */
@@ -74,7 +79,9 @@
   --bwin-neutral-50: 0 0% 29%;              /* #4A4A4A */
   --bwin-neutral-40: 0 0% 24%;              /* #3E3E3E */
   --bwin-neutral-30: 0 0% 18%;              /* #2F2F2F */
+  --bwin-neutral-25: 0 0% 15%;              /* #262626 */
   --bwin-neutral-20: 0 0% 12%;              /* #1E1E1E */
+  --bwin-neutral-15: 0 0% 10%;              /* #1A1A1A */
   --bwin-neutral-10: 0 0% 7%;               /* #121212 */
   --bwin-neutral-0: 0 0% 0%;                /* #000000 */
   
@@ -207,6 +214,54 @@
 
   .chat-input-focus {
     @apply ring-2 ring-bwin-brand-primary ring-offset-2 ring-offset-bwin-neutral-10;
+  }
+
+  /* Enhanced chat bubble styling */
+  .chat-bubble-content {
+    @apply text-sm leading-relaxed;
+  }
+
+  /* Custom list styling for chat messages */
+  .chat-bubble-content ul li::before {
+    content: '•';
+    @apply absolute left-0 font-bold text-lg top-0;
+    color: hsl(var(--bwin-yellow-subtle));
+  }
+
+  .chat-bubble-content ol li::before {
+    @apply absolute left-0 font-medium text-sm top-0;
+    color: hsl(var(--bwin-yellow-muted));
+  }
+
+  /* Enhanced typography for chat */
+  .chat-bubble-content h1,
+  .chat-bubble-content h2,
+  .chat-bubble-content h3 {
+    @apply font-semibold text-bwin-neutral-100 mb-3 leading-tight;
+  }
+
+  .chat-bubble-content strong {
+    @apply font-bold;
+    color: hsl(var(--bwin-yellow-subtle));
+  }
+
+  .chat-bubble-content em {
+    @apply italic text-bwin-neutral-70;
+  }
+
+  /* Better spacing for list items */
+  .chat-bubble-content ul,
+  .chat-bubble-content ol {
+    @apply space-y-3;
+  }
+
+  .chat-bubble-content li {
+    @apply leading-relaxed;
+  }
+
+  /* Improved paragraph spacing */
+  .chat-bubble-content p {
+    @apply leading-relaxed;
   }
 }
 

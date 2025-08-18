@@ -138,7 +138,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
   return (
     <div className="mb-2 last:mb-0">
       <ChatBubble role={role}>
-        <div className="space-2">
+        <div className="chat-bubble-content">
           {isTyping ? (
             <div className="flex items-center gap-2 text-bwin-neutral-60">
               <span className="text-sm">{content || "Pensando..."}</span>

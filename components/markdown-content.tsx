@@ -28,20 +28,86 @@ export function MarkdownChat({ content, className }: MarkdownContentProps) {
               component: MarkdownLink,
               props: { className: "text-blue-600 dark:text-blue-400 underline" },
             },
-            ul: { props: { className: "list-disc mt-2" } },
-            ol: { props: { className: "list-decimal mt-2" } },
-            li: { props: { className: "my-4 ml-4" } },
-            p:  { props: { className: "my-2" } },
-            h2: { props: { className: "font-bold text-sm" } },
-            h3: { props: { className: "font-bold text-sm" } },
-            strong: { props: { className: "font-bold" } },
-            code: { props: { className: 'not-prose font-semibold' } },
-            blockquote: { props: { className: 'not-prose my-2 py-2 px-3 pl-4 bg-muted/50 rounded-lg text-sm text-foreground/90 dark:text-[#D3ECFF] dark:bg-[#061F3F]/50 border-l-4 border-primary dark:border-[#45CAFF]' } },
-            table: { props: { className: 'my-4 text-sm w-full border-collapse' } },
-            thead: { props: { className: 'bg-muted/50 text-foreground/90 dark:text-[#D3ECFF] dark:bg-[#061F3F]/50' } },
-            tr: { props: { className: 'border-b' } },
-            th: { props: { className: 'p-3 text-left font-semibold' } },
-            td: { props: { className: 'p-3 text-left' } },
+            ul: { 
+              props: { 
+                className: "list-none space-y-4 mt-4 mb-3" 
+              } 
+            },
+            ol: { 
+              props: { 
+                className: "list-none space-y-4 mt-4 mb-3" 
+              } 
+            },
+            li: { 
+              props: { 
+                className: "relative pl-6 leading-relaxed" 
+              } 
+            },
+            p: { 
+              props: { 
+                className: "my-3 leading-relaxed" 
+              } 
+            },
+            h1: { 
+              props: { 
+                className: "text-base font-bold mb-4 text-bwin-neutral-100 leading-tight" 
+              } 
+            },
+            h2: { 
+              props: { 
+                className: "text-sm font-semibold mb-3 text-bwin-neutral-100 leading-tight" 
+              } 
+            },
+            h3: { 
+              props: { 
+                className: "text-sm font-semibold mb-3 text-bwin-neutral-100 leading-tight" 
+              } 
+            },
+            strong: { 
+              props: { 
+                className: "font-bold text-bwin-yellow-subtle" 
+              } 
+            },
+            em: { 
+              props: { 
+                className: "italic text-bwin-neutral-70" 
+              } 
+            },
+            code: { 
+              props: { 
+                className: 'bg-bwin-neutral-25 px-1.5 py-0.5 rounded text-xs font-mono text-bwin-yellow-muted border border-bwin-neutral-30' 
+              } 
+            },
+            blockquote: { 
+              props: { 
+                className: 'border-l-4 border-bwin-yellow-soft pl-4 py-3 my-4 bg-bwin-neutral-15 rounded-r-lg italic text-bwin-neutral-70' 
+              } 
+            },
+            table: { 
+              props: { 
+                className: 'my-4 text-sm w-full border-collapse border border-bwin-neutral-30 rounded-lg overflow-hidden' 
+              } 
+            },
+            thead: { 
+              props: { 
+                className: 'bg-bwin-neutral-25 text-bwin-neutral-100' 
+              } 
+            },
+            tr: { 
+              props: { 
+                className: 'border-b border-bwin-neutral-30' 
+              } 
+            },
+            th: { 
+              props: { 
+                className: 'p-3 text-left font-semibold' 
+              } 
+            },
+            td: { 
+              props: { 
+                className: 'p-3 text-left' 
+              } 
+            },
           },
         }}
       >
