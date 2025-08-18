@@ -13,7 +13,7 @@ import { cn } from '@/lib/utils'
 const SAMPLE_ODDS = {
   football: {
     title: "Real Madrid vs Manchester City",
-    event: "Copa Mundial de Clubes FIFA - Semifinal",
+    event: "LaLiga 2025/2026 - Jornada 15",
     matchTime: "2025-07-15 20:00",
     markets: [
       { name: "1X2", options: [{ name: "Real Madrid", odds: "2.10" }, { name: "Empate", odds: "3.20" }, { name: "Manchester City", odds: "3.40" }] },
@@ -133,7 +133,7 @@ export default function ChatDemo() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: '¡Hola! Soy tu asistente de bwin para la Copa Mundial de Clubes FIFA 2025. ¿En qué puedo ayudarte hoy?'
+              content: '¡Hola! Soy tu asistente de bwin para LaLiga 2025/2026. ¿En qué puedo ayudarte hoy?'
     }
   ])
   const [input, setInput] = useState('')
@@ -160,7 +160,7 @@ export default function ChatDemo() {
     // Simulate AI response
     setTimeout(() => {
       const responses = [
-        "Excelente pregunta sobre la Copa Mundial de Clubes. Permíteme mostrarte las últimas cuotas y análisis.",
+        "Excelente pregunta sobre LaLiga. Permíteme mostrarte las últimas cuotas y análisis.",
         "Basándome en el análisis de los equipos, aquí tienes la información que necesitas.",
         "Los datos más recientes sobre este partido muestran oportunidades interesantes para apostar.",
       ]
@@ -221,7 +221,7 @@ export default function ChatDemo() {
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Escribe tu pregunta sobre la Copa Mundial de Clubes..."
+            placeholder="Escribe tu pregunta sobre LaLiga..."
             className="w-full py-4 pl-6 pr-14 rounded-2xl bg-bwin-neutral-20 border-2 border-bwin-neutral-30 text-base text-bwin-neutral-100 placeholder:text-bwin-neutral-60 focus:border-bwin-brand-primary focus:ring-0"
             disabled={isLoading}
           />

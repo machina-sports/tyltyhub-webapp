@@ -13,7 +13,7 @@ const routes = [
   {
     label: "Chat",
     icon: MessageSquare,
-    href: "/chat/new",
+    href: "/",
   },
   {
     label: "Descubrir",

@@ -187,7 +187,7 @@ const ContainerHome = ({ query }: { query: string }) => {
   }
 
   const getInputPlaceholder = () => {
-    return "Converse com o SportingBOT..."
+    return "Converse com o Bwin BOT..."
   }
 
   // Prevent scroll on mobile only for home page
@@ -251,7 +251,7 @@ const ContainerHome = ({ query }: { query: string }) => {
               <Input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Pregúntame sobre la Copa Mundial de Clubes..."
+                placeholder="Pregúntame sobre LaLiga..."
                 className="w-full py-6 pl-6 pr-14 rounded-2xl bg-bwin-neutral-20 border-2 border-bwin-neutral-30 text-base text-bwin-neutral-100 placeholder:text-bwin-neutral-60 focus:border-bwin-brand-primary focus:ring-0 focus:bg-bwin-neutral-20 transition-colors duration-200"
                 disabled={isSubmitting}
               />
@@ -274,14 +274,12 @@ const ContainerHome = ({ query }: { query: string }) => {
           <div className="w-full max-w-4xl mx-auto mt-12">
             <ScrollingRow 
               questions={[
-                "¿Cuáles son las cuotas del Real Madrid vs Chelsea?",
-                "¿Qué equipos tienen más posibilidades de ganar?",
-                "¿Cuándo es la final de la Copa Mundial de Clubes?",
-                "¿Cómo puedo apostar en el Manchester City?",
-                "¿Cuáles son los mejores mercados para apostar?",
-                "¿Qué equipo brasileño tiene más opciones?",
-                "¿Cuándo juega el PSG su primer partido?",
-                "¿Cómo funcionan las apuestas en vivo?"
+                "¿Qué probabilidades tiene el Atlético de Madrid de ganar La Liga?",
+                "¿Cómo puedo apostar en el próximo partido del Real Madrid?",
+                "¿Cuáles son las mejores cuotas para el Barcelona en La Liga?",
+                "¿Qué equipo de Madrid tiene más opciones en La Liga?",
+                "¿Cuándo juega el Atlético de Madrid su próximo partido en La Liga?",
+                "¿Cuáles son las cuotas para ganar La Liga?"
               ]} 
               onSampleQuery={handleSampleQuery} 
             />

@@ -30,7 +30,7 @@ export function MarkdownChat({ content, className }: MarkdownContentProps) {
             },
             ul: { props: { className: "list-disc mt-2" } },
             ol: { props: { className: "list-decimal mt-2" } },
-            li: { props: { className: "my-1" } },
+            li: { props: { className: "my-4 ml-4" } },
             p:  { props: { className: "my-2" } },
             h2: { props: { className: "font-bold text-sm" } },
             h3: { props: { className: "font-bold text-sm" } },

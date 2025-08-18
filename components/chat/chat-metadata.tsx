@@ -11,7 +11,7 @@ interface ChatMetadataProps {
 
 export function ChatMetadata({ threadId }: ChatMetadataProps) {
   const state = useGlobalState((state: any) => state.threads)
-  const [title, setTitle] = useState('SportingBOT Chat')
+  const [title, setTitle] = useState('Bwin BOT Chat')
   const [description, setDescription] = useState('Veja esta conversa no Sportingbet CWC')
   
   useEffect(() => {
@@ -45,9 +45,9 @@ export function ChatMetadata({ threadId }: ChatMetadataProps) {
       <meta property="og:image" content={shareImageUrl} />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
-      <meta property="og:image:alt" content="SportingBOT: a IA da Sportingbet" />
+      <meta property="og:image:alt" content="Bwin BOT" />
       <meta property="og:locale" content="pt_BR" />
-      <meta property="og:site_name" content="SportingBOT" />
+      <meta property="og:site_name" content="Bwin BOT" />
       <meta property="og:logo" content="https://sportingbot.com/og_image_4.png" />
       
       <meta property="twitter:card" content="summary_large_image" />

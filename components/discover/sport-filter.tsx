@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import { useState, useEffect, useMemo } from "react"
-import { X, ChevronDown } from "lucide-react"
+import { ChevronDown } from "lucide-react"
 import {
   Select,
   SelectContent,
@@ -17,7 +17,7 @@ import { useAppDispatch } from "@/store/dispatch"
 import { useTeamDisplay } from "@/hooks/use-team-display"
 
 const TEAMS = [
-  { id: "all-teams", name: "Todos los Equipos", logo: null },
+  // { id: "all-teams", name: "Todos los Equipos", logo: null }, // Removido para esconder a opção
   ...teamsData.teams
 ]
 
@@ -69,14 +69,10 @@ export function TeamFilter({ value, onChange }: TeamFilterProps) {
     setOpen(false)
   }
 
-  const handleReset = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    onChange('all-teams')
-  }
+  // Removido handleReset pois não há mais opção "all-teams"
 
-  // Calculate dynamic padding based on whether reset button is visible
-  const triggerPaddingRight = value !== 'all-teams' ? 'pr-16' : 'pr-10'
+  // Calculate dynamic padding - sempre pr-10 pois não há mais botão de reset
+  const triggerPaddingRight = 'pr-10'
 
   return (
     <div className="relative w-[220px]">
@@ -93,7 +89,7 @@ export function TeamFilter({ value, onChange }: TeamFilterProps) {
           )}>
             <SelectValue>
               <div className="flex items-center gap-2 overflow-hidden w-full">
-                {selectedTeam.logo && value !== 'all-teams' && (
+                {selectedTeam.logo && (
                   <div className="h-5 w-5 relative overflow-hidden flex-shrink-0">
                     <Image 
                       src={selectedTeam.logo}
@@ -104,10 +100,10 @@ export function TeamFilter({ value, onChange }: TeamFilterProps) {
                   </div>
                 )}
                 <span className="truncate">
-                  {value !== 'all-teams' ? getDisplayName(selectedTeam.name, { 
+                  {getDisplayName(selectedTeam.name, { 
                     preferAbbreviation: shouldUseAbbreviation(selectedTeam.name, undefined, isMobile),
                     maxLength: isMobile ? 10 : 20
-                  }) : selectedTeam.name}
+                  })}
                 </span>
               </div>
             </SelectValue>
@@ -116,16 +112,7 @@ export function TeamFilter({ value, onChange }: TeamFilterProps) {
             </div>
           </SelectTrigger>
           
-          {/* X button positioned absolutely to avoid event conflicts */}
-          {value !== 'all-teams' && (
-            <button 
-              onClick={handleReset}
-              className="absolute right-8 top-0 bottom-0 flex items-center justify-center w-6 h-full hover:opacity-100 z-10 text-bwin-brand-primary opacity-70"
-              aria-label="Reset filter"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          )}
+          {/* Removido o botão de reset */}
         </div>
         
         <SelectContent className="p-0 w-[380px] bg-bwin-neutral-20 border-bwin-neutral-30">

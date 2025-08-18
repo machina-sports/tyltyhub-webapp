@@ -60,7 +60,7 @@ export default async function Image({ params }: { params: { id: string } }) {
               maxWidth: '60%',
             }}
           >
-            SportingBOT - A Inteligência Artificial da Sportingbet
+            Bwin BOT - A Inteligência Artificial da Sportingbet
           </div>
         </div>
         

@@ -140,7 +140,7 @@ export function ContainerChat() {
       try {
         await navigator.share({
           title: firstMessage.substring(0, 50) + (firstMessage.length > 50 ? '...' : ''),
-          text: 'Mira este chat de bwin Copa Mundial de Clubes',
+          text: 'Mira este chat de bwin LaLiga',
           url: shareUrl
         })
       } catch (error) {
