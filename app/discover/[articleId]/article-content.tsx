@@ -1,36 +1,31 @@
 "use client";
-import React from "react";
-import {
-  useEffect,
-  useState,
-  useRef,
-  useMemo,
-  useCallback,
-  Suspense,
-} from "react";
-import { Badge } from "@/components/ui/badge";
+import { ArticleSharing } from "@/components/article/article-sharing";
+import { ArticleSkeleton } from "@/components/article/article-skeleton";
+import { ArticleVoting } from "@/components/article/article-voting";
+import { RelatedArticles } from "@/components/article/related-articles";
+import { RelatedOdds } from "@/components/article/related-odds";
 import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import Image from "next/image";
-import { ArticleVoting } from "@/components/article/article-voting";
-import { ArticleSharing } from "@/components/article/article-sharing";
-import { RelatedArticles } from "@/components/article/related-articles";
-import { RelatedOdds } from "@/components/article/related-odds";
-import { ArticleSkeleton } from "@/components/article/article-skeleton";
+import React, {
+    useEffect,
+    useMemo,
+    useRef,
+    useState
+} from "react";
 // import FollowUpQuestionForm from "@/components/follow-up-question";
-import ReactMarkdown from "react-markdown";
-import { useGlobalState } from "@/store/useState";
-import { useAppDispatch } from "@/store/dispatch";
-import {
-  doFetchArticle,
-  doFetchRelatedArticles,
-} from "@/providers/article/actions";
-import { Clock, Calendar, User } from "lucide-react";
-import dynamic from "next/dynamic";
+import { WidgetCarousel } from "@/components/carousel/container";
+import { ResponsibleGamingResponsive } from "@/components/responsible-gaming-responsive";
 import { useTheme } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
-import { WidgetCarousel } from "@/components/carousel/container";
+import {
+    doFetchArticle,
+    doFetchRelatedArticles,
+} from "@/providers/article/actions";
+import { useAppDispatch } from "@/store/dispatch";
+import { useGlobalState } from "@/store/useState";
+import { Calendar, Clock, User } from "lucide-react";
 
 // // Dynamically import the WidgetEmbed component to improve initial load time
 // const WidgetEmbed = dynamic(
@@ -494,6 +489,9 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
       <RelatedArticles currentArticleId={articleData.articleId} />
 
       {/* <FollowUpQuestionForm /> */}
+      
+      {/* Responsible Gaming Footer */}
+      <ResponsibleGamingResponsive />
     </div>
   );
 }

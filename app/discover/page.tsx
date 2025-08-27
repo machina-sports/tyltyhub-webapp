@@ -1,14 +1,15 @@
 "use client";
-import { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import { Newspaper, Search } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArticleGrid } from "@/components/discover/article-grid";
-import { useGlobalState } from "@/store/useState";
-import { useAppDispatch } from "@/store/dispatch";
+import { ResponsibleGamingResponsive } from "@/components/responsible-gaming-responsive";
 import { Input } from "@/components/ui/input";
-import { searchArticles } from "@/providers/discover/actions";
 import { Loading } from "@/components/ui/loading";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
+import { searchArticles } from "@/providers/discover/actions";
+import { useAppDispatch } from "@/store/dispatch";
+import { useGlobalState } from "@/store/useState";
+import { Newspaper, Search } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 interface SearchFilters {
   name: string;
@@ -312,6 +313,9 @@ export default function DiscoverPage() {
 
         {/* Removido o TabsContent de teams */}
       </Tabs>
+      
+      {/* Responsible Gaming Footer */}
+      <ResponsibleGamingResponsive />
     </div>
   );
 }

@@ -1,13 +1,10 @@
 "use client"
 
 import {
-  Clock,
-  History,
-  MessageCircle,
-  Newspaper,
+    Clock,
+    MessageCircle
 } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
 
 import { formatDistanceToNow } from "date-fns"
 
@@ -17,6 +14,7 @@ import { TableSkeleton } from "../skeleton"
 
 import Link from "next/link"
 
+import { ResponsibleGamingResponsive } from "@/components/responsible-gaming-responsive"
 import { useRouter } from "next/navigation"
 
 const HistoryItem = ({ item }: { item: any }) => {
@@ -79,6 +77,9 @@ const ContainerHistory = () => {
           </div>
         </div>
       </div>
+      
+      {/* Responsible Gaming Footer */}
+      <ResponsibleGamingResponsive />
     </div>
   )
 }

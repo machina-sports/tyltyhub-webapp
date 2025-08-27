@@ -10,6 +10,7 @@ import { clear } from "@/providers/threads/reducer"
 
 import { useAppDispatch } from "@/store/dispatch"
 
+import { ResponsibleGamingResponsive } from "@/components/responsible-gaming-responsive"
 import { useEffect } from "react"
 
 // import NavbarHeader from "@/components/navbar-header"
@@ -54,6 +55,9 @@ export default function ContainerView({ threadId }: { threadId: string }) {
       <div className="mobile-container md:pt-0 space-y-6 md:max-w-[1200px] mx-auto min-h-screen flex flex-col">
         <ContainerChat />
       </div>
+      
+      {/* Responsible Gaming Footer */}
+      <ResponsibleGamingResponsive />
     </div>
   )
 }

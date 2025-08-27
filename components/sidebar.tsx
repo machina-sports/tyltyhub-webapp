@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { useRouter, usePathname } from "next/navigation";
-import { MessageSquare, Compass } from "lucide-react";
-import { cn } from "@/lib/utils";
-import Image from "next/image";
 import AnimatedShinyText from "@/components/magicui/animated-shiny-text";
+import { Button } from "@/components/ui/button";
 import { trackEvent } from "@/lib/analytics";
+import { cn } from "@/lib/utils";
+import { Compass, MessageSquare } from "lucide-react";
+import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const routes = [
   {
@@ -177,23 +177,51 @@ export function Sidebar() {
         </a>
       </div>
 
-      {/* Legal disclaimer with better spacing */}
+      {/* Enhanced Responsible Gaming Signals */}
       <div className="px-8 py-6 border-t border-bwin-neutral-30">
-        <div className="flex flex-col items-center gap-3">
+        <div className="flex flex-col items-center gap-4">
+          {/* Main responsible gaming message */}
           <Image
-            src="/+18.png"
-            alt="+18"
-            width={32}
-            height={32}
-            className="w-8 h-8"
+            src="/Juega con responsabilidad.png"
+            alt="Juega con responsabilidad"
+            width={120}
+            height={24}
+            className="w-28 h-6"
           />
+          
+          {/* Fun message */}
           <Image
-            src="/Juego Seguro.png"
-            alt="Juego Seguro"
+            src="/Sin diversión no hay juego.png"
+            alt="Sin diversión no hay juego"
             width={100}
-            height={20}
-            className="w-[100px] h-auto"
+            height={32}
+            className="w-24 h-8"
           />
+          
+          {/* Age and safety icons */}
+          <div className="flex items-center justify-center gap-4">
+            <Image
+              src="/+18.png"
+              alt="+18"
+              width={32}
+              height={32}
+              className="w-8 h-8"
+            />
+            <Image
+              src="/mano.png"
+              alt="AutoProhibición"
+              width={80}
+              height={40}
+              className="w-20 h-10"
+            />
+            <Image
+              src="/Juego Seguro.png"
+              alt="Juego Seguro"
+              width={100}
+              height={20}
+              className="w-24 h-5"
+            />
+          </div>
         </div>
       </div>
     </div>

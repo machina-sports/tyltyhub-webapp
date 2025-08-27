@@ -1,8 +1,9 @@
 'use client';
 
-import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { trackEvent } from '@/lib/analytics';
+import Image from 'next/image';
+import { ResponsibleGamingResponsive } from './responsible-gaming-responsive';
 
 export default function SiteOffline() {
   const handleBwinClick = () => {
@@ -70,6 +71,9 @@ export default function SiteOffline() {
           </Button>
         </div>
       </div>
+      
+      {/* Responsible Gaming Footer */}
+      <ResponsibleGamingResponsive />
     </div>
   );
 } 

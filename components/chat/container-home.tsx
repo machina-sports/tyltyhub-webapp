@@ -1,10 +1,10 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useEffect, useRef, useState } from "react"
 
 import {
-  Send,
-  Reply,
+    Reply,
+    Send,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -25,10 +25,9 @@ import { cn } from "@/lib/utils"
 
 import { trackNewMessage, trackSuggestedQuestionClick } from "@/lib/analytics"
 
-import Image from "next/image"
 
-import ScrollingRow from "./scrolling-row"
 import { Loader2 } from "lucide-react"
+import ScrollingRow from "./scrolling-row"
 
 const getImageUrl = (article: any): string => {
   if (!article) return '';
@@ -348,6 +347,7 @@ const ContainerHome = ({ query }: { query: string }) => {
           )}
         </div>
       </div>
+      
     </div>
   )
 }

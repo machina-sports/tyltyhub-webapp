@@ -1,16 +1,18 @@
 "use client"
 
-import { useState, useRef, useEffect } from 'react'
-import { Search, TrendingUp, Trophy, Calendar, Zap, Users, Star, Globe, Target, DollarSign, Medal, Award, Icon, LucideIcon, Send, Mic } from 'lucide-react'
-import { soccerBall } from '@lucide/lab'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { ChatMessage } from '@/components/chat-demo'
-import { cn } from '@/lib/utils'
+import { ResponsibleGamingFloating } from '@/components/responsible-gaming-floating'
+import { ResponsibleGamingResponsive } from '@/components/responsible-gaming-responsive'
+import { Button } from '@/components/ui/button'
+import { SportingbetDot } from '@/components/ui/dot'
+import { Input } from '@/components/ui/input'
 import { useChatScroll } from '@/hooks/use-chat-scroll'
 import { useChatState } from '@/hooks/use-chat-state'
-import { Dot, SportingbetDot } from '@/components/ui/dot'
+import { cn } from '@/lib/utils'
+import { soccerBall } from '@lucide/lab'
 import { motion } from 'framer-motion'
+import { Award, Calendar, DollarSign, Globe, Icon, LucideIcon, Medal, Mic, Send, Star, Target, TrendingUp, Trophy, Users, Zap } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 
 type SuggestionItem = {
   text: string;
@@ -422,6 +424,9 @@ export default function Home() {
           </div>
         </div>
       )}
+      
+      {/* Responsible Gaming Footer */}
+      <ResponsibleGamingResponsive />
     </div>
   )
 }

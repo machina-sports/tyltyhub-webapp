@@ -1,5 +1,6 @@
 "use client"
 
+import { ResponsibleGamingResponsive } from "@/components/responsible-gaming-responsive"
 import TrendingProvider from "@/providers/trending/provider"
 
 // import Footer from "@/components/footer"
@@ -26,6 +27,8 @@ export default function DiscoverLayout({
           {process.env.FEATURE_TOGGLE_ENABLE_AVATAR === '1' && <InteractiveAvatar />}
         </div> */}
         {/* <Footer /> */}
+        {/* Responsible Gaming Footer - only one instance */}
+        <ResponsibleGamingResponsive />
       </div>
     </TrendingProvider>
   )
