@@ -19,12 +19,14 @@
 
 "use client"
 
-import React, { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { cn } from '@/lib/utils'
 import { useTheme } from '@/components/theme-provider'
-import { TrendingUp, TrendingDown, Minus, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent } from '@/components/ui/card'
+import { trackBettingLinkClick } from '@/lib/analytics/betting'
+import { buildBettingUrl } from '@/lib/betting-urls'
+import { cn } from '@/lib/utils'
+import { ChevronLeft, ChevronRight, Minus, TrendingDown, TrendingUp } from 'lucide-react'
+import { useState } from 'react'
 
 interface MarketRecommendation {
   market_type: string
@@ -32,6 +34,10 @@ interface MarketRecommendation {
   rationale: string
   recommendation: string
   title: string
+  event_id?: string
+  market_id?: string
+  option_id?: string
+  deep_link?: string // format: "fixtureId-marketId-optionId"
 }
 
 interface BettingRecommendationsWidgetProps {
@@ -86,6 +92,33 @@ function RecommendationCard({ market }: { market: MarketRecommendation }) {
     }
   }
 
+  // Resolve IDs from explicit fields or from deep_link (fixture-market-option)
+  const resolveIds = () => {
+    const parts = (market.deep_link || '').split('-')
+    const eventId = market.event_id || parts[0]
+    const marketId = (market.market_id as any) || parts[1]
+    const optionId = (market.option_id as any) || parts[2]
+    return {
+      eventId: eventId ? String(eventId) : '',
+      marketId: marketId ? String(marketId) : '',
+      optionId: optionId ? String(optionId) : ''
+    }
+  }
+
+  const deeplinkHref = (() => {
+    const { eventId, marketId, optionId } = resolveIds()
+    if (eventId && marketId && optionId) {
+      return buildBettingUrl({ 
+        eventId, 
+        marketId, 
+        optionId,
+        baseUrl: process.env.NEXT_PUBLIC_SPORTS_BASE_URL || undefined,
+        language: 'en'
+      })
+    }
+    return "https://www.bwin.es/en/sports"
+  })()
+
   return (
     <div className="w-full min-h-[220px]">
       <Card className="h-full">
@@ -120,9 +153,21 @@ function RecommendationCard({ market }: { market: MarketRecommendation }) {
           <div className="flex items-center justify-between mb-4 p-4 rounded-lg bg-muted/30">
             <span className="text-base font-medium">Cuota:</span>
             <a 
-              href="https://www.bwin.es/es/sports"
+              href={deeplinkHref}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => {
+                const { eventId, marketId, optionId } = resolveIds()
+                trackBettingLinkClick({
+                  eventId,
+                  marketId,
+                  optionId,
+                  market_type: market.market_type,
+                  market_title: market.title,
+                  odds_value: market.odds,
+                  recommendation: market.recommendation
+                });
+              }}
               className={cn(
                 "px-4 py-2 rounded-lg font-mono font-bold text-lg transition-all duration-200 hover:scale-105 cursor-pointer",
                 isDarkMode 
