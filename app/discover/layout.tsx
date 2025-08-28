@@ -40,9 +40,9 @@ export default function DiscoverLayout({
   return (
     <StandingsProvider>
       <DiscoverClientLayout>
-          <CalendarProvider>
-            {children}
-          </CalendarProvider>
+        <CalendarProvider>
+          {children}
+        </CalendarProvider>
       </DiscoverClientLayout>
     </StandingsProvider>
   )

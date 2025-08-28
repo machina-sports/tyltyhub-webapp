@@ -187,7 +187,7 @@ export default function DiscoverPage() {
   }, [displayedArticles]);
 
   return (
-    <div className="mobile-container pb-24 md:pb-4 space-y-6 max-w-5xl mx-auto">
+    <div className="mobile-container pt-4 max-w-5xl mx-auto">
       <h1 className="sr-only">La Inteligencia Artificial de bwin</h1>
       <Tabs
         value={activeTab}
@@ -196,13 +196,7 @@ export default function DiscoverPage() {
       >
         <div
           ref={headerRef}
-          className={cn(
-            "md:sticky z-20 transition-shadow duration-200",
-            isScrolled ? "shadow-md shadow-black/5" : "shadow-none",
-            "top-[64px] md:top-0",
-            "bg-bwin-neutral-10",
-            "pt-24 md:pt-8 pb-4"
-          )}
+          className="bg-bwin-neutral-10"
         >
           <div className="border-b pb-4 border-bwin-neutral-30">
             <TabsList className="w-full justify-start overflow-x-auto bg-bwin-neutral-20 border-bwin-neutral-30">
@@ -213,7 +207,6 @@ export default function DiscoverPage() {
                 <Newspaper className="h-4 w-4" />
                 Noticias
               </TabsTrigger>
-              {/* Removido o botão de Estatísticas */}
             </TabsList>
           </div>
 
@@ -297,12 +290,7 @@ export default function DiscoverPage() {
             )}
           </div>
         </TabsContent>
-
-        {/* Removido o TabsContent de teams */}
       </Tabs>
-      
-      {/* Responsible Gaming Footer */}
-      <ResponsibleGamingResponsive />
     </div>
   );
 }

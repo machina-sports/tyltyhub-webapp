@@ -1,6 +1,7 @@
-import { ResponsibleGamingFloating } from "@/components/responsible-gaming-floating";
+// import { ResponsibleGamingFloating } from "@/components/responsible-gaming-floating";
 import { ResponsibleGamingResponsive } from "@/components/responsible-gaming-responsive";
 import { Sidebar } from "@/components/sidebar";
+import { Topbar } from "@/components/topbar";
 import { AgeVerification } from "@/components/ui/age-verification";
 import { LGPDConsent } from "@/components/ui/lgpd-consent";
 import { Toaster } from "@/components/ui/toaster";
@@ -87,10 +88,10 @@ export default function RootLayout({
           `,
           }}
         />
-        <script 
+        <script
           async
-          type="module" 
-          data-tallysight-defaults-widget-config-workspace="bwin-spain" 
+          type="module"
+          data-tallysight-defaults-widget-config-workspace="bwin-spain"
           src="https://storage.googleapis.com/tallysight-widgets/dist/tallysight.min.js"
           data-tallysight-widget-loading="lazy"
           data-tallysight-observer="true"
@@ -103,13 +104,16 @@ export default function RootLayout({
             <DiscoveryProvider>
               <div className="flex h-screen flex-col md:flex-row">
                 <Sidebar />
-                <main className="flex-1 overflow-auto pb-safe">{children}</main>
+                <main className="flex-1 overflow-auto">
+                  <Topbar />
+                  {children}
+                  <ResponsibleGamingResponsive />
+                </main>
               </div>
-              <Toaster />
             </DiscoveryProvider>
             <AgeVerification />
             <LGPDConsent />
-            {/* Responsible Gaming components moved to individual pages to avoid duplication */}
+            <Toaster />
           </MainProvider>
         </Providers>
       </body>

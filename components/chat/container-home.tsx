@@ -29,44 +29,6 @@ import { ResponsibleGamingResponsive } from "@/components/responsible-gaming-res
 import { Loader2 } from "lucide-react"
 import ScrollingRow from "./scrolling-row"
 
-const getImageUrl = (article: any): string => {
-  if (!article) return '';
-
-  const imageAddress = process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS;
-
-  if (article?.image_path) {
-    return `${imageAddress}/${article?.image_path}`;
-  }
-
-  const title = article.title || 'Article';
-  return `https://placehold.co/1200x600/2A9D8F/FFFFFF?text=${encodeURIComponent(title)}`;
-};
-
-const getEventType = (article: any): string => {
-  if (!article || !article.metadata) return 'Notícias';
-
-  // For soccer games, return "Futebol"
-  if (article.metadata.event_type === 'soccer-game') {
-    return 'Futebol';
-  }
-
-  // For competition names, make them more readable
-  if (article.metadata.competition) {
-    switch (article.metadata.competition) {
-      case 'sr:competition:17':
-        return 'Premier League';
-      case 'sr:competition:384':
-        return 'Libertadores';
-      case 'sr:competition:390':
-        return 'Brasileiro Série B';
-      default:
-        return article.metadata.competition;
-    }
-  }
-
-  return 'Notícias';
-};
-
 const ContainerHome = ({ query }: { query: string }) => {
   const { isDarkMode } = useTheme()
 
@@ -197,59 +159,14 @@ const ContainerHome = ({ query }: { query: string }) => {
     }, 100)
   }
 
-  const getInputPlaceholder = () => {
-    return "Converse com o Bwin BOT..."
-  }
-
-  // Improved mobile scroll handling for home page
-  useEffect(() => {
-    const isMobile = window.innerWidth <= 768
-    if (isMobile) {
-      // Store original body styles
-      const originalBodyStyle = {
-        overflow: document.body.style.overflow,
-        position: document.body.style.position,
-        height: document.body.style.height,
-        width: document.body.style.width
-      }
-
-      // Apply mobile-specific styles with better scroll handling
-      document.body.style.overflow = 'auto'
-      document.body.style.position = 'relative'
-      document.body.style.height = '100vh'
-      document.body.style.width = '100%'
-
-      // Cleanup function
-      return () => {
-        document.body.style.overflow = originalBodyStyle.overflow
-        document.body.style.position = originalBodyStyle.position
-        document.body.style.height = originalBodyStyle.height
-        document.body.style.width = originalBodyStyle.width
-      }
-    }
-  }, [])
-
   return (
-    <div
-      className="flex flex-col md:min-h-screen bg-bwin-neutral-10 pt-12 pb-24 md:pb-0 md:pt-0"
-      style={{
-        overscrollBehavior: 'auto',
-        WebkitOverflowScrolling: 'touch'
-      }}
-    >
+    <div className="flex flex-col bg-bwin-neutral-10">
       <div className="flex flex-col items-center p-4">
-        {/* Main heading for SEO - visually hidden but accessible */}
-        <h1 className="sr-only">La Inteligencia Artificial de bwin</h1>
-
-        {/* Hero section without logo */}
         <div className="w-full max-w-4xl mx-auto text-center space-y-8 animate-fade-in">
           <h2 className="text-bwin-neutral-100 text-center mb-8 text-3xl sm:text-5xl font-bold leading-tight animate-slide-up pt-8">
             {randomTitle}
           </h2>
-
         </div>
-
-        {/* Enhanced chat input */}
         <div className="w-full max-w-xl mx-auto">
           <form onSubmit={handleSubmit} className="relative">
             <Input
@@ -356,12 +273,6 @@ const ContainerHome = ({ query }: { query: string }) => {
             </div>
           </div>
         )}
-      </div>
-      {/* Responsible Gaming Footer */}
-      <div className="flex justify-center w-full">
-        <div className="mx-4 mt-12 pb-0 max-w-[976px] w-full">
-          <ResponsibleGamingResponsive />
-        </div>
       </div>
     </div>
 

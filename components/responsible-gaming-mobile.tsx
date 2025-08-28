@@ -8,7 +8,7 @@ interface ResponsibleGamingMobileProps {
   showLogo?: boolean
 }
 
-export function ResponsibleGamingMobile({ 
+export function ResponsibleGamingMobile({
   className,
   showLogo = true
 }: ResponsibleGamingMobileProps) {
@@ -18,24 +18,33 @@ export function ResponsibleGamingMobile({
       className
     )}>
       {/* Single Mobile Banner with all elements */}
-      <div className="w-full bg-bwin-neutral-0 border-y border-bwin-brand-primary/30">
+      <div className="w-full bg-bwin-neutral-0 border-y F">
         <div className="px-6 py-4">
           <div className="flex flex-col items-center space-y-4">
             {/* Top Row - Logo and Main Message */}
+            {showLogo && (
+              <div className="flex-shrink-0 py-4">
+                <Image
+                  src="/bwin-logo.png"
+                  alt="bwin"
+                  width={120}
+                  height={24}
+                  priority
+                />
+              </div>
+            )}
+
+            {/* Second Row - Fun Message */}
             <div className="flex items-center justify-center gap-4 w-full">
-              {showLogo && (
-                <div className="flex-shrink-0">
-                  <Image
-                    src="/bwin-logo.png"
-                    alt="bwin"
-                    width={80}
-                    height={24}
-                    className="w-20 h-6"
-                    priority
-                  />
-                </div>
-              )}
-              
+              <div className="flex-shrink-0">
+                <Image
+                  src="/Sin diversión no hay juego.png"
+                  alt="Sin diversión no hay juego"
+                  width={100}
+                  height={32}
+                  className="w-24 h-8"
+                />
+              </div>
               <div className="flex-shrink-0">
                 <Image
                   src="/Juega con responsabilidad.png"
@@ -46,18 +55,7 @@ export function ResponsibleGamingMobile({
                 />
               </div>
             </div>
-            
-            {/* Second Row - Fun Message */}
-            <div className="flex-shrink-0">
-              <Image
-                src="/Sin diversión no hay juego.png"
-                alt="Sin diversión no hay juego"
-                width={100}
-                height={32}
-                className="w-24 h-8"
-              />
-            </div>
-            
+
             {/* Third Row - Age and Safety Icons */}
             <div className="flex items-center justify-center gap-6 w-full">
               <div className="flex-shrink-0">
@@ -69,7 +67,7 @@ export function ResponsibleGamingMobile({
                   className="w-10 h-10"
                 />
               </div>
-              
+
               <div className="flex-shrink-0">
                 <Image
                   src="/mano.png"
@@ -79,14 +77,15 @@ export function ResponsibleGamingMobile({
                   className="w-24 h-12"
                 />
               </div>
-              
-              <div className="flex-shrink-0">
+            </div>
+
+            <div className="flex items-center justify-center gap-6 w-full">
+              <div className="flex-shrink-0 py-4">
                 <Image
                   src="/Juego Seguro.png"
                   alt="Juego Seguro"
-                  width={120}
-                  height={24}
-                  className="w-28 h-6"
+                  width={150}
+                  height={32}
                 />
               </div>
             </div>

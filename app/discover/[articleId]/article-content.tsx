@@ -257,24 +257,16 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 pt-20 md:pt-6 pb-32 sm:pb-36 space-y-6 sm:space-y-8">
-      {/* Main heading for SEO - visually hidden but accessible */}
-      <h1 className="sr-only">A Inteligência Artificial da Sportingbet</h1>
-
+    <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 pt-6 space-y-6 sm:space-y-8">
       <RenderImageComponent imageUrl={mainImageUrl} alt={articleData.title} />
-
       <div className="space-y-6">
-        {/* <Badge variant="secondary">{articleData.eventType}</Badge> */}
-
         <h2 className={cn(
           "text-2xl sm:text-4xl font-bold",
           isDarkMode ? "text-[#fff]" : ""
         )}>
           {articleData.title}
         </h2>
-        {/* Header Meta & Sharing */}
         <div className="flex flex-row items-center justify-between gap-3 sm:gap-6 mb-6">
-          {/* Meta information */}
           <div className="flex flex-col justify-center flex-1">
             {articleData.subtitle && (
               <p
@@ -482,18 +474,13 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
 
       <ArticleVoting articleId={articleData.articleId} />
 
-      <Separator className={cn(isDarkMode ? "bg-[#FFCB00]/30" : "")} />
+      <div className="h-4" />
+
+      {/* <Separator className={cn(isDarkMode ? "bg-[#FFCB00]/30" : "")} /> */}
 
       <RelatedOdds currentArticleId={articleData.articleId} />
 
       <RelatedArticles currentArticleId={articleData.articleId} />
-
-      {/* <FollowUpQuestionForm /> */}
-      
-      {/* Responsible Gaming Footer */}
-      <div className="pb-20 md:pb-0">
-        <ResponsibleGamingResponsive />
-      </div>
     </div>
   );
 }
