@@ -208,7 +208,7 @@ export default function DiscoverPage() {
   }, [displayedArticles]);
 
   return (
-    <div className="mobile-container pb-4 space-y-6 max-w-5xl mx-auto">
+    <div className="mobile-container pb-24 md:pb-4 space-y-6 max-w-5xl mx-auto">
       <h1 className="sr-only">La Inteligencia Artificial de bwin</h1>
       <Tabs
         value={activeTab}

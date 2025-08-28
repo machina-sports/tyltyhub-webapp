@@ -1,7 +1,6 @@
 "use client"
 
 import { ChatMessage } from '@/components/chat-demo'
-import { ResponsibleGamingFloating } from '@/components/responsible-gaming-floating'
 import { ResponsibleGamingResponsive } from '@/components/responsible-gaming-responsive'
 import { Button } from '@/components/ui/button'
 import { SportingbetDot } from '@/components/ui/dot'
@@ -426,7 +425,9 @@ export default function Home() {
       )}
       
       {/* Responsible Gaming Footer */}
-      <ResponsibleGamingResponsive />
+      <div className="pb-20 md:pb-0">
+        <ResponsibleGamingResponsive />
+      </div>
     </div>
   )
 }

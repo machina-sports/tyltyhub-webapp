@@ -1,9 +1,9 @@
 "use client"
 
-import { ArrowLeft, Menu, MessageSquare, Compass } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { usePathname, useRouter } from "next/navigation"
 import { useChatState } from "@/hooks/use-chat-state"
+import { ArrowLeft, Compass, Menu, MessageSquare } from "lucide-react"
+import { usePathname, useRouter } from "next/navigation"
 
 interface MobileHeaderProps {
   onMenuClick: () => void
@@ -52,7 +52,7 @@ export function MobileHeader({ onMenuClick }: MobileHeaderProps) {
   }
 
   return (
-    <div className="fixed top-0 left-0 right-0 h-16 backdrop-blur-sm border-b z-40 md:hidden bg-bwin-neutral-10 border-bwin-neutral-30">
+    <div className="fixed top-0 left-0 right-0 h-16 backdrop-blur-sm border-b z-[60] md:hidden bg-bwin-neutral-10 border-bwin-neutral-30">
       <div className="flex items-center justify-between h-full px-4">
         <Button
           variant="ghost"

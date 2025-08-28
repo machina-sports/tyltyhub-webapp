@@ -491,7 +491,9 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
       {/* <FollowUpQuestionForm /> */}
       
       {/* Responsible Gaming Footer */}
-      <ResponsibleGamingResponsive />
+      <div className="pb-20 md:pb-0">
+        <ResponsibleGamingResponsive />
+      </div>
     </div>
   );
 }

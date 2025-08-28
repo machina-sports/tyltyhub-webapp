@@ -101,6 +101,18 @@ const ContainerHome = ({ query }: { query: string }) => {
     setRandomTitle(titleOptions[Math.floor(Math.random() * titleOptions.length)])
   }, [])
 
+  // Focus input on mount to ensure it's visible on iOS
+  useEffect(() => {
+    if (inputRef.current) {
+      // Small delay to ensure input is rendered
+      const timer = setTimeout(() => {
+        inputRef.current?.focus()
+      }, 500)
+      
+      return () => clearTimeout(timer)
+    }
+  }, [])
+
   // Auto-scroll to selected item
   useEffect(() => {
     if (selectedIndex !== null && selectedIndex >= 0 && questionRefs.current[selectedIndex]) {
@@ -189,7 +201,7 @@ const ContainerHome = ({ query }: { query: string }) => {
     return "Converse com o Bwin BOT..."
   }
 
-  // Prevent scroll on mobile only for home page
+  // Improved mobile scroll handling for home page
   useEffect(() => {
     const isMobile = window.innerWidth <= 768
     if (isMobile) {
@@ -201,9 +213,9 @@ const ContainerHome = ({ query }: { query: string }) => {
         width: document.body.style.width
       }
 
-      // Apply mobile-specific styles
-      document.body.style.overflow = 'hidden'
-      document.body.style.position = 'fixed'
+      // Apply mobile-specific styles with better scroll handling
+      document.body.style.overflow = 'auto'
+      document.body.style.position = 'relative'
       document.body.style.height = '100vh'
       document.body.style.width = '100%'
 
@@ -218,20 +230,21 @@ const ContainerHome = ({ query }: { query: string }) => {
   }, [])
 
   return (
-    <div 
-      className="flex flex-col h-[100vh] md:min-h-screen bg-bwin-neutral-10"
-      style={{
-        overscrollBehavior: 'none',
-        WebkitOverflowScrolling: 'touch'
-      }}
-    >
-      <div 
-        className="flex-1 overflow-y-auto overflow-x-hidden hide-scrollbar momentum-scroll pb-32 pt-8 md:pt-8 md:pb-24"
-        style={{
-          overscrollBehavior: 'contain',
-          WebkitOverflowScrolling: 'touch'
-        }}
-      >
+         <div 
+       className="flex flex-col h-[100vh] md:min-h-screen bg-bwin-neutral-10"
+       style={{
+         overscrollBehavior: 'auto',
+         WebkitOverflowScrolling: 'touch'
+       }}
+     >
+             <div 
+         className="flex-1 overflow-y-auto overflow-x-hidden hide-scrollbar momentum-scroll pb-32 pt-8 md:pt-8 md:pb-24 scroll-smooth"
+         style={{
+           overscrollBehavior: 'auto',
+           WebkitOverflowScrolling: 'touch',
+           scrollBehavior: 'smooth'
+         }}
+       >
         <div className="flex flex-col items-center p-6">
           {/* Main heading for SEO - visually hidden but accessible */}
           <h1 className="sr-only">La Inteligencia Artificial de bwin</h1>
@@ -247,13 +260,19 @@ const ContainerHome = ({ query }: { query: string }) => {
           {/* Enhanced chat input */}
           <div className="w-full max-w-xl mx-auto">
             <form onSubmit={handleSubmit} className="relative">
-              <Input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Pregúntame sobre LaLiga..."
-                className="w-full py-6 pl-6 pr-14 rounded-2xl bg-bwin-neutral-20 border-2 border-bwin-neutral-30 text-base text-bwin-neutral-100 placeholder:text-bwin-neutral-60 focus:border-bwin-brand-primary focus:ring-0 focus:bg-bwin-neutral-20 transition-colors duration-200"
-                disabled={isSubmitting}
-              />
+                             <Input
+                 ref={inputRef}
+                 value={input}
+                 onChange={(e) => setInput(e.target.value)}
+                 placeholder="Pregúntame sobre LaLiga..."
+                 className="w-full py-6 pl-6 pr-14 rounded-2xl bg-bwin-neutral-20 border-2 border-bwin-neutral-30 text-base text-bwin-neutral-100 placeholder:text-bwin-neutral-60 focus:border-bwin-brand-primary focus:ring-0 focus:bg-bwin-neutral-20 transition-colors duration-200"
+                 disabled={isSubmitting}
+                 style={{
+                   WebkitAppearance: 'none',
+                   WebkitTapHighlightColor: 'transparent',
+                   fontSize: '16px' // Prevents zoom on iOS
+                 }}
+               />
               <Button 
                 type="submit" 
                 size="icon" 

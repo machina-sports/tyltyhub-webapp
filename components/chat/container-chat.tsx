@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 
-import { Send, Share2, X, MessageCircle, Check, Copy } from "lucide-react"
+import { Check, Copy, MessageCircle, Send, Share2, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
@@ -11,13 +11,12 @@ import { Input } from "@/components/ui/input"
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from "@/components/ui/dialog"
 
-import { actionChat } from "@/providers/threads/actions"
 import { actionSaveSharedChat } from "@/providers/share/actions"
+import { actionChat } from "@/providers/threads/actions"
 
 import { ChatMessage } from "../chat-message"
 
@@ -25,10 +24,8 @@ import { useAppDispatch } from "@/store/dispatch"
 
 import { useGlobalState } from "@/store/useState"
 
-import { TableSkeleton } from "../skeleton"
-import { Loading } from "../ui/loading"
-import { cn } from "@/lib/utils"
 import { trackNewMessage } from "@/lib/analytics"
+import { Loading } from "../ui/loading"
 
 import { AppState } from "@/store"
 
@@ -45,6 +42,7 @@ export function ContainerChat() {
   const [isSaving, setIsSaving] = useState(false)
 
   const [input, setInput] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const messageContainerRef = useRef<HTMLDivElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -57,10 +55,22 @@ export function ContainerChat() {
     setInput('')
   }
 
-  // Función simple para scroll
+  // Función mejorada para scroll
   const scrollToBottom = () => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
+    if (messagesEndRef.current && messageContainerRef.current) {
+      try {
+        const container = messageContainerRef.current
+        const target = messagesEndRef.current
+        
+        // Use scrollTo for better iOS compatibility
+        container.scrollTo({
+          top: target.offsetTop,
+          behavior: 'smooth'
+        })
+      } catch (error) {
+        // Fallback to scrollIntoView
+        messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
+      }
     }
   }
 
@@ -155,6 +165,30 @@ export function ContainerChat() {
   const isTyping = currentStatus === "processing" || currentStatus === "waiting" || state.fields.status === "loading"
   const isLoading = state.item.status === 'loading'
 
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    if (isUserNearBottom && currentMessages.length > 0) {
+      // Small delay to ensure DOM is updated
+      const timer = setTimeout(() => {
+        scrollToBottom()
+      }, 100)
+      
+      return () => clearTimeout(timer)
+    }
+  }, [currentMessages.length, isUserNearBottom])
+
+  // Focus input after message is sent (fixes iOS issue)
+  useEffect(() => {
+    if (!isTyping && inputRef.current) {
+      // Small delay to ensure input is visible
+      const timer = setTimeout(() => {
+        inputRef.current?.focus()
+      }, 200)
+      
+      return () => clearTimeout(timer)
+    }
+  }, [isTyping])
+
   // Scroll cuando hay nuevos mensajes (solo si usuario está cerca del final)
   useEffect(() => {
     if (isUserNearBottom && currentMessages.length > 0) {
@@ -175,7 +209,7 @@ export function ContainerChat() {
       <h1 className="sr-only">La Inteligencia Artificial de bwin</h1>
       
       {/* Share button section */}
-      <div className="sticky top-0 z-10 px-4 py-2 flex justify-end items-center border-b bg-bwin-neutral-10 border-bwin-neutral-30">
+      <div className="sticky top-0 z-[45] px-4 py-2 flex justify-end items-center border-b bg-bwin-neutral-10 border-bwin-neutral-30">
         <Button
           variant="ghost"
           size="sm"
@@ -245,9 +279,13 @@ export function ContainerChat() {
       </Dialog>
 
       <div 
-        className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden" 
+        className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden scroll-smooth" 
         ref={messageContainerRef}
         onScroll={handleScroll}
+        style={{
+          WebkitOverflowScrolling: 'touch',
+          overscrollBehavior: 'contain'
+        }}
       >
         <div className="max-w-3xl mx-auto space-y-6 pb-[160px] md:pb-[120px]">
           <div className="space-y-3 sm:space-y-6 pt-4">
@@ -280,14 +318,20 @@ export function ContainerChat() {
         </div>
       </div>
 
-      <div className="fixed md:sticky bottom-0 left-0 right-0 bg-bwin-neutral-10/90 backdrop-blur-sm border-t border-bwin-neutral-30 p-4 pb-6 md:p-0 md:pb-4 mobile-safe-bottom">
+      <div className="fixed md:sticky bottom-0 left-0 right-0 bg-bwin-neutral-10/95 backdrop-blur-md border-t border-bwin-neutral-30 p-4 pb-safe md:p-0 md:pb-4 mobile-safe-bottom z-[50]">
         <form onSubmit={handleSubmit} className="max-w-3xl mx-auto relative tap-highlight-none md:mt-2">
           <Input
-            disabled={isTyping}
+            ref={inputRef}
+            readOnly={isTyping}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Conversa con bwinBOT..."
-            className="w-full h-12 pl-4 pr-12 rounded-lg bg-bwin-neutral-20 text-bwin-neutral-100 placeholder:text-bwin-neutral-60 border border-bwin-neutral-30 focus:border-bwin-brand-primary focus:ring-0 transition-colors"
+            className="w-full h-12 pl-4 pr-12 rounded-lg bg-bwin-neutral-20 text-bwin-neutral-100 placeholder:text-bwin-neutral-60 border border-bwin-neutral-30 focus:border-bwin-primary focus:ring-0 transition-colors focus:bg-bwin-neutral-20"
+            style={{
+              WebkitAppearance: 'none',
+              WebkitTapHighlightColor: 'transparent',
+              fontSize: '16px' // Prevents zoom on iOS
+            }}
           />
           <div className="absolute right-2 top-1/2 -translate-y-1/2">
             <Button 

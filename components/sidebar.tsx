@@ -64,7 +64,7 @@ export function Sidebar() {
 
   if (isMobile) {
     return (
-      <div className="fixed top-0 left-0 right-0 h-16 z-50 border-b bg-bwin-neutral-10 border-bwin-neutral-30">
+      <div className="fixed top-0 left-0 right-0 h-16 z-[55] border-b bg-bwin-neutral-10 border-bwin-neutral-30">
         <div className="flex items-center justify-between h-full px-6">
           <div 
             onClick={handleLogoClick}

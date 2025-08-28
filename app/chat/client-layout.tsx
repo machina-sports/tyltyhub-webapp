@@ -1,8 +1,5 @@
 "use client"
 
-import { ResponsibleGamingFloating } from "@/components/responsible-gaming-floating";
-import { ResponsibleGamingResponsive } from "@/components/responsible-gaming-responsive";
-
 export default function ChatClientLayout({
   children,
 }: {
@@ -17,8 +14,7 @@ export default function ChatClientLayout({
         {process.env.FEATURE_TOGGLE_ENABLE_AVATAR === '1' && <InteractiveAvatar />}
       </div> */}
       {/* <Footer /> */}
-      {/* Responsible Gaming Footer - only one instance */}
-      <ResponsibleGamingResponsive />
+      {/* Responsible Gaming Footer moved to individual pages to avoid duplication */}
     </div>
   )
 } 

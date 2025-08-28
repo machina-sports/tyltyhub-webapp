@@ -73,7 +73,9 @@ export default function SiteOffline() {
       </div>
       
       {/* Responsible Gaming Footer */}
-      <ResponsibleGamingResponsive />
+      <div className="pb-20 md:pb-0">
+        <ResponsibleGamingResponsive />
+      </div>
     </div>
   );
 } 
