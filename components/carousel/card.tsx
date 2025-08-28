@@ -13,7 +13,7 @@ const Card = () => {
       "mt-0 mb-4 max-w-[350px]",
       "rounded-lg border p-4",
       isDarkMode
-        ? "dark border-[#45CAFF]/30 bg-card"
+        ? "dark border-[#FFCB00]/30 bg-card"
         : "border-border bg-card"
     )}>
     </div>

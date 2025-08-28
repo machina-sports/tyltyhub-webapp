@@ -283,7 +283,7 @@ const TeamMatch = ({ teamName, logo, isSecond, useAbbreviation = false, compact 
         <span className={cn(
           "font-medium overflow-wrap-normal word-break-normal",
           compact ? "text-xs" : "text-sm",
-          isDarkMode ? "text-[#45CAFF]" : ""
+          isDarkMode ? "text-[#FFCB00]" : ""
         )}>
           {displayName}
         </span>
@@ -306,7 +306,7 @@ const TeamMatch = ({ teamName, logo, isSecond, useAbbreviation = false, compact 
         <span className={cn(
           "font-medium overflow-wrap-normal word-break-normal",
           compact ? "text-xs" : "text-sm",
-          isDarkMode ? "text-[#45CAFF]" : ""
+          isDarkMode ? "text-[#FFCB00]" : ""
         )}>
           {displayName}
         </span>
@@ -369,7 +369,7 @@ export const MatchCard = ({ fixture, useAbbreviation = false, compact = false, g
       <div className={cn(
         "border rounded-md bg-card hover:bg-muted/10 transition-colors h-full",
         compact ? "p-3" : "p-4",
-        isDarkMode && "border-[#45CAFF]/30 bg-[#061F3F] hover:bg-[#061f3ff3]"
+        isDarkMode && "border-[#FFCB00]/30 bg-[#061F3F] hover:bg-[#061f3ff3]"
       )}>
         <div className={cn(
           "grid grid-cols-[1fr_auto_1fr] items-center gap-2",
@@ -398,12 +398,12 @@ export const MatchCard = ({ fixture, useAbbreviation = false, compact = false, g
         <div className={cn(
           "grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 border-t pt-2",
           compact ? "text-xs" : "text-sm",
-          isDarkMode && "border-[#45CAFF]/30"
+          isDarkMode && "border-[#FFCB00]/30"
         )}>
           <Clock className={cn(
             "flex-shrink-0", 
             compact ? "h-3 w-3" : "h-4 w-4",
-            isDarkMode ? "text-[#45CAFF]" : "text-blue-500"
+            isDarkMode ? "text-[#FFCB00]" : "text-[#FDBA12]"
           )} />
           <Tooltip>
             <TooltipTrigger asChild>
@@ -422,7 +422,7 @@ export const MatchCard = ({ fixture, useAbbreviation = false, compact = false, g
           <MapPin className={cn(
             "flex-shrink-0", 
             compact ? "h-3 w-3" : "h-4 w-4",
-            isDarkMode ? "text-[#45CAFF]" : "text-blue-500"
+            isDarkMode ? "text-[#FFCB00]" : "text-[#FDBA12]"
           )} />
           <span className={cn(
             "overflow-wrap-normal word-break-normal",
@@ -432,7 +432,7 @@ export const MatchCard = ({ fixture, useAbbreviation = false, compact = false, g
           <Users className={cn(
             "flex-shrink-0", 
             compact ? "h-3 w-3" : "h-4 w-4",
-            isDarkMode ? "text-[#45CAFF]" : "text-blue-500"
+            isDarkMode ? "text-[#FFCB00]" : "text-[#FDBA12]"
           )} />
           <span className={cn(
             "overflow-wrap-normal word-break-normal",
@@ -511,7 +511,7 @@ export function MatchesCalendar({
           <div className={cn(
             "sticky top-0 z-10 bg-background border-b",
             compact ? "mb-2 py-3 px-2" : "mb-4 py-6 px-4",
-            isDarkMode && "bg-[#061F3F] border-[#45CAFF]/30"
+            isDarkMode && "bg-[#061F3F] border-[#FFCB00]/30"
           )}>
             <h2 className={cn(
               "font-bold flex items-center",
@@ -520,9 +520,9 @@ export function MatchesCalendar({
               <Calendar className={cn(
                 "mr-2",
                 compact ? "h-4 w-4" : "h-5 w-5",
-                isDarkMode ? "text-[#45CAFF]" : "text-primary"
+                isDarkMode ? "text-[#FFCB00]" : "text-primary"
               )} />
-              <span className={cn(isDarkMode && "text-[#45CAFF]")}>
+              <span className={cn(isDarkMode && "text-[#FFCB00]")}>
                 {translateDate(date)}
               </span>
               <Badge 
@@ -530,7 +530,7 @@ export function MatchesCalendar({
                 className={cn(
                   "ml-2",
                   compact && "text-xs",
-                  isDarkMode && "border-[#45CAFF]/30 text-[#D3ECFF]"
+                  isDarkMode && "border-[#FFCB00]/30 text-[#D3ECFF]"
                 )}
               >
                 {fixturesByDate[date].length} partidas

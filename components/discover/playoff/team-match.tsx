@@ -22,7 +22,7 @@ export const TeamMatch = ({ teamName, logo, isSecond, compact = false }: TeamMat
         <span className={cn(
           "font-medium overflow-wrap-normal word-break-normal",
           compact ? "text-xs" : "text-sm",
-          isDarkMode ? "text-[#45CAFF]" : ""
+          isDarkMode ? "text-[#FFCB00]" : ""
         )}>
           {teamName}
         </span>
@@ -45,7 +45,7 @@ export const TeamMatch = ({ teamName, logo, isSecond, compact = false }: TeamMat
         <span className={cn(
           "font-medium overflow-wrap-normal word-break-normal",
           compact ? "text-xs" : "text-sm",
-          isDarkMode ? "text-[#45CAFF]" : ""
+          isDarkMode ? "text-[#FFCB00]" : ""
         )}>
           {teamName}
         </span>

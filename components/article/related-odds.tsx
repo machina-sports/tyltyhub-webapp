@@ -227,7 +227,7 @@ export function RelatedOdds({
         className={cn(
           "text-sm px-3 py-1.5 font-semibold rounded-md transition-all duration-200",
           isDarkMode 
-            ? "bg-[#45CAFF]/20 text-[#45CAFF] hover:bg-[#45CAFF]/30 border border-[#45CAFF]/40 hover:border-[#45CAFF]/60" 
+            ? "bg-[#FFCB00]/20 text-[#FFCB00] hover:bg-[#FFCB00]/30 border border-[#FFCB00]/40 hover:border-[#FFCB00]/60" 
             : "bg-primary/10 text-primary hover:bg-primary/20 border border-primary/30 hover:border-primary/50"
         )}
       >
@@ -239,7 +239,7 @@ export function RelatedOdds({
   return (
     <Card className={cn(
       "overflow-hidden max-w-[420px] ml-3 rounded-2xl",
-      isDarkMode ? "bg-[#061F3F] border-[#45CAFF]/30" : "border-border"
+      isDarkMode ? "bg-[#061F3F] border-[#FFCB00]/30" : "border-border"
     )}>
       <div className="p-4">
         {/* Header */}

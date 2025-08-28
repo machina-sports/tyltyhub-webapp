@@ -51,7 +51,7 @@ export default function ContainerView({ threadId }: { threadId: string }) {
   }, [threadId, state.item.data?.value?.status])
 
   return (
-    <div className="min-h-screen w-full overflow-x-hidden bg-bwin-neutral-10 pb-20 md:pb-0">
+    <div className="min-h-screen w-full overflow-x-hidden bg-bwin-neutral-10 md:pb-0">
       <div className="mobile-container md:pt-0 space-y-6 md:max-w-[1200px] mx-auto min-h-screen flex flex-col">
         <ContainerChat />
       </div>

@@ -217,7 +217,7 @@ export default function Home() {
                   placeholder={getInputPlaceholder()}
                   className={cn(
                     "w-full h-10 md:h-12 pl-4 pr-12 rounded-lg bg-secondary/50 border-0 shadow-sm text-base",
-                    selectedIndex === null && "ring-2 ring-primary/50",
+                    selectedIndex === null && "ring-2 ring-[#FFCB00]/50",
                     isPreparing && "animate-pulse text-amber-600",
                     isRecording && "animate-pulse text-red-600",
                     isTranscribing && "animate-pulse"
@@ -279,7 +279,7 @@ export default function Home() {
                     className={cn(
                       "flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-200",
                       selectedIndex === index
-                        ? "bg-primary/10 border-2 border-primary/50 shadow-sm"
+                        ? "bg-[#FFCB00]/10 border-2 border-[#FFCB00]/50 shadow-sm"
                         : "hover:bg-secondary/40 border-2 border-transparent"
                     )}
                     onClick={() => handleSampleQuery(suggestion.text)}

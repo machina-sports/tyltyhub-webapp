@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils"
 
 import { RelatedOdds } from "@/components/article/related-odds";
 import { StandingsTable } from "@/components/discover/standings-table";
+import { SportingbetDot } from "@/components/ui/dot";
 import { MatchCard, MatchesCalendar } from "@/components/discover/matches-calendar";
 import { TeamsGrid } from "@/components/discover/teams-grid";
 import { LiveMatchStatus } from "@/components/live-match-status";
@@ -142,7 +143,9 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
           {isTyping ? (
             <div className="flex items-center gap-2 text-bwin-neutral-60">
               <span className="text-sm">{content || "Pensando..."}</span>
-              <img src="/soccer.gif" alt="Pensando..." className="w-6 h-6" />
+              <div className="animate-pulse">
+                <SportingbetDot size={12} />
+              </div>
             </div>
           ) : (
             <MarkdownChat content={currentMessage} />

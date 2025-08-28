@@ -58,7 +58,7 @@ export function RelatedArticles({ currentArticleId }: RelatedArticlesProps) {
             <Card key={articleId} className={cn(
               "overflow-hidden flex-none first:ml-0 last:mr-4 min-w-[280px] max-w-[280px]",
               isDarkMode 
-                ? "bg-[#061F3F] border-[#45CAFF]/30 hover:border-[#45CAFF]/50" 
+                ? "bg-[#061F3F] border-[#FFCB00]/30 hover:border-[#FFCB00]/50" 
                 : "hover:border-primary/30"
             )}>
               <Link 
@@ -80,7 +80,7 @@ export function RelatedArticles({ currentArticleId }: RelatedArticlesProps) {
                   <h4 className={cn(
                     "font-semibold line-clamp-2 mb-2 text-base transition-colors",
                     isDarkMode
-                      ? "text-[#D3ECFF] hover:text-[#45CAFF]"
+                      ? "text-[#D3ECFF] hover:text-[#FFCB00]"
                       : "hover:text-primary"
                   )}>
                     {article.title}
@@ -91,7 +91,7 @@ export function RelatedArticles({ currentArticleId }: RelatedArticlesProps) {
                   )}>
                     <span className={cn(
                       "inline-block w-2 h-2 rounded-full",
-                      isDarkMode ? "bg-[#45CAFF]" : "bg-muted"
+                      isDarkMode ? "bg-[#FFCB00]" : "bg-muted"
                     )} />
                     {articleDate ? 
                       formatDistanceToNow(new Date(articleDate), { addSuffix: true, locale: ptBR }) : 

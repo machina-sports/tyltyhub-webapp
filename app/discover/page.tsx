@@ -3,12 +3,13 @@ import { ArticleGrid } from "@/components/discover/article-grid";
 import { ResponsibleGamingResponsive } from "@/components/responsible-gaming-responsive";
 import { Input } from "@/components/ui/input";
 import { Loading } from "@/components/ui/loading";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { searchArticles } from "@/providers/discover/actions";
 import { useAppDispatch } from "@/store/dispatch";
 import { useGlobalState } from "@/store/useState";
-import { Newspaper, Search } from "lucide-react";
+import { Newspaper, Search, Plus } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 interface SearchFilters {
@@ -70,7 +71,6 @@ export default function DiscoverPage() {
   const [isSearching, setIsSearching] = useState(false);
 
   const headerRef = useRef<HTMLDivElement>(null);
-  const loadMoreRef = useRef<HTMLDivElement>(null);
 
   const dispatch = useAppDispatch();
   const searchResults = useGlobalState((state: any) => state.discover.searchResults) as SearchResults;
@@ -128,6 +128,19 @@ export default function DiscoverPage() {
     }
   }, []);
 
+  const handleLoadMore = useCallback(() => {
+    if (searchResults.status !== "loading" && searchResults.pagination.hasMore) {
+      const nextPage = searchResults.pagination.page + 1;
+      const filters = buildSearchFilters(debouncedSearchQuery);
+
+      dispatch(searchArticles({ 
+        filters,
+        pagination: { page: nextPage, page_size: pageSize },
+        sorters: ["_id", -1]
+      }));
+    }
+  }, [searchResults.status, searchResults.pagination.hasMore, searchResults.pagination.page, debouncedSearchQuery, dispatch, pageSize]);
+
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -142,41 +155,7 @@ export default function DiscoverPage() {
     }));
   }, [dispatch, pageSize]);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const target = entries[0];
-        if (target.isIntersecting && searchResults.status !== "loading" && searchResults.pagination.hasMore) {
-          const nextPage = searchResults.pagination.page + 1;
-          const filters = buildSearchFilters(debouncedSearchQuery);
 
-          dispatch(searchArticles({ 
-            filters,
-            pagination: { page: nextPage, page_size: pageSize },
-            sorters: ["_id", -1]
-          }));
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    const currentRef = loadMoreRef.current;
-    if (currentRef) {
-      observer.observe(currentRef);
-    }
-
-    return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
-      }
-    };
-  }, [
-    searchResults.status,
-    searchResults.pagination,
-    dispatch,
-    debouncedSearchQuery,
-    pageSize
-  ]);
 
   const displayedArticles = searchResults.data;
 
@@ -229,7 +208,7 @@ export default function DiscoverPage() {
             <TabsList className="w-full justify-start overflow-x-auto bg-bwin-neutral-20 border-bwin-neutral-30">
               <TabsTrigger 
                 value="news" 
-                className="flex items-center gap-2 text-bwin-neutral-100 data-[state=active]:bg-bwin-brand-primary data-[state=active]:text-bwin-neutral-0"
+                className="flex items-center gap-2 text-bwin-neutral-100 data-[state=active]:bg-bwin-neutral-30 data-[state=active]:text-bwin-neutral-100"
               >
                 <Newspaper className="h-4 w-4" />
                 Noticias
@@ -266,7 +245,7 @@ export default function DiscoverPage() {
           <div className="space-y-12">
             {searchResults.status === "loading" && !searchResults.data.length ? (
               <div className="flex items-center justify-center min-h-[300px]">
-                <Loading width={100} height={100} />
+                <Loading width={100} height={100} showLabel={true} label="Cargando artículos..." />
               </div>
             ) : articleSections && articleSections.length > 0 ? (
               <>
@@ -285,20 +264,28 @@ export default function DiscoverPage() {
                     )}
                   </div>
                 ))}
-                {/* Load more indicator */}
-                <div ref={loadMoreRef} className="py-4 flex justify-center">
+                {/* Load more button */}
+                <div className="py-8 flex justify-center">
                   {searchResults.status === "loading" &&
                     !isSearching &&
-                    searchResults.data.length > 0 && (
-                      <Loading width={100} height={100} />
-                    )}
-                  {searchResults.status !== "loading" &&
-                    !searchResults.pagination.hasMore &&
-                    searchResults.data.length > 0 && (
+                    searchResults.data.length > 0 ? (
+                      <Loading width={100} height={100} showLabel={true} label="Cargando más artículos..." />
+                    ) : searchResults.pagination.hasMore && searchResults.data.length > 0 ? (
+                      <div className="flex flex-col items-center gap-3">
+                        <Button
+                          onClick={handleLoadMore}
+                          className="bg-[#FFCB00] hover:bg-[#FDBA12] text-black rounded-full w-16 h-16 p-0 shadow-lg hover:shadow-xl transition-all duration-200"
+                          disabled={searchResults.status === "loading"}
+                        >
+                          <Plus className="h-8 w-8" />
+                        </Button>
+                        <span className="text-sm text-bwin-neutral-60 font-medium">Cargar más artículos</span>
+                      </div>
+                    ) : searchResults.data.length > 0 ? (
                       <p className="text-sm text-bwin-neutral-60 py-2">
                         No hay más artículos para cargar
                       </p>
-                    )}
+                    ) : null}
                 </div>
               </>
             ) : (

@@ -211,7 +211,7 @@ export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: B
                       disabled={isCompleted}
                       className={cn(
                         "flex flex-col items-start gap-1 w-full py-3 md:py-4 px-3 md:px-5 rounded-md border border-gray-300 hover:border-gray-400 active:bg-gray-50 transition-all",
-                        selectedBet?.selection === option.name && "border-blue-500 bg-blue-50/50"
+                        selectedBet?.selection === option.name && "border-[#FFCB00] bg-[#FFCB00]/10"
                       )}
                       onClick={() => handleSelectOption(market.name, option)}
                     >
@@ -234,7 +234,7 @@ export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: B
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
           >
-            <div className="bg-blue-50 p-3 md:p-4 rounded-lg space-y-2 md:space-y-3">
+            <div className="bg-[#FFCB00]/10 p-3 md:p-4 rounded-lg space-y-2 md:space-y-3">
               <div className="flex justify-between text-sm md:text-base">
                 <span className="text-gray-600">Seleção:</span>
                 <span className="font-semibold text-gray-800">{selectedBet?.selection}</span>
@@ -255,7 +255,7 @@ export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: B
                   inputMode="decimal"
                   value={stake}
                   onChange={(e) => setStake(e.target.value)}
-                  className="pl-9 md:pl-10 border-gray-300 focus:border-blue-500 h-10 md:h-12 text-base"
+                  className="pl-9 md:pl-10 border-gray-300 focus:border-[#FFCB00] h-10 md:h-12 text-base"
                   placeholder="Digite o valor da aposta"
                 />
               </div>
@@ -266,7 +266,7 @@ export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: B
             </div>
 
             <Button 
-              className="w-full bg-blue-600 text-white hover:bg-blue-700 h-12 text-base font-medium"
+              className="w-full bg-[#FFCB00] text-black hover:bg-[#FDBA12] h-12 text-base font-medium"
               disabled={!stake || isPlacing || isCompleted}
               onClick={handlePlaceBet}
             >

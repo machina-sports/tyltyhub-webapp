@@ -29,7 +29,7 @@ export function ChatBubble({ role, children, className }: ChatBubbleProps) {
         "max-w-[88%] rounded-2xl px-5 py-4 text-sm leading-relaxed",
         "break-words",
         isUser 
-          ? "bg-bwin-brand-primary text-bwin-neutral-0 ml-auto" 
+          ? "bg-[#FDBA12] text-bwin-neutral-0 ml-auto" 
           : "bg-bwin-neutral-20 text-bwin-neutral-90 border border-bwin-neutral-30"
       )}>
         {children}

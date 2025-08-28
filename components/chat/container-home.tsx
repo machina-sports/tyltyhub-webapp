@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from "react"
 
 import {
-    Reply,
-    Send,
+  Reply,
+  Send,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -24,7 +24,7 @@ import { useTheme } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
 
 import { trackNewMessage, trackSuggestedQuestionClick } from "@/lib/analytics"
-
+import { ResponsibleGamingResponsive } from "@/components/responsible-gaming-responsive"
 
 import { Loader2 } from "lucide-react"
 import ScrollingRow from "./scrolling-row"
@@ -68,7 +68,7 @@ const getEventType = (article: any): string => {
 };
 
 const ContainerHome = ({ query }: { query: string }) => {
-  const { isDarkMode } = useTheme() 
+  const { isDarkMode } = useTheme()
 
   const router = useRouter()
 
@@ -93,7 +93,7 @@ const ContainerHome = ({ query }: { query: string }) => {
 
   // Get random title after client-side mount to avoid hydration errors
   const [randomTitle, setRandomTitle] = useState("¿Cuál va a ser tu apuesta?")
-  
+
   const inputRef = useRef<HTMLInputElement>(null)
   const questionRefs = useRef<(HTMLDivElement | null)[]>([])
 
@@ -108,7 +108,7 @@ const ContainerHome = ({ query }: { query: string }) => {
       const timer = setTimeout(() => {
         inputRef.current?.focus()
       }, 500)
-      
+
       return () => clearTimeout(timer)
     }
   }, [])
@@ -184,13 +184,13 @@ const ContainerHome = ({ query }: { query: string }) => {
     setInput(text)
     setSelectedIndex(-1)
     // Don't submit immediately, just put in input field
-    
+
     // Scroll to input on mobile after selecting a question
     setTimeout(() => {
       if (inputRef.current) {
-        inputRef.current.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'center' 
+        inputRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
         })
         inputRef.current.focus()
       }
@@ -230,144 +230,141 @@ const ContainerHome = ({ query }: { query: string }) => {
   }, [])
 
   return (
-         <div 
-       className="flex flex-col h-[100vh] md:min-h-screen bg-bwin-neutral-10"
-       style={{
-         overscrollBehavior: 'auto',
-         WebkitOverflowScrolling: 'touch'
-       }}
-     >
-             <div 
-         className="flex-1 overflow-y-auto overflow-x-hidden hide-scrollbar momentum-scroll pb-32 pt-8 md:pt-8 md:pb-24 scroll-smooth"
-         style={{
-           overscrollBehavior: 'auto',
-           WebkitOverflowScrolling: 'touch',
-           scrollBehavior: 'smooth'
-         }}
-       >
-        <div className="flex flex-col items-center p-6">
-          {/* Main heading for SEO - visually hidden but accessible */}
-          <h1 className="sr-only">La Inteligencia Artificial de bwin</h1>
-          
-          {/* Hero section without logo */}
-          <div className="w-full max-w-4xl mx-auto text-center space-y-8 animate-fade-in">
-            <h2 className="text-bwin-neutral-100 text-center mb-8 text-3xl sm:text-5xl font-bold leading-tight animate-slide-up">
-              {randomTitle}
-            </h2>
-            
-          </div>
+    <div
+      className="flex flex-col md:min-h-screen bg-bwin-neutral-10 pt-12 pb-24 md:pb-0 md:pt-0"
+      style={{
+        overscrollBehavior: 'auto',
+        WebkitOverflowScrolling: 'touch'
+      }}
+    >
+      <div className="flex flex-col items-center p-4">
+        {/* Main heading for SEO - visually hidden but accessible */}
+        <h1 className="sr-only">La Inteligencia Artificial de bwin</h1>
 
-          {/* Enhanced chat input */}
-          <div className="w-full max-w-xl mx-auto">
-            <form onSubmit={handleSubmit} className="relative">
-                             <Input
-                 ref={inputRef}
-                 value={input}
-                 onChange={(e) => setInput(e.target.value)}
-                 placeholder="Pregúntame sobre LaLiga..."
-                 className="w-full py-6 pl-6 pr-14 rounded-2xl bg-bwin-neutral-20 border-2 border-bwin-neutral-30 text-base text-bwin-neutral-100 placeholder:text-bwin-neutral-60 focus:border-bwin-brand-primary focus:ring-0 focus:bg-bwin-neutral-20 transition-colors duration-200"
-                 disabled={isSubmitting}
-                 style={{
-                   WebkitAppearance: 'none',
-                   WebkitTapHighlightColor: 'transparent',
-                   fontSize: '16px' // Prevents zoom on iOS
-                 }}
-               />
-              <Button 
-                type="submit" 
-                size="icon" 
-                disabled={!input.trim() || isSubmitting}
-                className="absolute right-3 top-1/2 -translate-y-1/2 h-10 w-10 rounded-xl bg-bwin-brand-primary hover:bg-bwin-brand-secondary text-bwin-neutral-0 transition-colors duration-200 disabled:opacity-50"
-              >
-                {isSubmitting ? (
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                ) : (
-                  <Send className="h-5 w-5" />
-                )}
-              </Button>
-            </form>
-          </div>
+        {/* Hero section without logo */}
+        <div className="w-full max-w-4xl mx-auto text-center space-y-8 animate-fade-in">
+          <h2 className="text-bwin-neutral-100 text-center mb-8 text-3xl sm:text-5xl font-bold leading-tight animate-slide-up pt-8">
+            {randomTitle}
+          </h2>
 
-          {/* Sample questions with Spanish translations */}
-          <div className="w-full max-w-4xl mx-auto mt-12">
-            <ScrollingRow 
-              questions={[
-                "¿Qué probabilidades tiene el Atlético de Madrid de ganar La Liga?",
-                "¿Cómo puedo apostar en el próximo partido del Real Madrid?",
-                "¿Cuáles son las mejores cuotas para el Barcelona en La Liga?",
-                "¿Qué equipo de Madrid tiene más opciones en La Liga?",
-                "¿Cuándo juega el Atlético de Madrid su próximo partido en La Liga?",
-                "¿Cuáles son las cuotas para ganar La Liga?"
-              ]} 
-              onSampleQuery={handleSampleQuery} 
+        </div>
+
+        {/* Enhanced chat input */}
+        <div className="w-full max-w-xl mx-auto">
+          <form onSubmit={handleSubmit} className="relative">
+            <Input
+              ref={inputRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Pregúntame sobre LaLiga..."
+              className="w-full py-6 pl-6 pr-14 rounded-2xl bg-bwin-neutral-20 border-2 border-bwin-neutral-30 text-base text-bwin-neutral-100 placeholder:text-bwin-neutral-60 focus:border-bwin-brand-primary focus:ring-0 focus:bg-bwin-neutral-20 transition-colors duration-200"
+              disabled={isSubmitting}
+              style={{
+                WebkitAppearance: 'none',
+                WebkitTapHighlightColor: 'transparent',
+                fontSize: '16px' // Prevents zoom on iOS
+              }}
             />
-          </div>
-          
-          {/* Questions List */}
-          {topQuestions.length > 0 && (
-            <div className="mt-6 w-full max-w-xl mx-auto">
-              <div className="space-y-2">
-                {topQuestions.map((question: string, index: number) => (
-                  <motion.div
-                    key={index}
-                    ref={(el) => { questionRefs.current[index] = el }}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    className="flex items-center gap-4"
+            <Button
+              type="submit"
+              size="icon"
+              disabled={!input.trim() || isSubmitting}
+              className="absolute right-3 top-1/2 -translate-y-1/2 h-10 w-10 rounded-xl bg-bwin-brand-primary hover:bg-bwin-brand-secondary text-bwin-neutral-0 transition-colors duration-200 disabled:opacity-50"
+            >
+              {isSubmitting ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+                <Send className="h-5 w-5" />
+              )}
+            </Button>
+          </form>
+        </div>
+
+        {/* Sample questions with Spanish translations */}
+        <div className="w-full max-w-4xl mx-auto mt-4">
+          <ScrollingRow
+            questions={[
+              "¿Qué probabilidades tiene el Atlético de Madrid de ganar La Liga?",
+              "¿Cómo puedo apostar en el próximo partido del Real Madrid?",
+              "¿Cuáles son las mejores cuotas para el Barcelona en La Liga?",
+              "¿Qué equipo de Madrid tiene más opciones en La Liga?",
+              "¿Cuándo juega el Atlético de Madrid su próximo partido en La Liga?",
+              "¿Cuáles son las cuotas para ganar La Liga?"
+            ]}
+            onSampleQuery={handleSampleQuery}
+          />
+        </div>
+
+        {/* Questions List */}
+        {topQuestions.length > 0 && (
+          <div className="mt-6 w-full max-w-xl mx-auto">
+            <div className="space-y-2">
+              {topQuestions.map((question: string, index: number) => (
+                <motion.div
+                  key={index}
+                  ref={(el) => { questionRefs.current[index] = el }}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  className="flex items-center gap-4"
+                >
+                  {/* Icon indicator - outside hover area */}
+                  <div className="flex-shrink-0 w-6 flex justify-center">
+                    {selectedIndex === index ? (
+                      <SportingbetDot
+                        size={20}
+                        className={cn(
+                          "transition-all duration-200",
+                          isDarkMode ? "text-[#FFCB00]" : "text-[#FDBA12]"
+                        )}
+                      />
+                    ) : (
+                      <Reply
+                        className={cn(
+                          "h-5 w-5 transition-colors duration-200",
+                          isDarkMode ? "text-gray-500" : "text-muted-foreground/40"
+                        )}
+                      />
+                    )}
+                  </div>
+
+                  {/* Text with hover - clickable area */}
+                  <div
+                    className={cn(
+                      "flex-1 p-2 rounded-lg cursor-pointer transition-all duration-200",
+                      selectedIndex === index
+                        ? isDarkMode
+                          ? "bg-[#FFCB00]/10 border-2 border-[#FFCB00]/50 shadow-sm"
+                          : "bg-primary/10 border-2 border-primary/50 shadow-sm"
+                        : isDarkMode
+                          ? "hover:bg-[#FFCB00]/5 border-2 border-transparent"
+                          : "hover:bg-secondary/40 border-2 border-transparent"
+                    )}
+                    onClick={() => handleSampleQuery(question)}
                   >
-                    {/* Icon indicator - outside hover area */}
-                    <div className="flex-shrink-0 w-6 flex justify-center">
-                      {selectedIndex === index ? (
-                        <SportingbetDot 
-                          size={20} 
-                          className={cn(
-                            "transition-all duration-200",
-                            isDarkMode ? "text-[#45CAFF]" : "text-primary"
-                          )} 
-                        />
-                      ) : (
-                        <Reply 
-                          className={cn(
-                            "h-5 w-5 transition-colors duration-200",
-                            isDarkMode ? "text-[#D3ECFF]/40" : "text-muted-foreground/40"
-                          )} 
-                        />
-                      )}
-                    </div>
-                    
-                    {/* Text with hover - clickable area */}
-                    <div
-                      className={cn(
-                        "flex-1 p-3 rounded-lg cursor-pointer transition-all duration-200",
-                        selectedIndex === index
-                          ? isDarkMode 
-                            ? "bg-[#45CAFF]/10 border-2 border-[#45CAFF]/50 shadow-sm"
-                            : "bg-primary/10 border-2 border-primary/50 shadow-sm"
-                          : isDarkMode
-                            ? "hover:bg-[#45CAFF]/5 border-2 border-transparent"
-                            : "hover:bg-secondary/40 border-2 border-transparent"
-                      )}
-                      onClick={() => handleSampleQuery(question)}
-                    >
-                      <span className={cn(
-                        "text-base transition-colors duration-200",
-                        selectedIndex === index 
-                          ? isDarkMode ? "text-[#D3ECFF]" : "text-foreground"
-                          : isDarkMode ? "text-[#D3ECFF]/80" : "text-muted-foreground"
-                      )}>
-                        {question}
-                      </span>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
+                    <span className={cn(
+                      "text-base transition-colors duration-200",
+                      selectedIndex === index
+                        ? isDarkMode ? "text-white" : "text-foreground"
+                        : isDarkMode ? "text-gray-300" : "text-muted-foreground"
+                    )}>
+                      {question}
+                    </span>
+                  </div>
+                </motion.div>
+              ))}
             </div>
-          )}
+          </div>
+        )}
+      </div>
+      {/* Responsible Gaming Footer */}
+      <div className="flex justify-center w-full">
+        <div className="mx-4 mt-12 pb-0 max-w-[976px] w-full">
+          <ResponsibleGamingResponsive />
         </div>
       </div>
-      
     </div>
+
   )
 }
 

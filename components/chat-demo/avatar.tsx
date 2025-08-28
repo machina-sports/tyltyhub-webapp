@@ -13,7 +13,7 @@ export function ChatAvatar({ role }: ChatAvatarProps) {
       "flex items-center justify-center w-10 h-10 rounded-full",
       role === 'assistant' 
         ? "bg-primary/10 text-primary" 
-        : "bg-blue-500/10 text-blue-500"
+        : "bg-[#FFCB00]/10 text-[#FDBA12]"
     )}>
       {role === 'assistant' ? (
         <img src="/sb-new.png" alt="SB Logo" className="w-7 h-7 object-contain" />

@@ -14,12 +14,12 @@ export function ResponsibleGamingMobile({
 }: ResponsibleGamingMobileProps) {
   return (
     <div className={cn(
-      "w-full bg-bwin-neutral-0 border-t-2 border-bwin-brand-primary/40 mb-20 md:mb-0",
+      "w-full bg-bwin-neutral-0 border-t-2 border-bwin-brand-primary/40 md:mb-0",
       className
     )}>
       {/* Single Mobile Banner with all elements */}
       <div className="w-full bg-bwin-neutral-0 border-y border-bwin-brand-primary/30">
-        <div className="px-4 py-6">
+        <div className="px-6 py-4">
           <div className="flex flex-col items-center space-y-4">
             {/* Top Row - Logo and Main Message */}
             <div className="flex items-center justify-center gap-4 w-full">

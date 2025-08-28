@@ -26,7 +26,7 @@ export function MarkdownChat({ content, className }: MarkdownContentProps) {
           overrides: {
             a: {
               component: MarkdownLink,
-              props: { className: "text-blue-600 dark:text-blue-400 underline" },
+              props: { className: "text-[#FFCB00] dark:text-[#FDBA12] underline" },
             },
             ul: { 
               props: { 

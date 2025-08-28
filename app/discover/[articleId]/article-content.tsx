@@ -298,7 +298,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
                 <Calendar
                   className={cn(
                     "h-3 w-3 sm:h-4 sm:w-4",
-                    isDarkMode && "text-[#45CAFF]"
+                    isDarkMode && "text-[#FFCB00]"
                   )}
                 />
                 {articleData.createdDate
@@ -314,7 +314,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
                 <Clock
                   className={cn(
                     "h-3 w-3 sm:h-4 sm:w-4",
-                    isDarkMode && "text-[#45CAFF]"
+                    isDarkMode && "text-[#FFCB00]"
                   )}
                 />
                 {articleData.readTime}
@@ -326,7 +326,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
                 <User
                   className={cn(
                     "h-3 w-3 sm:h-4 sm:w-4",
-                    isDarkMode && "text-[#45CAFF]"
+                    isDarkMode && "text-[#FFCB00]"
                   )}
                 />
                 Bwin BOT
@@ -478,11 +478,11 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
         </div>
       </div>
 
-      <Separator className={cn(isDarkMode ? "bg-[#45CAFF]/30" : "")} />
+      <Separator className={cn(isDarkMode ? "bg-[#FFCB00]/30" : "")} />
 
       <ArticleVoting articleId={articleData.articleId} />
 
-      <Separator className={cn(isDarkMode ? "bg-[#45CAFF]/30" : "")} />
+      <Separator className={cn(isDarkMode ? "bg-[#FFCB00]/30" : "")} />
 
       <RelatedOdds currentArticleId={articleData.articleId} />
 

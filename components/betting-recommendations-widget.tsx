@@ -126,8 +126,8 @@ function RecommendationCard({ market }: { market: MarketRecommendation }) {
               className={cn(
                 "px-4 py-2 rounded-lg font-mono font-bold text-lg transition-all duration-200 hover:scale-105 cursor-pointer",
                 isDarkMode 
-                  ? "bg-blue-500/20 text-blue-400 border border-blue-500/40 hover:bg-blue-500/30 hover:border-blue-500/60" 
-                  : "bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100 hover:border-blue-300"
+                  ? "bg-[#FFCB00]/20 text-[#FFCB00] border border-[#FFCB00]/40 hover:bg-[#FFCB00]/30 hover:border-[#FFCB00]/60" 
+                  : "bg-[#FFCB00]/10 text-[#FDBA12] border border-[#FFCB00]/20 hover:bg-[#FFCB00]/20 hover:border-[#FFCB00]/30"
               )}
             >
               {market.odds.toFixed(2)}
