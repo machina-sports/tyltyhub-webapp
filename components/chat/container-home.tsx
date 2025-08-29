@@ -163,7 +163,7 @@ const ContainerHome = ({ query }: { query: string }) => {
     <div className="flex flex-col bg-bwin-neutral-10">
       <div className="flex flex-col items-center p-4">
         <div className="w-full max-w-4xl mx-auto text-center space-y-8 animate-fade-in">
-          <h2 className="text-bwin-neutral-100 text-center mb-8 text-3xl sm:text-5xl font-bold leading-tight animate-slide-up pt-8">
+          <h2 className="text-bwin-neutral-100 text-center mb-8 text-3xl sm:text-5xl font-bold leading-tight animate-slide-up pt-4">
             {randomTitle}
           </h2>
         </div>
@@ -186,7 +186,7 @@ const ContainerHome = ({ query }: { query: string }) => {
               type="submit"
               size="icon"
               disabled={!input.trim() || isSubmitting}
-              className="absolute right-3 top-1/2 -translate-y-1/2 h-10 w-10 rounded-xl bg-bwin-brand-primary hover:bg-bwin-brand-secondary text-bwin-neutral-0 transition-colors duration-200 disabled:opacity-50"
+              className="absolute right-3 top-1/2 -translate-y-1/2 h-8 w-8 rounded-xl bg-bwin-brand-primary hover:bg-bwin-brand-secondary text-bwin-neutral-0 transition-colors duration-200 disabled:opacity-50"
             >
               {isSubmitting ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
