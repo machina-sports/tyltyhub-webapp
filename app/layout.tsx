@@ -1,14 +1,17 @@
-import "./globals.css";
+// import { ResponsibleGamingFloating } from "@/components/responsible-gaming-floating";
+import { ResponsibleGamingResponsive } from "@/components/responsible-gaming-responsive";
+import { Sidebar } from "@/components/sidebar";
+import { Topbar } from "@/components/topbar";
+import { AgeVerification } from "@/components/ui/age-verification";
+import { LGPDConsent } from "@/components/ui/lgpd-consent";
+import { Toaster } from "@/components/ui/toaster";
+import { MainProvider } from "@/components/use-provider";
+import DiscoveryProvider from "@/providers/discover/provider";
+import { Providers } from "@/providers/provider";
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
-import Script from "next/script";
-import { Sidebar } from "@/components/sidebar";
-import { Toaster } from "@/components/ui/toaster";
-import { Providers } from "@/providers/provider";
-import DiscoveryProvider from "@/providers/discover/provider";
-import { MainProvider } from "@/components/use-provider";
-import { LGPDConsent } from "@/components/ui/lgpd-consent";
-import { AgeVerification } from "@/components/ui/age-verification";
+import "./globals.css";
+import { Footer } from "@/components/footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,14 +23,14 @@ declare global {
 }
 
 export const metadata: Metadata = {
-  title: "bwinBOT: la IA de bwin para la Copa Mundial de Clubes 2025",
-  description: "Apuesta junto con la Inteligencia Artificial de bwin. Pregunta a nuestro chat sobre las noticias y cuotas de la Copa Mundial de Clubes 2025 y descubre cómo apostar mejor.",
+  title: "bwinBOT: la IA de bwin para LaLiga 2025/2026",
+  description: "Apuesta junto con la Inteligencia Artificial de bwin. Pregunta a nuestro chat sobre las noticias y cuotas de LaLiga 2025/2026 y descubre cómo apostar mejor.",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/bwin-logo-icon.png",
   },
   openGraph: {
-    title: "bwinBOT: la IA de bwin para la Copa Mundial de Clubes 2025",
-    description: "Apuesta junto con la Inteligencia Artificial de bwin. Pregunta a nuestro chat sobre las noticias y cuotas de la Copa Mundial de Clubes 2025 y descubre cómo apostar mejor.",
+    title: "bwinBOT: la IA de bwin para LaLiga 2025/2026",
+    description: "Apuesta junto con la Inteligencia Artificial de bwin. Pregunta a nuestro chat sobre las noticias y cuotas de LaLiga 2025/2026 y descubre cómo apostar mejor.",
     type: "website",
     locale: "es_ES",
     siteName: "bwinBOT",
@@ -43,8 +46,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "bwinBOT: la IA de bwin para la Copa Mundial de Clubes 2025",
-    description: "Apuesta junto con la Inteligencia Artificial de bwin. Pregunta a nuestro chat sobre las noticias y cuotas de la Copa Mundial de Clubes 2025 y descubre cómo apostar mejor.",
+    title: "bwinBOT: la IA de bwin para LaLiga 2025/2026",
+    description: "Apuesta junto con la Inteligencia Artificial de bwin. Pregunta a nuestro chat sobre las noticias y cuotas de LaLiga 2025/2026 y descubre cómo apostar mejor.",
     images: ["https://bwinbot.com/og_image_4.png"],
   },
 };
@@ -64,7 +67,7 @@ export default function RootLayout({
   return (
     <html lang="es-ES">
       <head>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/bwin-logo-icon.png" />
         {/* Google tag (gtag.js) - GA4 Property */}
         <script
           async
@@ -86,10 +89,10 @@ export default function RootLayout({
           `,
           }}
         />
-        <script 
+        <script
           async
-          type="module" 
-          data-tallysight-defaults-widget-config-workspace="bwin-spain" 
+          type="module"
+          data-tallysight-defaults-widget-config-workspace="bwin-spain"
           src="https://storage.googleapis.com/tallysight-widgets/dist/tallysight.min.js"
           data-tallysight-widget-loading="lazy"
           data-tallysight-observer="true"
@@ -100,14 +103,21 @@ export default function RootLayout({
         <Providers>
           <MainProvider>
             <DiscoveryProvider>
-              <div className="flex h-screen flex-col md:flex-row">
+              <div className="flex h-[calc(100vh-80px)] md:h-screen flex-col md:flex-row">
                 <Sidebar />
-                <main className="flex-1 overflow-auto pb-safe">{children}</main>
+                <main className="flex-1 overflow-auto bg-bwin-neutral-0">
+                  <Topbar />
+                  <div className="flex-1 h-[100vh-100px] bg-bwin-neutral-10">
+                    {children}
+                  </div>
+                  <ResponsibleGamingResponsive />
+                </main>
               </div>
-              <Toaster />
             </DiscoveryProvider>
             <AgeVerification />
+            <Footer />
             <LGPDConsent />
+            <Toaster />
           </MainProvider>
         </Providers>
       </body>

@@ -1,19 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { useRouter, usePathname } from "next/navigation";
-import { MessageSquare, Compass } from "lucide-react";
-import { cn } from "@/lib/utils";
-import Image from "next/image";
 import AnimatedShinyText from "@/components/magicui/animated-shiny-text";
+import { Button } from "@/components/ui/button";
 import { trackEvent } from "@/lib/analytics";
+import { cn } from "@/lib/utils";
+import { Compass, MessageSquare } from "lucide-react";
+import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const routes = [
   {
-    label: "Chat",
+    label: "Conversar",
     icon: MessageSquare,
-    href: "/chat/new",
+    href: "/",
   },
   {
     label: "Descubrir",
@@ -63,8 +63,9 @@ export function Sidebar() {
   };
 
   if (isMobile) {
+    return null;
     return (
-      <div className="fixed top-0 left-0 right-0 h-16 z-50 border-b bg-bwin-neutral-10 border-bwin-neutral-30">
+      <div className="fixed top-0 left-0 right-0 h-16 z-[55] border-b bg-bwin-neutral-10 border-bwin-neutral-30">
         <div className="flex items-center justify-between h-full px-6">
           <div 
             onClick={handleLogoClick}
@@ -110,7 +111,7 @@ export function Sidebar() {
     <div className="flex flex-col h-screen w-80 border-r bg-bwin-neutral-10 border-bwin-neutral-30">
       <div className="px-8 py-6 flex-1 flex flex-col">
         {/* Logo container with proper spacing */}
-        <div className="h-24 flex flex-col items-center justify-center mb-12">
+        <div className="h-24 flex flex-col items-center justify-center mb-12 pt-8">
           <div
             onClick={handleLogoClick}
             className="flex items-center justify-center cursor-pointer transition-transform duration-200 hover:scale-105"
@@ -120,8 +121,8 @@ export function Sidebar() {
             <Image
               src="/bwin-logo.png"
               alt="bwin"
-              width={120}
-              height={48}
+              width={90}
+              height={36}
               priority
               className="h-12 w-auto"
             />
@@ -177,12 +178,7 @@ export function Sidebar() {
         </a>
       </div>
 
-      {/* Legal disclaimer with better spacing */}
-      <div className="px-8 py-6 border-t border-bwin-neutral-30">
-        <div className="text-xs leading-relaxed text-center text-bwin-neutral-60">
-          18+. Apostar puede causar dependencia. Juega de forma responsable.
-        </div>
-      </div>
+      {/* Responsible gaming logos removed */}
     </div>
   );
 }

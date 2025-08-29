@@ -2,14 +2,14 @@ import { Metadata } from "next"
 import ChatClientLayout from "./client-layout"
 
 export const metadata: Metadata = {
-  title: "Chat | bwinBOT - Copa Mundial de Clubes 2025",
-  description: "Conversa con la Inteligencia Artificial de bwin sobre la Copa Mundial de Clubes FIFA 2025. Resuelve dudas, consulta cuotas y realiza tus apuestas.",
+  title: "Chat | bwinBOT - LaLiga 2025/2026",
+  description: "Conversa con la Inteligencia Artificial de bwin sobre LaLiga 2025/2026. Resuelve dudas, consulta cuotas y realiza tus apuestas.",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/bwin-logo-icon.png",
   },
   openGraph: {
-    title: "Chat | bwinBOT - Copa Mundial de Clubes 2025",
-    description: "Conversa con la Inteligencia Artificial de bwin sobre la Copa Mundial de Clubes FIFA 2025. Resuelve dudas, consulta cuotas y realiza tus apuestas.",
+    title: "Chat | bwinBOT - LaLiga 2025/2026",
+    description: "Conversa con la Inteligencia Artificial de bwin sobre LaLiga 2025/2026. Resuelve dudas, consulta cuotas y realiza tus apuestas.",
     type: "website",
     locale: "es_ES",
     siteName: "bwinBOT",
@@ -24,8 +24,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Chat | bwinBOT - Copa Mundial de Clubes 2025",
-    description: "Conversa con la Inteligencia Artificial de bwin sobre la Copa Mundial de Clubes FIFA 2025. Resuelve dudas, consulta cuotas y realiza tus apuestas.",
+    title: "Chat | bwinBOT - LaLiga 2025/2026",
+    description: "Conversa con la Inteligencia Artificial de bwin sobre LaLiga 2025/2026. Resuelve dudas, consulta cuotas y realiza tus apuestas.",
     images: ["https://bwinbot.com/og_image_4.png"],
   },
 }

@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @layer base {
+
   /* Make all images fluid */
   img {
     @apply max-w-full h-auto object-contain;
@@ -15,15 +16,25 @@
   }
 
   /* Touch-action helpers used in carousels/rows */
-  .touch-action-pan-y { touch-action: pan-y; }
-  .touch-action-pan-x { touch-action: pan-x; }
+  .touch-action-pan-y {
+    touch-action: pan-y;
+  }
+
+  .touch-action-pan-x {
+    touch-action: pan-x;
+  }
 
   /* Hint to browser for smoother transforms */
-  .scrolling-row { will-change: transform; }
+  .scrolling-row {
+    will-change: transform;
+  }
 
   /* Respect user's reduce-motion preference */
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
+
+    *,
+    *::before,
+    *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       scroll-behavior: auto !important;
@@ -35,22 +46,24 @@
   .mobile-container {
     @apply px-4 sm:px-6 max-w-5xl mx-auto;
   }
-  
+
   .mobile-safe-bottom {
     padding-bottom: env(safe-area-inset-bottom);
   }
-  
+
   /* Hide scrollbar for Chrome, Safari and Opera */
   .hide-scrollbar::-webkit-scrollbar {
     display: none;
   }
-  
+
   /* Hide scrollbar for IE, Edge and Firefox */
   .hide-scrollbar {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
   }
-  
+
   /* Custom shape for age verification component */
   .clip-path-diagonal {
     clip-path: polygon(0 0, 100% 100%, 0 100%);
@@ -62,27 +75,56 @@
 
 :root {
   /* Bwin Brand Colors */
-  --bwin-brand-primary: 51 100% 50%;        /* #FFCB00 */
-  --bwin-brand-secondary: 40 98% 54%;       /* #FDBA12 */
-  
-  /* Bwin Neutrals */
-  --bwin-neutral-100: 0 0% 100%;            /* #FFFFFF */
-  --bwin-neutral-90: 0 0% 90%;              /* #E6E6E6 */
-  --bwin-neutral-80: 0 0% 70%;              /* #B3B3B3 */
-  --bwin-neutral-70: 0 0% 55%;              /* #8C8C8C */
-  --bwin-neutral-60: 0 0% 40%;              /* #666666 */
-  --bwin-neutral-50: 0 0% 29%;              /* #4A4A4A */
-  --bwin-neutral-40: 0 0% 24%;              /* #3E3E3E */
-  --bwin-neutral-30: 0 0% 18%;              /* #2F2F2F */
-  --bwin-neutral-20: 0 0% 12%;              /* #1E1E1E */
-  --bwin-neutral-10: 0 0% 7%;               /* #121212 */
-  --bwin-neutral-0: 0 0% 0%;                /* #000000 */
-  
+  --bwin-brand-primary: 51 100% 50%;
+  /* #FFCB00 */
+  --bwin-brand-secondary: 40 98% 54%;
+  /* #FDBA12 */
+
+  /* Custom subtle yellow tones for better readability */
+  --bwin-yellow-subtle: 45 85% 65%;
+  /* More opaque yellow */
+  --bwin-yellow-muted: 45 70% 55%;
+  /* Even more muted */
+  --bwin-yellow-soft: 45 60% 45%;
+  /* Very soft yellow */
+
+  /* Neutral colors */
+  --bwin-neutral-100: 0 0% 100%;
+  /* #FFFFFF */
+  --bwin-neutral-90: 0 0% 90%;
+  /* #E6E6E6 */
+  --bwin-neutral-80: 0 0% 70%;
+  /* #B3B3B3 */
+  --bwin-neutral-70: 0 0% 55%;
+  /* #8C8C8C */
+  --bwin-neutral-60: 0 0% 40%;
+  /* #666666 */
+  --bwin-neutral-50: 0 0% 29%;
+  /* #4A4A4A */
+  --bwin-neutral-40: 0 0% 24%;
+  /* #3E3E3E */
+  --bwin-neutral-30: 0 0% 18%;
+  /* #2F2F2F */
+  --bwin-neutral-25: 0 0% 15%;
+  /* #262626 */
+  --bwin-neutral-20: 0 0% 12%;
+  /* #1E1E1E */
+  --bwin-neutral-15: 0 0% 10%;
+  /* #1A1A1A */
+  --bwin-neutral-10: 0 0% 7%;
+  /* #121212 */
+  --bwin-neutral-0: 0 0% 0%;
+  /* #000000 */
+
   /* Bwin Semantic Colors */
-  --bwin-success: 145 63% 49%;              /* #2ECC71 */
-  --bwin-warning: 40 98% 54%;               /* #FDBA12 */
-  --bwin-danger: 4 100% 59%;                /* #FF3B30 */
-  --bwin-info: 204 81% 53%;                 /* #209CEE */
+  --bwin-success: 145 63% 49%;
+  /* #2ECC71 */
+  --bwin-warning: 40 98% 54%;
+  /* #FDBA12 */
+  --bwin-danger: 4 100% 59%;
+  /* #FF3B30 */
+  --bwin-info: 204 81% 53%;
+  /* #209CEE */
 
   /* Force dark mode globally */
   --background: var(--bwin-neutral-10);
@@ -113,7 +155,7 @@
   --chart-5: var(--bwin-neutral-60);
 
   --radius: 0.75rem;
-  
+
   /* Mobile Safe Areas */
   --sat: env(safe-area-inset-top, 0px);
   --sab: env(safe-area-inset-bottom, 0px);
@@ -127,7 +169,7 @@
   }
 
   html {
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
   }
 
   body {
@@ -145,7 +187,12 @@
     color-scheme: dark;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: 'Roboto', system-ui, sans-serif;
     font-weight: 500;
     letter-spacing: -0.025em;
@@ -154,11 +201,11 @@
   h1 {
     @apply text-3xl sm:text-5xl font-bold;
   }
-  
+
   h2 {
     @apply text-2xl sm:text-3xl font-semibold;
   }
-  
+
   h3 {
     @apply text-xl sm:text-2xl font-semibold;
   }
@@ -168,7 +215,7 @@
     @apply text-center text-sm text-muted-foreground mt-8 mb-6 leading-relaxed;
     min-width: 130px;
   }
-  
+
   /* Enhanced CTA buttons without shadows */
   .bw-cta {
     @apply rounded-xl bg-primary text-primary-foreground hover:brightness-110 transition-all duration-300;
@@ -185,18 +232,24 @@
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
   }
 
   @keyframes slideUp {
-    from { 
-      opacity: 0; 
-      transform: translateY(20px); 
+    from {
+      opacity: 0;
+      transform: translateY(20px);
     }
-    to { 
-      opacity: 1; 
-      transform: translateY(0); 
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 
@@ -207,6 +260,54 @@
 
   .chat-input-focus {
     @apply ring-2 ring-bwin-brand-primary ring-offset-2 ring-offset-bwin-neutral-10;
+  }
+
+  /* Enhanced chat bubble styling */
+  .chat-bubble-content {
+    @apply text-sm leading-relaxed;
+  }
+
+  /* Custom list styling for chat messages */
+  .chat-bubble-content ul li::before {
+    content: '•';
+    @apply absolute left-0 font-bold text-lg top-0;
+    color: hsl(var(--bwin-yellow-subtle));
+  }
+
+  .chat-bubble-content ol li::before {
+    @apply absolute left-0 font-medium text-sm top-0;
+    color: hsl(var(--bwin-yellow-muted));
+  }
+
+  /* Enhanced typography for chat */
+  .chat-bubble-content h1,
+  .chat-bubble-content h2,
+  .chat-bubble-content h3 {
+    @apply font-semibold text-bwin-neutral-100 mb-3 leading-tight;
+  }
+
+  .chat-bubble-content strong {
+    @apply font-bold;
+    color: hsl(var(--bwin-yellow-subtle));
+  }
+
+  .chat-bubble-content em {
+    @apply italic text-bwin-neutral-70;
+  }
+
+  /* Better spacing for list items */
+  .chat-bubble-content ul,
+  .chat-bubble-content ol {
+    @apply space-y-3;
+  }
+
+  .chat-bubble-content li {
+    @apply leading-relaxed;
+  }
+
+  /* Improved paragraph spacing */
+  .chat-bubble-content p {
+    @apply leading-relaxed;
   }
 }
 
@@ -232,13 +333,13 @@
   .touch-action-none {
     touch-action: none;
   }
-  
+
   .no-tap-highlight {
     -webkit-tap-highlight-color: transparent;
   }
-  
+
   .momentum-scroll {
-    -webkit-overflow-scrolling: touch;
+    -webkit-overflow-scrolling: auto;
   }
 
   .glass-effect {

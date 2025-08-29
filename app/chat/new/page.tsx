@@ -10,14 +10,17 @@ export default async function DiscoverPage({
   searchParams: { eventCode?: string, q?: string, user_id?: string }
 }) {
 
-  const data = await fetchChatRegister({
-    query: searchParams.q || '',
-    eventCode: searchParams.eventCode || '',
-    user_id: searchParams.user_id || ''
-  })
+  // Only create a chat if there's a query to process
+  if (searchParams.q && searchParams.q.trim()) {
+    const data = await fetchChatRegister({
+      query: searchParams.q,
+      eventCode: searchParams.eventCode || '',
+      user_id: searchParams.user_id || ''
+    })
 
-  if (searchParams.q && data.items["_id"]) {
-    redirect(`/chat/${data.items["_id"]}`)
+    if (data.items["_id"]) {
+      redirect(`/chat/${data.items["_id"]}`)
+    }
   }
 
   return <ContainerHome query={searchParams.q || ''} />

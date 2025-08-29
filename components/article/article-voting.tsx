@@ -73,7 +73,7 @@ export function ArticleVoting({ articleId }: ArticleVotingProps) {
       <h3
         className={cn(
           "text-lg font-semibold",
-          isDarkMode ? "text-[#D3ECFF]" : ""
+          isDarkMode ? "text-[#FFF8E1]" : ""
         )}
       >
         Esta análise foi útil?

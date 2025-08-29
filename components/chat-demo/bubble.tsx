@@ -19,7 +19,7 @@ export function ChatBubble({ role, children }: ChatBubbleProps) {
         "relative flex flex-col w-full md:max-w-[70%] px-4 py-3 rounded-2xl overflow-hidden",
         role === 'assistant' 
           ? "bg-secondary text-foreground rounded-tl-none" 
-          : "bg-blue-50 dark:bg-blue-900/20 text-foreground rounded-tr-none ml-auto"
+          : "bg-[#FFCB00]/10 dark:bg-[#FFCB00]/20 text-foreground rounded-tr-none ml-auto"
       )}>
         <div className="w-full overflow-x-hidden break-words">
           {children}

@@ -4,14 +4,14 @@ import DiscoverClientLayout from "./client-layout"
 import CalendarProvider from "@/providers/calendar/provider"
 
 export const metadata: Metadata = {
-  title: "Descubrir | bwinBOT - Copa Mundial de Clubes 2025",
-  description: "Descubre las últimas noticias, estadísticas y análisis de la Copa Mundial de Clubes FIFA 2025. Sigue a los equipos, partidos y apuestas con la IA de bwin.",
+  title: "Descubrir | bwinBOT - LaLiga 2025/2026",
+  description: "Descubre las últimas noticias, estadísticas y análisis de LaLiga 2025/2026. Sigue a los equipos, partidos y apuestas con la IA de bwin.",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/bwin-logo-icon.png",
   },
   openGraph: {
-    title: "Descubrir | bwinBOT - Copa Mundial de Clubes 2025",
-    description: "Descubre las últimas noticias, estadísticas y análisis de la Copa Mundial de Clubes FIFA 2025. Sigue a los equipos, partidos y apuestas con la IA de bwin.",
+    title: "Descubrir | bwinBOT - LaLiga 2025/2026",
+    description: "Descubre las últimas noticias, estadísticas y análisis de LaLiga 2025/2026. Sigue a los equipos, partidos y apuestas con la IA de bwin.",
     type: "website",
     locale: "es_ES",
     siteName: "bwinBOT",
@@ -26,8 +26,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Descubrir | bwinBOT - Copa Mundial de Clubes 2025",
-    description: "Descubre las últimas noticias, estadísticas y análisis de la Copa Mundial de Clubes FIFA 2025. Sigue a los equipos, partidos y apuestas con la IA de bwin.",
+    title: "Descubrir | bwinBOT - LaLiga 2025/2026",
+    description: "Descubre las últimas noticias, estadísticas y análisis de LaLiga 2025/2026. Sigue a los equipos, partidos y apuestas con la IA de bwin.",
     images: ["https://bwinbot.com/og_image_4.png"],
   },
 }
@@ -40,9 +40,9 @@ export default function DiscoverLayout({
   return (
     <StandingsProvider>
       <DiscoverClientLayout>
-          <CalendarProvider>
-            {children}
-          </CalendarProvider>
+        <CalendarProvider>
+          {children}
+        </CalendarProvider>
       </DiscoverClientLayout>
     </StandingsProvider>
   )
