@@ -384,7 +384,7 @@ export const MatchCard = ({ fixture, useAbbreviation = false, compact = false, g
           <span className={cn(
             "font-bold px-2",
             compact ? "text-sm" : "text-base",
-            isDarkMode ? "text-[#D3ECFF]" : "text-muted-foreground"
+            isDarkMode ? "text-[#FFF8E1]" : "text-muted-foreground"
           )}>{matchResult}</span>
           <TeamMatch 
             teamName={teams[1]} 
@@ -409,7 +409,7 @@ export const MatchCard = ({ fixture, useAbbreviation = false, compact = false, g
             <TooltipTrigger asChild>
               <span className={cn(
                 "overflow-wrap-normal word-break-normal cursor-help",
-                isDarkMode ? "text-[#D3ECFF]" : "text-muted-foreground"
+                isDarkMode ? "text-[#FFF8E1]" : "text-muted-foreground"
               )}>
                 {fixture.ko}
               </span>
@@ -426,7 +426,7 @@ export const MatchCard = ({ fixture, useAbbreviation = false, compact = false, g
           )} />
           <span className={cn(
             "overflow-wrap-normal word-break-normal",
-            isDarkMode ? "text-[#D3ECFF]" : "text-muted-foreground"
+            isDarkMode ? "text-[#FFF8E1]" : "text-muted-foreground"
           )}>{compact ? fixture.venue.split(',')[0] : fixture.venue}</span>
           
           <Users className={cn(
@@ -436,7 +436,7 @@ export const MatchCard = ({ fixture, useAbbreviation = false, compact = false, g
           )} />
           <span className={cn(
             "overflow-wrap-normal word-break-normal",
-            isDarkMode ? "text-[#D3ECFF]" : "text-muted-foreground"
+            isDarkMode ? "text-[#FFF8E1]" : "text-muted-foreground"
           )}>
             {isPlayoffFixture(fixture) 
               ? translatePhase(fixture.phase)
@@ -530,7 +530,7 @@ export function MatchesCalendar({
                 className={cn(
                   "ml-2",
                   compact && "text-xs",
-                  isDarkMode && "border-[#FFCB00]/30 text-[#D3ECFF]"
+                  isDarkMode && "border-[#FFCB00]/30 text-[#FFF8E1]"
                 )}
               >
                 {fixturesByDate[date].length} partidas

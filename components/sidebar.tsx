@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 
 const routes = [
   {
-    label: "Chat",
+    label: "Conversar",
     icon: MessageSquare,
     href: "/",
   },

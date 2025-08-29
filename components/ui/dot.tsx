@@ -51,5 +51,5 @@ export function SportingbetDot(props: Omit<DotProps, 'color'>) {
 
 export function SportingbetDarkDot(props: Omit<DotProps, 'color'>) {
   const { isDarkMode } = useTheme();
-  return <Dot color={isDarkMode ? "#D3ECFF" : "#061F3F"} {...props} />;
+  return <Dot color={isDarkMode ? "#FFF8E1" : "#061F3F"} {...props} />;
 } 

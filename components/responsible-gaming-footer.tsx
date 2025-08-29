@@ -14,11 +14,11 @@ export function ResponsibleGamingFooter({
 }: ResponsibleGamingFooterProps) {
   return (
     <footer className={cn(
-      "w-full bg-bwin-neutral-0 border-t border-bwin-brand-primary/20 mb-20 md:mb-0",
+      "w-full bg-bwin-neutral-0 mb-20 md:mb-0 py-4",
       className
     )}>
       {/* Single Banner with all elements */}
-      <div className="w-full bg-bwin-neutral-0 border-y border-bwin-brand-primary/30">
+      <div className="w-full">
         <div className="mobile-container py-4">
           <div className="flex flex-wrap items-center justify-center gap-3 md:gap-4 lg:gap-6">
             {variant === 'with-logo' && (

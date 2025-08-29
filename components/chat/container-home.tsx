@@ -263,7 +263,7 @@ const ContainerHome = ({ query }: { query: string }) => {
                       "text-base transition-colors duration-200",
                       selectedIndex === index
                         ? isDarkMode ? "text-white" : "text-foreground"
-                        : isDarkMode ? "text-gray-300" : "text-muted-foreground"
+                        : isDarkMode ? "#FFF8E1" : "text-muted-foreground"
                     )}>
                       {question}
                     </span>

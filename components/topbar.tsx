@@ -42,7 +42,7 @@ export function Topbar() {
 
   if (isMobile) {
     return (
-      <div className="flex items-center justify-between px-6 py-6 border-b-2 border-bwin-brand-primary/40 w-full">
+      <div className="flex items-center justify-between px-6 py-6 bg-bwin-neutral-0 w-full">
         <div
           onClick={handleLogoClick}
           className="flex items-center cursor-pointer"

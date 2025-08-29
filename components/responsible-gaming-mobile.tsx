@@ -14,14 +14,12 @@ export function ResponsibleGamingMobile({
 }: ResponsibleGamingMobileProps) {
   return (
     <div className={cn(
-      "w-full bg-bwin-neutral-0 border-t-2 border-bwin-brand-primary/40 md:mb-0",
+      "w-full bg-bwin-neutral-0 md:mb-0 py-8 mt-2",
       className
     )}>
-      {/* Single Mobile Banner with all elements */}
-      <div className="w-full bg-bwin-neutral-0 border-y F">
-        <div className="px-6 py-4">
+      <div className="w-full">
+        <div className="px-6">
           <div className="flex flex-col items-center space-y-4">
-            {/* Top Row - Logo and Main Message */}
             {showLogo && (
               <div className="flex-shrink-0 py-4">
                 <Image
@@ -34,7 +32,6 @@ export function ResponsibleGamingMobile({
               </div>
             )}
 
-            {/* Second Row - Fun Message */}
             <div className="flex items-center justify-center gap-4 w-full">
               <div className="flex-shrink-0">
                 <Image
@@ -56,7 +53,6 @@ export function ResponsibleGamingMobile({
               </div>
             </div>
 
-            {/* Third Row - Age and Safety Icons */}
             <div className="flex items-center justify-center gap-6 w-full">
               <div className="flex-shrink-0">
                 <Image

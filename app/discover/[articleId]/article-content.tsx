@@ -272,7 +272,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
               <p
                 className={cn(
                   "text-base sm:text-lg",
-                  isDarkMode ? "text-[#D3ECFF]/80" : "text-muted-foreground"
+                  isDarkMode ? "text-[#FFF8E1]/80" : "text-muted-foreground"
                 )}
               >
                 {articleData.subtitle}
@@ -282,7 +282,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
             <div
               className={cn(
                 "flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:text-sm mt-6",
-                isDarkMode ? "text-[#D3ECFF]/60" : "text-muted-foreground"
+                isDarkMode ? "text-[#FFF8E1]/60" : "text-muted-foreground"
               )}
             >
               {/* Date */}
@@ -340,12 +340,12 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
 
       <div className={cn(
         "prose prose-neutral max-w-none",
-        isDarkMode ? "prose-invert text-[#D3ECFF]" : ""
+        isDarkMode ? "prose-invert text-[#FFF8E1]" : ""
       )}>
         <div className="prose-container">
           <h2 className={cn(
             "text-lg font-bold mt-8 mb-8",
-            isDarkMode ? "text-[#D3ECFF]" : ""
+            isDarkMode ? "text-[#FFF8E1]" : ""
           )}></h2>
           {articleData.widgetEmbed && (
             <div className={cn("mt-0", isDarkMode && "dark")}>
@@ -358,19 +358,19 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
               <>
                 <p className={cn(
                   "text-lg mb-1",
-                  isDarkMode ? "text-[#D3ECFF]" : ""
+                  isDarkMode ? "text-[#FFF8E1]" : ""
                 )}>
                   {articleData?.["eventDetails"]?.match}
                 </p>
                 <p className={cn(
                   "text-lg mb-1",
-                  isDarkMode ? "text-[#D3ECFF]" : ""
+                  isDarkMode ? "text-[#FFF8E1]" : ""
                 )}>
                   {articleData?.["eventDetails"]?.when}
                 </p>
                 <p className={cn(
                   "text-lg mb-1",
-                  isDarkMode ? "text-[#D3ECFF]" : ""
+                  isDarkMode ? "text-[#FFF8E1]" : ""
                 )}>
                   {articleData?.["eventDetails"]?.venue}
                 </p>
@@ -390,7 +390,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           </h2>
           <p className={cn(
             "text-lg mt-8",
-            isDarkMode ? "text-[#D3ECFF]" : ""
+            isDarkMode ? "text-[#FFF8E1]" : ""
           )}>
             {articleData.section_1_content}
           </p>
@@ -408,7 +408,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           </h2>
           <p className={cn(
             "text-lg mt-8",
-            isDarkMode ? "text-[#D3ECFF]" : ""
+            isDarkMode ? "text-[#FFF8E1]" : ""
           )}>
             {articleData.section_2_content}
           </p>
@@ -426,7 +426,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           </h2>
           <p className={cn(
             "text-lg mt-8",
-            isDarkMode ? "text-[#D3ECFF]" : ""
+            isDarkMode ? "text-[#FFF8E1]" : ""
           )}>
             {articleData.section_3_content}
           </p>
@@ -444,7 +444,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           </h2>
           <p className={cn(
             "text-lg mt-8",
-            isDarkMode ? "text-[#D3ECFF]" : ""
+            isDarkMode ? "text-[#FFF8E1]" : ""
           )}>
             {articleData.section_4_content}
           </p>
@@ -462,7 +462,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           </h2>
           <p className={cn(
             "text-lg mt-8",
-            isDarkMode ? "text-[#D3ECFF]" : ""
+            isDarkMode ? "text-[#FFF8E1]" : ""
           )}>
             {articleData.section_5_content}
           </p>

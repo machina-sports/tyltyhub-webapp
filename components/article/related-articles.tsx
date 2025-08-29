@@ -80,14 +80,14 @@ export function RelatedArticles({ currentArticleId }: RelatedArticlesProps) {
                   <h4 className={cn(
                     "font-semibold line-clamp-2 mb-2 text-base transition-colors",
                     isDarkMode
-                      ? "text-[#D3ECFF] hover:text-[#FFCB00]"
+                      ? "text-[#FFF8E1] hover:text-[#FFCB00]"
                       : "hover:text-primary"
                   )}>
                     {article.title}
                   </h4>
                   <p className={cn(
                     "text-sm flex items-center gap-2",
-                    isDarkMode ? "text-[#D3ECFF]/70" : "text-muted-foreground"
+                    isDarkMode ? "text-[#FFF8E1]/70" : "text-muted-foreground"
                   )}>
                     <span className={cn(
                       "inline-block w-2 h-2 rounded-full",

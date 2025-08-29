@@ -11,6 +11,7 @@ import { Providers } from "@/providers/provider";
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { Footer } from "@/components/footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -102,16 +103,19 @@ export default function RootLayout({
         <Providers>
           <MainProvider>
             <DiscoveryProvider>
-              <div className="flex h-screen flex-col md:flex-row">
+              <div className="flex h-[calc(100vh-80px)] md:h-screen flex-col md:flex-row">
                 <Sidebar />
-                <main className="flex-1 overflow-auto">
+                <main className="flex-1 overflow-auto bg-bwin-neutral-0">
                   <Topbar />
-                  {children}
+                  <div className="flex-1 h-[100vh-100px] bg-bwin-neutral-10">
+                    {children}
+                  </div>
                   <ResponsibleGamingResponsive />
                 </main>
               </div>
             </DiscoveryProvider>
             <AgeVerification />
+            <Footer />
             <LGPDConsent />
             <Toaster />
           </MainProvider>
