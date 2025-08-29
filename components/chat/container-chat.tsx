@@ -46,43 +46,11 @@ export function ContainerChat({ input, setInput, onSubmit, onNewMessage }: Conta
   const [expirationDays, setExpirationDays] = useState<number>(7)
   const [isSaving, setIsSaving] = useState(false)
 
-  const messageContainerRef = useRef<HTMLDivElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  const [isUserNearBottom, setIsUserNearBottom] = useState(true)
 
-
-
-  // Función mejorada para scroll
   const scrollToBottom = () => {
-    if (messagesEndRef.current && messageContainerRef.current) {
-      try {
-        const container = messageContainerRef.current
-        const target = messagesEndRef.current
-
-        // Use scrollTo for better iOS compatibility
-        container.scrollTo({
-          top: target.offsetTop,
-          behavior: 'smooth'
-        })
-      } catch (error) {
-        // Fallback to scrollIntoView
-        messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
-      }
-    }
+    messagesEndRef.current?.scrollIntoView()
   }
-
-  // Detectar si usuario está cerca del final
-  const handleScroll = () => {
-    if (!messageContainerRef.current) return
-
-    const container = messageContainerRef.current
-    const threshold = 100 // pixels from bottom
-    const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < threshold
-
-    setIsUserNearBottom(isNearBottom)
-  }
-
-
 
   const handleOpenShareDialog = () => {
     const threadData = state.item.data
@@ -156,7 +124,7 @@ export function ContainerChat({ input, setInput, onSubmit, onNewMessage }: Conta
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
-    if (isUserNearBottom && currentMessages.length > 0) {
+    if (currentMessages.length > 0) {
       // Small delay to ensure DOM is updated
       const timer = setTimeout(() => {
         scrollToBottom()
@@ -164,23 +132,21 @@ export function ContainerChat({ input, setInput, onSubmit, onNewMessage }: Conta
 
       return () => clearTimeout(timer)
     }
-  }, [currentMessages.length, isUserNearBottom])
-
-
+  }, [currentMessages.length])
 
   // Scroll cuando hay nuevos mensajes (solo si usuario está cerca del final)
   useEffect(() => {
-    if (isUserNearBottom && currentMessages.length > 0) {
+    if (currentMessages.length > 0) {
       setTimeout(scrollToBottom, 100)
     }
-  }, [currentMessages.length, isUserNearBottom])
+  }, [currentMessages.length])
 
   // Scroll cuando bot está escribiendo (solo si usuario está cerca del final)
   useEffect(() => {
-    if (isUserNearBottom && currentStatusMessage && isTyping) {
+    if (currentStatusMessage && isTyping) {
       scrollToBottom()
     }
-  }, [currentStatusMessage, isTyping, isUserNearBottom])
+  }, [currentStatusMessage, isTyping])
 
   return (
     <>
@@ -252,13 +218,8 @@ export function ContainerChat({ input, setInput, onSubmit, onNewMessage }: Conta
       </Dialog>
 
       <div
-        className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden scroll-smooth"
-        ref={messageContainerRef}
-        onScroll={handleScroll}
-        style={{
-          WebkitOverflowScrolling: 'touch',
-          overscrollBehavior: 'contain'
-        }}
+        className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden scroll-auto"
+
       >
         <div className="max-w-3xl mx-auto space-y-6 pb-6">
           <div className="space-y-3 sm:space-y-6 pt-4">
