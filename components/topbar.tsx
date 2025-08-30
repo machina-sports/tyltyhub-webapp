@@ -46,10 +46,12 @@ export function Topbar() {
   const isChatPage = pathname && pathname.startsWith("/chat/") && pathname !== "/chat/new";
   // Verifica se está na página Discover
   const isDiscoverPage = pathname === "/discover";
+  // Verifica se está em uma página de artigo
+  const isArticlePage = pathname && pathname.startsWith("/discover/") && pathname !== "/discover";
 
   if (isMobile) {
-    // Na página Discover, não renderizar o topbar (ela tem seu próprio)
-    if (isDiscoverPage) {
+    // Na página Discover ou Artigo, não renderizar o topbar (elas têm seus próprios)
+    if (isDiscoverPage || isArticlePage) {
       return null;
     }
 

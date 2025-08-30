@@ -3,12 +3,12 @@
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { SearchToggleButton } from "./search-toggle-button"
-import { useSearchWrapper } from "./search-wrapper"
+import { ArticleShareButton } from "./article-share-button"
+import { useArticleContext } from "./article-context"
 
-export function DiscoverMobileTopbar() {
+export function ArticleMobileTopbar() {
   const router = useRouter()
-  const { clearSearchQuery } = useSearchWrapper()
+  const { articleId, title, url, shareImageUrl } = useArticleContext()
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
@@ -48,8 +48,14 @@ export function DiscoverMobileTopbar() {
         />
       </div>
       
-      {/* Botão Search apenas no mobile */}
-      <SearchToggleButton onClearSearch={clearSearchQuery} />
+      {/* Botão Share apenas no mobile */}
+      <ArticleShareButton 
+        articleId={articleId}
+        title={title}
+        url={url}
+        shareImageUrl={shareImageUrl}
+        iconOnly
+      />
     </div>
   )
 }
