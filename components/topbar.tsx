@@ -4,8 +4,9 @@ import { Compass, MessageSquare } from "lucide-react"
 
 import Image from "next/image"
 
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 
+import { ShareIconButton } from "@/components/chat/share-icon-button"
 import { useEffect, useState } from "react"
 
 const routes = [
@@ -23,6 +24,7 @@ const routes = [
 
 export function Topbar() {
   const router = useRouter();
+  const pathname = usePathname();
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -39,6 +41,9 @@ export function Topbar() {
   const handleLogoClick = () => {
     router.push("/");
   };
+
+  // Verifica se está em uma página de chat específico (não na home)
+  const isChatPage = pathname && pathname.startsWith("/chat/") && pathname !== "/chat/new";
 
   if (isMobile) {
     return (
@@ -58,6 +63,11 @@ export function Topbar() {
             className="h-8 w-auto"
           />
         </div>
+        
+        {/* Botão Share apenas no mobile e apenas em páginas de chat específicas */}
+        {isChatPage && (
+          <ShareIconButton />
+        )}
       </div>
     );
   }

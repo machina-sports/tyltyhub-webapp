@@ -1,41 +1,22 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
-
-import { Check, Copy, MessageCircle, Share2, X } from "lucide-react"
-
 import { Button } from "@/components/ui/button"
-
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle
 } from "@/components/ui/dialog"
-
 import { actionSaveSharedChat } from "@/providers/share/actions"
-
-import { ChatMessage } from "../chat-message"
-
-import { useAppDispatch } from "@/store/dispatch"
-
-import { useGlobalState } from "@/store/useState"
-
-import { Loading } from "../ui/loading"
-
 import { AppState } from "@/store"
+import { useAppDispatch } from "@/store/dispatch"
+import { useGlobalState } from "@/store/useState"
+import { Check, Copy, MessageCircle, Share2, X } from "lucide-react"
+import { useState } from "react"
 
-interface ContainerChatProps {
-  input: string
-  setInput: (value: string) => void
-  onSubmit: (e: React.FormEvent) => void
-  onNewMessage: (message: string, shouldScroll?: boolean) => void
-}
-
-export function ContainerChat({ input, setInput, onSubmit, onNewMessage }: ContainerChatProps) {
+export function ShareIconButton() {
   const state = useGlobalState((state: any) => state.threads)
   const shareState = useGlobalState((state: AppState) => state.share)
-
   const dispatch = useAppDispatch()
 
   const [shareDialogOpen, setShareDialogOpen] = useState(false)
@@ -43,12 +24,6 @@ export function ContainerChat({ input, setInput, onSubmit, onNewMessage }: Conta
   const [copySuccess, setCopySuccess] = useState(false)
   const [expirationDays, setExpirationDays] = useState<number>(7)
   const [isSaving, setIsSaving] = useState(false)
-
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView()
-  }
 
   const handleOpenShareDialog = () => {
     const threadData = state.item.data
@@ -114,52 +89,19 @@ export function ContainerChat({ input, setInput, onSubmit, onNewMessage }: Conta
     }
   }
 
-  const currentMessages = state.item.data?.value?.messages || []
-  const currentStatus = state.item.data?.value?.status
-  const currentStatusMessage = state.item.data?.value?.["status-message"]
-  const isTyping = currentStatus === "processing" || currentStatus === "waiting" || state.fields.status === "loading"
-  const isLoading = state.item.status === 'loading'
-
-  // Auto-scroll to bottom when new messages arrive
-  useEffect(() => {
-    if (currentMessages.length > 0) {
-      // Small delay to ensure DOM is updated
-      const timer = setTimeout(() => {
-        scrollToBottom()
-      }, 100)
-
-      return () => clearTimeout(timer)
-    }
-  }, [currentMessages.length])
-
-  // Scroll cuando hay nuevos mensajes (solo si usuario está cerca del final)
-  useEffect(() => {
-    if (currentMessages.length > 0) {
-      setTimeout(scrollToBottom, 100)
-    }
-  }, [currentMessages.length])
-
-  // Scroll cuando bot está escribiendo (solo si usuario está cerca del final)
-  useEffect(() => {
-    if (currentStatusMessage && isTyping) {
-      scrollToBottom()
-    }
-  }, [currentStatusMessage, isTyping])
-
   return (
     <>
-      {/* Botão Share - apenas no desktop (no mobile está no header) */}
-      <div className="hidden md:flex justify-end items-center border-b bg-bwin-neutral-10 border-bwin-neutral-30 pb-4 mt-4">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="gap-1 text-bwin-brand-primary hover:text-bwin-neutral-100 hover:bg-bwin-brand-primary/10"
-          onClick={handleOpenShareDialog}
-        >
-          <Share2 className="h-4 w-4" />
-          Compartir
-        </Button>
-      </div>
+      <Button
+        variant="ghost"
+        size="icon"
+        className="h-10 w-10 text-bwin-brand-primary hover:text-bwin-neutral-100 hover:bg-bwin-brand-primary/10"
+        onClick={handleOpenShareDialog}
+        disabled={isSaving}
+        aria-label="Compartir"
+      >
+        <Share2 className="h-4 w-4" />
+      </Button>
+
       <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
         <DialogContent className="w-[94%] max-w-[94%] sm:max-w-[625px] overflow-y-auto max-h-[90vh] p-4 sm:p-6 bg-bwin-neutral-10 border-bwin-neutral-30 text-bwin-neutral-100">
           <DialogHeader>
@@ -215,43 +157,6 @@ export function ContainerChat({ input, setInput, onSubmit, onNewMessage }: Conta
           </div>
         </DialogContent>
       </Dialog>
-
-      <div
-        className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden scroll-auto"
-
-      >
-        <div className="max-w-3xl mx-auto space-y-6 pb-6">
-          <div className="space-y-3 sm:space-y-6 pt-4">
-            {isLoading ? (
-              <div className="flex justify-center items-center py-8">
-                <Loading width={60} height={60} />
-              </div>
-            ) : (
-              <>
-                {currentMessages.map((message: any, index: number) => (
-                  <ChatMessage
-                    key={index}
-                    {...message}
-                    isTyping={false}
-                    onNewMessage={onNewMessage}
-                  />
-                ))}
-                {isTyping && (
-                  <ChatMessage
-                    role="assistant"
-                    content={currentStatusMessage}
-                    isTyping={true}
-                    onNewMessage={onNewMessage}
-                  />
-                )}
-              </>
-            )}
-          </div>
-          <div ref={messagesEndRef} />
-        </div>
-      </div>
-
-
     </>
   )
 }

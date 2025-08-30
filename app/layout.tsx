@@ -1,4 +1,5 @@
 // import { ResponsibleGamingFloating } from "@/components/responsible-gaming-floating";
+import { Footer } from "@/components/footer";
 import { ResponsibleGamingResponsive } from "@/components/responsible-gaming-responsive";
 import { Sidebar } from "@/components/sidebar";
 import { Topbar } from "@/components/topbar";
@@ -11,7 +12,6 @@ import { Providers } from "@/providers/provider";
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Footer } from "@/components/footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
