@@ -1,15 +1,17 @@
 "use client";
 import { ArticleGrid } from "@/components/discover/article-grid";
-import { ResponsibleGamingResponsive } from "@/components/responsible-gaming-responsive";
+import { DiscoverMobileTopbar } from "@/components/discover/discover-mobile-topbar";
+import { useSearch } from "@/components/discover/search-context";
+import { SearchWrapper } from "@/components/discover/search-wrapper";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loading } from "@/components/ui/loading";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { searchArticles } from "@/providers/discover/actions";
 import { useAppDispatch } from "@/store/dispatch";
 import { useGlobalState } from "@/store/useState";
-import { Newspaper, Search, Plus } from "lucide-react";
+import { Newspaper, Plus, Search } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 interface SearchFilters {
@@ -69,7 +71,8 @@ export default function DiscoverPage() {
   const [activeTab, setActiveTab] = useState("news");
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
-
+  
+  const { isSearchVisible } = useSearch();
   const headerRef = useRef<HTMLDivElement>(null);
 
   const dispatch = useAppDispatch();
@@ -127,6 +130,18 @@ export default function DiscoverPage() {
       });
     }
   }, []);
+
+  const handleClearSearch = useCallback(() => {
+    setSearchQuery("");
+    // Recarregar artigos sem filtro de busca
+    setIsSearching(true);
+    const filters = buildSearchFilters("");
+    dispatch(searchArticles({ 
+      filters,
+      pagination: { page: 1, page_size: pageSize },
+      sorters: ["_id", -1]
+    })).finally(() => setIsSearching(false));
+  }, [dispatch, pageSize]);
 
   const handleLoadMore = useCallback(() => {
     if (searchResults.status !== "loading" && searchResults.pagination.hasMore) {
@@ -187,7 +202,11 @@ export default function DiscoverPage() {
   }, [displayedArticles]);
 
   return (
-    <div className="mobile-container pt-4 max-w-5xl mx-auto">
+    <SearchWrapper onClearSearch={handleClearSearch}>
+      {/* Topbar mobile específico para Discover */}
+      <DiscoverMobileTopbar />
+      
+      <div className="mobile-container pt-4 max-w-5xl mx-auto">
       <h1 className="sr-only">La Inteligencia Artificial de bwin</h1>
       <Tabs
         value={activeTab}
@@ -211,7 +230,13 @@ export default function DiscoverPage() {
           </div>
 
           {activeTab === "news" && (
-            <div className="py-4 px-0 sm:px-0 bg-bwin-neutral-10">
+            <div className={cn(
+              "py-4 px-0 sm:px-0 bg-bwin-neutral-10 transition-all duration-300",
+              // No mobile: mostrar apenas se isSearchVisible for true
+              // No desktop: sempre mostrar
+              "md:block",
+              isSearchVisible ? "block" : "hidden md:block"
+            )}>
               <div className="flex justify-end items-center">
                 <div className="relative w-full md:w-[232px]">
                   <Search className="absolute left-2 top-2.5 h-4 w-4 text-bwin-neutral-80" />
@@ -292,6 +317,7 @@ export default function DiscoverPage() {
         </TabsContent>
       </Tabs>
     </div>
+    </SearchWrapper>
   );
 }
 

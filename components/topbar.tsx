@@ -44,8 +44,15 @@ export function Topbar() {
 
   // Verifica se está em uma página de chat específico (não na home)
   const isChatPage = pathname && pathname.startsWith("/chat/") && pathname !== "/chat/new";
+  // Verifica se está na página Discover
+  const isDiscoverPage = pathname === "/discover";
 
   if (isMobile) {
+    // Na página Discover, não renderizar o topbar (ela tem seu próprio)
+    if (isDiscoverPage) {
+      return null;
+    }
+
     return (
       <div className="flex items-center justify-between px-6 py-6 bg-bwin-neutral-0 w-full">
         <div
