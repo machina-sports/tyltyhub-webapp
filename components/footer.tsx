@@ -26,13 +26,21 @@ export function Footer() {
   const router = useRouter();
   const pathname = usePathname();
   const [isMobile, setIsMobile] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
 
+    const checkIOS = () => {
+      const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      setIsIOS(isIOSDevice);
+    };
+
     checkMobile();
+    checkIOS();
     window.addEventListener('resize', checkMobile);
 
     return () => window.removeEventListener('resize', checkMobile);
@@ -43,23 +51,47 @@ export function Footer() {
   };
 
   if (isMobile) {
+    const footerStyle = isIOS ? {
+      height: 'calc(80px + env(safe-area-inset-bottom, 20px))',
+      paddingBottom: 'max(12px, env(safe-area-inset-bottom, 20px))',
+      // Força o footer a ficar visível no iOS Safari
+      position: 'fixed' as const,
+      bottom: '0',
+      left: '0',
+      right: '0',
+      zIndex: 9999,
+    } : {
+      height: '80px',
+      paddingBottom: '8px'
+    };
+
     return (
-      <div className="fixed bottom-0 left-0 right-0 h-20 border-t flex items-center justify-around px-4 pb-safe bg-bwin-neutral-10 border-bwin-neutral-30">
+      <div 
+        className={cn(
+          "fixed bottom-0 left-0 right-0 border-t flex items-center justify-around px-4 bg-bwin-neutral-10 border-bwin-neutral-30",
+          isIOS ? "z-[9999]" : "z-50"
+        )}
+        style={footerStyle}
+      >
         {routes.map((route) => (
           <Button
             key={route.href}
             variant="ghost"
             size="sm"
             className={cn(
-              "flex flex-col items-center gap-2 h-auto pt-2 pb-2 px-6 rounded-xl transition-all duration-200 w-[100px]",
+              "flex flex-col items-center gap-2 h-auto pt-3 pb-2 px-6 rounded-xl transition-all duration-200 w-[100px] touch-manipulation",
+              // Melhor área de toque no iOS
+              isIOS && "min-h-[44px]",
               pathname === route.href || (route.href === "/chat/new" && pathname.startsWith("/chat"))
                 ? "text-bwin-brand-primary bg-bwin-brand-primary/10"
                 : "text-bwin-neutral-80 hover:text-bwin-brand-primary hover:bg-bwin-neutral-20"
             )}
             onClick={() => handleNavigation(route.href)}
+            // Evita o zoom no iOS ao tocar
+            style={{ touchAction: 'manipulation' }}
           >
             <route.icon className="h-6 w-6" />
-            <span className="text-sm font-medium mt-[-5px]">{route.label}</span>
+            <span className="text-sm font-medium mt-[-2px]">{route.label}</span>
           </Button>
         ))}
       </div>

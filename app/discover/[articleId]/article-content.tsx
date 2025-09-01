@@ -1,6 +1,8 @@
 "use client";
 import { ArticleSharing } from "@/components/article/article-sharing";
 import { ArticleSkeleton } from "@/components/article/article-skeleton";
+import { ArticleContextProvider } from "@/components/article/article-context";
+import { ArticleMobileTopbar } from "@/components/article/article-mobile-topbar";
 import { ArticleVoting } from "@/components/article/article-voting";
 import { RelatedArticles } from "@/components/article/related-articles";
 import { RelatedOdds } from "@/components/article/related-odds";
@@ -256,8 +258,19 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
     )
   }
 
+  const shareUrl = `https://sportingbot.com/discover/${articleData.slug || articleData.articleId}`
+  
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 pt-6 space-y-6 sm:space-y-8">
+    <ArticleContextProvider
+      articleId={articleData.articleId}
+      title={articleData.title}
+      url={shareUrl}
+      shareImageUrl={mainImageUrl}
+    >
+      {/* Topbar mobile específico para Artigo */}
+      <ArticleMobileTopbar />
+      
+      <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 pt-6 space-y-6 sm:space-y-8">
       <RenderImageComponent imageUrl={mainImageUrl} alt={articleData.title} />
       <div className="space-y-6">
         <h2 className={cn(
@@ -326,8 +339,8 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
             </div>
           </div>
 
-          {/* Sharing – sits right side on desktop, below meta on mobile */}
-          <div className="flex-shrink-0">
+          {/* Sharing – sits right side on desktop, escondido no mobile (está no header) */}
+          <div className="flex-shrink-0 hidden md:block">
             <ArticleSharing
               articleId={articleData.articleId}
               title={articleData.title}
@@ -481,6 +494,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
       <RelatedOdds currentArticleId={articleData.articleId} />
 
       <RelatedArticles currentArticleId={articleData.articleId} />
-    </div>
+      </div>
+    </ArticleContextProvider>
   );
 }

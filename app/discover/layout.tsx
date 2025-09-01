@@ -1,7 +1,8 @@
-import { Metadata } from "next"
-import StandingsProvider from "@/providers/standings/provider"
-import DiscoverClientLayout from "./client-layout"
+import { SearchProvider } from "@/components/discover/search-context"
 import CalendarProvider from "@/providers/calendar/provider"
+import StandingsProvider from "@/providers/standings/provider"
+import { Metadata } from "next"
+import DiscoverClientLayout from "./client-layout"
 
 export const metadata: Metadata = {
   title: "Descubrir | bwinBOT - LaLiga 2025/2026",
@@ -38,12 +39,14 @@ export default function DiscoverLayout({
   children: React.ReactNode
 }) {
   return (
-    <StandingsProvider>
-      <DiscoverClientLayout>
-        <CalendarProvider>
-          {children}
-        </CalendarProvider>
-      </DiscoverClientLayout>
-    </StandingsProvider>
+    <SearchProvider>
+      <StandingsProvider>
+        <DiscoverClientLayout>
+          <CalendarProvider>
+            {children}
+          </CalendarProvider>
+        </DiscoverClientLayout>
+      </StandingsProvider>
+    </SearchProvider>
   )
 }
