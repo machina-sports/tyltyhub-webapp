@@ -57,6 +57,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
+  viewportFit: 'cover', // iOS safe area support
 }
 
 export default function RootLayout({
@@ -103,11 +104,11 @@ export default function RootLayout({
         <Providers>
           <MainProvider>
             <DiscoveryProvider>
-              <div className="flex h-[calc(100vh-80px)] md:h-screen flex-col md:flex-row">
+              <div className="flex h-[calc(100vh-80px-env(safe-area-inset-bottom))] md:h-screen flex-col md:flex-row">
                 <Sidebar />
                 <main className="flex-1 overflow-auto bg-bwin-neutral-0">
                   <Topbar />
-                  <div className="flex-1 h-[100vh-100px] bg-bwin-neutral-10">
+                  <div className="flex-1 bg-bwin-neutral-10 pb-safe">
                     {children}
                   </div>
                   <ResponsibleGamingResponsive />
