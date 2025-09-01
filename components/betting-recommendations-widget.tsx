@@ -175,7 +175,7 @@ function RecommendationCard({ market }: { market: MarketRecommendation }) {
                   : "bg-[#FFCB00]/10 text-[#FDBA12] border border-[#FFCB00]/20 hover:bg-[#FFCB00]/20 hover:border-[#FFCB00]/30"
               )}
             >
-              {market.odds.toFixed(2)}
+              {market.odds}
             </a>
           </div>
 
