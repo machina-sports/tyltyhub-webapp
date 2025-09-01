@@ -2,7 +2,7 @@
 
 import React, { useState } from "react"
 
-import { Loader2, Star, TrendingUp, X, Check, CheckCircle2 } from "lucide-react"
+import { CheckCircle2, Loader2, Star, TrendingUp, X } from "lucide-react"
 
 import { doPlaceBet } from '@/providers/threads/actions'
 
@@ -10,9 +10,21 @@ import { setItemStatus } from '@/providers/threads/reducer'
 
 import { useAppDispatch } from '@/store/dispatch'
 
+import { buildBettingUrl, formatEventId } from '@/lib/betting-urls'
 import { useGlobalState } from '@/store/useState'
 
-export const BetBox = ({ bet }: { bet: any }) => {
+interface BetBoxProps {
+  bet: {
+    bet_title: string;
+    runner_name: string;
+    bet_odd: string;
+    event_id?: string;
+    market_id?: string;
+    option_id?: string;
+  }
+}
+
+export const BetBox = ({ bet }: BetBoxProps) => {
   
   const dispatch = useAppDispatch()
   
@@ -172,8 +184,43 @@ export const BetBox = ({ bet }: { bet: any }) => {
           </div>
         </div>
         <div className="flex flex-col items-center justify-center ml-2 min-w-16">
-          <TrendingUp className="h-6 w-6" />
-          <span className="text-md font-bold">{bet.bet_odd}</span>
+          {bet.event_id && bet.market_id && bet.option_id ? (
+            <a
+              href={buildBettingUrl({
+                eventId: formatEventId(bet.event_id),
+                marketId: bet.market_id,
+                optionId: bet.option_id
+              })}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => {
+                e.stopPropagation();
+                // Track betting link click
+                if (typeof window !== 'undefined' && window.gtag) {
+                  window.gtag('event', 'betting_link_click', {
+                    event_category: 'betting_navigation',
+                    event_action: 'click_betting_link',
+                    event_label: `${bet.bet_title} - ${bet.runner_name}`,
+                    bet_title: bet.bet_title,
+                    runner_name: bet.runner_name,
+                    bet_odd: parseFloat(bet.bet_odd),
+                    event_id: bet.event_id,
+                    market_id: bet.market_id,
+                    option_id: bet.option_id
+                  });
+                }
+              }}
+              className="flex flex-col items-center hover:scale-105 transition-transform"
+            >
+              <TrendingUp className="h-6 w-6 text-primary" />
+              <span className="text-md font-bold text-primary">{bet.bet_odd}</span>
+            </a>
+          ) : (
+            <div className="flex flex-col items-center">
+              <TrendingUp className="h-6 w-6" />
+              <span className="text-md font-bold">{bet.bet_odd}</span>
+            </div>
+          )}
         </div>
       </div>
 
