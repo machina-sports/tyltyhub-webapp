@@ -10,7 +10,7 @@ import { setItemStatus } from '@/providers/threads/reducer'
 
 import { useAppDispatch } from '@/store/dispatch'
 
-import { buildBettingUrl, formatEventId } from '@/lib/betting-urls'
+import { buildBettingUrl } from '@/lib/betting-urls'
 import { useGlobalState } from '@/store/useState'
 
 interface BetBoxProps {
@@ -187,7 +187,7 @@ export const BetBox = ({ bet }: BetBoxProps) => {
           {bet.event_id && bet.market_id && bet.option_id ? (
             <a
               href={buildBettingUrl({
-                eventId: formatEventId(bet.event_id),
+                eventId: bet.event_id,
                 marketId: bet.market_id,
                 optionId: bet.option_id
               })}
