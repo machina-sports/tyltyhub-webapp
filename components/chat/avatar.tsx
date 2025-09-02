@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 interface AvatarProps {
   className?: string;
@@ -9,11 +10,16 @@ interface AvatarProps {
 export function Avatar({ className }: AvatarProps) {
   return (
     <div className={cn(
-      "w-8 h-8 rounded-full bg-bwin-brand-primary flex items-center justify-center",
-      "text-bwin-neutral-0 text-xs font-bold",
+      "w-8 h-8 rounded-full bg-bwin-brand-primary flex items-center justify-center overflow-hidden",
       className
     )}>
-      BW
+      <Image
+        src="/bwin-logo-icon.png"
+        alt="bwin"
+        width={20}
+        height={20}
+        className="object-contain"
+      />
     </div>
   );
 }
