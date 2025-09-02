@@ -214,7 +214,8 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
 
   const mainImagePrefix = `${process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS}/article-image-id-${articleData?.["_id"]}`
 
-  const mainImageUrl = `${mainImagePrefix}-${articleData?.value?.["main_image_name"]}.png`
+  // const mainImageUrl = `${mainImagePrefix}-${articleData?.value?.["main_image_name"]}.png`
+  const mainImageUrl = getImageUrl(articleData)
 
   const hasTextImage = articleData?.metadata?.["content-group"] == "TEAM_ARTICLE"
 

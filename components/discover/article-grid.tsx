@@ -20,6 +20,11 @@ const getImageUrl = (article: Article): string => {
   if (!article?.value) return '';
   
   const imageAddress = process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS;
+
+  if (article?.value?.image_path) {
+    return `${imageAddress}/${article.value.image_path}`;
+  }
+
   const mainImageName = article.value?.["main_image_name"];
   const articleId = article._id || article.id;
 
@@ -105,7 +110,8 @@ const ArticleCard = ({ article }: { article: Article }) => {
   const title = getTitle(article);
 
   const mainImagePrefix = `${process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS}/article-image-id-${articleId}`
-  const mainImageUrl = `${mainImagePrefix}-${article.value?.["main_image_name"]}.png`
+  // const mainImageUrl = `${mainImagePrefix}-${article.value?.["main_image_name"]}.png`
+  const mainImageUrl = getImageUrl(article);
 
   return (
     <Card className="overflow-hidden border bg-bwin-neutral-20 border-bwin-neutral-30 hover:border-bwin-brand-primary/50 transition-colors">
@@ -198,7 +204,8 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
     const title = getTitle(article);
     
     const mainImagePrefix = `${process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS}/article-image-id-${articleId}`
-    const mainImageUrl = `${mainImagePrefix}-${article.value?.["main_image_name"]}.png`
+    // const mainImageUrl = `${mainImagePrefix}-${article.value?.["main_image_name"]}.png`
+    const mainImageUrl = getImageUrl(article);
 
     return (
       <Card className="overflow-hidden border bg-bwin-neutral-20 border-bwin-neutral-30 hover:border-bwin-brand-primary/50 transition-colors">
