@@ -12,7 +12,6 @@
  *   market_type: string,
  *   odds: number,
  *   rationale: string,
- *   recommendation: string, // "Alto", "Medio", "Bajo"
  *   title: string
  * }>
  */
@@ -20,19 +19,17 @@
 "use client"
 
 import { useTheme } from '@/components/theme-provider'
-import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { trackBettingLinkClick } from '@/lib/analytics/betting'
 import { buildBettingUrl } from '@/lib/betting-urls'
 import { cn } from '@/lib/utils'
-import { ChevronLeft, ChevronRight, Minus, TrendingDown, TrendingUp } from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useState } from 'react'
 
 interface MarketRecommendation {
   market_type: string
   odds: number
   rationale: string
-  recommendation: string
   title: string
   event_id?: string
   market_id?: string
@@ -50,47 +47,8 @@ interface BettingRecommendationsWidgetProps {
 function RecommendationCard({ market }: { market: MarketRecommendation }) {
   const { isDarkMode } = useTheme()
 
-  const getRecommendationVariant = (recommendation: string) => {
-    switch (recommendation.toLowerCase()) {
-      case 'alto':
-      case 'high':
-        return 'default'
-      case 'medio':
-      case 'medium':
-        return 'secondary'
-      case 'bajo':
-      case 'low':
-        return 'outline'
-      default:
-        return 'outline'
-    }
-  }
 
-  const getRecommendationIcon = (recommendation: string) => {
-    switch (recommendation.toLowerCase()) {
-      case 'alto':
-      case 'high':
-        return <TrendingUp className="h-4 w-4" />
-      case 'bajo':
-      case 'low':
-        return <TrendingDown className="h-4 w-4" />
-      default:
-        return <Minus className="h-4 w-4" />
-    }
-  }
 
-  const getRecommendationColor = (recommendation: string) => {
-    switch (recommendation.toLowerCase()) {
-      case 'alto':
-      case 'high':
-        return isDarkMode ? 'text-green-400' : 'text-green-600'
-      case 'bajo':
-      case 'low':
-        return isDarkMode ? 'text-red-400' : 'text-red-600'
-      default:
-        return isDarkMode ? 'text-yellow-400' : 'text-yellow-600'
-    }
-  }
 
   // Resolve IDs from explicit fields or from deep_link (fixture-market-option)
   const resolveIds = () => {
@@ -123,7 +81,7 @@ function RecommendationCard({ market }: { market: MarketRecommendation }) {
     <div className="w-full min-h-[220px]">
       <Card className="h-full">
         <CardContent className="p-5">
-          {/* Header with title and recommendation */}
+          {/* Header with title */}
           <div className="flex items-start justify-between mb-4">
             <div className="flex-1 pr-4">
               <h4 className="font-semibold text-base mb-2 line-clamp-2">
@@ -132,20 +90,6 @@ function RecommendationCard({ market }: { market: MarketRecommendation }) {
               <p className="text-sm text-muted-foreground">
                 {market.market_type}
               </p>
-            </div>
-            <div className="flex items-center gap-3 flex-shrink-0">
-              <div className={cn(
-                "flex items-center gap-1",
-                getRecommendationColor(market.recommendation)
-              )}>
-                {getRecommendationIcon(market.recommendation)}
-              </div>
-              <Badge 
-                variant={getRecommendationVariant(market.recommendation)}
-                className="text-sm px-3 py-1"
-              >
-                {market.recommendation}
-              </Badge>
             </div>
           </div>
 
@@ -164,8 +108,7 @@ function RecommendationCard({ market }: { market: MarketRecommendation }) {
                   optionId,
                   market_type: market.market_type,
                   market_title: market.title,
-                  odds_value: market.odds,
-                  recommendation: market.recommendation
+                  odds_value: market.odds
                 });
               }}
               className={cn(
@@ -175,7 +118,7 @@ function RecommendationCard({ market }: { market: MarketRecommendation }) {
                   : "bg-[#FFCB00]/10 text-[#FDBA12] border border-[#FFCB00]/20 hover:bg-[#FFCB00]/20 hover:border-[#FFCB00]/30"
               )}
             >
-              {market.odds}
+              {typeof market.odds === 'number' ? market.odds.toFixed(2) : market.odds}
             </a>
           </div>
 

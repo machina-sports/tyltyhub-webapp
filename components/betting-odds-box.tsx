@@ -53,6 +53,21 @@ interface BettingOddsBoxProps {
   }) => void
 }
 
+// Function to convert American odds to decimal format
+const convertToDecimal = (odds: string): string => {
+  const numOdds = parseFloat(odds);
+  
+  if (isNaN(numOdds)) return odds; // Return original if not a number
+  
+  if (numOdds > 0) {
+    // Positive American odds: decimal = (american / 100) + 1
+    return ((numOdds / 100) + 1).toFixed(2);
+  } else {
+    // Negative American odds: decimal = (100 / |american|) + 1
+    return ((100 / Math.abs(numOdds)) + 1).toFixed(2);
+  }
+};
+
 export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: BettingOddsBoxProps) {
   const [selectedBet, setSelectedBet] = useState<{
     market: string
@@ -241,7 +256,7 @@ export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: B
               </div>
               <div className="flex justify-between text-sm md:text-base">
                 <span className="text-gray-600">Odds:</span>
-                <span className="font-mono text-gray-800">{selectedBet?.odds}</span>
+                <span className="font-mono text-gray-800">{selectedBet?.odds ? convertToDecimal(selectedBet.odds) : 'N/A'}</span>
               </div>
             </div>
 
