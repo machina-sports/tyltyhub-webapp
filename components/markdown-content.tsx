@@ -4,6 +4,7 @@ import Markdown from "markdown-to-jsx";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { AnchorHTMLAttributes } from "react";
+import { convertUrlsToMarkdown } from "@/lib/url-utils";
 
 interface MarkdownContentProps {
   content: string;
@@ -26,7 +27,7 @@ export function MarkdownChat({ content, className }: MarkdownContentProps) {
           overrides: {
             a: {
               component: MarkdownLink,
-              props: { className: "text-[#FFCB00] dark:text-[#FDBA12] underline" },
+              props: { className: "text-[#FFCB00] dark:text-[#FDBA12] underline hover:underline" },
             },
             ul: { 
               props: { 
