@@ -47,10 +47,10 @@ const unescapeMarkdown = (text: string | undefined | null): string => {
 const getImageUrl = (article: any): string => {
   if (!article) return "";
 
-  const imageAddress = process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS;
+  const imageAddress = "" // process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS;
 
   if (article?.value?.image_path) {
-    return `${imageAddress}/${article.value.image_path}`;
+    return `${article.value.image_path}`;
   }
 
   const title = article.value?.title || "Article";

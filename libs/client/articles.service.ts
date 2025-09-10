@@ -28,7 +28,8 @@ class ArticlesService extends ClientBaseService {
     if (article.image) {
       imageUrl = article.image;
     } else if (article.image_url) {
-      imageUrl = `${process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS}/${article.image_url}`;
+      // imageUrl = `${process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS}/${article.image_url}`;
+      imageUrl = `${article.image_url}`;
     } else {
       const title = article.title || 'Article';
       imageUrl = `https://placehold.co/800x450/2A9D8F/FFFFFF?text=${encodeURIComponent(title)}`;

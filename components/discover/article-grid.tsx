@@ -19,19 +19,19 @@ interface ArticleGridProps {
 const getImageUrl = (article: Article): string => {
   if (!article?.value) return '';
   
-  const imageAddress = process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS;
+  const imageAddress = "" // process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS;
 
   if (article?.value?.image_path) {
-    return `${imageAddress}/${article.value.image_path}`;
+    return `${article.value.image_path}`;
   }
 
   const mainImageName = article.value?.["main_image_name"];
   const articleId = article._id || article.id;
 
   if (imageAddress && mainImageName && articleId) {
-    return `${imageAddress}/article-image-id-${articleId}-${mainImageName}.png`;
+    return `article-image-id-${articleId}-${mainImageName}.png`;
   } else if (imageAddress && article.value?.image_path) {
-    return `${imageAddress}/${article.value.image_path}`;
+    return `${article.value.image_path}`;
   }
   
   return '';
