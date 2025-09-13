@@ -1,0 +1,83 @@
+{
+  "id": "sportingbet",
+  "name": "sportingbet",
+  "displayName": "SportingBOT",
+  "description": "a IA do Sportingbet para Copa do Mundo de Clubes 2025",
+  "language": "pt-BR",
+  "locale": "pt_BR",
+  "domain": "sportingbot.com.br",
+  "baseUrl": "https://sportingbot.com.br",
+  "sportsBaseUrl": "https://www.sportingbet.com.br",
+  "analytics": {
+    "ga4Primary": "G-SPORTINGBET-PRIMARY",
+    "ga4Secondary": "G-SPORTINGBET-SECONDARY",
+    "tallysightWorkspace": "sportingbet-brazil"
+  },
+  "branding": {
+    "colors": {
+      "primary": "#1E40AF",
+      "secondary": "#3B82F6",
+      "success": "#10B981",
+      "warning": "#F59E0B",
+      "danger": "#EF4444",
+      "info": "#06B6D4"
+    },
+    "fonts": {
+      "primary": "Inter",
+      "fallback": "system-ui, sans-serif"
+    },
+    "logo": {
+      "icon": "/outline.png",
+      "full": "/outline.png",
+      "alt": "SportingBOT logo"
+    }
+  },
+  "content": {
+    "title": "SportingBOT: a IA do Sportingbet para Copa do Mundo de Clubes 2025",
+    "description": "Aposte junto com a Inteligência Artificial do Sportingbet. Pergunte ao nosso chat sobre as notícias e odds da Copa do Mundo de Clubes 2025 e descubra como apostar melhor.",
+    "ogImage": "https://sportingbot.com.br/og_image_1.png",
+    "favicon": "/sb-new.ico",
+    "subtitle": "A Inteligência Artificial do Sportingbet",
+    "navigation": {
+      "chat": "Conversar",
+      "discover": "Descobrir"
+    },
+    "cta": {
+      "register": "https://www.sportingbet.com.br/pt-br/sports/registro",
+      "login": "https://www.sportingbet.com.br/pt-br/sports/login",
+      "registerText": "Cadastre-se Agora",
+      "loginText": "Entrar"
+    },
+    "chat": {
+      "titleOptions": [
+        "Como posso entrar em campo para te ajudar hoje?",
+        "Vamos jogar? Me diga onde você precisa de reforço!",
+        "Bola em jogo! Em que jogada posso te ajudar?"
+      ],
+      "placeholder": "Pergunte-me sobre a Copa do Mundo de Clubes...",
+      "followUpPlaceholder": "Gostou? Quer saber mais? Me diga!",
+      "followUpTranscription": "Como posso apostar no próximo jogo do Real Madrid?",
+      "preparing": "Preparando...",
+      "recording": "Gravando...",
+      "transcribing": "Transcrevendo..."
+    },
+    "offline": {
+      "title": "Voltamos em breve!",
+      "subtitle": "É hora da minha pré-temporada, amigo.",
+      "description": "Em breve estarei de volta com novidades.\nEnquanto espera, dê uma olhada nas promoções da Sportingbet.",
+      "ctaText": "Ir para Sportingbet",
+      "ctaLink": "https://www.sportingbet.com.br/pt-br/sports/promotions",
+      "ctaLinkText": "Consulte aqui"
+    }
+  },
+  "features": {
+    "enableAvatar": true,
+    "enableBets": true,
+    "enableChat": true
+  },
+  "responsibleGaming": {
+    "enabled": true,
+    "text": "Jogue com responsabilidade",
+    "image": "/Jogo Seguro.png"
+  }
+}

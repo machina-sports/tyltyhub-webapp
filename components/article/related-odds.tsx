@@ -225,10 +225,8 @@ export function RelatedOdds({
       <button
         onClick={() => handleOddsClick(option.id, option.price.odds, option.name.shortText || option.name.text)}
         className={cn(
-          "text-sm px-3 py-1.5 font-semibold rounded-md transition-all duration-200",
-          isDarkMode 
-            ? "bg-[#FFCB00]/20 text-[#FFCB00] hover:bg-[#FFCB00]/30 border border-[#FFCB00]/40 hover:border-[#FFCB00]/60" 
-            : "bg-primary/10 text-primary hover:bg-primary/20 border border-primary/30 hover:border-primary/50"
+          "text-sm px-3 py-1.5 font-semibold rounded-md",
+          "bg-brand-primary/20 text-brand-primary hover:bg-brand-primary/30 border border-brand-primary/40 hover:border-brand-primary/60"
         )}
       >
         {option.price.odds.toFixed(2)}
@@ -239,7 +237,7 @@ export function RelatedOdds({
   return (
     <Card className={cn(
       "overflow-hidden max-w-[420px] ml-3 rounded-2xl",
-      isDarkMode ? "bg-[#061F3F] border-[#FFCB00]/30" : "border-border"
+      isDarkMode ? "bg-card border-brand-primary/30" : "border-border"
     )}>
       <div className="p-4">
         {/* Header */}
@@ -257,7 +255,7 @@ export function RelatedOdds({
             </div>
             <span className={cn(
               "font-semibold text-sm truncate",
-              isDarkMode ? "text-[#FFF8E1]" : "text-foreground"
+              "text-foreground"
             )}>
               {marketData.homeTeam.code}
             </span>
@@ -267,7 +265,7 @@ export function RelatedOdds({
               <>
                 <span className={cn(
                   "text-xs mx-1 flex-shrink-0",
-                  isDarkMode ? "text-[#FFF8E1]/70" : "text-muted-foreground"
+                  "text-muted-foreground"
                 )}>
                   vs
                 </span>
@@ -282,7 +280,7 @@ export function RelatedOdds({
                 </div>
                 <span className={cn(
                   "font-semibold text-sm truncate",
-                  isDarkMode ? "text-[#FFF8E1]" : "text-foreground"
+                  "text-foreground"
                 )}>
                   {marketData.awayTeam.code}
                 </span>
@@ -291,7 +289,7 @@ export function RelatedOdds({
           </div>
           <div className={cn(
             "text-xs flex-shrink-0 ml-2",
-            isDarkMode ? "text-[#FFF8E1]/70" : "text-muted-foreground"
+            "text-muted-foreground"
           )}>
             {formatEventTime(eventDateTime)}
           </div>
@@ -300,7 +298,7 @@ export function RelatedOdds({
         {/* Market Title */}
         <div className={cn(
           "text-xs font-medium text-center mb-3",
-          isDarkMode ? "text-[#FFF8E1]/70" : "text-muted-foreground"
+          "text-muted-foreground"
         )}>
           {marketData.title}
         </div>
@@ -314,7 +312,7 @@ export function RelatedOdds({
             <div key={option.id} className="text-center space-y-2">
               <div className={cn(
                 "text-xs font-medium",
-                isDarkMode ? "text-[#FFF8E1]/70" : "text-muted-foreground"
+                "text-muted-foreground"
               )}>
                 {option.name.shortText || option.name.text}
               </div>
@@ -326,7 +324,7 @@ export function RelatedOdds({
         {/* Footer */}
         <p className={cn(
           "text-xs text-center mt-4",
-          isDarkMode ? "text-[#FFF8E1]/50" : "text-muted-foreground"
+          "text-muted-foreground/70"
         )}>
           Odds atualizadas {formatDistanceToNow(new Date(), { addSuffix: true, locale: ptBR })}
         </p>

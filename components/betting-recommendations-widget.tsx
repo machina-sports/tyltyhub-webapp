@@ -66,9 +66,9 @@ function RecommendationCard({ market }: { market: MarketRecommendation }) {
   const deeplinkHref = (() => {
     const { eventId, marketId, optionId } = resolveIds()
     if (eventId && marketId && optionId) {
-      return buildBettingUrl({ 
-        eventId, 
-        marketId, 
+      return buildBettingUrl({
+        eventId,
+        marketId,
         optionId,
         baseUrl: process.env.NEXT_PUBLIC_SPORTS_BASE_URL || undefined,
         language: 'en'
@@ -78,25 +78,17 @@ function RecommendationCard({ market }: { market: MarketRecommendation }) {
   })()
 
   return (
-    <div className="w-full min-h-[220px]">
+    <div className="w-full">
       <Card className="h-full">
-        <CardContent className="p-5">
-          {/* Header with title */}
-          <div className="flex items-start justify-between mb-4">
-            <div className="flex-1 pr-4">
-              <h4 className="font-semibold text-base mb-2 line-clamp-2">
-                {market.title}
+        <CardContent className="p-3">
+          {/* Header with title and odds in same row */}
+          <div className="flex items-start justify-between mb-2">
+            <div className="flex-1 pr-3">
+              <h4 className="font-semibold text-sm line-clamp-2 leading-tight">
+                {market.title} <span className="text-xs font-normal text-muted-foreground">({market.market_type})</span>
               </h4>
-              <p className="text-sm text-muted-foreground">
-                {market.market_type}
-              </p>
             </div>
-          </div>
-
-          {/* Odds display */}
-          <div className="flex items-center justify-between mb-4 p-4 rounded-lg bg-muted/30">
-            <span className="text-base font-medium">Cuota:</span>
-            <a 
+            <a
               href={deeplinkHref}
               target="_blank"
               rel="noopener noreferrer"
@@ -112,10 +104,8 @@ function RecommendationCard({ market }: { market: MarketRecommendation }) {
                 });
               }}
               className={cn(
-                "px-4 py-2 rounded-lg font-mono font-bold text-lg transition-all duration-200 hover:scale-105 cursor-pointer",
-                isDarkMode 
-                  ? "bg-[#FFCB00]/20 text-[#FFCB00] border border-[#FFCB00]/40 hover:bg-[#FFCB00]/30 hover:border-[#FFCB00]/60" 
-                  : "bg-[#FFCB00]/10 text-[#FDBA12] border border-[#FFCB00]/20 hover:bg-[#FFCB00]/20 hover:border-[#FFCB00]/30"
+                "px-3 py-1.5 rounded-md font-mono font-bold text-base cursor-pointer shrink-0",
+                "bg-brand-primary/20 text-brand-primary border border-brand-primary/40 hover:bg-brand-primary/30 hover:border-brand-primary/60"
               )}
             >
               {typeof market.odds === 'number' ? market.odds.toFixed(2) : market.odds}
@@ -123,8 +113,8 @@ function RecommendationCard({ market }: { market: MarketRecommendation }) {
           </div>
 
           {/* Rationale */}
-          <div className="pt-4 border-t">
-            <p className="text-sm text-muted-foreground leading-relaxed">
+          <div className="pt-2 border-t">
+            <p className="text-xs text-muted-foreground leading-relaxed line-clamp-3">
               {market.rationale}
             </p>
           </div>
@@ -134,10 +124,10 @@ function RecommendationCard({ market }: { market: MarketRecommendation }) {
   )
 }
 
-export function BettingRecommendationsWidget({ 
-  markets, 
+export function BettingRecommendationsWidget({
+  markets,
   title = "Recomendaciones de Apuestas",
-  className 
+  className
 }: BettingRecommendationsWidgetProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
 
@@ -155,9 +145,9 @@ export function BettingRecommendationsWidget({
 
   if (!markets || markets.length === 0) {
     return (
-      <Card className={cn("w-full max-w-[450px]", className)}>
-        <CardContent className="p-5">
-          <p className="text-center text-muted-foreground">
+      <Card className={cn("w-full max-w-[420px]", className)}>
+        <CardContent className="p-3">
+          <p className="text-center text-muted-foreground text-sm">
             No hay recomendaciones disponibles
           </p>
         </CardContent>
@@ -167,53 +157,45 @@ export function BettingRecommendationsWidget({
 
   // Single recommendation - no carousel needed
   if (markets.length === 1) {
-      return (
-    <div className={cn("w-full max-w-[450px]", className)}>
-      <div className="mb-3">
-        <h3 className="text-base font-semibold text-bwin-brand-primary">{title}</h3>
+    return (
+      <div className={cn("w-full max-w-[420px]", className)}>
+        <RecommendationCard market={markets[0]} />
       </div>
-      <RecommendationCard market={markets[0]} />
-    </div>
-  )
+    )
   }
 
   // Multiple recommendations - carousel
   return (
-    <div className={cn("w-full max-w-[450px]", className)}>
-      {/* Header */}
-      <div className="mb-3">
-        <h3 className="text-base font-semibold text-bwin-brand-primary">{title}</h3>
-      </div>
-
+    <div className={cn("w-full max-w-[420px]", className)}>
       {/* Carousel Container */}
-      <div className="rounded-lg border p-4 border-bwin-neutral-30 bg-bwin-neutral-20">
+      <div className="rounded-lg border ml-9 md:ml-3 p-2 border-border bg-card">
         {/* Current Recommendation */}
         <div className="overflow-hidden rounded-md">
           <RecommendationCard market={markets[currentIndex]} />
         </div>
 
         {/* Carousel Navigation */}
-        <div className="flex items-center justify-between mt-4">
+        <div className="flex items-center justify-between mt-2">
           {/* Left Arrow */}
           <button
             onClick={prevRecommendation}
-            className="p-2 rounded-full transition-colors hover:bg-bwin-brand-primary/20 text-bwin-brand-primary hover:text-bwin-brand-primary"
+            className="p-1 rounded-full hover:bg-brand-primary/20 text-brand-primary hover:text-brand-primary"
             aria-label="Recomendación anterior"
           >
-            <ChevronLeft className="h-5 w-5" />
+            <ChevronLeft className="h-4 w-4" />
           </button>
 
           {/* Indicators */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             {markets.map((_, index) => (
               <button
                 key={index}
                 onClick={() => goToRecommendation(index)}
                 className={cn(
-                  "w-3 h-3 rounded-full transition-colors",
+                  "w-2 h-2 rounded-full",
                   index === currentIndex
-                    ? "bg-bwin-brand-primary"
-                    : "bg-bwin-neutral-60 hover:bg-bwin-neutral-80"
+                    ? "bg-brand-primary"
+                    : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
                 )}
                 aria-label={`Ir a recomendación ${index + 1}`}
               />
@@ -223,14 +205,12 @@ export function BettingRecommendationsWidget({
           {/* Right Arrow */}
           <button
             onClick={nextRecommendation}
-            className="p-2 rounded-full transition-colors hover:bg-bwin-brand-primary/20 text-bwin-brand-primary hover:text-bwin-brand-primary"
+            className="p-1 rounded-full hover:bg-brand-primary/20 text-brand-primary hover:text-brand-primary"
             aria-label="Siguiente recomendación"
           >
-            <ChevronRight className="h-5 w-5" />
+            <ChevronRight className="h-4 w-4" />
           </button>
         </div>
-
-
       </div>
     </div>
   )

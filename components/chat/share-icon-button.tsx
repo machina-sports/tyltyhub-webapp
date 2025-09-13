@@ -11,12 +11,14 @@ import { actionSaveSharedChat } from "@/providers/share/actions"
 import { AppState } from "@/store"
 import { useAppDispatch } from "@/store/dispatch"
 import { useGlobalState } from "@/store/useState"
+import { useBrandConfig } from "@/contexts/brand-context"
 import { Check, Copy, MessageCircle, Share2, X } from "lucide-react"
 import { useState } from "react"
 
 export function ShareIconButton() {
   const state = useGlobalState((state: any) => state.threads)
   const shareState = useGlobalState((state: AppState) => state.share)
+  const brand = useBrandConfig()
   const dispatch = useAppDispatch()
 
   const [shareDialogOpen, setShareDialogOpen] = useState(false)
@@ -36,7 +38,7 @@ export function ShareIconButton() {
           expirationDays
         })).unwrap()
           .then((result) => {
-            const baseUrl = "https://bwinbot.com"
+            const baseUrl = brand.baseUrl
             const shareLink = `${baseUrl}/chat/${result.chatId}`
             setShareUrl(shareLink)
             setIsSaving(false)
@@ -65,7 +67,7 @@ export function ShareIconButton() {
 
   const handleShare = async (platform?: string) => {
     if (platform === 'whatsapp') {
-      const shareText = 'Mira este chat de bwinBOT'
+      const shareText = `Mira este chat de ${brand.displayName}`
       window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(`${shareText} ${shareUrl}`)}`, '_blank')
       return
     }
@@ -80,7 +82,7 @@ export function ShareIconButton() {
       try {
         await navigator.share({
           title: firstMessage.substring(0, 50) + (firstMessage.length > 50 ? '...' : ''),
-          text: 'Mira este chat de bwin LaLiga',
+          text: `Mira este chat de ${brand.displayName}`,
           url: shareUrl
         })
       } catch (error) {
@@ -94,10 +96,10 @@ export function ShareIconButton() {
       <Button
         variant="ghost"
         size="icon"
-        className="h-10 w-10 text-bwin-brand-primary hover:text-bwin-neutral-100 hover:bg-bwin-brand-primary/10"
+        className="h-10 w-10 text-brand-primary hover:text-neutral-100 hover:bg-brand-primary/10 share-button"
         onClick={handleOpenShareDialog}
         disabled={isSaving}
-        aria-label="Compartir"
+        aria-label="Compartilhar"
       >
         <Share2 className="h-4 w-4" />
       </Button>
@@ -115,7 +117,7 @@ export function ShareIconButton() {
                 variant="ghost"
                 size="sm"
                 onClick={handleCopyLink}
-                className="shrink-0 text-bwin-brand-primary hover:text-bwin-neutral-100 hover:bg-bwin-brand-primary/10"
+                className="shrink-0 text-brand-primary hover:text-bwin-neutral-100 hover:bg-brand-primary/10"
               >
                 {copySuccess ? (
                   <>

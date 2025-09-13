@@ -6,7 +6,7 @@ export default function ChatClientLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="flex flex-col bg-bwin-neutral-10">
+    <div className="flex flex-col">
       {children}
     </div>
   )

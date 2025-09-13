@@ -97,7 +97,7 @@ export function ArticleShareButton({
           <Button 
             variant="ghost" 
             size="icon" 
-            className="h-12 w-12 p-2 text-bwin-brand-primary hover:text-bwin-neutral-100 hover:bg-bwin-brand-primary/10"
+            className="h-12 w-12 p-2 text-brand-primary hover:text-bwin-neutral-100 hover:bg-brand-primary/10"
             aria-label="Compartilhar artigo"
           >
             <Share2 className="h-5 w-5" />

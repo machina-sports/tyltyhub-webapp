@@ -58,7 +58,7 @@ export function LGPDConsent() {
             <div className="flex flex-col sm:flex-row gap-3 pt-2">
               <Button
                 onClick={handleAccept}
-                className="flex-1 bg-bwin-brand-primary hover:bg-bwin-brand-secondary text-bwin-neutral-0"
+                className="flex-1 bg-brand-primary hover:bg-brand-secondary text-bwin-neutral-0"
               >
                 Aceptar
               </Button>

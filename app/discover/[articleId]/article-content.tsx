@@ -20,6 +20,7 @@ import React, {
 import { WidgetCarousel } from "@/components/carousel/container";
 import { ResponsibleGamingResponsive } from "@/components/responsible-gaming-responsive";
 import { useTheme } from "@/components/theme-provider";
+import { useBrand } from "@/contexts/brand-context";
 import { cn } from "@/lib/utils";
 import {
     doFetchArticle,
@@ -120,6 +121,7 @@ interface ArticleContentProps {
 
 export default function ArticleContent({ articleParam }: ArticleContentProps) {
   const { isDarkMode } = useTheme();
+  const { brand } = useBrand();
   const dispatch = useAppDispatch();
   const articles = useGlobalState((state: any) => state.article);
   const article = articles.currentArticle;
@@ -286,7 +288,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
               <p
                 className={cn(
                   "text-base sm:text-lg",
-                  isDarkMode ? "text-[#FFF8E1]/80" : "text-muted-foreground"
+                  isDarkMode && (brand.id === 'bwin' ? "text-[#FFF8E1]/80" : "text-foreground/80")
                 )}
               >
                 {articleData.subtitle}
@@ -296,7 +298,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
             <div
               className={cn(
                 "flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:text-sm mt-6",
-                isDarkMode ? "text-[#FFF8E1]/60" : "text-muted-foreground"
+                isDarkMode && (brand.id === 'bwin' ? "text-[#FFF8E1]/60" : "text-foreground/60")
               )}
             >
               {/* Date */}
@@ -304,7 +306,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
                 <Calendar
                   className={cn(
                     "h-3 w-3 sm:h-4 sm:w-4",
-                    isDarkMode && "text-[#FFCB00]"
+                    isDarkMode && (brand.id === 'bwin' ? "text-[#FFCB00]" : "text-primary")
                   )}
                 />
                 {articleData.createdDate
@@ -320,7 +322,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
                 <Clock
                   className={cn(
                     "h-3 w-3 sm:h-4 sm:w-4",
-                    isDarkMode && "text-[#FFCB00]"
+                    isDarkMode && (brand.id === 'bwin' ? "text-[#FFCB00]" : "text-primary")
                   )}
                 />
                 {articleData.readTime}
@@ -332,7 +334,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
                 <User
                   className={cn(
                     "h-3 w-3 sm:h-4 sm:w-4",
-                    isDarkMode && "text-[#FFCB00]"
+                    isDarkMode && (brand.id === 'bwin' ? "text-[#FFCB00]" : "text-primary")
                   )}
                 />
                 Bwin BOT
@@ -354,12 +356,12 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
 
       <div className={cn(
         "prose prose-neutral max-w-none",
-        isDarkMode ? "prose-invert text-[#FFF8E1]" : ""
+        isDarkMode && (brand.id === 'bwin' ? "prose-invert text-[#FFF8E1]" : "prose-invert text-foreground")
       )}>
         <div className="prose-container">
           <h2 className={cn(
             "text-lg font-bold mt-8 mb-8",
-            isDarkMode ? "text-[#FFF8E1]" : ""
+            isDarkMode && (brand.id === 'bwin' ? "text-[#FFF8E1]" : "text-foreground")
           )}></h2>
           {articleData.widgetEmbed && (
             <div className={cn("mt-0", isDarkMode && "dark")}>
@@ -372,19 +374,19 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
               <>
                 <p className={cn(
                   "text-lg mb-1",
-                  isDarkMode ? "text-[#FFF8E1]" : ""
+                  isDarkMode && (brand.id === 'bwin' ? "text-[#FFF8E1]" : "text-foreground")
                 )}>
                   {articleData?.["eventDetails"]?.match}
                 </p>
                 <p className={cn(
                   "text-lg mb-1",
-                  isDarkMode ? "text-[#FFF8E1]" : ""
+                  isDarkMode && (brand.id === 'bwin' ? "text-[#FFF8E1]" : "text-foreground")
                 )}>
                   {articleData?.["eventDetails"]?.when}
                 </p>
                 <p className={cn(
                   "text-lg mb-1",
-                  isDarkMode ? "text-[#FFF8E1]" : ""
+                  isDarkMode && (brand.id === 'bwin' ? "text-[#FFF8E1]" : "text-foreground")
                 )}>
                   {articleData?.["eventDetails"]?.venue}
                 </p>
@@ -404,7 +406,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           </h2>
           <p className={cn(
             "text-lg mt-8",
-            isDarkMode ? "text-[#FFF8E1]" : ""
+            isDarkMode && (brand.id === 'bwin' ? "text-[#FFF8E1]" : "text-foreground")
           )}>
             {articleData.section_1_content}
           </p>
@@ -422,7 +424,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           </h2>
           <p className={cn(
             "text-lg mt-8",
-            isDarkMode ? "text-[#FFF8E1]" : ""
+            isDarkMode && (brand.id === 'bwin' ? "text-[#FFF8E1]" : "text-foreground")
           )}>
             {articleData.section_2_content}
           </p>
@@ -440,7 +442,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           </h2>
           <p className={cn(
             "text-lg mt-8",
-            isDarkMode ? "text-[#FFF8E1]" : ""
+            isDarkMode && (brand.id === 'bwin' ? "text-[#FFF8E1]" : "text-foreground")
           )}>
             {articleData.section_3_content}
           </p>
@@ -458,7 +460,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           </h2>
           <p className={cn(
             "text-lg mt-8",
-            isDarkMode ? "text-[#FFF8E1]" : ""
+            isDarkMode && (brand.id === 'bwin' ? "text-[#FFF8E1]" : "text-foreground")
           )}>
             {articleData.section_4_content}
           </p>
@@ -476,7 +478,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           </h2>
           <p className={cn(
             "text-lg mt-8",
-            isDarkMode ? "text-[#FFF8E1]" : ""
+            isDarkMode && (brand.id === 'bwin' ? "text-[#FFF8E1]" : "text-foreground")
           )}>
             {articleData.section_5_content}
           </p>
@@ -484,7 +486,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
         </div>
       </div>
 
-      <Separator className={cn(isDarkMode ? "bg-[#FFCB00]/30" : "")} />
+      <Separator className={cn(isDarkMode && (brand.id === 'bwin' ? "bg-[#FFCB00]/30" : "bg-primary/30"))} />
 
       <ArticleVoting articleId={articleData.articleId} />
 

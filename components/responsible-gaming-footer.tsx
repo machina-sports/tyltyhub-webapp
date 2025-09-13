@@ -2,6 +2,7 @@
 
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
+import { useBrandConfig } from '@/contexts/brand-context'
 
 interface ResponsibleGamingFooterProps {
   variant?: 'with-logo' | 'without-logo'
@@ -12,9 +13,11 @@ export function ResponsibleGamingFooter({
   variant = 'with-logo', 
   className 
 }: ResponsibleGamingFooterProps) {
+  const brand = useBrandConfig();
+  
   return (
     <footer className={cn(
-      "w-full bg-bwin-neutral-0 mb-20 md:mb-0 py-4",
+      "w-full mb-20 md:mb-0 py-4 mt-4 responsible-gaming-footer",
       className
     )}>
       {/* Single Banner with all elements */}
@@ -24,8 +27,8 @@ export function ResponsibleGamingFooter({
             {variant === 'with-logo' && (
               <div className="flex-shrink-0">
                 <Image
-                  src="/bwin-logo.png"
-                  alt="bwin"
+                  src={brand.branding.logo.full}
+                  alt={brand.displayName}
                   width={80}
                   height={24}
                   className="w-20 h-6 md:w-24 md:h-7"

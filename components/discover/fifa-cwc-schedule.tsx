@@ -115,19 +115,19 @@ export function FifaCwcSchedule() {
         <TabsList className="grid w-full grid-cols-3 bg-bwin-neutral-20 border-bwin-neutral-30">
           <TabsTrigger 
             value="clubs-view"
-            className="text-bwin-neutral-100 data-[state=active]:bg-bwin-brand-primary data-[state=active]:text-bwin-neutral-0"
+            className="text-bwin-neutral-100 data-[state=active]:bg-brand-primary data-[state=active]:text-bwin-neutral-0"
           >
             Clubes
           </TabsTrigger>
           <TabsTrigger 
             value="teams-view"
-            className="text-bwin-neutral-100 data-[state=active]:bg-bwin-brand-primary data-[state=active]:text-bwin-neutral-0"
+            className="text-bwin-neutral-100 data-[state=active]:bg-brand-primary data-[state=active]:text-bwin-neutral-0"
           >
             Clasificación
           </TabsTrigger>
           <TabsTrigger 
             value="matches-view"
-            className="text-bwin-neutral-100 data-[state=active]:bg-bwin-brand-primary data-[state=active]:text-bwin-neutral-0"
+            className="text-bwin-neutral-100 data-[state=active]:bg-brand-primary data-[state=active]:text-bwin-neutral-0"
           >
             Calendario
           </TabsTrigger>
@@ -144,7 +144,7 @@ export function FifaCwcSchedule() {
         <TabsContent value="matches-view" className="mt-4">
           <div className="space-y-6">
             <div className="flex items-center gap-2 text-bwin-neutral-100">
-              <Calendar className="h-5 w-5 text-bwin-brand-primary" />
+              <Calendar className="h-5 w-5 text-brand-primary" />
               <h3 className="text-lg font-semibold">Calendario de Partidos</h3>
               <Badge variant="outline" className="border-bwin-neutral-40 text-bwin-neutral-80">
                 {fixtures.length} partidos

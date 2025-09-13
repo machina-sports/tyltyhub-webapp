@@ -6,6 +6,8 @@ import { Check, Copy, MessageCircle, Share2, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
+import { useBrandConfig } from "@/contexts/brand-context"
+
 import {
     Dialog,
     DialogContent,
@@ -35,6 +37,7 @@ interface ContainerChatProps {
 export function ContainerChat({ input, setInput, onSubmit, onNewMessage }: ContainerChatProps) {
   const state = useGlobalState((state: any) => state.threads)
   const shareState = useGlobalState((state: AppState) => state.share)
+  const brand = useBrandConfig()
 
   const dispatch = useAppDispatch()
 
@@ -61,7 +64,7 @@ export function ContainerChat({ input, setInput, onSubmit, onNewMessage }: Conta
           expirationDays
         })).unwrap()
           .then((result) => {
-            const baseUrl = "https://bwinbot.com"
+            const baseUrl = brand.baseUrl
             const shareLink = `${baseUrl}/chat/${result.chatId}`
             setShareUrl(shareLink)
             setIsSaving(false)
@@ -90,7 +93,7 @@ export function ContainerChat({ input, setInput, onSubmit, onNewMessage }: Conta
 
   const handleShare = async (platform?: string) => {
     if (platform === 'whatsapp') {
-      const shareText = 'Mira este chat de bwinBOT'
+      const shareText = `Mira este chat de ${brand.displayName}`
       window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(`${shareText} ${shareUrl}`)}`, '_blank')
       return
     }
@@ -105,7 +108,7 @@ export function ContainerChat({ input, setInput, onSubmit, onNewMessage }: Conta
       try {
         await navigator.share({
           title: firstMessage.substring(0, 50) + (firstMessage.length > 50 ? '...' : ''),
-          text: 'Mira este chat de bwin LaLiga',
+          text: `Mira este chat de ${brand.displayName}`,
           url: shareUrl
         })
       } catch (error) {
@@ -149,15 +152,18 @@ export function ContainerChat({ input, setInput, onSubmit, onNewMessage }: Conta
   return (
     <>
       {/* Botão Share - apenas no desktop (no mobile está no header) */}
-      <div className="hidden md:flex justify-end items-center border-b bg-bwin-neutral-10 border-bwin-neutral-30 pb-4 mt-4">
+      <div className="hidden md:flex justify-end items-center border-b pb-4 mt-4" style={{ 
+        borderColor: 'hsl(var(--brand-primary) / 0.2)'
+      }}>
         <Button
           variant="ghost"
           size="sm"
-          className="gap-1 text-bwin-brand-primary hover:text-bwin-neutral-100 hover:bg-bwin-brand-primary/10"
+          className="gap-1 hover:text-neutral-100 hover:bg-brand-primary/10 share-button-text"
+          style={{ color: 'hsl(var(--brand-primary))' }}
           onClick={handleOpenShareDialog}
         >
           <Share2 className="h-4 w-4" />
-          Compartir
+          Compartilhar
         </Button>
       </div>
       <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
@@ -173,7 +179,7 @@ export function ContainerChat({ input, setInput, onSubmit, onNewMessage }: Conta
                 variant="ghost"
                 size="sm"
                 onClick={handleCopyLink}
-                className="shrink-0 text-bwin-brand-primary hover:text-bwin-neutral-100 hover:bg-bwin-brand-primary/10"
+                className="shrink-0 text-brand-primary hover:text-bwin-neutral-100 hover:bg-brand-primary/10"
               >
                 {copySuccess ? (
                   <>
@@ -218,7 +224,6 @@ export function ContainerChat({ input, setInput, onSubmit, onNewMessage }: Conta
 
       <div
         className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden scroll-auto"
-
       >
         <div className="max-w-3xl mx-auto space-y-6 pb-6">
           <div className="space-y-3 sm:space-y-6 pt-4">

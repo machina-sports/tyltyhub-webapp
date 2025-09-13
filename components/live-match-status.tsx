@@ -74,7 +74,7 @@ export const LiveMatchStatus = React.memo(({
             </span>
           </div>
           {matchTime && (
-            <span className="text-xs px-1.5 py-0.5 rounded-full font-medium bg-bwin-brand-primary/20 text-bwin-brand-primary border border-bwin-brand-primary/30">
+            <span className="text-xs px-1.5 py-0.5 rounded-full font-medium bg-brand-primary/20 text-brand-primary border border-brand-primary/30">
               {matchTime}
             </span>
           )}

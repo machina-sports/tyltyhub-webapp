@@ -2,11 +2,10 @@
 
 import { Compass, MessageSquare } from "lucide-react"
 
-import Image from "next/image"
-
 import { usePathname, useRouter } from "next/navigation"
 
 import { ShareIconButton } from "@/components/chat/share-icon-button"
+import { BrandLogo } from "@/components/brand"
 import { useEffect, useState } from "react"
 
 const routes = [
@@ -56,16 +55,17 @@ export function Topbar() {
     }
 
     return (
-      <div className="flex items-center justify-between px-6 py-6 bg-bwin-neutral-0 w-full">
+      <div className="flex items-center justify-between px-6 py-6 w-full border-b" style={{
+        borderColor: 'hsl(var(--brand-primary) / 0.2)'
+      }}>
         <div
           onClick={handleLogoClick}
           className="flex items-center cursor-pointer"
           role="button"
           aria-label="Ir al inicio"
         >
-          <Image
-            src="/bwin-logo.png"
-            alt="bwin"
+          <BrandLogo
+            variant="full"
             width={80}
             height={32}
             priority

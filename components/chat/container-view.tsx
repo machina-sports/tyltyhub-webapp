@@ -69,7 +69,7 @@ export default function ContainerView({ threadId }: { threadId: string }) {
   const isTyping = currentStatus === "processing" || currentStatus === "waiting" || state.fields.status === "loading"
 
   return (
-    <div className="w-full overflow-x-hidden bg-bwin-neutral-10">
+    <div className="w-full overflow-x-hidden">
       <div className="mobile-container flex flex-col space-y-6 md:max-w-[1200px] mx-auto mb-4">
         <ContainerChat
           input={input}

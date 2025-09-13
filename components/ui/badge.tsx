@@ -15,9 +15,9 @@ const badgeVariants = cva(
         destructive:
           "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
         outline: "text-foreground",
-        bwin: "border-transparent bg-bwin-brand-primary text-bwin-neutral-0 hover:bg-bwin-brand-secondary",
-        bwinOutline: "border-bwin-brand-primary text-bwin-brand-primary hover:bg-bwin-brand-primary/10",
-        bwinSecondary: "border-transparent bg-bwin-brand-secondary text-bwin-neutral-0 hover:bg-bwin-brand-primary",
+        bwin: "border-transparent bg-brand-primary text-bwin-neutral-0 hover:bg-brand-secondary",
+        bwinOutline: "border-brand-primary text-brand-primary hover:bg-brand-primary/10",
+        bwinSecondary: "border-transparent bg-brand-secondary text-bwin-neutral-0 hover:bg-brand-primary",
         bwinDark: "border-transparent bg-bwin-neutral-40 text-bwin-neutral-90 hover:bg-bwin-neutral-50",
         bwinDarkOutline: "border-bwin-neutral-40 text-bwin-neutral-90 hover:bg-bwin-neutral-40/10"
       },

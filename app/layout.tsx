@@ -9,6 +9,11 @@ import { Toaster } from "@/components/ui/toaster";
 import { MainProvider } from "@/components/use-provider";
 import DiscoveryProvider from "@/providers/discover/provider";
 import { Providers } from "@/providers/provider";
+import { BrandProvider } from "@/contexts/brand-context";
+import { getBrandConfig } from "@/config/brands";
+import { generateBrandMetadata } from "@/lib/metadata";
+import { BrandColors } from "@/components/brand";
+import { DynamicCSS } from "@/components/brand/dynamic-css";
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -22,43 +27,14 @@ declare global {
   }
 }
 
-export const metadata: Metadata = {
-  title: "bwinBOT: la IA de bwin para LaLiga 2025/2026",
-  description: "Apuesta junto con la Inteligencia Artificial de bwin. Pregunta a nuestro chat sobre las noticias y cuotas de LaLiga 2025/2026 y descubre cómo apostar mejor.",
-  icons: {
-    icon: "/bwin-logo-icon.png",
-  },
-  openGraph: {
-    title: "bwinBOT: la IA de bwin para LaLiga 2025/2026",
-    description: "Apuesta junto con la Inteligencia Artificial de bwin. Pregunta a nuestro chat sobre las noticias y cuotas de LaLiga 2025/2026 y descubre cómo apostar mejor.",
-    type: "website",
-    locale: "es_ES",
-    siteName: "bwinBOT",
-    url: "https://bwinbot.com",
-    images: [
-      {
-        url: "https://bwinbot.com/og_image_4.png",
-        width: 1200,
-        height: 630,
-        alt: "bwinBOT: la IA de bwin",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "bwinBOT: la IA de bwin para LaLiga 2025/2026",
-    description: "Apuesta junto con la Inteligencia Artificial de bwin. Pregunta a nuestro chat sobre las noticias y cuotas de LaLiga 2025/2026 y descubre cómo apostar mejor.",
-    images: ["https://bwinbot.com/og_image_4.png"],
-  },
-};
+// Get brand configuration from environment variable
+const brandId = process.env.NEXT_PUBLIC_BRAND || 'bwin';
+const brand = getBrandConfig(brandId);
 
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
-  viewportFit: 'cover', // iOS safe area support
-}
+// Generate dynamic metadata based on brand
+const { metadata, viewport } = generateBrandMetadata(brand);
+
+export { metadata, viewport };
 
 export default function RootLayout({
   children,
@@ -66,18 +42,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es-ES">
+    <html lang={brand.language} data-brand={brandId}>
       <head>
-        <link rel="icon" href="/bwin-logo-icon.png" />
+        <link rel="icon" href={brand.content.favicon} />
         {/* Google tag (gtag.js) - GA4 Property */}
         <script
           async
-          src="https://www.googletagmanager.com/gtag/js?id=G-RP42Y35MC2"
+          src={`https://www.googletagmanager.com/gtag/js?id=${brand.analytics.ga4Primary}`}
         />
         {/* Google tag (gtag.js) - Secondary GA4 Property */}
         <script
           async
-          src="https://www.googletagmanager.com/gtag/js?id=G-9F6CHT1XS6"
+          src={`https://www.googletagmanager.com/gtag/js?id=${brand.analytics.ga4Secondary}`}
         />
         <script
           dangerouslySetInnerHTML={{
@@ -85,42 +61,86 @@ export default function RootLayout({
            window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', 'G-RP42Y35MC2');
-          gtag('config', 'G-9F6CHT1XS6');
+          gtag('config', '${brand.analytics.ga4Primary}');
+          gtag('config', '${brand.analytics.ga4Secondary}');
           `,
           }}
         />
         <script
           async
           type="module"
-          data-tallysight-defaults-widget-config-workspace="bwin-spain"
+          data-tallysight-defaults-widget-config-workspace={brand.analytics.tallysightWorkspace}
           src="https://storage.googleapis.com/tallysight-widgets/dist/tallysight.min.js"
           data-tallysight-widget-loading="lazy"
           data-tallysight-observer="true"
         />
-        <meta property="og:logo" content="https://bwinbot.com/og_image_4.png" />
+        <meta property="og:logo" content={brand.content.ogImage} />
+        <style dangerouslySetInnerHTML={{ __html: `
+          :root {
+            ${brandId === 'sportingbet' ? `
+              /* Sportingbet Brand Colors - Cor fundamental */
+              --brand-primary: 207 95.24% 41.18% !important;
+              --brand-secondary: 207 95.24% 50% !important;
+              --brand-success: 145 63% 49% !important;
+              --brand-warning: 43 98% 53% !important;
+              --brand-danger: 3 100% 59% !important;
+              --brand-info: 204 86% 53% !important;
+              --border-primary: 207 95.24% 41.18%;
+              --bg-primary: 220 100% 8%;
+              --bg-secondary: 220 100% 12%;
+              --background: rgb(6, 31, 63);
+            ` : `
+              /* Bwin Brand Colors */
+              --brand-primary: 48 100% 50% !important;
+              --brand-secondary: 43 98% 53% !important;
+              --brand-success: 145 63% 49% !important;
+              --brand-warning: 43 98% 53% !important;
+              --brand-danger: 3 100% 59% !important;
+              --brand-info: 204 86% 53% !important;
+              --border-primary: 48 100% 50%;
+            `}
+            --neutral-100: 0 0% 100%;
+            --neutral-90: 0 0% 90%;
+            --neutral-80: 0 0% 70%;
+            --neutral-70: 0 0% 55%;
+            --neutral-60: 0 0% 40%;
+            --neutral-50: 0 0% 29%;
+            --neutral-40: 0 0% 24%;
+            --neutral-30: 0 0% 18%;
+            --neutral-25: 0 0% 15%;
+            --neutral-20: 0 0% 12%;
+            --neutral-15: 0 0% 10%;
+            --neutral-10: 0 0% 7%;
+            --neutral-0: 0 0% 0%;
+          }
+        ` }} />
       </head>
       <body className={inter.className}>
-        <Providers>
-          <MainProvider>
-            <DiscoveryProvider>
-              <div className="flex h-[calc(100vh-80px-env(safe-area-inset-bottom))] md:h-screen flex-col md:flex-row">
-                <Sidebar />
-                <main className="flex-1 overflow-auto bg-bwin-neutral-0">
-                  <Topbar />
-                  <div className="flex-1 bg-bwin-neutral-10 pb-safe">
-                    {children}
-                  </div>
-                  <ResponsibleGamingResponsive />
-                </main>
-              </div>
-            </DiscoveryProvider>
-            <AgeVerification />
-            <Footer />
-            <LGPDConsent />
-            <Toaster />
-          </MainProvider>
-        </Providers>
+        <DynamicCSS />
+        <BrandProvider>
+          <BrandColors>
+            <Providers>
+            <MainProvider>
+              <DiscoveryProvider>
+                <div className="flex h-[calc(100vh-80px-env(safe-area-inset-bottom))] md:h-screen flex-col md:flex-row">
+                  <Sidebar />
+                  <main className="flex-1 overflow-auto">
+                    <Topbar />
+                    <div className="flex-1 pb-safe">
+                      {children}
+                    </div>
+                    <ResponsibleGamingResponsive />
+                  </main>
+                </div>
+              </DiscoveryProvider>
+              <AgeVerification />
+              <Footer />
+              <LGPDConsent />
+              <Toaster />
+            </MainProvider>
+          </Providers>
+          </BrandColors>
+        </BrandProvider>
       </body>
     </html>
   );

@@ -16,7 +16,7 @@ const QuestionButton = memo(({ text, onClick, className }: QuestionButtonProps) 
       className={cn(
         "flex-shrink-0 px-6 py-3 mx-2 text-sm font-medium rounded-xl transition-all duration-200",
         "bg-bwin-neutral-20 text-bwin-neutral-90 border border-bwin-neutral-30",
-        "hover:bg-bwin-brand-primary hover:text-bwin-neutral-0 hover:border-bwin-brand-primary",
+        "hover:bg-brand-primary hover:text-bwin-neutral-0 hover:border-brand-primary",
         "active:scale-95 whitespace-nowrap",
         className
       )}

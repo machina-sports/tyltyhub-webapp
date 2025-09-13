@@ -108,7 +108,7 @@ export function TeamFilter({ value, onChange }: TeamFilterProps) {
               </div>
             </SelectValue>
             <div className="absolute right-3 top-0 bottom-0 flex items-center pointer-events-none">
-              <ChevronDown className="h-4 w-4 text-bwin-brand-primary opacity-70" />
+              <ChevronDown className="h-4 w-4 text-brand-primary opacity-70" />
             </div>
           </SelectTrigger>
           
@@ -123,7 +123,7 @@ export function TeamFilter({ value, onChange }: TeamFilterProps) {
                 className={cn(
                   "w-8 h-8 rounded-md text-xs font-medium transition-colors flex items-center justify-center",
                   activeGroup === group.name
-                    ? "bg-bwin-brand-primary text-bwin-neutral-0"
+                    ? "bg-brand-primary text-bwin-neutral-0"
                     : "bg-bwin-neutral-30 text-bwin-neutral-100 border border-bwin-neutral-40 hover:bg-bwin-neutral-40"
                 )}
                 onClick={() => setActiveGroup(group.name)}
@@ -138,7 +138,7 @@ export function TeamFilter({ value, onChange }: TeamFilterProps) {
               <SelectItem 
                 key={team.id} 
                 value={team.id} 
-                className="flex justify-center items-center w-full h-[80px] p-1 cursor-pointer rounded-md transition-colors data-[highlighted]:outline-none hover:bg-bwin-neutral-30 data-[state=checked]:bg-bwin-brand-primary/20 data-[highlighted]:bg-bwin-neutral-30"
+                className="flex justify-center items-center w-full h-[80px] p-1 cursor-pointer rounded-md transition-colors data-[highlighted]:outline-none hover:bg-bwin-neutral-30 data-[state=checked]:bg-brand-primary/20 data-[highlighted]:bg-bwin-neutral-30"
               >
                 <div className="flex flex-col items-center justify-center text-center h-full">
                   {team.logo ? (

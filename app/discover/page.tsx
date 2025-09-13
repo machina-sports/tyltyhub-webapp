@@ -13,6 +13,7 @@ import { useAppDispatch } from "@/store/dispatch";
 import { useGlobalState } from "@/store/useState";
 import { Newspaper, Plus, Search } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useBrandConfig } from "@/contexts/brand-context";
 
 interface SearchFilters {
   name: string;
@@ -67,6 +68,7 @@ const buildSearchFilters = (searchQuery: string): SearchFilters => {
 };
 
 export default function DiscoverPage() {
+  const brand = useBrandConfig();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("news");
   const [isScrolled, setIsScrolled] = useState(false);
@@ -78,7 +80,7 @@ export default function DiscoverPage() {
   const dispatch = useAppDispatch();
   const searchResults = useGlobalState((state: any) => state.discover.searchResults) as SearchResults;
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
-  const pageSize = 6;
+  const pageSize = 8; // Carregando em múltiplos de 4
 
   const handleScroll = useCallback(() => {
     if (headerRef.current) {
@@ -207,7 +209,7 @@ export default function DiscoverPage() {
       <DiscoverMobileTopbar />
       
       <div className="mobile-container pt-4 max-w-5xl mx-auto">
-      <h1 className="sr-only">La Inteligencia Artificial de bwin</h1>
+      <h1 className="sr-only">{brand.description}</h1>
       <Tabs
         value={activeTab}
         onValueChange={handleTabChange}
@@ -215,23 +217,30 @@ export default function DiscoverPage() {
       >
         <div
           ref={headerRef}
-          className="bg-bwin-neutral-10"
+          style={{
+          }}
         >
           <div className="border-b pb-4 border-bwin-neutral-30">
-            <TabsList className="w-full justify-start overflow-x-auto bg-bwin-neutral-20 border-bwin-neutral-30">
+            <TabsList className="w-full justify-start overflow-x-auto" style={{
+              backgroundColor: 'hsl(var(--bg-secondary))',
+              borderColor: 'hsl(var(--border-primary))'
+            }}>
               <TabsTrigger 
                 value="news" 
-                className="flex items-center gap-2 text-bwin-neutral-100 data-[state=active]:bg-bwin-neutral-30 data-[state=active]:text-bwin-neutral-100"
+                className="flex items-center gap-2 text-white data-[state=active]:text-white"
+                style={{
+                  backgroundColor: 'transparent'
+                }}
               >
                 <Newspaper className="h-4 w-4" />
-                Noticias
+                {brand.content.navigation?.discover || "Notícias"}
               </TabsTrigger>
             </TabsList>
           </div>
 
           {activeTab === "news" && (
             <div className={cn(
-              "py-4 px-0 sm:px-0 bg-bwin-neutral-10 transition-all duration-300",
+              "py-4 px-0 sm:px-0 transition-all duration-300",
               // No mobile: mostrar apenas se isSearchVisible for true
               // No desktop: sempre mostrar
               "md:block",
@@ -241,12 +250,16 @@ export default function DiscoverPage() {
                 <div className="relative w-full md:w-[232px]">
                   <Search className="absolute left-2 top-2.5 h-4 w-4 text-bwin-neutral-80" />
                   <Input
-                    placeholder="Buscar artículos..."
-                    className="pl-8 text-base max-w-[232px] bg-bwin-neutral-20 border-bwin-neutral-30 text-bwin-neutral-100 placeholder:text-bwin-neutral-60 focus:border-bwin-brand-primary"
+                    placeholder="Buscar artigos..."
+                    className="pl-8 text-base max-w-[232px] text-white placeholder:text-neutral-60 focus:border-brand-primary"
                     value={searchQuery}
                     onChange={handleSearchChange}
                     onKeyPress={handleSearchKeyPress}
-                    style={{ fontSize: '16px' }}
+                    style={{
+                      backgroundColor: 'hsl(var(--bg-secondary))',
+                      borderColor: 'hsl(var(--border-primary))',
+                      fontSize: '16px'
+                    }}
                   />
                   {isSearching && (
                     <div className="absolute right-2 top-1/2 -translate-y-1/2">
@@ -263,7 +276,7 @@ export default function DiscoverPage() {
           <div className="space-y-12">
             {searchResults.status === "loading" && !searchResults.data.length ? (
               <div className="flex items-center justify-center min-h-[300px]">
-                <Loading width={100} height={100} showLabel={true} label="Cargando artículos..." />
+                <Loading width={100} height={100} showLabel={true} label="Carregando artigos..." />
               </div>
             ) : articleSections && articleSections.length > 0 ? (
               <>
@@ -287,21 +300,25 @@ export default function DiscoverPage() {
                   {searchResults.status === "loading" &&
                     !isSearching &&
                     searchResults.data.length > 0 ? (
-                      <Loading width={100} height={100} showLabel={true} label="Cargando más artículos..." />
+                      <Loading width={100} height={100} showLabel={true} label="Carregando mais artigos..." />
                     ) : searchResults.pagination.hasMore && searchResults.data.length > 0 ? (
                       <div className="flex flex-col items-center gap-3">
                         <Button
                           onClick={handleLoadMore}
-                          className="bg-[#FFCB00] hover:bg-[#FDBA12] text-black rounded-full w-16 h-16 p-0 shadow-lg hover:shadow-xl transition-all duration-200"
+                          className="rounded-full w-16 h-16 p-0 shadow-lg hover:shadow-xl transition-all duration-200 load-more-button"
+                          style={{ 
+                            backgroundColor: 'hsl(var(--brand-primary))',
+                            color: 'white'
+                          }}
                           disabled={searchResults.status === "loading"}
                         >
                           <Plus className="h-8 w-8" />
                         </Button>
-                        <span className="text-sm text-bwin-neutral-60 font-medium">Cargar más artículos</span>
+                        <span className="text-sm text-bwin-neutral-60 font-medium">Carregar mais artigos</span>
                       </div>
                     ) : searchResults.data.length > 0 ? (
                       <p className="text-sm text-bwin-neutral-60 py-2">
-                        No hay más artículos para cargar
+                        Não há mais artigos para carregar
                       </p>
                     ) : null}
                 </div>
@@ -309,8 +326,8 @@ export default function DiscoverPage() {
             ) : (
               <div className="py-8 text-center text-bwin-neutral-60">
                 {searchResults.status === "loading"
-                  ? "Cargando artículos..."
-                  : "No se encontraron artículos"}
+                  ? "Carregando artigos..."
+                  : "Nenhum artigo encontrado"}
               </div>
             )}
           </div>

@@ -2,6 +2,7 @@
 
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
+import { useBrandConfig } from '@/contexts/brand-context'
 
 interface ResponsibleGamingMobileProps {
   className?: string
@@ -12,9 +13,10 @@ export function ResponsibleGamingMobile({
   className,
   showLogo = true
 }: ResponsibleGamingMobileProps) {
+  const brand = useBrandConfig();
   return (
     <div className={cn(
-      "w-full bg-bwin-neutral-0 md:mb-0 py-8 mt-2",
+      "w-full md:mb-0 py-8 mt-2 responsible-gaming-mobile",
       className
     )}>
       <div className="w-full">
@@ -23,8 +25,8 @@ export function ResponsibleGamingMobile({
             {showLogo && (
               <div className="flex-shrink-0 py-4">
                 <Image
-                  src="/bwin-logo.png"
-                  alt="bwin"
+                  src={brand.branding.logo.full}
+                  alt={brand.displayName}
                   width={120}
                   height={24}
                   priority

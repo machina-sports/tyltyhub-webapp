@@ -1,10 +1,10 @@
 "use client"
 
-import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { SearchToggleButton } from "./search-toggle-button"
 import { useSearchWrapper } from "./search-wrapper"
+import { BrandLogo } from "@/components/brand"
 
 export function DiscoverMobileTopbar() {
   const router = useRouter()
@@ -31,16 +31,17 @@ export function DiscoverMobileTopbar() {
   }
 
   return (
-    <div className="flex items-center justify-between px-6 py-3 bg-bwin-neutral-0 w-full md:hidden">
+    <div className="flex items-center justify-between px-6 py-3 w-full md:hidden" style={{
+      borderBottom: '1px solid hsl(var(--brand-primary) / 0.2)'
+    }}>
       <div
         onClick={handleLogoClick}
         className="flex items-center cursor-pointer py-3"
         role="button"
         aria-label="Ir al inicio"
       >
-        <Image
-          src="/bwin-logo.png"
-          alt="bwin"
+        <BrandLogo
+          variant="full"
           width={80}
           height={32}
           priority

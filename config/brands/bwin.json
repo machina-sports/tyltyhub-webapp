@@ -1,0 +1,83 @@
+{
+  "id": "bwin",
+  "name": "bwin",
+  "displayName": "bwinBOT",
+  "description": "la IA de bwin para LaLiga 2025/2026",
+  "language": "es-ES",
+  "locale": "es_ES",
+  "domain": "bwinbot.com",
+  "baseUrl": "https://bwinbot.com",
+  "sportsBaseUrl": "https://www.bwin.es",
+  "analytics": {
+    "ga4Primary": "G-RP42Y35MC2",
+    "ga4Secondary": "G-9F6CHT1XS6",
+    "tallysightWorkspace": "bwin-spain"
+  },
+  "branding": {
+    "colors": {
+      "primary": "#FFCB00",
+      "secondary": "#FDBA12",
+      "success": "#2ECC71",
+      "warning": "#FDBA12",
+      "danger": "#FF3B30",
+      "info": "#209CEE"
+    },
+    "fonts": {
+      "primary": "Roboto",
+      "fallback": "system-ui, sans-serif"
+    },
+    "logo": {
+      "icon": "/bwin-logo-icon.png",
+      "full": "/bwin-logo.png",
+      "alt": "bwin logo"
+    }
+  },
+  "content": {
+    "title": "bwinBOT: la IA de bwin para LaLiga 2025/2026",
+    "description": "Apuesta junto con la Inteligencia Artificial de bwin. Pregunta a nuestro chat sobre las noticias y cuotas de LaLiga 2025/2026 y descubre cómo apostar mejor.",
+    "ogImage": "https://bwinbot.com/og_image_4.png",
+    "favicon": "/bwin-logo-icon.png",
+    "subtitle": "La Inteligencia Artificial de bwin",
+    "navigation": {
+      "chat": "Conversar",
+      "discover": "Descubrir"
+    },
+    "cta": {
+      "register": "https://sports.bwin.es/es/sports/registro?utm_source=bwbot&utm_medium=botao&utm_campaign=5530097&utm_content=registrar&utm_term=5530097-botmundial-bwin-sprts-es-2025-06-17-es-botao--acq-web&wm=5530097",
+      "login": "https://sports.bwin.es/es/sports/login?utm_source=bwbot&utm_medium=botao&utm_campaign=5530097&utm_content=entrar&utm_term=5530097-botmundial-bwin-sprts-es-2025-06-17-es-botao--acq-web&wm=5530097",
+      "registerText": "Regístrate Ahora",
+      "loginText": "Iniciar Sesión"
+    },
+    "chat": {
+      "titleOptions": [
+        "¿Cómo puedo entrar al campo para ayudarte hoy?",
+        "¿Vamos a jugar? ¡Dime dónde necesitas refuerzo!",
+        "¡Balón en juego! ¿En qué jugada puedo ayudarte?"
+      ],
+      "placeholder": "Pregúntame sobre LaLiga...",
+      "followUpPlaceholder": "¿Te gustó? ¿Quieres saber más? ¡Dímelo!",
+      "followUpTranscription": "¿Cómo puedo apostar en el próximo partido del Real Madrid?",
+      "preparing": "Preparando...",
+      "recording": "Grabando...",
+      "transcribing": "Transcribiendo..."
+    },
+    "offline": {
+      "title": "¡Volvemos pronto!",
+      "subtitle": "Es hora de mi pretemporada, amigo.",
+      "description": "Pronto estaré de vuelta con novedades.\nMientras esperas, echa un vistazo a las promociones de bwin.",
+      "ctaText": "Ir a bwin",
+      "ctaLink": "https://sports.bwin.es/es/sports/promotions",
+      "ctaLinkText": "Consulta aquí"
+    }
+  },
+  "features": {
+    "enableAvatar": false,
+    "enableBets": false,
+    "enableChat": true
+  },
+  "responsibleGaming": {
+    "enabled": true,
+    "text": "Juega con responsabilidad",
+    "image": "/Juega con responsabilidad.png"
+  }
+}

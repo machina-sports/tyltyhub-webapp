@@ -84,8 +84,8 @@ const config: Config = {
           '5': 'hsl(var(--chart-5))',
         },
         bwin: {
-          'brand-primary': '#FFCB00',
-          'brand-secondary': '#FDBA12',
+          'brand-primary': 'hsl(var(--bwin-brand-primary))',
+          'brand-secondary': 'hsl(var(--bwin-brand-secondary))',
           'neutral-100': '#FFFFFF',
           'neutral-90': '#E6E6E6',
           'neutral-80': '#B3B3B3',
@@ -97,10 +97,10 @@ const config: Config = {
           'neutral-20': '#1E1E1E',
           'neutral-10': '#121212',
           'neutral-0': '#000000',
-          'success': '#2ECC71',
-          'warning': '#FDBA12',
-          'danger': '#FF3B30',
-          'info': '#209CEE',
+          'success': 'hsl(var(--bwin-success))',
+          'warning': 'hsl(var(--bwin-warning))',
+          'danger': 'hsl(var(--bwin-danger))',
+          'info': 'hsl(var(--bwin-info))',
         }
       },
       boxShadow: {

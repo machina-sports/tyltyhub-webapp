@@ -98,7 +98,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
   };
 
   const haveSportsContext = content?.["sport_event"]
-  
+
   // Handle betting recommendations
   const bettingRecommendations = content?.["betting_recommendations"] || content?.["markets"]
 
@@ -106,13 +106,13 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
   const parsedWidgetContent = content?.["selected-widgets"]
   const widgetArray = useMemo(() => {
     const widgets = [];
-    
+
     // Add LiveMatchStatus as first widget if eventStatus exists and status is "live"
     if (eventStatus && eventStatus.status === "live") {
       widgets.push({
         name: "Live Match Status",
         component: (
-          <LiveMatchStatus 
+          <LiveMatchStatus
             eventStatus={eventStatus}
             isDarkMode={true}
             teamHomeName={teamHomeName}
@@ -123,7 +123,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
         )
       });
     }
-    
+
     // Add regular widgets
     if (parsedWidgetContent) {
       if (Array.isArray(parsedWidgetContent)) {
@@ -132,7 +132,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
         widgets.push(parsedWidgetContent);
       }
     }
-    
+
     return widgets;
   }, [parsedWidgetContent, eventStatus, teamHomeName, teamAwayName, teamHomeAbbreviation, teamAwayAbbreviation]);
 
@@ -195,7 +195,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
       {/* Betting Recommendations Section */}
       {bettingRecommendations && Array.isArray(bettingRecommendations) && bettingRecommendations.length > 0 && (
         <div className="mt-4 pl-6 sm:pl-12 max-w-[550px]">
-          <BettingRecommendationsWidget 
+          <BettingRecommendationsWidget
             markets={bettingRecommendations}
             title="Recomendaciones de Apuestas"
           />
@@ -207,14 +207,14 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
         <div className="mt-6 pl-14">
           <div className="space-y-8">
             <div>
-              <h3 className="text-lg font-semibold mb-4 text-bwin-brand-primary">
+              <h3 className="text-lg font-semibold mb-4 text-brand-primary">
                 📊 Clasificación de los Grupos
               </h3>
               <StandingsTable />
             </div>
             
             <div>
-              <h3 className="text-lg font-semibold mb-4 text-bwin-brand-primary">
+              <h3 className="text-lg font-semibold mb-4 text-brand-primary">
                 📅 Calendario de Partidos
               </h3>
               <MatchesCalendar 
@@ -226,7 +226,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
             </div>
             
             <div>
-              <h3 className="text-lg font-semibold mb-4 text-bwin-brand-primary">
+              <h3 className="text-lg font-semibold mb-4 text-brand-primary">
                 ⚽ Equipos Participantes
               </h3>
               <TeamsGrid />
@@ -241,9 +241,9 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
           <div className="mt-2 ml-2 sm:ml-4">
             <Link
               href={`/discover/${relatedArticle.slug}`}
-              className="flex items-center gap-3 p-3 rounded-lg transition-colors max-w-[420px] border overflow-hidden border-bwin-neutral-30 hover:border-bwin-brand-primary hover:bg-bwin-brand-primary/10"
+              className="flex items-center gap-3 p-3 rounded-lg transition-colors max-w-[420px] border overflow-hidden border-border hover:border-brand-primary hover:bg-brand-primary/10"
             >
-              <div className="flex-shrink-0 w-16 h-16 bg-bwin-neutral-20 rounded-md overflow-hidden">
+              <div className="flex-shrink-0 w-16 h-16 bg-muted rounded-md overflow-hidden">
                 {getRelatedArticleImageUrl(relatedArticle) ? (
                   <img
                     src={getRelatedArticleImageUrl(relatedArticle)}
@@ -257,7 +257,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
                 )}
               </div>
               <div className="flex-1 min-w-0 overflow-hidden">
-                <h4 className="text-sm font-medium text-bwin-brand-primary line-clamp-2 leading-tight">
+                <h4 className="text-sm font-medium text-brand-primary line-clamp-2 leading-tight">
                   {relatedArticle.title}
                 </h4>
                 {relatedArticle.subtitle && (
@@ -278,7 +278,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
               href={promotion.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="block rounded-lg transition-colors max-w-[420px] border overflow-hidden border-bwin-neutral-30 hover:border-bwin-brand-primary hover:bg-bwin-brand-primary/10"
+              className="block rounded-lg transition-colors max-w-[420px] border overflow-hidden border-border hover:border-brand-primary hover:bg-brand-primary/10"
             >
               {getPromotionImageUrl(promotion.image) ? (
                 <img
@@ -287,8 +287,8 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
                   className="w-full h-auto object-cover"
                 />
               ) : (
-                <div className="w-full h-32 flex items-center justify-center bg-bwin-neutral-20">
-                  <Gift className="h-8 w-8 text-bwin-neutral-60" />
+                <div className="w-full h-32 flex items-center justify-center bg-muted">
+                  <Gift className="h-8 w-8 text-muted-foreground" />
                 </div>
               )}
             </a>
@@ -303,7 +303,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
       )}
 
       {relatedQuestions.length > 0 && (
-        <div className="mt-4 pl-4 sm:pl-10">
+        <div className="mt-4 pl-4 sm:pl-10 ml-9 md:ml-3">
           <div className="mt-2 space-y-2 text-sm text-bwin-neutral-60">
             {relatedQuestions.slice(0, 2).map((question: any, index: number) => (
               <div key={index} className="text-sm hover:underline cursor-pointer pr-2">

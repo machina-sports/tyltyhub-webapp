@@ -46,7 +46,7 @@ export function ResponsibleGamingFloating({ className }: ResponsibleGamingFloati
       "fixed bottom-4 left-4 right-4 z-50 md:hidden",
       className
     )}>
-      <div className="bg-bwin-neutral-0 border-2 border-bwin-brand-primary/40 rounded-xl shadow-lg p-4">
+      <div className="bg-bwin-neutral-0 border-2 border-brand-primary/40 rounded-xl shadow-lg p-4">
         {/* Dismiss button */}
         <button
           onClick={handleDismiss}

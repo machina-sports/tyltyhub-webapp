@@ -46,28 +46,28 @@ export const WidgetCarousel = React.memo(({
 
   if (widgets.length === 1) {
     return (
-      <div className="rounded-lg border p-4 border-bwin-neutral-30 bg-bwin-neutral-20">
+      <div className="rounded-lg border p-2 border-border bg-card">
         {renderWidget(widgets[0])}
       </div>
     );
   }
 
   return (
-    <div className="rounded-lg border p-4 border-bwin-neutral-30 bg-bwin-neutral-20">
+    <div className="rounded-lg border p-2 border-border bg-card">
       {/* Widget Display */}
-      <div className="overflow-hidden rounded-md ">
+      <div className="overflow-hidden rounded-md">
         {renderWidget(widgets[currentIndex])}
       </div>
 
       {/* Footer with Navigation and Indicators */}
-      <div className="flex items-center justify-between mt-4">
+      <div className="flex items-center justify-between mt-2">
         {/* Left Arrow */}
         <button
           onClick={prevWidget}
-          className="p-1.5 rounded-full transition-colors hover:bg-bwin-brand-primary/20 text-bwin-brand-primary hover:text-bwin-brand-primary"
+          className="p-1 rounded-full hover:bg-brand-primary/20 text-brand-primary hover:text-brand-primary"
           aria-label="Widget anterior"
         >
-          <ChevronLeft className="h-4 w-4" />
+          <ChevronLeft className="h-3 w-3" />
         </button>
 
         {/* Indicators */}
@@ -77,10 +77,10 @@ export const WidgetCarousel = React.memo(({
               key={index}
               onClick={() => goToWidget(index)}
               className={cn(
-                "w-2 h-2 rounded-full transition-colors",
+                "w-1.5 h-1.5 rounded-full",
                 index === currentIndex
-                  ? "bg-bwin-brand-primary"
-                  : "bg-bwin-neutral-60 hover:bg-bwin-neutral-80"
+                  ? "bg-brand-primary"
+                  : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
               )}
               aria-label={`Ir al widget ${index + 1}`}
             />
@@ -90,10 +90,10 @@ export const WidgetCarousel = React.memo(({
         {/* Right Arrow */}
         <button
           onClick={nextWidget}
-          className="p-1.5 rounded-full transition-colors hover:bg-bwin-brand-primary/20 text-bwin-brand-primary hover:text-bwin-brand-primary"
+          className="p-1 rounded-full hover:bg-brand-primary/20 text-brand-primary hover:text-brand-primary"
           aria-label="Siguiente widget"
         >
-          <ChevronRight className="h-4 w-4" />
+          <ChevronRight className="h-3 w-3" />
         </button>
       </div>
     </div>

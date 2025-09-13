@@ -10,6 +10,7 @@ import { es } from 'date-fns/locale'
 import ReactMarkdown from 'react-markdown'
 import { Article } from "@/providers/article/reducer"
 import { cn } from "@/lib/utils"
+import { useBrand } from "@/contexts/brand-context"
 
 interface ArticleGridProps {
   articles: Article[]
@@ -45,8 +46,8 @@ const getDescription = (article: Article): string => {
   return article?.value?.subtitle || article?.value?.section_1_content || 'Sin descripción';
 };
 
-const getAuthor = (article: Article): string => {
-  return 'bwinBOT';
+const getAuthor = (article: Article, brandDisplayName: string): string => {
+  return brandDisplayName;
 };
 
 const getArticleUrl = (article: Article): string => {
@@ -96,6 +97,7 @@ const getDescriptionSnippet = (description: string, maxLength: number): string =
 };
 
 const ArticleCard = ({ article }: { article: Article }) => {
+  const { brand } = useBrand();
   if (!article) return null;
 
   const articleId = article._id || article.id;
@@ -106,7 +108,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
   const imageUrl = getImageUrl(article);
   const eventType = getEventType(article);
   const description = getDescription(article);
-  const author = getAuthor(article);
+  const author = getAuthor(article, brand.displayName);
   const title = getTitle(article);
 
   const mainImagePrefix = `${process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS}/article-image-id-${articleId}`
@@ -114,16 +116,12 @@ const ArticleCard = ({ article }: { article: Article }) => {
   const mainImageUrl = getImageUrl(article);
 
   return (
-    <Card className="overflow-hidden border bg-bwin-neutral-20 border-bwin-neutral-30 hover:border-bwin-brand-primary/50 transition-colors">
-      <Link
-        href={articleUrl}
-        className="h-full block"
-        prefetch={false}
-      >
+    <Card className="overflow-hidden border-2 bg-card border-muted hover:border-primary hover:bg-muted/30 transition-colors">
+      <div className="h-full">
         <CardContent className="p-0 flex flex-col md:flex-col h-full">
           {/* Mobile: Horizontal layout with image on left */}
           <div className="flex md:hidden">
-            <div className="relative w-32 h-24 flex-shrink-0">
+            <Link href={articleUrl} prefetch={false} className="relative w-32 h-24 flex-shrink-0 cursor-pointer">
               {imageUrl && (
                 <Image
                   src={mainImageUrl}
@@ -134,12 +132,17 @@ const ArticleCard = ({ article }: { article: Article }) => {
                   sizes="150px"
                 />
               )}
-            </div>
+            </Link>
             <div className="p-3 flex flex-col flex-grow min-w-0">
-              <h3 className="text-sm font-semibold mb-1 transition-colors line-clamp-2 text-bwin-neutral-100 hover:text-bwin-brand-primary">
-                {title}
+              <h3 className="text-sm font-semibold mb-1 line-clamp-2">
+                <Link href={articleUrl} prefetch={false} className="text-foreground hover:text-primary transition-colors">
+                  {title}
+                </Link>
               </h3>
-              <div className="text-xs flex-grow text-bwin-neutral-80">
+              <div className={cn(
+                "text-xs flex-grow",
+                brand.id === 'bwin' ? "text-[#FFF8E1]/70" : "text-muted-foreground"
+              )}>
                 <p className="line-clamp-2">
                   {getDescriptionSnippet(description, 80) || 'Sin descripción'}
                 </p>
@@ -149,7 +152,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
 
           {/* Desktop: Vertical layout (original) */}
           <div className="hidden md:flex md:flex-col md:h-full">
-            <div className="relative aspect-[3/2] w-full">
+            <Link href={articleUrl} prefetch={false} className="relative aspect-[3/2] w-full block cursor-pointer">
               {imageUrl && (
                 <Image
                   src={mainImageUrl}
@@ -160,30 +163,35 @@ const ArticleCard = ({ article }: { article: Article }) => {
                   sizes="(max-width: 768px) 100vw, 33vw"
                 />
               )}
-            </div>
+            </Link>
             <div className="p-5 flex flex-col flex-grow">
-              <h3 className="text-sm md:text-xl font-semibold mb-2 transition-colors line-clamp-3 text-bwin-neutral-100 hover:text-bwin-brand-primary">
-                {title}
+              <h3 className="text-sm md:text-xl font-semibold mb-2 line-clamp-3">
+                <Link href={articleUrl} prefetch={false} className="text-foreground hover:text-primary transition-colors">
+                  {title}
+                </Link>
               </h3>
-              <div className="text-sm mb-2 text-bwin-neutral-80">
+              <div className={cn(
+                "text-sm mb-2",
+                brand.id === 'bwin' ? "text-[#FFF8E1]/70" : "text-muted-foreground"
+              )}>
                 <p className="line-clamp-3">
                   {getDescriptionSnippet(description, 120) || 'Sin descripción'}
                 </p>
               </div>
-              <div className="flex items-center justify-between mt-2 pt-2 border-t text-xs border-bwin-neutral-30">
-                <div className="flex items-center gap-1">
-                  {/* Author info removed for cleaner look */}
-                </div>
+              <div className="flex items-center mt-2 pt-2 text-xs text-muted-foreground">
+                <CalendarDays className="h-3 w-3 mr-1 text-primary" />
+                {articleDate ? formatDistanceToNow(new Date(articleDate), { addSuffix: true, locale: es }) : 'Reciente'}
               </div>
             </div>
           </div>
         </CardContent>
-      </Link>
+      </div>
     </Card>
   );
 };
 
 export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProps) {
+  const { brand } = useBrand();
   if (!articles || articles.length === 0) {
     return <div className="py-8 text-center text-bwin-neutral-60">No se encontraron artículos</div>;
   }
@@ -200,7 +208,7 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
     const imageUrl = getImageUrl(article);
     const eventType = getEventType(article);
     const description = getDescription(article);
-    const author = getAuthor(article);
+    const author = getAuthor(article, brand.displayName);
     const title = getTitle(article);
     
     const mainImagePrefix = `${process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS}/article-image-id-${articleId}`
@@ -208,52 +216,52 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
     const mainImageUrl = getImageUrl(article);
 
     return (
-      <Card className="overflow-hidden border bg-bwin-neutral-20 border-bwin-neutral-30 hover:border-bwin-brand-primary/50 transition-colors">
-        <Link
-          href={articleUrl}
-          prefetch={false}
-        >
-          <CardContent className="p-0">
-            <div className="flex flex-col md:grid md:grid-cols-12 gap-0">
-              <div className="md:col-span-6">
-                <div className="relative aspect-[3/2] md:h-full w-full">
-                  {imageUrl && (
-                    <Image
-                      src={mainImageUrl}
-                      alt={title}
-                      fill
-                      className="object-cover rounded-lg"
-                      priority
-                    />
-                  )}
+      <Card className="overflow-hidden border-2 bg-card border-muted hover:border-primary hover:bg-muted/30 transition-colors rounded-lg">
+        <CardContent className="p-0">
+          <div className="flex flex-col md:grid md:grid-cols-12 gap-0">
+            <div className="md:col-span-6">
+              <Link href={articleUrl} prefetch={false} className="relative aspect-[3/2] md:h-full w-full block cursor-pointer">
+                {imageUrl && (
+                  <Image
+                    src={mainImageUrl}
+                    alt={title}
+                    fill
+                    className="object-cover rounded-l-lg"
+                    priority
+                  />
+                )}
+              </Link>
+            </div>
+            <div className="md:col-span-6 p-4 md:p-8 flex flex-col">
+              <div className="space-y-3">
+                <h2 className="text-lg md:text-3xl font-bold line-clamp-3">
+                  <Link href={articleUrl} prefetch={false} className="text-foreground hover:text-primary transition-colors">
+                    {title}
+                  </Link>
+                </h2>
+
+                <div className={cn(
+                  "prose prose-sm prose-neutral max-w-none md:line-clamp-5",
+                  brand.id === 'bwin' ? "text-[#FFF8E1]/70" : "text-muted-foreground"
+                )}>
+                  <ReactMarkdown>
+                    {getDescriptionSnippet(description, 360) || 'Sin descripción'}
+                  </ReactMarkdown>
                 </div>
               </div>
-              <div className="md:col-span-6 p-4 md:p-8 flex flex-col">
-                <div className="space-y-3">
-                  <h2 className="text-lg md:text-3xl font-bold line-clamp-3 transition-colors text-bwin-neutral-100 hover:text-bwin-brand-primary">
-                    {title}
-                  </h2>
 
-                  <div className="prose prose-sm prose-neutral max-w-none md:line-clamp-5 text-bwin-neutral-80">
-                    <ReactMarkdown>
-                      {getDescriptionSnippet(description, 360) || 'Sin descripción'}
-                    </ReactMarkdown>
-                  </div>
+              <div className="mt-auto flex flex-col gap-1 pt-4">
+                <div className="flex items-center gap-2">
+                  {/* Author info removed for cleaner look */}
                 </div>
-
-                <div className="mt-auto flex flex-col gap-1 pt-4">
-                  <div className="flex items-center gap-2">
-                    {/* Author info removed for cleaner look */}
-                  </div>
-                  <div className="flex items-center text-xs md:text-sm text-bwin-neutral-70">
-                    <CalendarDays className="h-3 w-3 md:h-4 md:w-4 mr-1 text-bwin-brand-primary" />
-                    {articleDate ? formatDistanceToNow(new Date(articleDate), { addSuffix: true, locale: es }) : 'Reciente'}
-                  </div>
+                <div className="flex items-center text-xs md:text-sm text-muted-foreground">
+                  <CalendarDays className="h-3 w-3 md:h-4 md:w-4 mr-1 text-primary" />
+                  {articleDate ? formatDistanceToNow(new Date(articleDate), { addSuffix: true, locale: es }) : 'Reciente'}
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Link>
+          </div>
+        </CardContent>
       </Card>
     );
   }

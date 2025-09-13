@@ -6,10 +6,13 @@ import { cn } from '@/lib/utils'
 import { Button } from './button'
 import { Card, CardContent } from './card'
 import AnimatedShinyText from '@/components/magicui/animated-shiny-text'
+import { BrandLogo } from '@/components/brand/brand-logo'
+import { useBrandConfig } from '@/contexts/brand-context'
 
 export function AgeVerification() {
   const [isVisible, setIsVisible] = useState(false)
   const [showUnderage, setShowUnderage] = useState(false)
+  const brand = useBrandConfig()
   
   useEffect(() => {
     const hasVerification = localStorage.getItem('age-verification')
@@ -45,16 +48,15 @@ export function AgeVerification() {
               {/* Logo/Brand Header */}
               <div className="bg-bwin-neutral-0 text-white py-8 px-8">
                 <div className="flex flex-col items-center justify-center space-y-4">
-                  <Image
-                    src="/bwin-logo.png"
-                    alt="bwin"
+                  <BrandLogo
+                    variant="full"
                     width={140}
                     height={56}
                     priority
                     className="h-14 w-auto"
                   />
-                  <AnimatedShinyText className="text-sm text-bwin-brand-primary font-medium">
-                    Inteligencia Artificial de bwin
+                  <AnimatedShinyText className="text-sm text-brand-primary font-medium">
+                    {brand.content.subtitle}
                   </AnimatedShinyText>
                 </div>
               </div>
@@ -81,7 +83,7 @@ export function AgeVerification() {
                   </Button>
                   <Button
                     onClick={handleAccept}
-                    className="flex-1 h-14 text-base font-semibold rounded-xl transition-all duration-200 bg-bwin-brand-primary hover:bg-bwin-brand-secondary text-bwin-neutral-0"
+                    className="flex-1 h-14 text-base font-semibold rounded-xl transition-all duration-200 bg-brand-primary hover:bg-brand-secondary text-bwin-neutral-0"
                   >
                     Sí, tengo 18+
                   </Button>
@@ -93,18 +95,16 @@ export function AgeVerification() {
               {/* Logo/Brand Header */}
               <div className="bg-bwin-neutral-0 text-white py-8 px-8">
                 <div className="flex flex-col items-center justify-center space-y-4">
-                  <Image
-                    src="/bwin-logo.png"
-                    alt="bwin"
+                  <BrandLogo
+                    variant="full"
                     width={140}
                     height={56}
                     priority
                     className="h-14 w-auto"
                   />
-                  <AnimatedShinyText className="text-sm text-bwin-brand-primary font-medium">
-                    Inteligencia Artificial de bwin
+                  <AnimatedShinyText className="text-sm text-brand-primary font-medium">
+                    {brand.content.subtitle}
                   </AnimatedShinyText>
-                  <div className="text-xs text-bwin-neutral-60 font-roboto">Versión Beta</div>
                 </div>
               </div>
               

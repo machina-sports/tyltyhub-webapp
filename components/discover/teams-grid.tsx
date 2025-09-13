@@ -80,7 +80,7 @@ const TeamCard = ({ teamName }: { teamName: string }) => {
                   </div>
                 )}
         <div className="min-w-0 space-y-1">
-          <h3 className="text-sm font-semibold overflow-wrap-normal word-break-normal text-bwin-brand-primary">
+          <h3 className="text-sm font-semibold overflow-wrap-normal word-break-normal text-brand-primary">
             {teamName}
           </h3>
           {league && (
@@ -123,7 +123,7 @@ export function TeamsGrid() {
 
       {fifaCwcData.groups.map((group, groupIndex) => (
         <div key={group.name} className="space-y-4">
-          <h3 className="text-lg font-semibold text-bwin-brand-primary border-b border-bwin-neutral-30 pb-2">
+          <h3 className="text-lg font-semibold text-brand-primary border-b border-bwin-neutral-30 pb-2">
             Grupo {group.name.replace('Group ', '')}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

@@ -6,8 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Search, Send, Mic } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils"
+import { useBrandTexts } from "@/hooks/use-brand-texts"
 
 export default function FollowUpQuestionForm() {
+  const { chat } = useBrandTexts();
   const [input, setInput] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const [isPreparing, setIsPreparing] = useState(false);
@@ -51,7 +53,7 @@ export default function FollowUpQuestionForm() {
       setIsTranscribing(true);
       
       setTimeout(() => {
-        const mockTranscription = "¿Cómo puedo apostar en el próximo partido del Real Madrid?";
+        const mockTranscription = chat.followUpTranscription;
         setInput(mockTranscription);
         setIsTranscribing(false);
       }, 1500);
@@ -59,16 +61,16 @@ export default function FollowUpQuestionForm() {
   };
 
   const getInputPlaceholder = () => {
-    if (isPreparing) return "Preparando...";
-    if (isRecording) return "Grabando...";
-    if (isTranscribing) return "Transcribiendo...";
-    return "¿Te gustó? ¿Quieres saber más? ¡Dímelo!";
+    if (isPreparing) return chat.preparing;
+    if (isRecording) return chat.recording;
+    if (isTranscribing) return chat.transcribing;
+    return chat.followUpPlaceholder;
   };
 
   const getMicButtonText = () => {
-    if (isPreparing) return "Preparando...";
+    if (isPreparing) return chat.preparing;
     if (isRecording) return "Suelta para enviar";
-    if (isTranscribing) return "Transcribiendo...";
+    if (isTranscribing) return chat.transcribing;
     return "Mantén presionado para hablar";
   };
 

@@ -1,32 +1,24 @@
 import { Metadata } from "next"
 import ChatClientLayout from "./client-layout"
+import { getBrandConfig } from "@/config/brands"
+import { generateBrandMetadata } from "@/lib/metadata"
+
+const brand = getBrandConfig()
+const { metadata: brandMetadata } = generateBrandMetadata(brand)
 
 export const metadata: Metadata = {
-  title: "Chat | bwinBOT - LaLiga 2025/2026",
-  description: "Conversa con la Inteligencia Artificial de bwin sobre LaLiga 2025/2026. Resuelve dudas, consulta cuotas y realiza tus apuestas.",
-  icons: {
-    icon: "/bwin-logo-icon.png",
-  },
+  ...brandMetadata,
+  title: `Chat | ${brand.displayName}`,
+  description: `Conversa con ${brand.content.subtitle}. Resuelve dudas, consulta cuotas y realiza tus apuestas.`,
   openGraph: {
-    title: "Chat | bwinBOT - LaLiga 2025/2026",
-    description: "Conversa con la Inteligencia Artificial de bwin sobre LaLiga 2025/2026. Resuelve dudas, consulta cuotas y realiza tus apuestas.",
-    type: "website",
-    locale: "es_ES",
-    siteName: "bwinBOT",
-    images: [
-      {
-        url: "https://bwinbot.com/og_image_4.png",
-        width: 980,
-        height: 250,
-        alt: "bwinBOT: la IA de bwin",
-      },
-    ],
+    ...brandMetadata.openGraph,
+    title: `Chat | ${brand.displayName}`,
+    description: `Conversa con ${brand.content.subtitle}. Resuelve dudas, consulta cuotas y realiza tus apuestas.`,
   },
   twitter: {
-    card: "summary_large_image",
-    title: "Chat | bwinBOT - LaLiga 2025/2026",
-    description: "Conversa con la Inteligencia Artificial de bwin sobre LaLiga 2025/2026. Resuelve dudas, consulta cuotas y realiza tus apuestas.",
-    images: ["https://bwinbot.com/og_image_4.png"],
+    ...brandMetadata.twitter,
+    title: `Chat | ${brand.displayName}`,
+    description: `Conversa con ${brand.content.subtitle}. Resuelve dudas, consulta cuotas y realiza tus apuestas.`,
   },
 }
 

@@ -52,7 +52,9 @@ export function MobileHeader({ onMenuClick }: MobileHeaderProps) {
   }
 
   return (
-    <div className="fixed top-0 left-0 right-0 h-16 backdrop-blur-sm border-b z-[60] md:hidden bg-bwin-neutral-10 border-bwin-neutral-30">
+    <div className="fixed top-0 left-0 right-0 h-16 backdrop-blur-sm border-b z-[60] md:hidden" style={{
+      borderColor: 'hsl(var(--brand-primary) / 0.2)'
+    }}>
       <div className="flex items-center justify-between h-full px-4">
         <Button
           variant="ghost"

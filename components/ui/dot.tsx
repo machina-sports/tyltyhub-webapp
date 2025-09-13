@@ -21,8 +21,8 @@ export function Dot({
   ...props
 }: DotProps) {
   const { isDarkMode } = useTheme();
-  // Default color now depends on theme
-  const defaultColor = isDarkMode ? '#FFCB00' : '#FDBA12';
+  // Use brand primary color instead of hardcoded yellow
+  const defaultColor = 'hsl(var(--brand-primary))';
   const dotColor = color || defaultColor;
   
   const sizeNum = typeof size === 'string' ? parseInt(size, 10) : size;
@@ -45,11 +45,9 @@ export function Dot({
 
 // Export variants with theme awareness
 export function SportingbetDot(props: Omit<DotProps, 'color'>) {
-  const { isDarkMode } = useTheme();
-  return <Dot color={isDarkMode ? "#FFCB00" : "#FDBA12"} {...props} />;
+  return <Dot color="hsl(var(--brand-primary))" {...props} />;
 }
 
 export function SportingbetDarkDot(props: Omit<DotProps, 'color'>) {
-  const { isDarkMode } = useTheme();
-  return <Dot color={isDarkMode ? "#FFF8E1" : "#061F3F"} {...props} />;
+  return <Dot color="hsl(var(--brand-secondary))" {...props} />;
 } 

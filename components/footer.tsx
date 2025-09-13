@@ -68,10 +68,13 @@ export function Footer() {
     return (
       <div 
         className={cn(
-          "fixed bottom-0 left-0 right-0 border-t flex items-center justify-around px-4 bg-bwin-neutral-10 border-bwin-neutral-30",
+          "fixed bottom-0 left-0 right-0 border-t flex items-center justify-around px-4 footer-mobile",
           isIOS ? "z-[9999]" : "z-50"
         )}
-        style={footerStyle}
+        style={{
+          ...footerStyle,
+          borderColor: 'hsl(var(--brand-primary) / 0.2)'
+        }}
       >
         {routes.map((route) => (
           <Button
@@ -79,16 +82,28 @@ export function Footer() {
             variant="ghost"
             size="sm"
             className={cn(
-              "flex flex-col items-center gap-2 h-auto pt-3 pb-2 px-6 rounded-xl transition-all duration-200 w-[100px] touch-manipulation",
+              "flex flex-col items-center gap-2 h-auto pt-3 pb-2 px-6 rounded-xl transition-all duration-200 w-[100px] touch-manipulation text-white",
               // Melhor área de toque no iOS
               isIOS && "min-h-[44px]",
               pathname === route.href || (route.href === "/chat/new" && pathname.startsWith("/chat"))
-                ? "text-bwin-brand-primary bg-bwin-brand-primary/10"
-                : "text-bwin-neutral-80 hover:text-bwin-brand-primary hover:bg-bwin-neutral-20"
+                ? "bg-brand-primary/10"
+                : ""
             )}
+            style={{
+              backgroundColor: pathname === route.href || (route.href === "/chat/new" && pathname.startsWith("/chat"))
+                ? 'hsl(var(--brand-primary) / 0.15)'
+                : 'transparent',
+              touchAction: 'manipulation' // Evita o zoom no iOS ao tocar
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'hsl(var(--hover))';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = pathname === route.href || (route.href === "/chat/new" && pathname.startsWith("/chat"))
+                ? 'hsl(var(--brand-primary) / 0.15)'
+                : 'transparent';
+            }}
             onClick={() => handleNavigation(route.href)}
-            // Evita o zoom no iOS ao tocar
-            style={{ touchAction: 'manipulation' }}
           >
             <route.icon className="h-6 w-6" />
             <span className="text-sm font-medium mt-[-2px]">{route.label}</span>

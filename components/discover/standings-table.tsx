@@ -25,7 +25,7 @@ export function StandingsTable() {
           className="overflow-hidden h-full flex flex-col bg-bwin-neutral-20 border-bwin-neutral-30"
         >
           <CardHeader className="pb-2 bg-bwin-neutral-20 border-b border-bwin-neutral-30">
-            <CardTitle className="text-xl font-semibold text-bwin-brand-primary">
+            <CardTitle className="text-xl font-semibold text-brand-primary">
               Grupo {group.group_name}
             </CardTitle>
           </CardHeader>
@@ -64,7 +64,7 @@ export function StandingsTable() {
                       <td className="py-2 text-center text-sm text-bwin-neutral-80">
                         {standing.played || 0}
                       </td>
-                      <td className="py-2 text-center text-sm font-semibold text-bwin-brand-primary">
+                      <td className="py-2 text-center text-sm font-semibold text-brand-primary">
                         {standing.points || 0}
                       </td>
                     </tr>

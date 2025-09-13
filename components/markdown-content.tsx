@@ -27,7 +27,7 @@ export function MarkdownChat({ content, className }: MarkdownContentProps) {
           overrides: {
             a: {
               component: MarkdownLink,
-              props: { className: "text-[#FFCB00] dark:text-[#FDBA12] underline hover:underline" },
+              props: { className: "text-brand-primary underline hover:underline" },
             },
             ul: { 
               props: { 
@@ -66,7 +66,7 @@ export function MarkdownChat({ content, className }: MarkdownContentProps) {
             },
             strong: { 
               props: { 
-                className: "font-bold text-bwin-yellow-subtle" 
+                className: "font-bold text-brand-primary" 
               } 
             },
             em: { 
@@ -76,12 +76,12 @@ export function MarkdownChat({ content, className }: MarkdownContentProps) {
             },
             code: { 
               props: { 
-                className: 'bg-bwin-neutral-25 px-1.5 py-0.5 rounded text-xs font-mono text-bwin-yellow-muted border border-bwin-neutral-30' 
+                className: 'bg-neutral-25 px-1.5 py-0.5 rounded text-xs font-mono text-brand-primary border border-neutral-30' 
               } 
             },
             blockquote: { 
               props: { 
-                className: 'border-l-4 border-bwin-yellow-soft pl-4 py-3 my-4 bg-bwin-neutral-15 rounded-r-lg italic text-bwin-neutral-70' 
+                className: 'border-l-4 border-brand-primary pl-4 py-3 my-4 bg-neutral-15 rounded-r-lg italic text-neutral-70' 
               } 
             },
             table: { 
