@@ -14,6 +14,9 @@ export function ResponsibleGamingMobile({
   showLogo = true
 }: ResponsibleGamingMobileProps) {
   const brand = useBrandConfig();
+  const showImages = brand.responsibleGaming.footer?.images?.showImages ?? true;
+  const images = brand.responsibleGaming.footer?.images;
+  
   return (
     <div className={cn(
       "w-full md:mb-0 py-8 mt-2 responsible-gaming-mobile",
@@ -21,73 +24,115 @@ export function ResponsibleGamingMobile({
     )}>
       <div className="w-full">
         <div className="px-6">
-          <div className="flex flex-col items-center space-y-4">
-            {showLogo && (
-              <div className="flex-shrink-0 py-4">
-                <Image
-                  src={brand.branding.logo.full}
-                  alt={brand.displayName}
-                  width={120}
-                  height={24}
-                  priority
-                />
-              </div>
-            )}
+          {showImages ? (
+            // Show images for bwin
+            <div className="flex flex-col items-center space-y-4">
+              {showLogo && (
+                <div className="flex-shrink-0 py-4">
+                  <Image
+                    src={brand.branding.logo.full}
+                    alt={brand.displayName}
+                    width={brand.branding.logo.footer?.mobile?.width || brand.branding.logo.footer?.width || 120}
+                    height={brand.branding.logo.footer?.mobile?.height || brand.branding.logo.footer?.height || 24}
+                    className={brand.branding.logo.footer?.mobile?.className || brand.branding.logo.footer?.className || ""}
+                    priority
+                  />
+                </div>
+              )}
 
-            <div className="flex items-center justify-center gap-4 w-full">
-              <div className="flex-shrink-0">
-                <Image
-                  src="/Sin diversión no hay juego.png"
-                  alt="Sin diversión no hay juego"
-                  width={100}
-                  height={32}
-                  className="w-24 h-8"
-                />
+              <div className="flex items-center justify-center gap-4 w-full">
+                {images?.diversion && (
+                  <div className="flex-shrink-0">
+                    <Image
+                      src={images.diversion}
+                      alt="Sin diversión no hay juego"
+                      width={100}
+                      height={32}
+                      className="w-24 h-8"
+                    />
+                  </div>
+                )}
+                {images?.responsabilidad && (
+                  <div className="flex-shrink-0">
+                    <Image
+                      src={images.responsabilidad}
+                      alt="Juega con responsabilidad"
+                      width={120}
+                      height={24}
+                      className="w-28 h-6"
+                    />
+                  </div>
+                )}
               </div>
-              <div className="flex-shrink-0">
-                <Image
-                  src="/Juega con responsabilidad.png"
-                  alt="Juega con responsabilidad"
-                  width={120}
-                  height={24}
-                  className="w-28 h-6"
-                />
+
+              <div className="flex items-center justify-center gap-6 w-full">
+                {images?.age && (
+                  <div className="flex-shrink-0">
+                    <Image
+                      src={images.age}
+                      alt="+18"
+                      width={32}
+                      height={32}
+                      className="w-10 h-10"
+                    />
+                  </div>
+                )}
+
+                {images?.mano && (
+                  <div className="flex-shrink-0">
+                    <Image
+                      src={images.mano}
+                      alt="AutoProhibición"
+                      width={80}
+                      height={40}
+                      className="w-24 h-12"
+                    />
+                  </div>
+                )}
               </div>
+
+              {images?.seguro && (
+                <div className="flex items-center justify-center gap-6 w-full">
+                  <div className="flex-shrink-0 py-4">
+                    <Image
+                      src={images.seguro}
+                      alt="Juego Seguro"
+                      width={150}
+                      height={32}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
-
-            <div className="flex items-center justify-center gap-6 w-full">
-              <div className="flex-shrink-0">
-                <Image
-                  src="/+18.png"
-                  alt="+18"
-                  width={32}
-                  height={32}
-                  className="w-10 h-10"
-                />
-              </div>
-
-              <div className="flex-shrink-0">
-                <Image
-                  src="/mano.png"
-                  alt="AutoProhibición"
-                  width={80}
-                  height={40}
-                  className="w-24 h-12"
-                />
-              </div>
+          ) : (
+            // Show text disclaimer for sportingbet
+            <div className="flex flex-col items-center space-y-4 text-center">
+              {showLogo && (
+                <div className="flex-shrink-0">
+                  <Image
+                    src={brand.branding.logo.full}
+                    alt={brand.displayName}
+                    width={brand.branding.logo.footer?.mobile?.width || brand.branding.logo.footer?.width || 120}
+                    height={brand.branding.logo.footer?.mobile?.height || brand.branding.logo.footer?.height || 24}
+                    className={brand.branding.logo.footer?.mobile?.className || brand.branding.logo.footer?.className || ""}
+                    priority
+                  />
+                </div>
+              )}
+              
+              {brand.responsibleGaming.footer?.disclaimer && (
+                <div className="text-sm text-muted-foreground">
+                  {brand.responsibleGaming.footer.disclaimer}
+                </div>
+              )}
+              
+              {brand.responsibleGaming.footer?.copyright && (
+                <div className="text-sm text-muted-foreground">
+                  {brand.responsibleGaming.footer.copyright}
+                </div>
+              )}
             </div>
-
-            <div className="flex items-center justify-center gap-6 w-full">
-              <div className="flex-shrink-0 py-4">
-                <Image
-                  src="/Juego Seguro.png"
-                  alt="Juego Seguro"
-                  width={150}
-                  height={32}
-                />
-              </div>
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

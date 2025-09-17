@@ -2,7 +2,7 @@
   "id": "sportingbet",
   "name": "sportingbet",
   "displayName": "SportingBOT",
-  "description": "a IA do Sportingbet para Copa do Mundo de Clubes 2025",
+  "description": "a IA do Sportingbet para Campeonato Brasileiro 2025",
   "language": "pt-BR",
   "locale": "pt_BR",
   "domain": "sportingbot.com.br",
@@ -29,12 +29,22 @@
     "logo": {
       "icon": "/outline.png",
       "full": "/outline.png",
-      "alt": "SportingBOT logo"
+      "alt": "SportingBOT logo",
+      "footer": {
+        "width": 240,
+        "height": 62,
+        "className": "w-42 h-20 md:w-42 md:h-20",
+        "mobile": {
+          "width": 180,
+          "height": 45,
+          "className": "w-42 h-10 md:w-32 md:h-10 p-0"
+        }
+      }
     }
   },
   "content": {
-    "title": "SportingBOT: a IA do Sportingbet para Copa do Mundo de Clubes 2025",
-    "description": "Aposte junto com a Inteligência Artificial do Sportingbet. Pergunte ao nosso chat sobre as notícias e odds da Copa do Mundo de Clubes 2025 e descubra como apostar melhor.",
+    "title": "SportingBOT: a IA do Sportingbet para Campeonato Brasileiro 2025",
+    "description": "Aposte junto com a Inteligência Artificial do Sportingbet. Pergunte ao nosso chat sobre as notícias e odds do Campeonato Brasileiro 2025 e descubra como apostar melhor.",
     "ogImage": "https://sportingbot.com.br/og_image_1.png",
     "favicon": "/sb-new.ico",
     "subtitle": "A Inteligência Artificial do Sportingbet",
@@ -54,12 +64,14 @@
         "Vamos jogar? Me diga onde você precisa de reforço!",
         "Bola em jogo! Em que jogada posso te ajudar?"
       ],
-      "placeholder": "Pergunte-me sobre a Copa do Mundo de Clubes...",
+      "placeholder": "Pergunte-me sobre o Campeonato Brasileiro...",
       "followUpPlaceholder": "Gostou? Quer saber mais? Me diga!",
       "followUpTranscription": "Como posso apostar no próximo jogo do Real Madrid?",
       "preparing": "Preparando...",
       "recording": "Gravando...",
-      "transcribing": "Transcrevendo..."
+      "transcribing": "Transcrevendo...",
+      "mobileInputRows": 2,
+      "mobileInputPaddingBottom": "1.25rem"
     },
     "offline": {
       "title": "Voltamos em breve!",
@@ -78,6 +90,35 @@
   "responsibleGaming": {
     "enabled": true,
     "text": "Jogue com responsabilidade",
-    "image": "/Jogo Seguro.png"
+    "image": "/Jogo Seguro.png",
+    "footer": {
+      "disclaimer": "18+. Apostar pode causar dependência e transtornos do jogo patológico. Jogue com responsabilidade. Autorizada pela SPA/MF sob licença nº 247.",
+      "copyright": "2025 Sportingbet",
+      "images": {
+        "showImages": false
+      }
+    }
+  },
+  "ageVerification": {
+    "enabled": true,
+    "title": "Você tem 18 anos ou mais?",
+    "description": "Para acessar este conteúdo você deve ser maior de idade",
+    "acceptText": "Sim, tenho 18+",
+    "rejectText": "Não",
+    "underageTitle": "Acesso Restrito",
+    "underageDescription": "Este conteúdo é destinado apenas para maiores de 18 anos.",
+    "underageButtonText": "Entendi",
+    "backdropOpacity": "0.75"
+  },
+  "privacy": {
+    "lgpd": {
+      "enabled": true,
+      "title": "Privacidade e Cookies",
+      "description": "Utilizamos cookies e tecnologias similares para melhorar sua experiência de navegação, personalizar conteúdo e anúncios, e analisar o tráfego do site. Ao continuar navegando, você aceita nossa política de privacidade.",
+      "acceptText": "Aceitar",
+      "dismissText": "Agora não",
+      "privacyPolicyUrl": "https://www.sportingbet.com.br/politica-de-privacidade",
+      "privacyPolicyText": "política de privacidade"
+    }
   }
 }

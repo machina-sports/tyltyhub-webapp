@@ -33,6 +33,16 @@ export interface BrandConfig {
       icon: string;
       full: string;
       alt: string;
+      footer?: {
+        width: number;
+        height: number;
+        className: string;
+        mobile?: {
+          width: number;
+          height: number;
+          className: string;
+        };
+      };
     };
   };
   content: {
@@ -60,6 +70,8 @@ export interface BrandConfig {
       preparing: string;
       recording: string;
       transcribing: string;
+      mobileInputRows?: number;
+      mobileInputPaddingBottom?: string;
     };
     offline?: {
       title: string;
@@ -79,6 +91,43 @@ export interface BrandConfig {
     enabled: boolean;
     text: string;
     image: string;
+    footer?: {
+      disclaimer?: string;
+      copyright?: string;
+      images?: {
+        showImages: boolean;
+        responsabilidad?: string;
+        diversion?: string;
+        age?: string;
+        mano?: string;
+        seguro?: string;
+      };
+    };
+  };
+  ageVerification?: {
+    enabled: boolean;
+    title: string;
+    description: string;
+    acceptText: string;
+    rejectText: string;
+    underageTitle: string;
+    underageDescription: string;
+    underageButtonText: string;
+    headerBackgroundColor?: string;
+    acceptButtonColor?: string;
+    backdropOpacity?: string;
+    modalBorder?: string;
+  };
+  privacy?: {
+    lgpd?: {
+      enabled: boolean;
+      title: string;
+      description: string;
+      acceptText: string;
+      dismissText: string;
+      privacyPolicyUrl?: string;
+      privacyPolicyText?: string;
+    };
   };
 }
 

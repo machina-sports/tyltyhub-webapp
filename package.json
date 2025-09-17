@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "dev:machina": "next dev -H local.machina -p 3005",
+    "dev:network": "next dev -H 192.168.15.10 -p 3000",
     "build": "next build",
     "export": "next build",
     "start": "next start",

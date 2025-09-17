@@ -4,12 +4,14 @@ import { cn } from '@/lib/utils'
 import { X } from 'lucide-react'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
+import { useBrandConfig } from '@/contexts/brand-context'
 
 interface ResponsibleGamingFloatingProps {
   className?: string
 }
 
 export function ResponsibleGamingFloating({ className }: ResponsibleGamingFloatingProps) {
+  const brand = useBrandConfig();
   const [isVisible, setIsVisible] = useState(false)
   const [isDismissed, setIsDismissed] = useState(false)
 
@@ -46,60 +48,89 @@ export function ResponsibleGamingFloating({ className }: ResponsibleGamingFloati
       "fixed bottom-4 left-4 right-4 z-50 md:hidden",
       className
     )}>
-      <div className="bg-bwin-neutral-0 border-2 border-brand-primary/40 rounded-xl shadow-lg p-4">
+      <div className="bg-neutral-10 border-2 border-brand-primary/40 rounded-xl shadow-lg p-4">
         {/* Dismiss button */}
         <button
           onClick={handleDismiss}
-          className="absolute top-2 right-2 p-1 rounded-full hover:bg-bwin-neutral-20 transition-colors"
+          className="absolute top-2 right-2 p-1 rounded-full hover:bg-neutral-20 transition-colors"
           aria-label="Cerrar"
         >
-          <X className="h-4 w-4 text-bwin-neutral-60" />
+          <X className="h-4 w-4 text-neutral-60" />
         </button>
         
         {/* Content */}
         <div className="flex flex-col items-center space-y-3 pt-2">
-          {/* Main message */}
-          <Image
-            src="/Juega con responsabilidad.png"
-            alt="Juega con responsabilidad"
-            width={120}
-            height={24}
-            className="w-24 h-5"
-          />
-          
-          {/* Fun message */}
-          <Image
-            src="/Sin diversión no hay juego.png"
-            alt="Sin diversión no hay juego"
-            width={100}
-            height={32}
-            className="w-20 h-6"
-          />
-          
-          {/* Icons row */}
-          <div className="flex items-center justify-center gap-3">
-            <Image
-              src="/+18.png"
-              alt="+18"
-              width={32}
-              height={32}
-              className="w-6 h-6"
-            />
-            <Image
-              src="/mano.png"
-              alt="AutoProhibición"
-              width={80}
-              height={40}
-              className="w-16 h-8"
-            />
-            <Image
-              src="/Juego Seguro.png"
-              alt="Juego Seguro"
-              width={120}
-              height={24}
-              className="w-20 h-4"
-            />
-          </div>
+          {brand.responsibleGaming.footer?.images?.showImages ? (
+            // Show images for bwin
+            <>
+              {/* Main message */}
+              {brand.responsibleGaming.footer.images.responsabilidad && (
+                <Image
+                  src={brand.responsibleGaming.footer.images.responsabilidad}
+                  alt="Juega con responsabilidad"
+                  width={120}
+                  height={24}
+                  className="w-24 h-5"
+                />
+              )}
+              
+              {/* Fun message */}
+              {brand.responsibleGaming.footer.images.diversion && (
+                <Image
+                  src={brand.responsibleGaming.footer.images.diversion}
+                  alt="Sin diversión no hay juego"
+                  width={100}
+                  height={32}
+                  className="w-20 h-6"
+                />
+              )}
+              
+              {/* Icons row */}
+              <div className="flex items-center justify-center gap-3">
+                {brand.responsibleGaming.footer.images.age && (
+                  <Image
+                    src={brand.responsibleGaming.footer.images.age}
+                    alt="+18"
+                    width={32}
+                    height={32}
+                    className="w-6 h-6"
+                  />
+                )}
+                {brand.responsibleGaming.footer.images.mano && (
+                  <Image
+                    src={brand.responsibleGaming.footer.images.mano}
+                    alt="AutoProhibición"
+                    width={80}
+                    height={40}
+                    className="w-16 h-8"
+                  />
+                )}
+                {brand.responsibleGaming.footer.images.seguro && (
+                  <Image
+                    src={brand.responsibleGaming.footer.images.seguro}
+                    alt="Juego Seguro"
+                    width={120}
+                    height={24}
+                    className="w-20 h-4"
+                  />
+                )}
+              </div>
+            </>
+          ) : (
+            // Show text disclaimer for sportingbet
+            <div className="text-center space-y-2">
+              {brand.responsibleGaming.footer?.disclaimer && (
+                <div className="text-xs text-muted-foreground">
+                  {brand.responsibleGaming.footer.disclaimer}
+                </div>
+              )}
+              {brand.responsibleGaming.footer?.copyright && (
+                <div className="text-xs text-muted-foreground">
+                  {brand.responsibleGaming.footer.copyright}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

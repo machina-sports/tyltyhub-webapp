@@ -62,7 +62,7 @@ export function ChatInput({
             type="submit" 
             size="icon" 
             variant="ghost" 
-            className="h-8 w-8 text-brand-primary hover:text-neutral-100 hover:bg-brand-primary/10"
+            className="h-8 w-8 text-white hover:text-neutral-100 hover:bg-brand-primary/10"
           >
             <Send className="h-4 w-4" />
           </Button>

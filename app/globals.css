@@ -274,7 +274,7 @@
   --secondary: var(--bg-tertiary, var(--bwin-neutral-30));
   --secondary-foreground: var(--text-primary, var(--bwin-neutral-100));
   --muted: var(--bg-tertiary, var(--bwin-neutral-30));
-  --muted-foreground: var(--text-muted, var(--bwin-neutral-80));
+  --muted-foreground: var(--text-muted, var(--bwin-neutral-90));
   --accent: var(--brand-secondary);
   --accent-foreground: var(--text-primary, var(--bwin-neutral-100));
   --destructive: var(--brand-danger);
@@ -456,16 +456,16 @@
     background-color: transparent !important;
   }
 
-  /* Sportingbet footer improvements - transparent */
+  /* Sportingbet footer improvements - use proper background */
   [data-brand="sportingbet"] .footer-mobile,
   [data-brand="sportingbet"] .footer-mobile.bg-bwin-neutral-10,
   [data-brand="sportingbet"] div.footer-mobile {
-    background-color: transparent !important;
+    background-color: hsl(var(--background)) !important;
   }
   
-  /* Force footer transparency with highest specificity */
+  /* Force footer background with highest specificity */
   [data-brand="sportingbet"] div.fixed.bottom-0.left-0.right-0.border-t.flex.items-center.justify-around.px-4.bg-bwin-neutral-10.border-bwin-neutral-30.footer-mobile {
-    background-color: transparent !important;
+    background-color: hsl(var(--background)) !important;
   }
 
   /* Sportingbet responsible gaming footer - transparent */
@@ -735,9 +735,72 @@
   [data-brand="bwin"] .sidebar-cta-button {
     color: black !important;
   }
+
+  /* Bwin footer background */
+  [data-brand="bwin"] .footer-mobile {
+    background-color: hsl(var(--bwin-neutral-10)) !important;
+  }
+  
+  /* Bwin - Force exact primary yellow #FFCB00 for chat/conversar buttons */
+  [data-brand="bwin"] .text-brand-primary {
+    color: #FFCB00 !important;
+  }
+  
+  [data-brand="bwin"] .bg-brand-primary\/10 {
+    background-color: rgba(255, 203, 0, 0.1) !important;
+  }
+  
+  [data-brand="bwin"] .bg-brand-primary\/15 {
+    background-color: rgba(255, 203, 0, 0.15) !important;
+  }
+  
+  /* Force exact primary yellow for selected navigation buttons */
+  [data-brand="bwin"] button[style*="hsl(var(--brand-primary) / 0.15)"] {
+    background-color: rgba(255, 203, 0, 0.15) !important;
+  }
+  
+  /* Additional overrides for bwin primary color */
+  [data-brand="bwin"] [style*="color: hsl(var(--brand-primary))"] {
+    color: #FFCB00 !important;
+  }
+  
+  [data-brand="bwin"] [style*="backgroundColor: hsl(var(--brand-primary))"] {
+    background-color: #FFCB00 !important;
+  }
   
   /* Sportingbet specific button text color */
   [data-brand="sportingbet"] .sidebar-cta-button {
+    color: white !important;
+  }
+
+  /* Sportingbet send button icon color */
+  [data-brand="sportingbet"] .home-send-button,
+  [data-brand="sportingbet"] .send-button {
+    color: white !important;
+  }
+
+  [data-brand="sportingbet"] .home-send-button svg,
+  [data-brand="sportingbet"] .send-button svg {
+    color: white !important;
+  }
+
+  /* Force white text for all inputs */
+  .home-input {
+    color: white !important;
+  }
+
+  .home-input::placeholder {
+    color: rgba(255, 255, 255, 0.6) !important;
+  }
+
+  /* Send button should always have white icon */
+  .home-send-button,
+  .send-button {
+    color: white !important;
+  }
+
+  .home-send-button svg,
+  .send-button svg {
     color: white !important;
   }
 
@@ -900,5 +963,42 @@ a {
 
 /* Sportingbet home input default border color */
 [data-brand="sportingbet"] .home-input {
+  border-color: hsl(var(--brand-primary) / 0.3) !important;
+}
+
+/* Home textarea specific styles for mobile */
+.home-input.resize-none {
+  resize: none;
+  overflow-y: auto;
+  /* Hide scrollbar */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.home-input.resize-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Textarea focus styles - same as input */
+[data-brand="bwin"] .home-input.resize-none:focus {
+  border-color: hsl(var(--brand-primary)) !important;
+  box-shadow: 0 0 0 2px hsl(var(--brand-primary) / 0.2) !important;
+}
+
+[data-brand="bwin"] .home-input.resize-none:hover {
+  border-color: hsl(var(--brand-primary) / 0.7) !important;
+}
+
+[data-brand="sportingbet"] .home-input.resize-none:focus {
+  border-color: hsl(var(--brand-primary)) !important;
+  box-shadow: 0 0 0 2px hsl(var(--brand-primary) / 0.2) !important;
+}
+
+[data-brand="sportingbet"] .home-input.resize-none:hover {
+  border-color: hsl(var(--brand-primary) / 0.7) !important;
+}
+
+[data-brand="sportingbet"] .home-input.resize-none {
   border-color: hsl(var(--brand-primary) / 0.3) !important;
 }

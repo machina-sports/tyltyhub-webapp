@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button"
 
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 
 import { useRouter } from "next/navigation"
 
@@ -40,6 +41,7 @@ const ContainerHome = ({ query }: { query: string }) => {
   const [input, setInput] = useState(query)
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null) // null means no selection, -1 means input is focused
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
 
   const state = useGlobalState((state: any) => state.trending)
 
@@ -73,6 +75,10 @@ const ContainerHome = ({ query }: { query: string }) => {
 
     const inputTimer = setTimeout(() => {
       setIsInputVisible(true)
+      // Dispatch event when input animation completes
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent('homeAnimationsComplete'))
+      }, 300) // Wait for input animation to complete
     }, 400) // 300ms após o título aparecer
 
     return () => {
@@ -80,6 +86,17 @@ const ContainerHome = ({ query }: { query: string }) => {
       clearTimeout(inputTimer)
     }
   }, [chat.titleOptions])
+
+  // Detect mobile screen size
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   // Focus input on mount to ensure it's visible on iOS
   useEffect(() => {
@@ -188,29 +205,55 @@ const ContainerHome = ({ query }: { query: string }) => {
         </div>
         <div className={`w-full max-w-xl mx-auto transition-all duration-300 ${isInputVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
           <form onSubmit={handleSubmit} className="relative">
-            <Input
-              ref={inputRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder={chat.placeholder}
-              className="w-full py-6 mb-5 pl-6 pr-14 rounded-2xl text-base text-white placeholder:text-neutral-60 focus:border-brand-primary focus:ring-0 transition-colors duration-200 home-input"
-              disabled={isSubmitting}
-              style={{
-                backgroundColor: 'hsl(var(--bg-secondary))',
-                borderColor: 'hsl(var(--border-primary))',
-                WebkitAppearance: 'none',
-                WebkitTapHighlightColor: 'transparent',
-                fontSize: '16px' // Prevents zoom on iOS
-              }}
-            />
+            {isMobile ? (
+              <Textarea
+                ref={inputRef as any}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder={chat.placeholder}
+                className="w-full py-4 pl-6 pr-14 rounded-2xl text-base text-white placeholder:text-neutral-60 focus:border-brand-primary focus:ring-0 transition-colors duration-200 home-input resize-none"
+                disabled={isSubmitting}
+                rows={chat.mobileInputRows || 2}
+                style={{
+                  backgroundColor: 'hsl(var(--bg-secondary))',
+                  borderColor: 'hsl(var(--border-primary))',
+                  WebkitAppearance: 'none',
+                  WebkitTapHighlightColor: 'transparent',
+                  fontSize: '16px', // Prevents zoom on iOS
+                  minHeight: chat.mobileInputRows === 1 ? '50px' : '60px',
+                  maxHeight: chat.mobileInputRows === 1 ? '50px' : '82px',
+                  marginBottom: chat.mobileInputPaddingBottom || '1.25rem'
+                }}
+              />
+            ) : (
+              <Input
+                ref={inputRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder={chat.placeholder}
+                className="w-full py-6 mb-5 pl-6 pr-14 rounded-2xl text-base text-white placeholder:text-neutral-60 focus:border-brand-primary focus:ring-0 transition-colors duration-200 home-input"
+                disabled={isSubmitting}
+                style={{
+                  backgroundColor: 'hsl(var(--bg-secondary))',
+                  borderColor: 'hsl(var(--border-primary))',
+                  WebkitAppearance: 'none',
+                  WebkitTapHighlightColor: 'transparent',
+                  fontSize: '16px' // Prevents zoom on iOS
+                }}
+              />
+            )}
             <Button
               type="submit"
               size="icon"
               disabled={!input.trim() || isSubmitting}
-              className="absolute right-3 top-1/2 -translate-y-1/2 h-8 w-8 rounded-xl text-neutral-0 transition-colors duration-200 disabled:opacity-50 home-send-button"
+              className={cn(
+                "absolute right-3 h-8 w-8 rounded-xl text-white transition-colors duration-200 disabled:opacity-50 home-send-button send-button cursor-pointer",
+                isMobile 
+                  ? (chat.mobileInputRows === 1 ? "top-3" : "top-1/2 -translate-y-1/2")
+                  : "top-1/2 -translate-y-1/2"
+              )}
               style={{
-                backgroundColor: 'hsl(var(--border))',
-                color: 'hsl(var(--foreground))'
+                backgroundColor: 'hsl(var(--border))'
               }}
             >
               {isSubmitting ? (
@@ -294,6 +337,14 @@ const ContainerHome = ({ query }: { query: string }) => {
                   </div>
                 </motion.div>
               ))}
+            </div>
+          </div>
+        ) : state.trendingResults.status === "idle" ? (
+          <div className="mt-2 w-full max-w-4xl mx-auto px-4">
+            <div className="flex items-center justify-center px-4">
+              <p className="text-muted-foreground text-center text-sm">
+                Não foram encontradas perguntas sugeridas no momento.
+              </p>
             </div>
           </div>
         ) : null}

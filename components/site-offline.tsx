@@ -24,7 +24,7 @@ export default function SiteOffline() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 fixed inset-0 z-50 bg-bwin-neutral-0">
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 fixed inset-0 z-50 bg-neutral-10">
       <div className="max-w-2xl w-full text-center">
         {/* Brand Logo */}
         <div className="flex justify-center mb-12">

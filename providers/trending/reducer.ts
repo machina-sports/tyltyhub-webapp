@@ -66,6 +66,8 @@ const TrendingReducer = createSlice({
         state.trendingResults.pagination.total = action.payload.total_documents || 0;
         state.trendingResults.pagination.page = action.payload.page || 1;
         state.trendingResults.pagination.hasMore = action.payload.total_documents > state.trendingResults.pagination.page * state.trendingResults.pagination.page_size;
+        state.trendingResults.status = "idle";
+        state.trendingResults.error = null;
       })
       .addCase(getTrendingArticles.rejected, (state, action) => {
         state.trendingResults.status = "failed";

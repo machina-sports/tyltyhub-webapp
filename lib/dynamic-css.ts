@@ -86,7 +86,7 @@ export function generateBrandCSS(): string {
         /* Sportingbet Text Colors */
         --text-primary: 0 0% 100%;
         --text-secondary: 0 0% 90%;
-        --text-muted: 0 0% 70%;
+        --text-muted: 0 0% 85%;
         
         /* Sportingbet Hover Colors */
         --hover: 0 0% 30%;
@@ -103,7 +103,7 @@ export function generateBrandCSS(): string {
   // Default bwin CSS
   return `
     :root {
-      /* Bwin Brand Colors */
+      /* Bwin Brand Colors - Use exact primary yellow #FFCB00 */
       --brand-primary: ${primaryHsl} !important;
       --brand-secondary: ${secondaryHsl} !important;
       --brand-success: ${successHsl} !important;

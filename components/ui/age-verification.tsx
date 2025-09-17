@@ -18,6 +18,9 @@ export function AgeVerification() {
     const hasVerification = localStorage.getItem('age-verification')
     if (!hasVerification) {
       setIsVisible(true)
+      // Dispatch event when age verification becomes visible
+      console.log('Age Verification: Dispatching visible=true event');
+      window.dispatchEvent(new CustomEvent('ageVerificationChange', { detail: { visible: true } }))
     }
   }, [])
 
@@ -26,7 +29,9 @@ export function AgeVerification() {
     setIsVisible(false)
     
     // Dispatch custom event to notify other components
+    console.log('Age Verification: Dispatching visible=false event');
     window.dispatchEvent(new CustomEvent('ageVerificationComplete'))
+    window.dispatchEvent(new CustomEvent('ageVerificationChange', { detail: { visible: false } }))
   }
 
   const handleReject = () => {
@@ -38,15 +43,30 @@ export function AgeVerification() {
   return (
     <>
       {/* Backdrop with blur */}
-      <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md" />
+      <div 
+        className="fixed inset-0 z-[100] backdrop-blur-md" 
+        style={{
+          backgroundColor: `rgba(0, 0, 0, ${brand.ageVerification?.backdropOpacity || '0.9'})`
+        }}
+      />
       
       {/* Modal Content */}
       <div className="fixed inset-0 z-[101] flex items-center justify-center p-4">
-        <Card className="mx-auto max-w-md w-full shadow-2xl relative overflow-hidden border-0 bg-white">
+        <Card 
+          className="mx-auto max-w-md w-full shadow-2xl relative overflow-hidden bg-white"
+          style={{
+            border: brand.ageVerification?.modalBorder || '0'
+          }}
+        >
           {!showUnderage ? (
             <div>
               {/* Logo/Brand Header */}
-              <div className="bg-bwin-neutral-0 text-white py-8 px-8">
+              <div 
+                className="text-white py-8 px-8"
+                style={{
+                  backgroundColor: brand.ageVerification?.headerBackgroundColor || 'hsl(var(--brand-primary))'
+                }}
+              >
                 <div className="flex flex-col items-center justify-center space-y-4">
                   <BrandLogo
                     variant="full"
@@ -55,9 +75,9 @@ export function AgeVerification() {
                     priority
                     className="h-14 w-auto"
                   />
-                  <AnimatedShinyText className="text-sm text-brand-primary font-medium">
+                  <div className="text-sm text-white font-medium">
                     {brand.content.subtitle}
-                  </AnimatedShinyText>
+                  </div>
                 </div>
               </div>
               
@@ -65,10 +85,10 @@ export function AgeVerification() {
               <div className="p-8 text-center bg-white">
                 <div className="mb-8">
                   <h2 className="text-2xl font-bold text-gray-800 leading-tight mb-2">
-                    ¿Tienes 18 años o más?
+                    {brand.ageVerification?.title || '¿Tienes 18 años o más?'}
                   </h2>
                   <p className="text-gray-600 text-sm">
-                    Para acceder a este contenido debes ser mayor de edad
+                    {brand.ageVerification?.description || 'Para acceder a este contenido debes ser mayor de edad'}
                   </p>
                 </div>
                 
@@ -76,16 +96,37 @@ export function AgeVerification() {
                 <div className="flex gap-4">
                   <Button
                     onClick={handleReject}
-                    variant="outline"
-                    className="flex-1 h-14 text-base font-semibold border-2 border-gray-300 text-gray-700 bg-white hover:bg-gray-50 rounded-xl transition-all duration-200"
+                    className="flex-1 h-14 text-base font-semibold rounded-xl"
+                    style={{
+                      backgroundColor: 'white',
+                      color: '#374151',
+                      border: '2px solid #D1D5DB',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#F9FAFB';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'white';
+                    }}
                   >
-                    No
+                    {brand.ageVerification?.rejectText || 'No'}
                   </Button>
                   <Button
                     onClick={handleAccept}
-                    className="flex-1 h-14 text-base font-semibold rounded-xl transition-all duration-200 bg-brand-primary hover:bg-brand-secondary text-bwin-neutral-0"
+                    className="flex-1 h-14 text-base font-semibold rounded-xl"
+                    style={{
+                      backgroundColor: brand.ageVerification?.acceptButtonColor || 'hsl(var(--primary))',
+                      color: 'white',
+                    }}
+                    onMouseEnter={(e) => {
+                      const baseColor = brand.ageVerification?.acceptButtonColor || 'hsl(var(--primary))';
+                      e.currentTarget.style.backgroundColor = brand.ageVerification?.acceptButtonColor ? '#333333' : 'hsl(var(--primary) / 0.9)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = brand.ageVerification?.acceptButtonColor || 'hsl(var(--primary))';
+                    }}
                   >
-                    Sí, tengo 18+
+                    {brand.ageVerification?.acceptText || 'Sí, tengo 18+'}
                   </Button>
                 </div>
               </div>
@@ -93,7 +134,12 @@ export function AgeVerification() {
           ) : (
             <div>
               {/* Logo/Brand Header */}
-              <div className="bg-bwin-neutral-0 text-white py-8 px-8">
+              <div 
+                className="text-white py-8 px-8"
+                style={{
+                  backgroundColor: brand.ageVerification?.headerBackgroundColor || 'hsl(var(--brand-primary))'
+                }}
+              >
                 <div className="flex flex-col items-center justify-center space-y-4">
                   <BrandLogo
                     variant="full"
@@ -102,9 +148,9 @@ export function AgeVerification() {
                     priority
                     className="h-14 w-auto"
                   />
-                  <AnimatedShinyText className="text-sm text-brand-primary font-medium">
+                  <div className="text-sm text-white font-medium">
                     {brand.content.subtitle}
-                  </AnimatedShinyText>
+                  </div>
                 </div>
               </div>
               

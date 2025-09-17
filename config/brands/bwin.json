@@ -29,7 +29,17 @@
     "logo": {
       "icon": "/bwin-logo-icon.png",
       "full": "/bwin-logo.png",
-      "alt": "bwin logo"
+      "alt": "bwin logo",
+      "footer": {
+        "width": 80,
+        "height": 24,
+        "className": "w-20 h-6 md:w-24 md:h-7",
+        "mobile": {
+          "width": 120,
+          "height": 24,
+          "className": ""
+        }
+      }
     }
   },
   "content": {
@@ -59,7 +69,9 @@
       "followUpTranscription": "¿Cómo puedo apostar en el próximo partido del Real Madrid?",
       "preparing": "Preparando...",
       "recording": "Grabando...",
-      "transcribing": "Transcribiendo..."
+      "transcribing": "Transcribiendo...",
+      "mobileInputRows": 1,
+      "mobileInputPaddingBottom": "2rem"
     },
     "offline": {
       "title": "¡Volvemos pronto!",
@@ -78,6 +90,41 @@
   "responsibleGaming": {
     "enabled": true,
     "text": "Juega con responsabilidad",
-    "image": "/Juega con responsabilidad.png"
+    "image": "/Juega con responsabilidad.png",
+    "footer": {
+      "images": {
+        "showImages": true,
+        "responsabilidad": "/Juega con responsabilidad.png",
+        "diversion": "/Sin diversión no hay juego.png",
+        "age": "/+18.png",
+        "mano": "/mano.png",
+        "seguro": "/Juego Seguro.png"
+      }
+    }
+  },
+  "ageVerification": {
+    "enabled": true,
+    "title": "¿Tienes 18 años o más?",
+    "description": "Para acceder a este contenido debes ser mayor de edad",
+    "acceptText": "Sí, tengo 18+",
+    "rejectText": "No",
+    "underageTitle": "Acceso Restringido",
+    "underageDescription": "Este contenido está destinado solo para mayores de 18 años.",
+    "underageButtonText": "Entendido",
+    "headerBackgroundColor": "#000000",
+    "acceptButtonColor": "#000000",
+    "backdropOpacity": "0.7",
+    "modalBorder": "2px solid #FFCB00"
+  },
+  "privacy": {
+    "lgpd": {
+      "enabled": true,
+      "title": "Privacidad y Cookies",
+      "description": "Utilizamos cookies y tecnologías similares para mejorar tu experiencia de navegación, personalizar contenido y anuncios, y analizar el tráfico del sitio. Al continuar navegando, aceptas nuestra política de privacidad.",
+      "acceptText": "Aceptar",
+      "dismissText": "Ahora no",
+      "privacyPolicyUrl": "https://www.bwin.es/politica-de-privacidad",
+      "privacyPolicyText": "política de privacidad"
+    }
   }
 }
