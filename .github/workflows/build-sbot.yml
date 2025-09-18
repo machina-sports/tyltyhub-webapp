@@ -7,8 +7,8 @@ on:
 
 env:
   APP_NAME: entain-sbot
-  MACHINA_API_KEY: ${{ secrets.BWIN_MACHINA_API_KEY }}
-  MACHINA_CLIENT_URL: ${{ vars.BWIN_MACHINA_CLIENT_URL }}
+  MACHINA_API_KEY: ${{ secrets.SBOT_MACHINA_API_KEY }}
+  MACHINA_CLIENT_URL: ${{ vars.SBOT_MACHINA_CLIENT_URL }}
 
 jobs:
   build:
@@ -38,7 +38,7 @@ jobs:
           echo " " >> .env
           echo "NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS=${{ vars.IMAGE_CONTAINER_ADDRESS }}" >> .env
           echo " " >> .env
-          echo "NEXT_PUBLIC_SITE_OFFLINE=${{ vars.BWIN_SITE_OFFLINE }}" >> .env
+          echo "NEXT_PUBLIC_SITE_OFFLINE=${{ vars.SBOT_SITE_OFFLINE }}" >> .env
           echo " " >> .env
           echo "NEXT_PUBLIC_GOOGLE_ANALYTICS_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_ANALYTICS_KEY }}" >> .env
           echo " " >> .env
