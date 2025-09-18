@@ -5,7 +5,11 @@ import { Compass, MessageSquare } from "lucide-react"
 import { usePathname, useRouter } from "next/navigation"
 
 import { ShareIconButton } from "@/components/chat/share-icon-button"
+
+import { SearchToggleButton } from "@/components/discover/search-toggle-button"
+
 import { BrandLogo } from "@/components/brand"
+
 import { useEffect, useState } from "react"
 
 const routes = [
@@ -49,15 +53,12 @@ export function Topbar() {
   const isArticlePage = pathname && pathname.startsWith("/discover/") && pathname !== "/discover";
 
   if (isMobile) {
-    // Na página Discover ou Artigo, não renderizar o topbar (elas têm seus próprios)
-    if (isDiscoverPage || isArticlePage) {
-      return null;
-    }
-
     return (
-      <div className="flex items-center justify-between px-6 py-6 w-full border-b" style={{
-        borderColor: 'hsl(var(--brand-primary) / 0.2)'
-      }}>
+      <div 
+        className="sticky top-0 z-[60] bg-background/95 backdrop-blur-md flex items-center justify-between px-6 py-2 h-20 w-full border-b topbar-mobile" 
+        style={{
+          borderColor: 'hsl(var(--brand-primary) / 0.2)'
+        }}>
         <div
           onClick={handleLogoClick}
           className="flex items-center cursor-pointer"
@@ -76,6 +77,11 @@ export function Topbar() {
         {/* Botão Share apenas no mobile e apenas em páginas de chat específicas */}
         {isChatPage && (
           <ShareIconButton />
+        )}
+        
+        {/* Botão Search apenas no mobile e apenas na página Discover */}
+        {isDiscoverPage && (
+          <SearchToggleButton />
         )}
       </div>
     );

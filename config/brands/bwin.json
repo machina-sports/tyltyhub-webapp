@@ -64,14 +64,15 @@
         "¿Vamos a jugar? ¡Dime dónde necesitas refuerzo!",
         "¡Balón en juego! ¿En qué jugada puedo ayudarte?"
       ],
-      "placeholder": "Pregúntame sobre LaLiga...",
+      "placeholder": "Pregúntame sobre LaLiga, Champions, Serie A, etc...",
       "followUpPlaceholder": "¿Te gustó? ¿Quieres saber más? ¡Dímelo!",
       "followUpTranscription": "¿Cómo puedo apostar en el próximo partido del Real Madrid?",
       "preparing": "Preparando...",
       "recording": "Grabando...",
       "transcribing": "Transcribiendo...",
-      "mobileInputRows": 1,
-      "mobileInputPaddingBottom": "2rem"
+      "noSuggestionsFound": "No se encontraron preguntas sugeridas en este momento.",
+      "mobileInputRows": 2,
+      "mobileInputPaddingBottom": "1rem"
     },
     "offline": {
       "title": "¡Volvemos pronto!",

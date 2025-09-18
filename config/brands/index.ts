@@ -70,6 +70,7 @@ export interface BrandConfig {
       preparing: string;
       recording: string;
       transcribing: string;
+      noSuggestionsFound?: string;
       mobileInputRows?: number;
       mobileInputPaddingBottom?: string;
     };

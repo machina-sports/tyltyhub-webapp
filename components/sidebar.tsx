@@ -111,7 +111,7 @@ export function Sidebar() {
   }
 
   return (
-    <div className="hidden md:flex flex-col h-screen w-80 border-r sidebar-container" style={{
+    <div className="hidden md:flex flex-col h-screen w-80 border-r sidebar-container fixed left-0 top-0 z-40" style={{
       borderColor: 'hsl(var(--border-primary))'
     }}>
       <div className="px-8 py-6 flex-1 flex flex-col">
@@ -176,8 +176,7 @@ export function Sidebar() {
           onClick={handleRegisterClick}
           className="block w-full py-4 px-6 font-semibold rounded-xl text-sm text-center sidebar-cta-button"
           style={{
-            backgroundColor: 'hsl(var(--brand-primary))',
-            color: 'white'
+            backgroundColor: 'hsl(var(--brand-primary))'
           }}
         >
           {brand?.content?.cta?.registerText || "Regístrate Ahora"}

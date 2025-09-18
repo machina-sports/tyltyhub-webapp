@@ -1,6 +1,5 @@
 "use client";
 import { ArticleGrid } from "@/components/discover/article-grid";
-import { DiscoverMobileTopbar } from "@/components/discover/discover-mobile-topbar";
 import { useSearch } from "@/components/discover/search-context";
 import { SearchWrapper } from "@/components/discover/search-wrapper";
 import { Button } from "@/components/ui/button";
@@ -205,9 +204,6 @@ export default function DiscoverPage() {
 
   return (
     <SearchWrapper onClearSearch={handleClearSearch}>
-      {/* Topbar mobile específico para Discover */}
-      <DiscoverMobileTopbar />
-      
       <div className="mobile-container pt-4 max-w-5xl mx-auto">
       <h1 className="sr-only">{brand.description}</h1>
       <Tabs

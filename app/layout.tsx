@@ -14,6 +14,7 @@ import { getBrandConfig } from "@/config/brands";
 import { generateBrandMetadata } from "@/lib/metadata";
 import { BrandColors } from "@/components/brand";
 import { DynamicCSS } from "@/components/brand/dynamic-css";
+import { SearchProvider } from "@/components/discover/search-context";
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -75,7 +76,8 @@ export default function RootLayout({
           data-tallysight-observer="true"
         />
         <meta property="og:logo" content={brand.content.ogImage} />
-        <style dangerouslySetInnerHTML={{ __html: `
+        <style dangerouslySetInnerHTML={{
+          __html: `
           :root {
             ${brandId === 'sportingbet' ? `
               /* Sportingbet Brand Colors - Cor fundamental */
@@ -98,6 +100,9 @@ export default function RootLayout({
               --brand-danger: 3 100% 59% !important;
               --brand-info: 204 86% 53% !important;
               --border-primary: 48 100% 50%;
+              --bg-primary: 0 0% 7%;
+              --bg-secondary: 0 0% 12%;
+              --background: 0 0% 7%;
             `}
             --neutral-100: 0 0% 100%;
             --neutral-90: 0 0% 90%;
@@ -120,25 +125,28 @@ export default function RootLayout({
         <BrandProvider>
           <BrandColors>
             <Providers>
-            <MainProvider>
-              <DiscoveryProvider>
-                <div className="flex h-[calc(100vh-80px-env(safe-area-inset-bottom))] md:h-screen flex-col md:flex-row">
-                  <Sidebar />
-                  <main className="flex-1 overflow-auto">
-                    <Topbar />
-                    <div className="flex-1 pb-safe">
-                      {children}
+              <MainProvider>
+                <SearchProvider>
+                  <DiscoveryProvider>
+                    <div className="flex h-[calc(100vh-92px-env(safe-area-inset-bottom))] md:h-screen flex-col md:flex-row">
+                      <Sidebar />
+                      <main className="flex-1 overflow-none md:ml-80">
+                        <Topbar />
+                        <div className="flex-1 pb-safe">
+                          {children}
+                          <ResponsibleGamingResponsive />
+                          <div className="h-32"></div>
+                        </div>
+                      </main>
                     </div>
-                    <ResponsibleGamingResponsive />
-                  </main>
-                </div>
-              </DiscoveryProvider>
-              <AgeVerification />
-              <Footer />
-              <LGPDConsent />
-              <Toaster />
-            </MainProvider>
-          </Providers>
+                  </DiscoveryProvider>
+                </SearchProvider>
+                <AgeVerification />
+                <Footer />
+                <LGPDConsent />
+                <Toaster />
+              </MainProvider>
+            </Providers>
           </BrandColors>
         </BrandProvider>
       </body>

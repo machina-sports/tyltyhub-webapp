@@ -70,8 +70,9 @@
       "preparing": "Preparando...",
       "recording": "Gravando...",
       "transcribing": "Transcrevendo...",
+      "noSuggestionsFound": "Não foram encontradas perguntas sugeridas no momento.",
       "mobileInputRows": 2,
-      "mobileInputPaddingBottom": "1.25rem"
+      "mobileInputPaddingBottom": "1rem"
     },
     "offline": {
       "title": "Voltamos em breve!",

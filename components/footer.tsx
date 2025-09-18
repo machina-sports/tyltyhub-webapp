@@ -135,12 +135,12 @@ export function Footer() {
               // Melhor área de toque no iOS
               isIOS && "min-h-[44px]",
               pathname === route.href || (route.href === "/chat/new" && pathname.startsWith("/chat"))
-                ? "bg-brand-primary/10"
+                ? 'rgba(255, 255, 255, 0.15)'
                 : ""
             )}
             style={{
               backgroundColor: pathname === route.href || (route.href === "/chat/new" && pathname.startsWith("/chat"))
-                ? 'hsl(var(--brand-primary) / 0.15)'
+                ? 'rgba(255, 255, 255, 0.15)'
                 : 'transparent',
               touchAction: 'manipulation' // Evita o zoom no iOS ao tocar
             }}
@@ -149,7 +149,7 @@ export function Footer() {
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = pathname === route.href || (route.href === "/chat/new" && pathname.startsWith("/chat"))
-                ? 'hsl(var(--brand-primary) / 0.15)'
+                ? 'rgba(255, 255, 255, 0.15)'
                 : 'transparent';
             }}
             onClick={() => handleNavigation(route.href)}

@@ -26,13 +26,29 @@ export async function POST(req: NextRequest) {
       next: { revalidate: 0 },
     })
 
+    if (!response.ok) {
+      console.error(`API responded with status: ${response.status}`)
+      // Return empty data structure instead of error to prevent UI breaking
+      return NextResponse.json({
+        data: [],
+        total_documents: 0,
+        page: 1,
+        page_size: pagination.page_size
+      })
+    }
+
     const data = await response.json()
 
     return NextResponse.json(data)
 
   } catch (e: any) {
-
-    console.error(e)
-    return NextResponse.json({ error: e.message }, { status: 500 })
+    console.error('Trending API Error:', e)
+    // Return empty data structure instead of error to prevent UI breaking
+    return NextResponse.json({
+      data: [],
+      total_documents: 0,
+      page: 1,
+      page_size: pagination.page_size || 1
+    })
   }
 }

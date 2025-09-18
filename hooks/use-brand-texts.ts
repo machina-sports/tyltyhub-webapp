@@ -12,7 +12,10 @@ export function useBrandTexts() {
       followUpTranscription: "¿Cómo puedo apostar?",
       preparing: "Preparando...",
       recording: "Grabando...",
-      transcribing: "Transcribiendo..."
+      transcribing: "Transcribiendo...",
+      noSuggestionsFound: "No se encontraron preguntas sugeridas en este momento.",
+      mobileInputRows: 2,
+      mobileInputPaddingBottom: "1.25rem"
     },
     
     // Offline texts
