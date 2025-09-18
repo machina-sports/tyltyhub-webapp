@@ -83,6 +83,11 @@ export function Topbar() {
         {isDiscoverPage && (
           <SearchToggleButton />
         )}
+        
+        {/* Botão Share para páginas de artigo */}
+        {isArticlePage && (
+          <ShareIconButton />
+        )}
       </div>
     );
   }

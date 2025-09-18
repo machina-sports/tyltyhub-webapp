@@ -6,7 +6,7 @@ import { CalendarDays } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { formatDistanceToNow } from "date-fns"
-import { es } from 'date-fns/locale'
+import { es, ptBR } from 'date-fns/locale'
 import ReactMarkdown from 'react-markdown'
 import { Article } from "@/providers/article/reducer"
 import { cn } from "@/lib/utils"
@@ -98,6 +98,7 @@ const getDescriptionSnippet = (description: string, maxLength: number): string =
 
 const ArticleCard = ({ article }: { article: Article }) => {
   const { brand } = useBrand();
+  const locale = brand.id === 'sportingbet' ? ptBR : es;
   if (!article) return null;
 
   const articleId = article._id || article.id;
@@ -180,7 +181,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
               </div>
               <div className="flex items-center mt-2 pt-2 text-xs text-muted-foreground">
                 <CalendarDays className="h-3 w-3 mr-1 text-primary" />
-                {articleDate ? formatDistanceToNow(new Date(articleDate), { addSuffix: true, locale: es }) : 'Reciente'}
+                {articleDate ? formatDistanceToNow(new Date(articleDate), { addSuffix: true, locale }) : (brand.id === 'sportingbet' ? 'Recente' : 'Reciente')}
               </div>
             </div>
           </div>
@@ -191,7 +192,8 @@ const ArticleCard = ({ article }: { article: Article }) => {
 };
 
 export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProps) {
-  const { brand } = useBrand();
+  const { brand } = useBrand()
+  const locale = brand.id === 'sportingbet' ? ptBR : es
   if (!articles || articles.length === 0) {
     return <div className="py-8 text-center text-bwin-neutral-60">No se encontraron artículos</div>;
   }
@@ -256,7 +258,7 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
                 </div>
                 <div className="flex items-center text-xs md:text-sm text-muted-foreground">
                   <CalendarDays className="h-3 w-3 md:h-4 md:w-4 mr-1 text-primary" />
-                  {articleDate ? formatDistanceToNow(new Date(articleDate), { addSuffix: true, locale: es }) : 'Reciente'}
+                  {articleDate ? formatDistanceToNow(new Date(articleDate), { addSuffix: true, locale }) : (brand.id === 'sportingbet' ? 'Recente' : 'Reciente')}
                 </div>
               </div>
             </div>

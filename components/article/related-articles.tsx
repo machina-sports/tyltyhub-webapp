@@ -2,13 +2,14 @@
 
 import { Card } from "@/components/ui/card"
 import { formatDistanceToNow } from "date-fns"
-import { ptBR } from 'date-fns/locale'
+import { ptBR, es } from 'date-fns/locale'
 import Image from "next/image"
 import Link from "next/link"
 import { useGlobalState } from "@/store/useState"
 import { Article } from "@/providers/article/reducer"
 import { useTheme } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
+import { useBrand } from "@/contexts/brand-context"
 
 interface RelatedArticlesProps {
   currentArticleId: string
@@ -32,6 +33,8 @@ const getImageUrl = (article: any): string => {
 export function RelatedArticles({ currentArticleId }: RelatedArticlesProps) {
   const articles = useGlobalState((state: any) => state.article);
   const { isDarkMode } = useTheme();
+  const { brand } = useBrand();
+  const locale = brand.id === 'sportingbet' ? ptBR : es;
 
   // Filter out the current article and limit to 4 related articles
   const relatedArticles = articles.relatedArticles
@@ -94,8 +97,8 @@ export function RelatedArticles({ currentArticleId }: RelatedArticlesProps) {
                       isDarkMode ? "bg-[#FFCB00]" : "bg-muted"
                     )} />
                     {articleDate ?
-                      formatDistanceToNow(new Date(articleDate), { addSuffix: true, locale: ptBR }) :
-                      'Recente'
+                      formatDistanceToNow(new Date(articleDate), { addSuffix: true, locale }) :
+                      (brand.id === 'sportingbet' ? 'Recente' : 'Reciente')
                     }
                   </p>
                 </div>

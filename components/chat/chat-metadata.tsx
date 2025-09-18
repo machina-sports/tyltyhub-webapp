@@ -4,20 +4,22 @@ import { Metadata } from 'next'
 import Head from 'next/head'
 import { useEffect, useState } from 'react'
 import { useGlobalState } from "@/store/useState"
+import { useBrand } from "@/contexts/brand-context"
 
 interface ChatMetadataProps {
   threadId: string
 }
 
 export function ChatMetadata({ threadId }: ChatMetadataProps) {
+  const { brand } = useBrand()
   const state = useGlobalState((state: any) => state.threads)
-  const [title, setTitle] = useState('Bwin BOT Chat')
-  const [description, setDescription] = useState('Veja esta conversa no Sportingbet CWC')
+  const [title, setTitle] = useState(`${brand.displayName} Chat`)
+  const [description, setDescription] = useState(`Veja esta conversa no ${brand.id === 'bwin' ? 'bwin' : 'Sportingbet'} CWC`)
   
   useEffect(() => {
     if (state.item.data?.value?.messages?.length > 0) {
       const firstMessage = state.item.data.value.messages[0].content || ''
-      setTitle(firstMessage.substring(0, 60) + (firstMessage.length > 60 ? '...' : '') + ' | Sportingbet CWC')
+      setTitle(firstMessage.substring(0, 60) + (firstMessage.length > 60 ? '...' : '') + ` | ${brand.id === 'bwin' ? 'bwin' : 'Sportingbet'} CWC`)
       
       const assistantMessage = state.item.data.value.messages.find((msg: any) => msg.role === 'assistant')
       if (assistantMessage) {
@@ -45,9 +47,9 @@ export function ChatMetadata({ threadId }: ChatMetadataProps) {
       <meta property="og:image" content={shareImageUrl} />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
-      <meta property="og:image:alt" content="Bwin BOT" />
-      <meta property="og:locale" content="pt_BR" />
-      <meta property="og:site_name" content="Bwin BOT" />
+      <meta property="og:image:alt" content={brand.displayName} />
+      <meta property="og:locale" content={brand.locale} />
+      <meta property="og:site_name" content={brand.displayName} />
       <meta property="og:logo" content="https://sportingbot.com/og_image_4.png" />
       
       <meta property="twitter:card" content="summary_large_image" />

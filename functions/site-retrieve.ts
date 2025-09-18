@@ -9,7 +9,7 @@ export async function fetchSiteRetrieve(): Promise<any> {
 
     const bearer = process.env.MACHINA_API_KEY
 
-    const language = process.env.FEATURE_TOGGLE_LANGUAGE_SELECTED || "en"
+    const language = process.env.NEXT_PUBLIC_FEATURE_TOGGLE_LANGUAGE_SELECTED || "en"
 
     const post_url =
       process.env.MACHINA_CLIENT_URL +

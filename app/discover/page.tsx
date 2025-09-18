@@ -14,6 +14,8 @@ import { Newspaper, Plus, Search } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useBrandConfig } from "@/contexts/brand-context";
 
+const language = process.env.NEXT_PUBLIC_FEATURE_TOGGLE_LANGUAGE_SELECTED || "es";
+
 interface SearchFilters {
   name: string;
   "metadata.language": string;
@@ -53,9 +55,11 @@ function useDebounce<T>(value: T, delay: number): T {
 }
 
 const buildSearchFilters = (searchQuery: string): SearchFilters => {
+
+
   const baseFilters: SearchFilters = {
     name: "content-article",
-    "metadata.language": "es",
+    "metadata.language": language,
     "metadata.content_type": { "$ne": "trendings-competition-trendings" }
   };
 

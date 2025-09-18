@@ -2,7 +2,6 @@
 import { ArticleSharing } from "@/components/article/article-sharing";
 import { ArticleSkeleton } from "@/components/article/article-skeleton";
 import { ArticleContextProvider } from "@/components/article/article-context";
-import { ArticleMobileTopbar } from "@/components/article/article-mobile-topbar";
 import { ArticleVoting } from "@/components/article/article-voting";
 import { RelatedArticles } from "@/components/article/related-articles";
 import { RelatedOdds } from "@/components/article/related-odds";
@@ -270,8 +269,6 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
       url={shareUrl}
       shareImageUrl={mainImageUrl}
     >
-      {/* Topbar mobile específico para Artigo */}
-      <ArticleMobileTopbar />
       
       <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 pt-6 space-y-6 sm:space-y-8">
       <RenderImageComponent imageUrl={mainImageUrl} alt={articleData.title} />
@@ -337,7 +334,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
                     isDarkMode && (brand.id === 'bwin' ? "text-[#FFCB00]" : "text-primary")
                   )}
                 />
-                Bwin BOT
+{brand.displayName}
               </span>
             </div>
           </div>

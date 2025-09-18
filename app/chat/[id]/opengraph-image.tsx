@@ -1,16 +1,18 @@
 import { ImageResponse } from 'next/og'
- 
+import { getBrandConfig } from '@/config/brands'
+
 export const runtime = 'edge'
- 
+
 export const alt = 'Sportingbet CWC Chat'
 export const size = {
   width: 1200,
   height: 630,
 }
- 
+
 export const contentType = 'image/png'
- 
+
 export default async function Image({ params }: { params: { id: string } }) {
+  const brand = getBrandConfig()
   return new ImageResponse(
     <div
       style={{
@@ -46,7 +48,7 @@ export default async function Image({ params }: { params: { id: string } }) {
               height: '100px',
             }}
           >
-            <div style={{ fontSize: 44, fontWeight: 'bold', color: '#061F3F' }}>Sportingbet</div>
+            <div style={{ fontSize: 44, fontWeight: 'bold', color: '#061F3F' }}>{brand.id === 'bwin' ? 'bwin' : 'Sportingbet'}</div>
           </div>
           <div
             style={{
@@ -60,7 +62,7 @@ export default async function Image({ params }: { params: { id: string } }) {
               maxWidth: '60%',
             }}
           >
-            Bwin BOT - A Inteligência Artificial da Sportingbet
+            {brand.displayName} - {brand.content.subtitle}
           </div>
         </div>
         
