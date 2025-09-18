@@ -19,7 +19,7 @@ export function ResponsibleGamingMobile({
   
   return (
     <div className={cn(
-      "w-full md:mb-0 py-8 mt-2 responsible-gaming-mobile",
+      "w-full md:mb-0 py-8 pb-0 mt-2 responsible-gaming-mobile",
       className
     )}>
       <div className="w-full">

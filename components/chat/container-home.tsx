@@ -123,23 +123,13 @@ const ContainerHome = ({ query }: { query: string }) => {
     }
   }, [])
 
-  // Auto-scroll to selected item
+  // Auto-scroll to selected item removed to prevent unwanted scrolling behavior
   useEffect(() => {
-    if (selectedIndex !== null && selectedIndex >= 0 && questionRefs.current[selectedIndex]) {
-      questionRefs.current[selectedIndex]?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest'
-      })
-    } else if (selectedIndex === -1 && inputRef.current) {
+    if (selectedIndex === -1 && inputRef.current) {
       setTimeout(() => {
-        inputRef.current?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center'
-        })
-        setTimeout(() => {
-          inputRef.current?.focus()
-        }, 200)
-      }, 100)
+        // Only focus, no scrolling
+        inputRef.current?.focus()
+      }, 200)
     }
   }, [selectedIndex])
 
@@ -194,13 +184,9 @@ const ContainerHome = ({ query }: { query: string }) => {
       setSelectedIndex(-1)
     }
 
-    // Scroll to input on mobile after selecting a question
+    // Focus input after selecting a question (scroll removed)
     setTimeout(() => {
       if (inputRef.current) {
-        inputRef.current.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center'
-        })
         inputRef.current.focus()
       }
     }, 200)

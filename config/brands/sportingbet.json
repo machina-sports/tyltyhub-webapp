@@ -7,7 +7,7 @@
   "locale": "pt_BR",
   "domain": "sportingbot.com.br",
   "baseUrl": "https://sportingbot.com.br",
-  "sportsBaseUrl": "https://www.sportingbet.com.br",
+  "sportsBaseUrl": "https://www.sportingbet.bet.br",
   "analytics": {
     "ga4Primary": "G-SPORTINGBET-PRIMARY",
     "ga4Secondary": "G-SPORTINGBET-SECONDARY",
@@ -53,8 +53,8 @@
       "discover": "Descobrir"
     },
     "cta": {
-      "register": "https://www.sportingbet.com.br/pt-br/sports/registro",
-      "login": "https://www.sportingbet.com.br/pt-br/sports/login",
+      "register": "https://www.sportingbet.bet.br/pt-br/sports/registro",
+      "login": "https://www.sportingbet.bet.br/pt-br/sports/login",
       "registerText": "Cadastre-se Agora",
       "loginText": "Entrar"
     },
@@ -79,7 +79,7 @@
       "subtitle": "É hora da minha pré-temporada, amigo.",
       "description": "Em breve estarei de volta com novidades.\nEnquanto espera, dê uma olhada nas promoções da Sportingbet.",
       "ctaText": "Ir para Sportingbet",
-      "ctaLink": "https://www.sportingbet.com.br/pt-br/sports/promotions",
+      "ctaLink": "https://www.sportingbet.bet.br/pt-br/sports/promotions",
       "ctaLinkText": "Consulte aqui"
     }
   },
@@ -118,7 +118,7 @@
       "description": "Utilizamos cookies e tecnologias similares para melhorar sua experiência de navegação, personalizar conteúdo e anúncios, e analisar o tráfego do site. Ao continuar navegando, você aceita nossa política de privacidade.",
       "acceptText": "Aceitar",
       "dismissText": "Agora não",
-      "privacyPolicyUrl": "https://www.sportingbet.com.br/politica-de-privacidade",
+      "privacyPolicyUrl": "https://www.sportingbet.bet.br/politica-de-privacidade",
       "privacyPolicyText": "política de privacidade"
     }
   }

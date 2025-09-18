@@ -96,6 +96,13 @@ export function Footer() {
   if (isMobile) {
     // Only wait for animations on home page
     const isHomePage = pathname === '/';
+    const isChatPage = pathname.startsWith('/chat');
+    
+    // Hide footer on chat pages when on mobile
+    if (isChatPage) {
+      return null;
+    }
+    
     if (lgpdConsentVisible || ageVerificationVisible || (isHomePage && !homeAnimationsComplete)) {
       return null;
     }

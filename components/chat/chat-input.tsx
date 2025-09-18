@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useEffect } from "react"
+import { useRef, useEffect, useState } from "react"
 import { Send } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -25,22 +25,52 @@ export function ChatInput({
   const { chat } = useBrandTexts();
   const brand = useBrandConfig();
   const inputRef = useRef<HTMLInputElement>(null)
+  const [isMobile, setIsMobile] = useState(false)
 
-  // Focus input after message is sent (fixes iOS issue)
+  // Check if mobile
   useEffect(() => {
-    if (!isTyping && inputRef.current) {
-      // Small delay to ensure input is visible
-      const timer = setTimeout(() => {
-        inputRef.current?.focus()
-      }, 200)
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
+
+  // // Focus input after message is sent (fixes iOS issue)
+  // useEffect(() => {
+  //   if (!isTyping && inputRef.current) {
+  //     // Small delay to ensure input is visible
+  //     const timer = setTimeout(() => {
+  //       inputRef.current?.focus()
+  //     }, 200)
       
-      return () => clearTimeout(timer)
-    }
-  }, [isTyping])
+  //     return () => clearTimeout(timer)
+  //   }
+  // }, [isTyping])
 
   return (
-    <div className={`backdrop-blur-md border-t p-4 pb-safe chat-input-container ${className}`} style={{ 
-      borderColor: 'hsl(var(--brand-primary) / 0.2)'
+    <div className={`
+      backdrop-blur-md border-t p-4 chat-input-container 
+      ${isMobile ? 'input-sticky-container' : ''} 
+      ${className}
+    `} style={{ 
+      borderColor: 'hsl(var(--brand-primary) / 0.2)',
+      ...(isMobile && {
+        position: 'fixed',
+        bottom: '0px',
+        left: '0px',
+        right: '0px',
+        zIndex: 9999,
+        transform: 'translateZ(0)', // Force hardware acceleration
+        willChange: 'transform', // Optimize for changes
+        WebkitTransform: 'translateZ(0)', // iOS Safari fix
+        WebkitBackfaceVisibility: 'hidden' // Prevent flickering
+      })
     }}>
       <form onSubmit={onSubmit} className="max-w-3xl mx-auto relative tap-highlight-none">
         <Input

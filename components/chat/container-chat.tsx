@@ -47,11 +47,7 @@ export function ContainerChat({ input, setInput, onSubmit, onNewMessage }: Conta
   const [expirationDays, setExpirationDays] = useState<number>(7)
   const [isSaving, setIsSaving] = useState(false)
 
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView()
-  }
+  // Scroll functionality removed to prevent unwanted scrolling behavior
 
   const handleOpenShareDialog = () => {
     const threadData = state.item.data
@@ -123,31 +119,7 @@ export function ContainerChat({ input, setInput, onSubmit, onNewMessage }: Conta
   const isTyping = currentStatus === "processing" || currentStatus === "waiting" || state.fields.status === "loading"
   const isLoading = state.item.status === 'loading'
 
-  // Auto-scroll to bottom when new messages arrive
-  useEffect(() => {
-    if (currentMessages.length > 0) {
-      // Small delay to ensure DOM is updated
-      const timer = setTimeout(() => {
-        scrollToBottom()
-      }, 100)
-
-      return () => clearTimeout(timer)
-    }
-  }, [currentMessages.length])
-
-  // Scroll cuando hay nuevos mensajes (solo si usuario está cerca del final)
-  useEffect(() => {
-    if (currentMessages.length > 0) {
-      setTimeout(scrollToBottom, 100)
-    }
-  }, [currentMessages.length])
-
-  // Scroll cuando bot está escribiendo (solo si usuario está cerca del final)
-  useEffect(() => {
-    if (currentStatusMessage && isTyping) {
-      scrollToBottom()
-    }
-  }, [currentStatusMessage, isTyping])
+  // Auto-scroll functionality removed to prevent unwanted scrolling behavior
 
   return (
     <>
@@ -158,8 +130,7 @@ export function ContainerChat({ input, setInput, onSubmit, onNewMessage }: Conta
         <Button
           variant="ghost"
           size="sm"
-          className="gap-1 hover:text-neutral-100 hover:bg-brand-primary/10 share-button-text"
-          style={{ color: 'hsl(var(--brand-primary))' }}
+          className="gap-1 text-neutral-100 hover:text-neutral-100 hover:bg-brand-primary/20 share-button-text"
           onClick={handleOpenShareDialog}
         >
           <Share2 className="h-4 w-4" />
@@ -252,7 +223,7 @@ export function ContainerChat({ input, setInput, onSubmit, onNewMessage }: Conta
               </>
             )}
           </div>
-          <div ref={messagesEndRef} />
+          {/* Messages end reference removed */}
         </div>
       </div>
 
