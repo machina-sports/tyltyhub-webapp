@@ -5,6 +5,7 @@ import { Loader2, Reply, BarChart3, Newspaper, Gift, ChevronLeft, ChevronRight }
 import { ChatBubble } from "./chat/bubble"
 
 import { MarkdownChat } from "./markdown-content"
+import { getBrandConfig } from "@/config/brands"
 
 import React, { useMemo, useState } from "react"
 import Link from "next/link"
@@ -31,7 +32,8 @@ interface ChatMessageProps {
 export function ChatMessage({ role, content, date, isTyping, onNewMessage }: ChatMessageProps) {
   const [showWidget, setShowWidget] = useState(false)
 
-  const currentMessage = content?.["question_answer"] || (typeof content === 'string' ? content : JSON.stringify(content))
+  const rawMessage = content?.["question_answer"] || (typeof content === 'string' ? content : JSON.stringify(content))
+  const currentMessage = rawMessage // Backend already processes betting links
 
   const relatedQuestions = content?.["related_questions"] || []
 
@@ -194,7 +196,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
 
       {/* Betting Recommendations Section */}
       {bettingRecommendations && Array.isArray(bettingRecommendations) && bettingRecommendations.length > 0 && (
-        <div className="mt-4 pl-6 sm:pl-12 max-w-[550px]">
+        <div className="mt-4 pl-6 sm:pl-[60px] max-w-[420px]">
           <BettingRecommendationsWidget
             markets={bettingRecommendations}
             title="Recomendaciones de Apuestas"

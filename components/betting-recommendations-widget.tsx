@@ -12,7 +12,8 @@
  *   market_type: string,
  *   odds: number,
  *   rationale: string,
- *   title: string
+ *   title: string,
+ *   selection?: string
  * }>
  */
 
@@ -31,6 +32,7 @@ interface MarketRecommendation {
   odds: number
   rationale: string
   title: string
+  selection?: string
   event_id?: string
   market_id?: string
   option_id?: string
@@ -45,10 +47,6 @@ interface BettingRecommendationsWidgetProps {
 
 // Individual Recommendation Card Component
 function RecommendationCard({ market }: { market: MarketRecommendation }) {
-  const { isDarkMode } = useTheme()
-
-
-
 
   // Resolve IDs from explicit fields or from deep_link (fixture-market-option)
   const resolveIds = () => {
@@ -79,14 +77,19 @@ function RecommendationCard({ market }: { market: MarketRecommendation }) {
 
   return (
     <div className="w-full">
-      <Card className="h-full">
-        <CardContent className="p-3">
+      <Card className="h-full rounded-2xl">
+        <CardContent className="p-5">
           {/* Header with title and odds in same row */}
-          <div className="flex items-start justify-between mb-2">
+          <div className="flex items-start justify-between">
             <div className="flex-1 pr-3">
-              <h4 className="font-semibold text-sm line-clamp-2 leading-tight">
-                {market.title} <span className="text-xs font-normal text-muted-foreground">({market.market_type})</span>
+              <h4 className="font-semibold text-md line-clamp-2 leading-tight">
+                {market.title}
               </h4>
+              {market.selection && (
+                <p className="text-sm text-muted-foreground mt-1 font-medium">
+                  {market.selection}
+                </p>
+              )}
             </div>
             <a
               href={deeplinkHref}
@@ -104,20 +107,22 @@ function RecommendationCard({ market }: { market: MarketRecommendation }) {
                 });
               }}
               className={cn(
-                "px-3 py-1.5 rounded-md font-mono font-bold text-base cursor-pointer shrink-0",
+                "px-3 py-1.5 rounded-md font-mono font-bold text-lg cursor-pointer shrink-0",
                 "bg-brand-primary/20 text-brand-primary border border-brand-primary/40 hover:bg-brand-primary/30 hover:border-brand-primary/60"
               )}
             >
-              {typeof market.odds === 'number' ? market.odds.toFixed(2) : market.odds}
+              {typeof market.odds === 'number' ? market.odds.toFixed(2) : parseFloat(market.odds).toFixed(2)}
             </a>
           </div>
 
           {/* Rationale */}
-          <div className="pt-2 border-t">
-            <p className="text-xs text-muted-foreground leading-relaxed line-clamp-3">
-              {market.rationale}
-            </p>
-          </div>
+          {market.rationale && (
+            <div className="mt-2 pt-2 border-t">
+              <p className="text-xs text-muted-foreground leading-relaxed line-clamp-3">
+                {market.rationale}
+              </p>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
@@ -168,7 +173,7 @@ export function BettingRecommendationsWidget({
   return (
     <div className={cn("w-full max-w-[420px]", className)}>
       {/* Carousel Container */}
-      <div className="rounded-lg border ml-9 md:ml-3 p-2 border-border bg-card">
+      <div className="rounded-2xl border ml-9 md:ml-[0px] p-3 border-border bg-card">
         {/* Current Recommendation */}
         <div className="overflow-hidden rounded-md">
           <RecommendationCard market={markets[currentIndex]} />

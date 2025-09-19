@@ -1,4 +1,5 @@
 import { NextResponse, NextRequest } from "next/server"
+import { processMessageContent } from "@/lib/betting-links"
 
 export async function GET(req: NextRequest) {
 
@@ -20,6 +21,15 @@ export async function GET(req: NextRequest) {
     })
 
     const data = await response.json()
+
+    // Process betting links in messages
+    if (data?.data?.value?.messages) {
+      const brandId = process.env.NEXT_PUBLIC_BRAND || 'bwin';
+      data.data.value.messages = data.data.value.messages.map((message: any) => ({
+        ...message,
+        content: processMessageContent(message.content, brandId)
+      }));
+    }
 
     return NextResponse.json(data)
 

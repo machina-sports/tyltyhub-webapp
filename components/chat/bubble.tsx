@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Avatar } from "./avatar";
 import { useBrandColors } from "@/hooks/use-brand-colors";
+import { useBrand } from "@/contexts/brand-context";
 
 interface ChatBubbleProps {
   role: "user" | "assistant";
@@ -12,7 +13,9 @@ interface ChatBubbleProps {
 }
 
 export function ChatBubble({ role, children, className }: ChatBubbleProps) {
+  const { brand } = useBrand();
   const isUser = role === "user";
+  const userLabel = brand.id === 'sportingbet' ? 'Eu' : 'Tú';
 
   return (
     <div className={cn(
@@ -28,7 +31,7 @@ export function ChatBubble({ role, children, className }: ChatBubbleProps) {
       
       <div 
         className={cn(
-          "max-w-[88%] rounded-2xl px-5 py-4 text-sm leading-relaxed",
+          "max-w-[520px] rounded-2xl px-5 py-4 text-sm leading-relaxed",
           "break-words",
           isUser 
             ? "text-white ml-auto chat-bubble-user" 
@@ -44,7 +47,7 @@ export function ChatBubble({ role, children, className }: ChatBubbleProps) {
             backgroundColor: 'hsl(var(--neutral-30))',
             color: 'hsl(var(--neutral-90))'
           }}>
-            <span className="text-xs font-medium">Tú</span>
+            <span className="text-xs font-medium">{userLabel}</span>
           </div>
         </div>
       )}

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { AnchorHTMLAttributes } from "react";
 import { convertUrlsToMarkdown } from "@/lib/url-utils";
+import { replaceBettingLinks } from "@/lib/betting-links";
 
 interface MarkdownContentProps {
   content: string;
@@ -20,6 +21,7 @@ const MarkdownLink = (props: AnchorHTMLAttributes<HTMLAnchorElement>) => {
 };
 
 export function MarkdownChat({ content, className }: MarkdownContentProps) {
+  const processedContent = content;
   return (
     <article className={cn("prose prose-neutral dark:prose-invert max-w-none text-sm break-words", className)}>
       <Markdown
@@ -112,7 +114,7 @@ export function MarkdownChat({ content, className }: MarkdownContentProps) {
           },
         }}
       >
-        {content}
+        {processedContent}
       </Markdown>
     </article>
   );
