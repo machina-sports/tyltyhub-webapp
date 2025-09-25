@@ -14,7 +14,6 @@ export interface BrandConfig {
   analytics: {
     ga4Primary: string;
     ga4Secondary: string;
-    tallysightWorkspace: string;
   };
   branding: {
     colors: {

@@ -10,8 +10,7 @@
   "sportsBaseUrl": "https://www.sportingbet.bet.br",
   "analytics": {
     "ga4Primary": "G-SPORTINGBET-PRIMARY",
-    "ga4Secondary": "G-SPORTINGBET-SECONDARY",
-    "tallysightWorkspace": "sportingbet-brazil"
+    "ga4Secondary": "G-SPORTINGBET-SECONDARY"
   },
   "branding": {
     "colors": {

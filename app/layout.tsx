@@ -46,34 +46,50 @@ export default function RootLayout({
     <html lang={brand.language} data-brand={brandId}>
       <head>
         <link rel="icon" href={brand.content.favicon} />
-        {/* Google tag (gtag.js) - GA4 Property */}
-        <script
-          async
-          src={`https://www.googletagmanager.com/gtag/js?id=${brand.analytics.ga4Primary}`}
-        />
-        {/* Google tag (gtag.js) - Secondary GA4 Property */}
-        <script
-          async
-          src={`https://www.googletagmanager.com/gtag/js?id=${brand.analytics.ga4Secondary}`}
-        />
+        {/* Google Analytics will be loaded conditionally based on cookie consent */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
-           window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', '${brand.analytics.ga4Primary}');
-          gtag('config', '${brand.analytics.ga4Secondary}');
-          `,
+              // Initialize dataLayer for consent mode
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              
+              // Set default consent state
+              gtag('consent', 'default', {
+                'analytics_storage': 'denied',
+                'ad_storage': 'denied',
+                'wait_for_update': 500
+              });
+              
+              // Check for existing consent
+              const existingConsent = localStorage.getItem('cookie-consent');
+              if (existingConsent) {
+                const consent = JSON.parse(existingConsent);
+                if (consent.analytics) {
+                  gtag('consent', 'update', {
+                    'analytics_storage': 'granted'
+                  });
+                  
+                  // Load GA4 scripts
+                  const script1 = document.createElement('script');
+                  script1.async = true;
+                  script1.src = 'https://www.googletagmanager.com/gtag/js?id=${brand.analytics.ga4Primary}';
+                  document.head.appendChild(script1);
+                  
+                  const script2 = document.createElement('script');
+                  script2.async = true;
+                  script2.src = 'https://www.googletagmanager.com/gtag/js?id=${brand.analytics.ga4Secondary}';
+                  document.head.appendChild(script2);
+                  
+                  script1.onload = function() {
+                    gtag('js', new Date());
+                    gtag('config', '${brand.analytics.ga4Primary}');
+                    gtag('config', '${brand.analytics.ga4Secondary}');
+                  };
+                }
+              }
+            `,
           }}
-        />
-        <script
-          async
-          type="module"
-          data-tallysight-defaults-widget-config-workspace={brand.analytics.tallysightWorkspace}
-          src="https://storage.googleapis.com/tallysight-widgets/dist/tallysight.min.js"
-          data-tallysight-widget-loading="lazy"
-          data-tallysight-observer="true"
         />
         <meta property="og:logo" content={brand.content.ogImage} />
         <style dangerouslySetInnerHTML={{

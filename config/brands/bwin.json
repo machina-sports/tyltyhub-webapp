@@ -10,8 +10,7 @@
   "sportsBaseUrl": "https://www.bwin.es",
   "analytics": {
     "ga4Primary": "G-RP42Y35MC2",
-    "ga4Secondary": "G-9F6CHT1XS6",
-    "tallysightWorkspace": "bwin-spain"
+    "ga4Secondary": "G-9F6CHT1XS6"
   },
   "branding": {
     "colors": {
@@ -121,7 +120,7 @@
     "lgpd": {
       "enabled": true,
       "title": "Privacidad y Cookies",
-      "description": "Utilizamos cookies y tecnologías similares para mejorar tu experiencia de navegación, personalizar contenido y anuncios, y analizar el tráfico del sitio. Al continuar navegando, aceptas nuestra política de privacidad.",
+      "description": "Utilizamos cookies para mejorar tu experiencia de navegación y analizar el uso del sitio. Puedes elegir qué tipos de cookies aceptar. Para más información, consulta nuestra política de privacidad.",
       "acceptText": "Aceptar",
       "dismissText": "Ahora no",
       "privacyPolicyUrl": "https://www.bwin.es/politica-de-privacidad",
