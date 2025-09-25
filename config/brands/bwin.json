@@ -53,8 +53,8 @@
       "discover": "Descubrir"
     },
     "cta": {
-      "register": "https://sports.bwin.es/es/sports/registro?utm_source=bwbot&utm_medium=botao&utm_campaign=5530097&utm_content=registrar&utm_term=5530097-botmundial-bwin-sprts-es-2025-06-17-es-botao--acq-web&wm=5530097",
-      "login": "https://sports.bwin.es/es/sports/login?utm_source=bwbot&utm_medium=botao&utm_campaign=5530097&utm_content=entrar&utm_term=5530097-botmundial-bwin-sprts-es-2025-06-17-es-botao--acq-web&wm=5530097",
+      "register": "https://www.bwin.es/es/engage/lan/sports/generic?wm=5557099",
+      "login": "https://www.bwin.es/es/sports?_affiliateHelper=true&wm=5557101",
       "registerText": "Regístrate Ahora",
       "loginText": "Iniciar Sesión"
     },
