@@ -217,6 +217,13 @@ export function BettingRecommendationsWidget({
           </button>
         </div>
       </div>
+      
+      {/* Odds Disclaimer */}
+      <div className="mt-4 pt-2 border-t border-muted">
+        <p className="text-xs text-muted-foreground text-center italic">
+          * Cuotas sujetas a cambios
+        </p>
+      </div>
     </div>
   )
 } 

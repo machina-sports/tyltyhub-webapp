@@ -165,6 +165,13 @@ export function Footer() {
             <span className="text-sm font-medium mt-[-2px]">{route.label}</span>
           </Button>
         ))}
+        
+        {/* Odds Disclaimer for Mobile */}
+        <div className="absolute bottom-1 left-0 right-0">
+          <p className="text-xs text-muted-foreground text-center italic opacity-70">
+            * Cuotas sujetas a cambios
+          </p>
+        </div>
       </div>
     );
   }

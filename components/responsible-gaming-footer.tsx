@@ -99,6 +99,13 @@ export function ResponsibleGamingFooter({
                   />
                 </div>
               )}
+              
+              {/* Odds Disclaimer */}
+              <div className="w-full text-center mt-3">
+                <p className="text-xs text-muted-foreground italic">
+                  * Cuotas sujetas a cambios
+                </p>
+              </div>
             </div>
           ) : (
             // Show text disclaimer for sportingbet
@@ -127,6 +134,11 @@ export function ResponsibleGamingFooter({
                   {brand.responsibleGaming.footer.copyright}
                 </div>
               )}
+              
+              {/* Odds Disclaimer */}
+              <div className="text-xs text-muted-foreground italic mt-2">
+                * Cuotas sujetas a cambios
+              </div>
             </div>
           )}
         </div>

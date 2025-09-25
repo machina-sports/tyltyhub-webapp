@@ -222,6 +222,13 @@ export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: B
             )) : (
               <p className="text-gray-500 text-center py-4">Nenhum mercado de aposta disponível</p>
             )}
+            
+            {/* Odds Disclaimer */}
+            <div className="mt-4 pt-3 border-t border-gray-200">
+              <p className="text-xs text-gray-500 text-center italic">
+                * Cuotas sujetas a cambios
+              </p>
+            </div>
         </div>
       ) : (
         <div className="space-y-4 md:space-y-5">

@@ -322,12 +322,17 @@ export function RelatedOdds({
         </div>
 
         {/* Footer */}
-        <p className={cn(
-          "text-xs text-center mt-4",
-          "text-muted-foreground/70"
-        )}>
-          Odds atualizadas {formatDistanceToNow(new Date(), { addSuffix: true, locale: ptBR })}
-        </p>
+        <div className="mt-4 space-y-2">
+          <p className={cn(
+            "text-xs text-center",
+            "text-muted-foreground/70"
+          )}>
+            Odds atualizadas {formatDistanceToNow(new Date(), { addSuffix: true, locale: ptBR })}
+          </p>
+          <p className="text-xs text-center text-muted-foreground italic">
+            * Cuotas sujetas a cambios
+          </p>
+        </div>
       </div>
     </Card>
   );
