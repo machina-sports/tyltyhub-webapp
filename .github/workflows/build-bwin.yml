@@ -32,6 +32,10 @@ jobs:
           echo " " >> .env
           echo "IMAGE_CONTAINER_ADDRESS=${{ vars.IMAGE_CONTAINER_ADDRESS }}" >> .env
           echo " " >> .env
+          echo "NEXT_PUBLIC_BRAND=bwin" >> .env
+          echo " " >> .env
+          echo "NEXT_PUBLIC_FEATURE_TOGGLE_LANGUAGE_SELECTED=es" >> .env
+          echo " " >> .env
           echo "NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS=${{ vars.IMAGE_CONTAINER_ADDRESS }}" >> .env
           echo " " >> .env
           echo "NEXT_PUBLIC_SITE_OFFLINE=${{ vars.BWIN_SITE_OFFLINE }}" >> .env
