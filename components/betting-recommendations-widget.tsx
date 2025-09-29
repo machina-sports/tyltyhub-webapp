@@ -13,7 +13,8 @@
  *   odds: number,
  *   rationale: string,
  *   title: string,
- *   selection?: string
+ *   selection?: string,
+ *   runner?: string  // The betting selection/runner name
  * }>
  */
 
@@ -33,6 +34,7 @@ interface MarketRecommendation {
   rationale: string
   title: string
   selection?: string
+  runner?: string
   event_id?: string
   market_id?: string
   option_id?: string
