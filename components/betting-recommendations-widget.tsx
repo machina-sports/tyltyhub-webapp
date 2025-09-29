@@ -85,9 +85,9 @@ function RecommendationCard({ market }: { market: MarketRecommendation }) {
               <h4 className="font-semibold text-md line-clamp-2 leading-tight">
                 {market.title}
               </h4>
-              {market.selection && (
+              {market.runner && (
                 <p className="text-sm text-muted-foreground mt-1 font-medium">
-                  {market.selection}
+                  {market.runner}
                 </p>
               )}
             </div>
