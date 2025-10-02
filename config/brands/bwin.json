@@ -95,7 +95,7 @@
       "images": {
         "showImages": true,
         "responsabilidad": "/Juega con responsabilidad.png",
-        "diversion": "/Sin diversión no hay juego.png",
+        "diversion": "/no_hay_juego.png",
         "age": "/+18.png",
         "mano": "/mano.png",
         "seguro": "/Juego Seguro.png"

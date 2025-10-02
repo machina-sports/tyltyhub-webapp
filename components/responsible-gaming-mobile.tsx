@@ -46,9 +46,9 @@ export function ResponsibleGamingMobile({
                     <Image
                       src={images.diversion}
                       alt="Sin diversión no hay juego"
-                      width={100}
+                      width={200}
                       height={32}
-                      className="w-24 h-8"
+                      className="w-40 h-8"
                     />
                   </div>
                 )}
