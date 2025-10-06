@@ -1,4 +1,4 @@
-name: Create Pull Request
+name: MACHINA Chatbot - Pull Request Opened
 
 on:
   pull_request:

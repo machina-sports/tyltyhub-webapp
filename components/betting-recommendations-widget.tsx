@@ -25,6 +25,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { trackBettingLinkClick } from '@/lib/analytics/betting'
 import { buildBettingUrl } from '@/lib/betting-urls'
 import { cn } from '@/lib/utils'
+import { useBrand } from '@/contexts/brand-context'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useState } from 'react'
 
@@ -137,6 +138,7 @@ export function BettingRecommendationsWidget({
   className
 }: BettingRecommendationsWidgetProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const { brand } = useBrand()
 
   const nextRecommendation = () => {
     setCurrentIndex((prev) => (prev + 1) % markets.length)
@@ -221,11 +223,13 @@ export function BettingRecommendationsWidget({
       </div>
       
       {/* Odds Disclaimer */}
-      <div className="mt-4 pt-2 border-t border-muted">
-        <p className="text-xs text-muted-foreground text-center italic">
-          * Cuotas sujetas a cambios
-        </p>
-      </div>
+      {brand.responsibleGaming.footer?.oddsDisclaimer && (
+        <div className="mt-4 pt-2 border-t border-muted">
+          <p className="text-xs text-muted-foreground text-center italic">
+            {brand.responsibleGaming.footer.oddsDisclaimer}
+          </p>
+        </div>
+      )}
     </div>
   )
 } 

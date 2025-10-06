@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Check, DollarSign, Loader2, ChevronLeft } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useBrand } from "@/contexts/brand-context"
 
 interface Market {
   name: string
@@ -68,6 +69,7 @@ const convertToDecimal = (odds: string): string => {
 };
 
 export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: BettingOddsBoxProps) {
+  const { brand } = useBrand()
   const [selectedBet, setSelectedBet] = useState<{
     market: string
     selection: string
@@ -224,11 +226,13 @@ export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: B
             )}
             
             {/* Odds Disclaimer */}
-            <div className="mt-4 pt-3 border-t border-gray-200">
-              <p className="text-xs text-gray-500 text-center italic">
-                * Cuotas sujetas a cambios
-              </p>
-            </div>
+            {brand.responsibleGaming.footer?.oddsDisclaimer && (
+              <div className="mt-4 pt-3 border-t border-gray-200">
+                <p className="text-xs text-gray-500 text-center italic">
+                  {brand.responsibleGaming.footer.oddsDisclaimer}
+                </p>
+              </div>
+            )}
         </div>
       ) : (
         <div className="space-y-4 md:space-y-5">

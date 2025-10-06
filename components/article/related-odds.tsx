@@ -13,6 +13,7 @@ import { formatDistanceToNow } from "date-fns"
 import { ptBR } from 'date-fns/locale'
 import Image from "next/image"
 import { useTheme } from "@/components/theme-provider"
+import { useBrand } from "@/contexts/brand-context"
 import { cn } from "@/lib/utils"
 import teamsData from "@/data/teams.json"
 
@@ -153,6 +154,7 @@ export function RelatedOdds({
   eventDateTime
 }: RelatedOddsProps) {
   const { isDarkMode } = useTheme();
+  const { brand } = useBrand();
   
   if (!currentArticleId) {
     return null;
@@ -329,9 +331,11 @@ export function RelatedOdds({
           )}>
             Odds atualizadas {formatDistanceToNow(new Date(), { addSuffix: true, locale: ptBR })}
           </p>
-          <p className="text-xs text-center text-muted-foreground italic">
-            * Cuotas sujetas a cambios
-          </p>
+          {brand.responsibleGaming.footer?.oddsDisclaimer && (
+            <p className="text-xs text-center text-muted-foreground italic">
+              {brand.responsibleGaming.footer.oddsDisclaimer}
+            </p>
+          )}
         </div>
       </div>
     </Card>

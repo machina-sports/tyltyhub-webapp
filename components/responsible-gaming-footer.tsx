@@ -101,11 +101,13 @@ export function ResponsibleGamingFooter({
               )}
               
               {/* Odds Disclaimer */}
-              <div className="w-full text-center mt-3 max-w-2xl">
-                <p className="text-xs text-muted-foreground italic">
-                  * Cuotas sujetas a cambios. Este chatbot tiene únicamente fines informativos y no solicita, almacena ni procesa ningún dato personal. Por favor, no comparta información personal ni sensible al utilizarlo
-                </p>
-              </div>
+              {brand.responsibleGaming.footer?.oddsDisclaimer && (
+                <div className="w-full text-center mt-3 max-w-2xl">
+                  <p className="text-xs text-muted-foreground italic">
+                    {brand.responsibleGaming.footer.oddsDisclaimer}
+                  </p>
+                </div>
+              )}
             </div>
           ) : (
             // Show text disclaimer for sportingbet
@@ -136,9 +138,11 @@ export function ResponsibleGamingFooter({
               )}
               
               {/* Odds Disclaimer */}
-              <div className="text-xs text-muted-foreground italic mt-2">
-                * Cuotas sujetas a cambios. Este chatbot tiene únicamente fines informativos y no solicita, almacena ni procesa ningún dato personal. Por favor, no comparta información personal ni sensible al utilizarlo
-              </div>
+              {brand.responsibleGaming.footer?.oddsDisclaimer && (
+                <div className="text-xs text-muted-foreground italic mt-2">
+                  {brand.responsibleGaming.footer.oddsDisclaimer}
+                </div>
+              )}
             </div>
           )}
         </div>

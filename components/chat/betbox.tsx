@@ -12,6 +12,7 @@ import { useAppDispatch } from '@/store/dispatch'
 
 import { buildBettingUrl } from '@/lib/betting-urls'
 import { useGlobalState } from '@/store/useState'
+import { useBrand } from '@/contexts/brand-context'
 
 interface BetBoxProps {
   bet: {
@@ -26,6 +27,7 @@ interface BetBoxProps {
 
 export const BetBox = ({ bet }: BetBoxProps) => {
   
+  const { brand } = useBrand()
   const dispatch = useAppDispatch()
   
   const state = useGlobalState((state: any) => state.threads)
@@ -225,11 +227,13 @@ export const BetBox = ({ bet }: BetBoxProps) => {
       </div>
       
       {/* Odds Disclaimer - Always visible */}
-      <div className="mt-2 px-4">
-        <p className="text-xs text-muted-foreground text-right italic">
-          * Cuotas sujetas a cambios
-        </p>
-      </div>
+      {brand.responsibleGaming.footer?.oddsDisclaimer && (
+        <div className="mt-2 px-4">
+          <p className="text-xs text-muted-foreground text-right italic">
+            {brand.responsibleGaming.footer.oddsDisclaimer}
+          </p>
+        </div>
+      )}
 
       {isOpen && (
         <div className="mt-4 mr-2 border-t pt-4 border-muted-foreground/20">
@@ -264,11 +268,13 @@ export const BetBox = ({ bet }: BetBoxProps) => {
             </button>
             
             {/* Odds Disclaimer */}
-            <div className="mt-3 pt-2 border-t border-muted">
-              <p className="text-xs text-muted-foreground text-center italic">
-                * Cuotas sujetas a cambios
-              </p>
-            </div>
+            {brand.responsibleGaming.footer?.oddsDisclaimer && (
+              <div className="mt-3 pt-2 border-t border-muted">
+                <p className="text-xs text-muted-foreground text-center italic">
+                  {brand.responsibleGaming.footer.oddsDisclaimer}
+                </p>
+              </div>
+            )}
           </div>
         </div>
       )}

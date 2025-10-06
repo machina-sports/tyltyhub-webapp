@@ -94,6 +94,7 @@ export interface BrandConfig {
     footer?: {
       disclaimer?: string;
       copyright?: string;
+      oddsDisclaimer?: string;
       images?: {
         showImages: boolean;
         responsabilidad?: string;

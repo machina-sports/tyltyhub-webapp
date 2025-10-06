@@ -8,6 +8,7 @@ import { usePathname, useRouter } from "next/navigation"
 
 import { useEffect, useState } from "react"
 import { cn } from "@/lib/utils";
+import { useBrand } from "@/contexts/brand-context";
 
 const routes = [
   {
@@ -23,6 +24,7 @@ const routes = [
 ];
 
 export function Footer() {
+  const { brand } = useBrand();
   const router = useRouter();
   const pathname = usePathname();
   const [isMobile, setIsMobile] = useState(false);
@@ -167,11 +169,13 @@ export function Footer() {
         ))}
         
         {/* Odds Disclaimer for Mobile */}
-        <div className="absolute bottom-1 left-0 right-0">
-          <p className="text-xs text-muted-foreground text-center italic opacity-70">
-            * Cuotas sujetas a cambios
-          </p>
-        </div>
+        {brand.responsibleGaming.footer?.oddsDisclaimer && (
+          <div className="absolute bottom-1 left-0 right-0">
+            <p className="text-xs text-muted-foreground text-center italic opacity-70">
+              {brand.responsibleGaming.footer.oddsDisclaimer}
+            </p>
+          </div>
+        )}
       </div>
     );
   }
