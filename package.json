@@ -12,6 +12,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@assistant-ui/react": "^0.11.28",
     "@hookform/resolvers": "^3.3.4",
     "@lucide/lab": "^0.1.2",
     "@radix-ui/react-accordion": "^1.2.0",

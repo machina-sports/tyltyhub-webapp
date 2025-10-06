@@ -15,6 +15,7 @@ import { generateBrandMetadata } from "@/lib/metadata";
 import { BrandColors } from "@/components/brand";
 import { DynamicCSS } from "@/components/brand/dynamic-css";
 import { SearchProvider } from "@/components/discover/search-context";
+import { AssistantModal } from "@/components/assistant-ui/assistant-modal";
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -161,6 +162,7 @@ export default function RootLayout({
                 <Footer />
                 <LGPDConsent />
                 <Toaster />
+                <AssistantModal />
               </MainProvider>
             </Providers>
           </BrandColors>
