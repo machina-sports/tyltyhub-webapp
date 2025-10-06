@@ -10,15 +10,16 @@ import {
   useMessage,
 } from "@assistant-ui/react";
 import { Button } from "@/components/ui/button";
-import { X, MessageSquare, Send, ExternalLink, ArrowDown } from "lucide-react";
+import { X, MessageSquare, Send, ExternalLink, ArrowDown, Maximize2 } from "lucide-react";
 import Image from "next/image";
+import { useRouter, usePathname } from "next/navigation";
 import { createStreamingAdapterWithConfig } from "./streaming-adapter";
 import { registerThread, getThreadHistory, saveMessageToThread } from "@/functions/thread-register";
 import { useBrandTexts } from "@/hooks/use-brand-texts";
 
 // Component to render object cards (events, matches, etc.)
 function ObjectCards({ objects }: { objects: any[] }) {
-  if (!objects || objects.length === 0) return null;
+  if (!objects || !Array.isArray(objects) || objects.length === 0) return null;
 
   // Helper to format date/time nicely
   const formatDateTime = (obj: any) => {
@@ -170,7 +171,8 @@ function AssistantModalContent({
   onClose,
   objectsMapRef,
   objectsVersion,
-  assistantName
+  assistantName,
+  threadId
 }: {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
@@ -178,7 +180,14 @@ function AssistantModalContent({
   objectsMapRef: React.MutableRefObject<Map<string, any[]>>;
   objectsVersion: number;
   assistantName: string;
+  threadId: string;
 }) {
+  const router = useRouter();
+
+  const handleExpand = () => {
+    router.push(`/assistant/${threadId}`);
+    onClose();
+  };
   return (
     <>
       {/* Chat Bubble Button */}
@@ -207,14 +216,25 @@ function AssistantModalContent({
               />
               <h2 className="text-lg font-semibold">{assistantName}</h2>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onClose}
-              className="h-8 w-8 p-0"
-            >
-              <X className="h-4 w-4" />
-            </Button>
+            <div className="flex items-center gap-1">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleExpand}
+                className="h-8 w-8 p-0"
+                title="Expand to full page"
+              >
+                <Maximize2 className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onClose}
+                className="h-8 w-8 p-0"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
 
           {/* Chat Thread */}
@@ -239,7 +259,8 @@ function AssistantModalContent({
                         .join("");
 
                       // Look up objects for this specific message
-                      const objects = objectsMapRef.current.get(textContent) || [];
+                      const objectsData = objectsMapRef.current.get(textContent);
+                      const objects = Array.isArray(objectsData) ? objectsData : [];
 
                       return (
                         <div className="flex justify-start">
@@ -349,9 +370,16 @@ function AssistantModalInner({
         objectsMapRef={objectsMapRef}
         objectsVersion={objectsVersion}
         assistantName={name}
+        threadId={threadId}
       />
     </AssistantRuntimeProvider>
   );
+}
+
+// Custom hook to check if we should render the modal
+function useShouldRenderModal() {
+  const pathname = usePathname();
+  return !pathname?.startsWith('/assistant/');
 }
 
 export function AssistantModal() {
@@ -366,33 +394,29 @@ export function AssistantModal() {
   // Get assistant configuration
   const { name, welcomeMessage } = useAssistantConfig();
 
+  // Check if we should render the modal
+  const shouldRender = useShouldRenderModal();
+
   // Register thread and load history
   useEffect(() => {
-    if (!threadRegistered.current) {
+    if (!shouldRender) return;
+    if (!threadRegistered.current && !threadId) {
       threadRegistered.current = true;
 
-      console.log("📝 Registering new thread...");
-
-      // Register thread in backend (with initial welcome message)
-      registerThread({
-        agentId: AGENT_CONFIG.agentId,
-        userId: undefined,
-        metadata: {
-          source: "assistant-modal",
-          created_from: "sportingbet-cwc"
-        }
-      }).then(async ({ error, threadId: newThreadId }: { error: boolean; threadId: string | null }) => {
-        if (!error && newThreadId) {
-          setThreadId(newThreadId);
-          console.log("✅ Registered new thread in backend:", newThreadId);
-
-          // Load history immediately after registration
-          const { error: historyError, messages } = await getThreadHistory(newThreadId);
-
+      // Check if we should restore an existing thread from sessionStorage
+      const savedThreadId = sessionStorage.getItem('assistantThreadId');
+      const shouldOpen = sessionStorage.getItem('assistantShouldOpen');
+      
+      if (savedThreadId && shouldOpen === 'true') {
+        // Restore existing thread
+        sessionStorage.removeItem('assistantShouldOpen'); // Clear flag
+        
+        setThreadId(savedThreadId);
+        setIsOpen(true); // Open modal automatically
+        
+        // Load history for the restored thread
+        getThreadHistory(savedThreadId).then(({ error: historyError, messages }) => {
           if (!historyError && messages && messages.length > 0) {
-            console.log("📚 Loaded thread history:", messages.length, "messages");
-
-            // Convert backend messages to assistant-ui format
             const formattedMessages = messages.map((msg: any) => ({
               role: msg.role as "user" | "assistant",
               content: [
@@ -402,22 +426,54 @@ export function AssistantModal() {
                 }
               ]
             }));
-
             setInitialMessages(formattedMessages);
           }
+          setIsReady(true);
+        }).catch(() => {
+          setIsReady(true);
+        });
+      } else {
+        // Register new thread in backend (with initial welcome message)
+        registerThread({
+          agentId: AGENT_CONFIG.agentId,
+          userId: undefined,
+          metadata: {
+            source: "assistant-modal",
+            created_from: "sportingbet-cwc"
+          }
+        }).then(async ({ error, threadId: newThreadId }: { error: boolean; threadId: string | null }) => {
+          if (!error && newThreadId) {
+            setThreadId(newThreadId);
 
+            // Load history immediately after registration
+            const { error: historyError, messages } = await getThreadHistory(newThreadId);
+
+            if (!historyError && messages && messages.length > 0) {
+              // Convert backend messages to assistant-ui format
+              const formattedMessages = messages.map((msg: any) => ({
+                role: msg.role as "user" | "assistant",
+                content: [
+                  {
+                    type: "text" as const,
+                    text: msg.content
+                  }
+                ]
+              }));
+
+              setInitialMessages(formattedMessages);
+            }
+
+            setIsReady(true);
+          } else {
+            setIsReady(true);
+          }
+        }).catch((err: any) => {
+          threadRegistered.current = false;
           setIsReady(true);
-        } else {
-          console.error("❌ Failed to register thread");
-          setIsReady(true);
-        }
-      }).catch((err: any) => {
-        console.error("❌ Thread registration error:", err);
-        threadRegistered.current = false;
-        setIsReady(true);
-      });
+        });
+      }
     }
-  }, []);
+  }, [threadId, shouldRender]);
 
   // Handle modal close - keep thread alive for same session
   const handleClose = () => {
@@ -425,6 +481,11 @@ export function AssistantModal() {
     // Thread persists - NOT cleared so same conversation continues on reopen
     // New thread only created on page refresh
   };
+
+  // Early return after all hooks
+  if (!shouldRender) {
+    return null;
+  }
 
   // Don't render chat until thread is ready and messages are loaded
   if (!isReady || !threadId) {
