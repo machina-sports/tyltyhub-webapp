@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Send, ExternalLink, ArrowDown, Minimize2 } from "lucide-react";
 import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { createStreamingAdapterWithConfig } from "@/components/assistant-ui/streaming-adapter";
 import { getThreadHistory } from "@/functions/thread-register";
 import { useBrandTexts } from "@/hooks/use-brand-texts";
@@ -145,15 +145,19 @@ function useAssistantConfig() {
 
 function AssistantChatContent({
   threadId,
-  initialMessages
+  initialMessages,
+  initialQuery
 }: {
   threadId: string;
-  initialMessages: any[]
+  initialMessages: any[];
+  initialQuery?: string;
 }) {
   const router = useRouter();
   const objectsMapRef = useRef<Map<string, any[]>>(new Map());
   const [objectsVersion, setObjectsVersion] = useState(0);
   const { name } = useAssistantConfig();
+  const composerRef = useRef<HTMLTextAreaElement>(null);
+  const messageSent = useRef(false);
 
   const handleMinimize = () => {
     router.back();
@@ -176,6 +180,34 @@ function AssistantChatContent({
     adapter,
     initialMessages.length > 0 ? { initialMessages } : undefined
   );
+
+  // Send initial query after runtime is ready
+  useEffect(() => {
+    if (initialQuery && !messageSent.current && composerRef.current) {
+      messageSent.current = true;
+      
+      // Set the composer value and trigger submit
+      const composer = composerRef.current;
+      const form = composer.closest('form');
+      
+      // Simulate typing the message
+      const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+        window.HTMLTextAreaElement.prototype,
+        'value'
+      )?.set;
+      
+      if (nativeInputValueSetter && form) {
+        nativeInputValueSetter.call(composer, initialQuery);
+        const event = new Event('input', { bubbles: true });
+        composer.dispatchEvent(event);
+        
+        // Submit the form after a small delay
+        setTimeout(() => {
+          form.requestSubmit();
+        }, 100);
+      }
+    }
+  }, [initialQuery, runtime]);
 
   return (
     <AssistantRuntimeProvider runtime={runtime}>
@@ -251,6 +283,7 @@ function AssistantChatContent({
               <div className="max-w-4xl mx-auto p-4">
                 <ComposerPrimitive.Root className="flex gap-2 items-end">
                   <ComposerPrimitive.Input
+                    ref={composerRef as any}
                     placeholder="Send a message..."
                     className="flex-1 px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none"
                     rows={1}
@@ -272,7 +305,9 @@ function AssistantChatContent({
 
 export default function AssistantChatPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const threadId = params.id as string;
+  const initialQuery = searchParams.get('q');
   
   const [initialMessages, setInitialMessages] = useState<any[]>([]);
   const [isReady, setIsReady] = useState(false);
@@ -313,7 +348,8 @@ export default function AssistantChatPage() {
     <AssistantChatContent 
       key={`${threadId}-${initialMessages.length}`} 
       threadId={threadId} 
-      initialMessages={initialMessages} 
+      initialMessages={initialMessages}
+      initialQuery={initialQuery || undefined}
     />
   );
 }

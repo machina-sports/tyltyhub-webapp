@@ -66,7 +66,7 @@ export async function saveMessageToThread({
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        thread_id: threadId,
+        threadId,
         message
       }),
     });

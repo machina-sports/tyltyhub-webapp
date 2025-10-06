@@ -28,6 +28,8 @@ import { trackNewMessage, trackSuggestedQuestionClick } from "@/lib/analytics"
 import { ResponsibleGamingResponsive } from "@/components/responsible-gaming-responsive"
 import { useBrandTexts } from "@/hooks/use-brand-texts"
 import { Loading } from "@/components/ui/loading"
+import { useAssistant } from "@/providers/assistant/use-assistant"
+import { saveMessageToThread } from "@/functions/thread-register"
 
 import { Loader2 } from "lucide-react"
 // import ScrollingRow from "./scrolling-row" // HIDDEN
@@ -35,6 +37,7 @@ import { Loader2 } from "lucide-react"
 const ContainerHome = ({ query }: { query: string }) => {
   const { isDarkMode } = useTheme()
   const { chat } = useBrandTexts()
+  const { threadId, openWithThread } = useAssistant()
 
   const router = useRouter()
 
@@ -96,9 +99,22 @@ const ContainerHome = ({ query }: { query: string }) => {
 
     setIsSubmitting(true)
     trackNewMessage(input)
-    router.push(`/chat/new?q=${encodeURIComponent(input)}&user_id=${user_id}`)
-    setIsSubmitting(false)
-  }, [input, router, user_id])
+    
+    try {
+      // Navigate to assistant page with the message as a query param
+      // The assistant page will handle sending it and getting the response
+      if (threadId) {
+        router.push(`/assistant/${threadId}?q=${encodeURIComponent(input.trim())}`)
+      } else {
+        // Fallback: if no threadId yet, just open the modal
+        openWithThread("")
+      }
+    } catch (error) {
+      console.error("Error submitting message:", error)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }, [input, router, threadId, openWithThread])
 
   // Detect mobile screen size
   useEffect(() => {
@@ -207,24 +223,30 @@ const ContainerHome = ({ query }: { query: string }) => {
           <div className="w-full sticky top-[80px] pt-2 z-50 input-sticky-container">
             <div className={`transition-all duration-300 ${isInputVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
               <form onSubmit={handleSubmit} className="relative p-4">
-                <Textarea
-                  ref={inputRef as any}
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder={chat.placeholder}
-                  className="w-full py-4 pl-6 pr-14 rounded-xl text-base text-white placeholder:text-neutral-80 focus:border-brand-primary focus:ring-0 transition-colors duration-200 home-input resize-none border-2"
-                  disabled={isSubmitting}
-                  rows={chat.mobileInputRows || 2}
-                  style={{
-                    backgroundColor: 'hsl(var(--bg-secondary))',
-                    borderColor: 'hsl(var(--border-primary))',
-                    WebkitAppearance: 'none',
-                    WebkitTapHighlightColor: 'transparent',
-                    fontSize: '16px', // Prevents zoom on iOS
-                    minHeight: chat.mobileInputRows === 1 ? '50px' : '60px',
-                    maxHeight: chat.mobileInputRows === 1 ? '50px' : '82px'
-                  }}
-                />
+              <Textarea
+                ref={inputRef as any}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault()
+                    handleSubmit(e as any)
+                  }
+                }}
+                placeholder={chat.placeholder}
+                className="w-full py-4 pl-6 pr-14 rounded-xl text-base text-white placeholder:text-neutral-80 focus:border-brand-primary focus:ring-0 transition-colors duration-200 home-input resize-none border-2"
+                disabled={isSubmitting}
+                rows={chat.mobileInputRows || 2}
+                style={{
+                  backgroundColor: 'hsl(var(--bg-secondary))',
+                  borderColor: 'hsl(var(--border-primary))',
+                  WebkitAppearance: 'none',
+                  WebkitTapHighlightColor: 'transparent',
+                  fontSize: '16px', // Prevents zoom on iOS
+                  minHeight: chat.mobileInputRows === 1 ? '50px' : '60px',
+                  maxHeight: chat.mobileInputRows === 1 ? '50px' : '82px'
+                }}
+              />
                 <Button
                   type="submit"
                   size="icon"
@@ -252,6 +274,12 @@ const ContainerHome = ({ query }: { query: string }) => {
                 ref={inputRef as any}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault()
+                    handleSubmit(e as any)
+                  }
+                }}
                 placeholder={chat.placeholder}
                 className="w-full py-4 pl-6 pr-14 rounded-xl text-base text-white placeholder:text-neutral-60 focus:border-brand-primary focus:ring-0 transition-colors duration-200 home-input resize-none border-2"
                 disabled={isSubmitting}

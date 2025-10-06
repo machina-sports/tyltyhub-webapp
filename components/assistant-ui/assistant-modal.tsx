@@ -16,6 +16,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { createStreamingAdapterWithConfig } from "./streaming-adapter";
 import { registerThread, getThreadHistory, saveMessageToThread } from "@/functions/thread-register";
 import { useBrandTexts } from "@/hooks/use-brand-texts";
+import { useAssistant } from "@/providers/assistant/use-assistant";
 
 // Component to render object cards (events, matches, etc.)
 function ObjectCards({ objects }: { objects: any[] }) {
@@ -383,13 +384,12 @@ function useShouldRenderModal() {
 }
 
 export function AssistantModal() {
+  const { threadId: contextThreadId } = useAssistant();
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  const [threadId, setThreadId] = useState<string>("");
   const [initialMessages, setInitialMessages] = useState<any[]>([]);
   const [isReady, setIsReady] = useState(false);
-
-  // Use ref to ensure thread registration only happens once (survives React StrictMode double-render)
-  const threadRegistered = useRef(false);
+  const [lastLoadedThreadId, setLastLoadedThreadId] = useState<string>("");
 
   // Get assistant configuration
   const { name, welcomeMessage } = useAssistantConfig();
@@ -397,52 +397,48 @@ export function AssistantModal() {
   // Check if we should render the modal
   const shouldRender = useShouldRenderModal();
 
-  // Register thread and load history
+  // Reload history when coming back to a page where modal should render
   useEffect(() => {
-    if (!shouldRender) return;
-    if (!threadRegistered.current && !threadId) {
-      threadRegistered.current = true;
+    if (!shouldRender) {
+      // Reset when leaving the page
+      setLastLoadedThreadId("");
+      return;
+    }
+    
+    // Reload history if threadId exists and we haven't loaded this thread yet
+    if (contextThreadId && (contextThreadId !== lastLoadedThreadId || !isReady)) {
+      setLastLoadedThreadId(contextThreadId);
+      setIsReady(false);
 
-      // Register new thread in backend (with initial welcome message)
-      registerThread({
-        agentId: AGENT_CONFIG.agentId,
-        userId: undefined,
-        metadata: {
-          source: "assistant-modal",
-          created_from: "sportingbet-cwc"
-        }
-      }).then(async ({ error, threadId: newThreadId }: { error: boolean; threadId: string | null }) => {
-        if (!error && newThreadId) {
-          setThreadId(newThreadId);
+      // Load history for the thread
+      getThreadHistory(contextThreadId).then(({ error: historyError, messages }) => {
+        if (!historyError && messages && messages.length > 0) {
+          // Convert backend messages to assistant-ui format
+          const formattedMessages = messages.map((msg: any) => ({
+            role: msg.role as "user" | "assistant",
+            content: [
+              {
+                type: "text" as const,
+                text: msg.content
+              }
+            ]
+          }));
 
-          // Load history immediately after registration
-          const { error: historyError, messages } = await getThreadHistory(newThreadId);
-
-          if (!historyError && messages && messages.length > 0) {
-            // Convert backend messages to assistant-ui format
-            const formattedMessages = messages.map((msg: any) => ({
-              role: msg.role as "user" | "assistant",
-              content: [
-                {
-                  type: "text" as const,
-                  text: msg.content
-                }
-              ]
-            }));
-
-            setInitialMessages(formattedMessages);
-          }
-
-          setIsReady(true);
+          setInitialMessages(formattedMessages);
         } else {
-          setIsReady(true);
+          setInitialMessages([]);
         }
+        setIsReady(true);
       }).catch((err: any) => {
-        threadRegistered.current = false;
+        console.error("Failed to load history:", err);
         setIsReady(true);
       });
+    } else if (contextThreadId && !isReady) {
+      setIsReady(true);
     }
-  }, [threadId, shouldRender]);
+  }, [contextThreadId, shouldRender, pathname]);
+
+  const threadId = contextThreadId || "";
 
   // Handle modal close - keep thread alive for same session
   const handleClose = () => {
@@ -484,7 +480,7 @@ export function AssistantModal() {
   // Use key to ensure component remounts with correct initial messages
   return (
     <AssistantModalInner
-      key={threadId} // Force remount when thread changes
+      key={`${threadId}-${initialMessages.length}`} // Force remount when thread or messages change
       threadId={threadId}
       initialMessages={initialMessages}
       isOpen={isOpen}
