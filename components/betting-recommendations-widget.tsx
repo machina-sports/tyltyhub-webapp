@@ -225,7 +225,7 @@ export function BettingRecommendationsWidget({
       {/* Odds Disclaimer */}
       {brand.responsibleGaming.footer?.oddsDisclaimer && (
         <div className="mt-4 pt-2 border-t border-muted">
-          <p className="text-xs text-muted-foreground text-center italic">
+          <p className="text-xs text-muted-foreground text-center italic max-w-2xl mx-auto">
             {brand.responsibleGaming.footer.oddsDisclaimer}
           </p>
         </div>

@@ -229,7 +229,7 @@ export const BetBox = ({ bet }: BetBoxProps) => {
       {/* Odds Disclaimer - Always visible */}
       {brand.responsibleGaming.footer?.oddsDisclaimer && (
         <div className="mt-2 px-4">
-          <p className="text-xs text-muted-foreground text-right italic">
+          <p className="text-xs text-muted-foreground text-right italic max-w-2xl ml-auto">
             {brand.responsibleGaming.footer.oddsDisclaimer}
           </p>
         </div>
@@ -270,7 +270,7 @@ export const BetBox = ({ bet }: BetBoxProps) => {
             {/* Odds Disclaimer */}
             {brand.responsibleGaming.footer?.oddsDisclaimer && (
               <div className="mt-3 pt-2 border-t border-muted">
-                <p className="text-xs text-muted-foreground text-center italic">
+                <p className="text-xs text-muted-foreground text-center italic max-w-2xl mx-auto">
                   {brand.responsibleGaming.footer.oddsDisclaimer}
                 </p>
               </div>

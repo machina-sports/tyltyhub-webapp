@@ -332,7 +332,7 @@ export function RelatedOdds({
             Odds atualizadas {formatDistanceToNow(new Date(), { addSuffix: true, locale: ptBR })}
           </p>
           {brand.responsibleGaming.footer?.oddsDisclaimer && (
-            <p className="text-xs text-center text-muted-foreground italic">
+            <p className="text-xs text-center text-muted-foreground italic max-w-2xl mx-auto">
               {brand.responsibleGaming.footer.oddsDisclaimer}
             </p>
           )}

@@ -228,7 +228,7 @@ export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: B
             {/* Odds Disclaimer */}
             {brand.responsibleGaming.footer?.oddsDisclaimer && (
               <div className="mt-4 pt-3 border-t border-gray-200">
-                <p className="text-xs text-gray-500 text-center italic">
+                <p className="text-xs text-gray-500 text-center italic max-w-2xl mx-auto">
                   {brand.responsibleGaming.footer.oddsDisclaimer}
                 </p>
               </div>

@@ -139,7 +139,7 @@ export function ResponsibleGamingFooter({
               
               {/* Odds Disclaimer */}
               {brand.responsibleGaming.footer?.oddsDisclaimer && (
-                <div className="text-xs text-muted-foreground italic mt-2">
+                <div className="text-xs text-muted-foreground italic mt-2 max-w-2xl">
                   {brand.responsibleGaming.footer.oddsDisclaimer}
                 </div>
               )}
