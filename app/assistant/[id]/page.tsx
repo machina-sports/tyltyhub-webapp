@@ -10,9 +10,9 @@ import {
   useMessage,
 } from "@assistant-ui/react";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Send, ExternalLink, ArrowDown } from "lucide-react";
+import { Send, ExternalLink, ArrowDown, Minimize2 } from "lucide-react";
 import Image from "next/image";
-import { useRouter, useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { createStreamingAdapterWithConfig } from "@/components/assistant-ui/streaming-adapter";
 import { getThreadHistory } from "@/functions/thread-register";
 import { useBrandTexts } from "@/hooks/use-brand-texts";
@@ -155,6 +155,10 @@ function AssistantChatContent({
   const [objectsVersion, setObjectsVersion] = useState(0);
   const { name } = useAssistantConfig();
 
+  const handleMinimize = () => {
+    router.back();
+  };
+
   const adapter = useMemo(() => {
     return createStreamingAdapterWithConfig({
       agentId: AGENT_CONFIG.agentId,
@@ -179,21 +183,6 @@ function AssistantChatContent({
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b bg-background">
           <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                // Store threadId in sessionStorage so modal can reopen with same thread
-                if (threadId) {
-                  sessionStorage.setItem('assistantThreadId', threadId);
-                  sessionStorage.setItem('assistantShouldOpen', 'true');
-                }
-                router.back();
-              }}
-              className="h-8 w-8 p-0"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
             <Image
               src="/sb-logo.png"
               alt="Sportingbet Logo"
@@ -203,6 +192,15 @@ function AssistantChatContent({
             />
             <h1 className="text-xl font-semibold">{name}</h1>
           </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleMinimize}
+            className="h-8 w-8 p-0"
+            title="Minimize"
+          >
+            <Minimize2 className="h-4 w-4" />
+          </Button>
         </div>
 
         {/* Chat Thread */}

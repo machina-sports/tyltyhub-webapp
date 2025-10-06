@@ -16,6 +16,7 @@ import { BrandColors } from "@/components/brand";
 import { DynamicCSS } from "@/components/brand/dynamic-css";
 import { SearchProvider } from "@/components/discover/search-context";
 import { AssistantModal } from "@/components/assistant-ui/assistant-modal";
+import { AssistantProvider } from "@/providers/assistant/provider";
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -143,26 +144,28 @@ export default function RootLayout({
           <BrandColors>
             <Providers>
               <MainProvider>
-                <SearchProvider>
-                  <DiscoveryProvider>
-                    <div className="flex h-[calc(100vh-92px-env(safe-area-inset-bottom))] md:h-screen flex-col md:flex-row">
-                      <Sidebar />
-                      <main className="flex-1 overflow-none md:ml-80">
-                        <Topbar />
-                        <div className="flex-1 pb-safe">
-                          {children}
-                          <ResponsibleGamingResponsive />
-                          <div className="h-32"></div>
-                        </div>
-                      </main>
-                    </div>
-                  </DiscoveryProvider>
-                </SearchProvider>
-                <AgeVerification />
-                <Footer />
-                <LGPDConsent />
-                <Toaster />
-                <AssistantModal />
+                <AssistantProvider>
+                  <SearchProvider>
+                    <DiscoveryProvider>
+                      <div className="flex h-[calc(100vh-92px-env(safe-area-inset-bottom))] md:h-screen flex-col md:flex-row">
+                        <Sidebar />
+                        <main className="flex-1 overflow-none md:ml-80">
+                          <Topbar />
+                          <div className="flex-1 pb-safe">
+                            {children}
+                            <ResponsibleGamingResponsive />
+                            <div className="h-32"></div>
+                          </div>
+                        </main>
+                      </div>
+                    </DiscoveryProvider>
+                  </SearchProvider>
+                  <AgeVerification />
+                  <Footer />
+                  <LGPDConsent />
+                  <Toaster />
+                  <AssistantModal />
+                </AssistantProvider>
               </MainProvider>
             </Providers>
           </BrandColors>

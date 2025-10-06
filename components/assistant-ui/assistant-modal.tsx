@@ -403,20 +403,23 @@ export function AssistantModal() {
     if (!threadRegistered.current && !threadId) {
       threadRegistered.current = true;
 
-      // Check if we should restore an existing thread from sessionStorage
-      const savedThreadId = sessionStorage.getItem('assistantThreadId');
-      const shouldOpen = sessionStorage.getItem('assistantShouldOpen');
-      
-      if (savedThreadId && shouldOpen === 'true') {
-        // Restore existing thread
-        sessionStorage.removeItem('assistantShouldOpen'); // Clear flag
-        
-        setThreadId(savedThreadId);
-        setIsOpen(true); // Open modal automatically
-        
-        // Load history for the restored thread
-        getThreadHistory(savedThreadId).then(({ error: historyError, messages }) => {
+      // Register new thread in backend (with initial welcome message)
+      registerThread({
+        agentId: AGENT_CONFIG.agentId,
+        userId: undefined,
+        metadata: {
+          source: "assistant-modal",
+          created_from: "sportingbet-cwc"
+        }
+      }).then(async ({ error, threadId: newThreadId }: { error: boolean; threadId: string | null }) => {
+        if (!error && newThreadId) {
+          setThreadId(newThreadId);
+
+          // Load history immediately after registration
+          const { error: historyError, messages } = await getThreadHistory(newThreadId);
+
           if (!historyError && messages && messages.length > 0) {
+            // Convert backend messages to assistant-ui format
             const formattedMessages = messages.map((msg: any) => ({
               role: msg.role as "user" | "assistant",
               content: [
@@ -426,52 +429,18 @@ export function AssistantModal() {
                 }
               ]
             }));
+
             setInitialMessages(formattedMessages);
           }
+
           setIsReady(true);
-        }).catch(() => {
+        } else {
           setIsReady(true);
-        });
-      } else {
-        // Register new thread in backend (with initial welcome message)
-        registerThread({
-          agentId: AGENT_CONFIG.agentId,
-          userId: undefined,
-          metadata: {
-            source: "assistant-modal",
-            created_from: "sportingbet-cwc"
-          }
-        }).then(async ({ error, threadId: newThreadId }: { error: boolean; threadId: string | null }) => {
-          if (!error && newThreadId) {
-            setThreadId(newThreadId);
-
-            // Load history immediately after registration
-            const { error: historyError, messages } = await getThreadHistory(newThreadId);
-
-            if (!historyError && messages && messages.length > 0) {
-              // Convert backend messages to assistant-ui format
-              const formattedMessages = messages.map((msg: any) => ({
-                role: msg.role as "user" | "assistant",
-                content: [
-                  {
-                    type: "text" as const,
-                    text: msg.content
-                  }
-                ]
-              }));
-
-              setInitialMessages(formattedMessages);
-            }
-
-            setIsReady(true);
-          } else {
-            setIsReady(true);
-          }
-        }).catch((err: any) => {
-          threadRegistered.current = false;
-          setIsReady(true);
-        });
-      }
+        }
+      }).catch((err: any) => {
+        threadRegistered.current = false;
+        setIsReady(true);
+      });
     }
   }, [threadId, shouldRender]);
 
