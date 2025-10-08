@@ -447,6 +447,18 @@
     border: 1px solid hsl(var(--brand-primary) / 0.3) !important;
   }
 
+  /* Bwin chat bubble text color - enforce black for better contrast */
+  [data-brand="bwin"] .chat-bubble-assistant,
+  [data-brand="bwin"] .chat-bubble-user {
+    color: black !important;
+  }
+  /* Ensure headings inside bwin chat bubbles are black as well */
+  [data-brand="bwin"] .chat-bubble-content h1,
+  [data-brand="bwin"] .chat-bubble-content h2,
+  [data-brand="bwin"] .chat-bubble-content h3 {
+    color: black !important;
+  }
+
   /* Sportingbet input improvements - remove backgrounds */
   [data-brand="sportingbet"] .chat-input-container {
     background-color: transparent !important;
@@ -752,6 +764,11 @@
     color: black !important;
   }
   
+  /* Bwin: use black text on primary backgrounds (e.g., chat user bubbles) */
+  [data-brand="bwin"] {
+    --primary-foreground: 0 0% 0% !important; /* black */
+  }
+
   /* Additional specificity for bwin registration button */
   [data-brand="bwin"] a.sidebar-cta-button {
     color: black !important;
@@ -765,6 +782,11 @@
   /* Bwin - Force exact primary yellow #FFCB00 for chat/conversar buttons */
   [data-brand="bwin"] .text-brand-primary {
     color: #FFCB00 !important;
+  }
+
+  /* Bwin: force black text wherever text-primary-foreground is used */
+  [data-brand="bwin"] .text-primary-foreground {
+    color: black !important;
   }
   
   [data-brand="bwin"] .bg-brand-primary\/10 {

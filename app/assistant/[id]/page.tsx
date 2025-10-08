@@ -240,7 +240,7 @@ function AssistantChatContent({
                   components={{
                     UserMessage: () => (
                       <div className="flex justify-end">
-                        <div className="bg-primary text-primary-foreground rounded-lg px-4 py-3 max-w-[80%]">
+                        <div className="bg-primary text-black rounded-lg px-4 py-3 max-w-[80%]">
                           <MessagePrimitive.Content />
                         </div>
                       </div>
