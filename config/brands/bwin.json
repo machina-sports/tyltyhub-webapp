@@ -1,7 +1,7 @@
 {
   "id": "bwin",
   "name": "bwin",
-  "displayName": "bwinBOT",
+  "displayName": "Bot And Win",
   "description": "la IA de bwin para LaLiga 2025/2026",
   "language": "es-ES",
   "locale": "es_ES",
@@ -42,7 +42,7 @@
     }
   },
   "content": {
-    "title": "bwinBOT: la IA de bwin para LaLiga 2025/2026",
+    "title": "Bot And Win: la IA de bwin para LaLiga 2025/2026",
     "description": "Apuesta junto con la Inteligencia Artificial de bwin. Pregunta a nuestro chat sobre las noticias y cuotas de LaLiga 2025/2026 y descubre cómo apostar mejor.",
     "ogImage": "https://bwinbot.com/og_image_4.png",
     "favicon": "/bwin-logo-icon.png",
@@ -64,6 +64,7 @@
         "¡Balón en juego! ¿En qué jugada puedo ayudarte?"
       ],
       "placeholder": "Pregúntame sobre LaLiga, Champions, Serie A, etc...",
+      "assistantPlaceholder": "Pregúntame...",
       "followUpPlaceholder": "¿Te gustó? ¿Quieres saber más? ¡Dímelo!",
       "followUpTranscription": "¿Cómo puedo apostar en el próximo partido del Real Madrid?",
       "preparing": "Preparando...",

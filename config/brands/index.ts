@@ -64,6 +64,7 @@ export interface BrandConfig {
     chat?: {
       titleOptions: string[];
       placeholder: string;
+      assistantPlaceholder?: string;
       followUpPlaceholder: string;
       followUpTranscription: string;
       preparing: string;

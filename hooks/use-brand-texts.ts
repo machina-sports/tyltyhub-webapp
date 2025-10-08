@@ -30,10 +30,10 @@ export function useBrandTexts() {
 
     // Assistant texts
     assistant: {
-      name: brand.id === 'sportingbet' ? 'SportingBOT' : 'Bot and Win',
+      name: brand.id === 'sportingbet' ? 'SportingBOT' : 'Bot And Win',
       welcomeMessage: brand.id === 'sportingbet'
         ? "Olá! Eu sou o SportingBOT, seu assistente de apostas esportivas. Posso te ajudar com informações sobre partidas, odds, estatísticas e muito mais. Como posso ajudar?"
-        : "Hello! I'm Bot and Win, your sports betting assistant. I can help you with match information, betting odds, statistics, and more. What would you like to know?"
+        : "¡Hola! Soy Bot And Win, tu asistente de apuestas deportivas. Puedo ayudarte con información sobre partidos, cuotas, estadísticas y mucho más. ¿En qué puedo ayudarte?"
     }
   };
 }

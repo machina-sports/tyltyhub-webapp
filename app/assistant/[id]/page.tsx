@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Send, ExternalLink, ArrowDown, Minimize2 } from "lucide-react";
 import Image from "next/image";
+import { BrandLogo } from "@/components/brand/brand-logo";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { createStreamingAdapterWithConfig } from "@/components/assistant-ui/streaming-adapter";
 import { getThreadHistory } from "@/functions/thread-register";
@@ -156,6 +157,7 @@ function AssistantChatContent({
   const objectsMapRef = useRef<Map<string, any[]>>(new Map());
   const [objectsVersion, setObjectsVersion] = useState(0);
   const { name } = useAssistantConfig();
+  const { chat } = useBrandTexts();
   const composerRef = useRef<HTMLTextAreaElement>(null);
   const messageSent = useRef(false);
 
@@ -215,13 +217,7 @@ function AssistantChatContent({
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b bg-background">
           <div className="flex items-center gap-3">
-            <Image
-              src="/sb-logo.png"
-              alt="Sportingbet Logo"
-              width={28}
-              height={28}
-              className="rounded"
-            />
+            <BrandLogo variant="icon" width={28} height={28} className="rounded" />
             <h1 className="text-xl font-semibold">{name}</h1>
           </div>
           <Button
@@ -284,12 +280,12 @@ function AssistantChatContent({
                 <ComposerPrimitive.Root className="flex gap-2 items-end">
                   <ComposerPrimitive.Input
                     ref={composerRef as any}
-                    placeholder="Send a message..."
+                    placeholder={chat.placeholder}
                     className="flex-1 px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none"
                     rows={1}
                   />
                   <ComposerPrimitive.Send asChild>
-                    <Button size="lg" className="h-12 px-6 bg-primary hover:bg-primary/90 text-primary-foreground">
+                  <Button size="lg" className="h-12 px-6 bg-brand-primary hover:brightness-95 text-black">
                       <Send className="h-5 w-5" />
                     </Button>
                   </ComposerPrimitive.Send>

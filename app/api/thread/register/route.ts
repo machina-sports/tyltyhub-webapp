@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getBrandConfig } from "@/config/brands";
 
 export async function POST(req: Request) {
   try {
@@ -18,6 +19,13 @@ export async function POST(req: Request) {
 
     const documentUrl = `${apiUrl}/document`;
 
+    // Resolve brand and welcome message
+    const brand = getBrandConfig(process.env.NEXT_PUBLIC_BRAND);
+    const assistantName = brand.id === 'sportingbet' ? 'SportingBOT' : 'Bot And Win';
+    const welcomeMessage = brand.id === 'sportingbet'
+      ? "Olá! Eu sou o SportingBOT, seu assistente de apostas esportivas. Posso te ajudar com informações sobre partidas, odds, estatísticas e muito mais. Como posso ajudar?"
+      : "¡Hola! Soy Bot And Win, tu asistente de apuestas deportivas. Puedo ayudarte con información sobre partidos, cuotas, estadísticas y mucho más. ¿En qué puedo ayudarte?";
+
     const requestBody = {
       name: "thread",
       metadata: {
@@ -30,12 +38,13 @@ export async function POST(req: Request) {
         messages: [
           {
             role: "assistant",
-            content: "Olá! Eu sou o SportingBOT, seu assistente de apostas esportivas. Posso te ajudar com informações sobre partidas, odds, estatísticas e muito mais. Como posso ajudar?",
+            content: welcomeMessage,
             timestamp: new Date().toISOString()
           }
         ],
         status: "active",
-        agent_id: agentId
+        agent_id: agentId,
+        assistant_name: assistantName
       }
     };
 

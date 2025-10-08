@@ -27,13 +27,17 @@ export function BrandLogo({
   const defaultWidth = variant === 'icon' ? 32 : 120;
   const defaultHeight = variant === 'icon' ? 32 : 40;
   
+  // Ensure bwin icon is fully rounded
+  const extraClass = brand.id === 'bwin' && variant === 'icon' ? 'rounded-full' : '';
+  const mergedClassName = [extraClass, className].filter(Boolean).join(' ');
+  
   return (
     <Image
       src={logoPath}
       alt={logoConfig.alt}
       width={width || defaultWidth}
       height={height || defaultHeight}
-      className={className}
+      className={mergedClassName}
       priority={priority}
     />
   );

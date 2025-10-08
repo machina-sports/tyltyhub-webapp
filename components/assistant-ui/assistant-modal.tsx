@@ -12,6 +12,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { X, MessageSquare, Send, ExternalLink, ArrowDown, Maximize2 } from "lucide-react";
 import Image from "next/image";
+import { BrandLogo } from "@/components/brand/brand-logo";
+import { useBrandConfig } from "@/contexts/brand-context";
 import { useRouter, usePathname } from "next/navigation";
 import { createStreamingAdapterWithConfig } from "./streaming-adapter";
 import { registerThread, getThreadHistory, saveMessageToThread } from "@/functions/thread-register";
@@ -184,6 +186,8 @@ function AssistantModalContent({
   threadId: string;
 }) {
   const router = useRouter();
+  const { chat } = useBrandTexts();
+  const assistantPlaceholder = (chat as any).assistantPlaceholder || chat.placeholder;
 
   const handleExpand = () => {
     router.push(`/assistant/${threadId}`);
@@ -195,7 +199,7 @@ function AssistantModalContent({
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-4 right-4 z-50 h-14 w-14 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 transition-all duration-200 flex items-center justify-center"
+          className="fixed bottom-4 right-4 z-50 h-14 w-14 rounded-full shadow-lg transition-all duration-200 flex items-center justify-center bg-brand-primary text-black hover:brightness-95"
           aria-label={`Open ${assistantName}`}
         >
           <MessageSquare className="h-6 w-6" />
@@ -208,13 +212,7 @@ function AssistantModalContent({
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b">
             <div className="flex items-center gap-2">
-              <Image
-                src="/sb-logo.png"
-                alt="Sportingbet Logo"
-                width={24}
-                height={24}
-                className="rounded"
-              />
+              <BrandLogo variant="icon" width={24} height={24} className="rounded" />
               <h2 className="text-lg font-semibold">{assistantName}</h2>
             </div>
             <div className="flex items-center gap-1">
@@ -286,14 +284,14 @@ function AssistantModalContent({
               <div className="border-t p-4">
                 <ComposerPrimitive.Root className="flex gap-2 items-end">
                   <ComposerPrimitive.Input
-                    placeholder="Send a message..."
+                    placeholder={assistantPlaceholder}
                     className="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                   />
-                  <ComposerPrimitive.Send asChild>
-                    <Button size="default" className="h-10 bg-primary hover:bg-primary/90 text-primary-foreground">
-                      <Send className="h-5 w-5" />
-                    </Button>
-                  </ComposerPrimitive.Send>
+                <ComposerPrimitive.Send asChild>
+                  <Button size="default" className="h-10 bg-brand-primary hover:brightness-95 text-black">
+                    <Send className="h-5 w-5" />
+                  </Button>
+                </ComposerPrimitive.Send>
                 </ComposerPrimitive.Root>
               </div>
             </ThreadPrimitive.Root>
