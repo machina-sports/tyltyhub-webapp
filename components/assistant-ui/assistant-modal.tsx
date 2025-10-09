@@ -19,6 +19,7 @@ import { createStreamingAdapterWithConfig } from "./streaming-adapter";
 import { registerThread, getThreadHistory, saveMessageToThread } from "@/functions/thread-register";
 import { useBrandTexts } from "@/hooks/use-brand-texts";
 import { useAssistant } from "@/providers/assistant/use-assistant";
+import { BettingRecommendationsWidget } from "@/components/betting-recommendations-widget";
 
 // Component to render object cards (events, matches, etc.)
 function ObjectCards({ objects }: { objects: any[] }) {
@@ -260,13 +261,37 @@ function AssistantModalContent({
                       // Look up objects for this specific message
                       const objectsData = objectsMapRef.current.get(textContent);
                       const objects = Array.isArray(objectsData) ? objectsData : [];
+                      const markets = Array.isArray(objects)
+                        ? objects.map((o: any) => {
+                            const oddsValue = Number(
+                              (o && (o.price ?? o.bet_odd ?? o.odds ?? o.odd))
+                            );
+                            return {
+                              market_type: o?.market_type || o?.marketType || o?.market || 'odds_information',
+                              odds: oddsValue,
+                              rationale: o?.rationale || o?.reason || o?.description || '',
+                              title: o?.title || o?.bet_title || o?.market_title || o?.name || '',
+                              runner: o?.runner || o?.runner_name || o?.selection || o?.option_name || o?.name,
+                              event_id: o?.event_id || (o && o["event-id"]) || o?.fixture_id || o?.eventId,
+                              market_id: o?.market_id || (o && o["market-id"]) || o?.marketId,
+                              option_id: o?.option_id || (o && o["option-id"]) || o?.optionId,
+                              deep_link: o?.deep_link || o?.deepLink
+                            } as any;
+                          })
+                          .filter((m: any) => m.title && typeof m.odds === 'number' && !Number.isNaN(m.odds))
+                        : [];
 
                       return (
                         <div className="flex justify-start">
                           <div className="bg-muted rounded-lg px-4 py-2 max-w-[80%]">
                             <MessagePrimitive.Content />
-                            {objects && objects.length > 0 && (
+                            {objects && objects.length > 0 && markets.length === 0 && (
                               <ObjectCards objects={objects} />
+                            )}
+                            {markets && markets.length > 0 && (
+                              <div className="mt-3">
+                                <BettingRecommendationsWidget markets={markets as any} />
+                              </div>
                             )}
                           </div>
                         </div>
