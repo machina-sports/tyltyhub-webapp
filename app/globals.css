@@ -1093,3 +1093,10 @@ a {
 [data-brand="sportingbet"] .home-input.resize-none {
   border-color: hsl(var(--brand-primary) / 0.3) !important;
 }
+
+.sportingbet-age-verification-cta {
+  background-color: hsl(var(--brand-primary)) !important;
+}
+.bwin-age-verification-cta {  
+  background-color: hsl(var(--brand-primary)) !important;
+}
