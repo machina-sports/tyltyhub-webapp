@@ -257,7 +257,7 @@ export function LGPDConsent() {
             <div className="flex flex-col gap-3">
               {!showSettings ? (
                 // Initial view buttons
-                <div className="flex flex-row gap-3">
+                <div className="flex flex-col gap-3 sm:flex-row">
                   <Button
                     onClick={handleRejectAll}
                     variant="ghost"
@@ -283,7 +283,7 @@ export function LGPDConsent() {
                 </div>
               ) : (
                 // Settings view buttons
-                <div className="flex flex-row gap-3">
+                <div className="flex flex-col gap-3 sm:flex-row">
                   <Button
                     onClick={() => setShowSettings(false)}
                     variant="ghost"
