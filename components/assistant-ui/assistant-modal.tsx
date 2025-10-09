@@ -211,7 +211,7 @@ function AssistantModalContent({
 
       {/* Modal Container */}
       {isOpen && (
-        <div className="fixed bottom-4 right-4 z-50 w-[400px] h-[600px] max-w-[calc(100vw-2rem)] max-h-[calc(100vh-2rem)] bg-background border rounded-lg shadow-2xl flex flex-col">
+        <div className="assistant-modal-container fixed bottom-4 right-4 z-50 w-[400px] h-[600px] max-w-[calc(100vw-2rem)] max-h-[calc(100vh-2rem)] bg-background border rounded-lg shadow-2xl flex flex-col">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b">
             <div className="flex items-center gap-2">
@@ -496,7 +496,7 @@ export function AssistantModal() {
 
         {/* Loading indicator when modal is opened before ready */}
         {isOpen && (
-          <div className="fixed bottom-4 right-4 z-50 w-[400px] h-[600px] max-w-[calc(100vw-2rem)] max-h-[calc(100vh-2rem)] bg-background border rounded-lg shadow-2xl flex items-center justify-center">
+          <div className="assistant-modal-container fixed bottom-4 right-4 z-50 w-[400px] h-[600px] max-w-[calc(100vw-2rem)] max-h-[calc(100vh-2rem)] bg-background border rounded-lg shadow-2xl flex items-center justify-center">
             <div className="text-muted-foreground">Loading chat...</div>
           </div>
         )}

@@ -520,6 +520,11 @@
     background-color: hsl(var(--brand-secondary)) !important;
     color: black !important;
   }
+
+  /* Sportingbet: ensure assistant modal has proper dark background */
+  [data-brand="sportingbet"] .assistant-modal-container {
+    background-color: hsl(220 100% 12%) !important;
+  }
   
   /* Sportingbet button colors */
   [data-brand="sportingbet"] .sidebar-cta-button {
