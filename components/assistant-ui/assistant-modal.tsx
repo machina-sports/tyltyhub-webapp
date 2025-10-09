@@ -187,6 +187,8 @@ function AssistantModalContent({
   threadId: string;
 }) {
   const router = useRouter();
+  const brand = useBrandConfig();
+  const isSportingbet = brand.id === "sportingbet";
   const { chat } = useBrandTexts();
   const assistantPlaceholder = (chat as any).assistantPlaceholder || chat.placeholder;
 
@@ -200,7 +202,7 @@ function AssistantModalContent({
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="hidden md:flex fixed bottom-28 right-4 z-50 h-14 w-14 rounded-full shadow-lg transition-all duration-200 items-center justify-center bg-brand-primary text-black hover:brightness-95 md:bottom-4"
+          className={`assistant-launcher hidden md:flex fixed bottom-28 right-4 z-50 h-14 w-14 rounded-full shadow-lg transition-all duration-200 items-center justify-center ${isSportingbet ? "bg-brand-secondary" : "bg-brand-primary"} text-black hover:brightness-95 md:bottom-4`}
           aria-label={`Open ${assistantName}`}
         >
           <MessageSquare className="h-6 w-6" />
@@ -413,6 +415,8 @@ export function AssistantModal() {
   const [initialMessages, setInitialMessages] = useState<any[]>([]);
   const [isReady, setIsReady] = useState(false);
   const [lastLoadedThreadId, setLastLoadedThreadId] = useState<string>("");
+  const brand = useBrandConfig();
+  const isSportingbet = brand.id === "sportingbet";
 
   // Get assistant configuration
   const { name, welcomeMessage } = useAssistantConfig();
@@ -483,7 +487,7 @@ export function AssistantModal() {
         {!isOpen && (
           <button
             onClick={() => setIsOpen(true)}
-            className="hidden md:flex bottom-28 right-4 z-50 h-14 w-14 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 transition-all duration-200 items-center justify-center md:bottom-4 md:right-4"
+            className={`assistant-launcher hidden md:flex bottom-28 right-4 z-50 h-14 w-14 rounded-full ${isSportingbet ? "bg-brand-secondary" : "bg-brand-primary"} text-black shadow-lg hover:brightness-95 transition-all duration-200 items-center justify-center md:bottom-4 md:right-4`}
             aria-label="Open Chat Assistant"
           >
             <MessageSquare className="h-6 w-6" />

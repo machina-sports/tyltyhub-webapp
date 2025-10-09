@@ -514,6 +514,12 @@
   [data-brand="sportingbet"] .text-brand-primary {
     color: hsl(var(--brand-primary)) !important;
   }
+
+  /* Sportingbet: ensure assistant launcher uses light blue (secondary) */
+  [data-brand="sportingbet"] .assistant-launcher {
+    background-color: hsl(var(--brand-secondary)) !important;
+    color: black !important;
+  }
   
   /* Sportingbet button colors */
   [data-brand="sportingbet"] .sidebar-cta-button {
