@@ -9,6 +9,8 @@ import AnimatedShinyText from '@/components/magicui/animated-shiny-text'
 import { BrandLogo } from '@/components/brand/brand-logo'
 import { useBrandConfig } from '@/contexts/brand-context'
 
+const brandId = process.env.NEXT_PUBLIC_BRAND || 'bwin';
+
 export function AgeVerification() {
   const [isVisible, setIsVisible] = useState(false)
   const [showUnderage, setShowUnderage] = useState(false)
@@ -113,18 +115,7 @@ export function AgeVerification() {
                   </Button>
                   <Button
                     onClick={handleAccept}
-                    className="flex-1 h-14 text-base font-semibold rounded-xl"
-                    style={{
-                      backgroundColor: brand.ageVerification?.acceptButtonColor || 'hsl(var(--primary))',
-                      color: 'white',
-                    }}
-                    onMouseEnter={(e) => {
-                      const baseColor = brand.ageVerification?.acceptButtonColor || 'hsl(var(--primary))';
-                      e.currentTarget.style.backgroundColor = brand.ageVerification?.acceptButtonColor ? '#333333' : 'hsl(var(--primary) / 0.9)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = brand.ageVerification?.acceptButtonColor || 'hsl(var(--primary))';
-                    }}
+                    className={`flex-1 h-14 text-base font-semibold rounded-xl ${brandId === 'sportingbet' ? 'sportingbet-age-verification-cta' : 'bwin-age-verification-cta'}`}
                   >
                     {brand.ageVerification?.acceptText || 'Sí, tengo 18+'}
                   </Button>

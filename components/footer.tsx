@@ -167,15 +167,6 @@ export function Footer() {
             <span className="text-sm font-medium mt-[-2px]">{route.label}</span>
           </Button>
         ))}
-        
-        {/* Odds Disclaimer for Mobile */}
-        {brand.responsibleGaming.footer?.oddsDisclaimer && (
-          <div className="absolute bottom-1 left-0 right-0 px-2">
-            <p className="text-xs text-muted-foreground text-center italic opacity-70 max-w-2xl mx-auto">
-              {brand.responsibleGaming.footer.oddsDisclaimer}
-            </p>
-          </div>
-        )}
       </div>
     );
   }
