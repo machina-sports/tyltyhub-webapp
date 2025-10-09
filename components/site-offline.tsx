@@ -1,76 +1,88 @@
 'use client';
 
-import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { trackEvent } from '@/lib/analytics';
+import Image from 'next/image';
+import { ResponsibleGamingResponsive } from './responsible-gaming-responsive';
+import { useBrandTexts } from '@/hooks/use-brand-texts';
+import { useBrandConfig } from '@/contexts/brand-context';
 
 export default function SiteOffline() {
-  const handleSportingbetClick = () => {
+  const { offline } = useBrandTexts();
+  const brand = useBrandConfig();
+  
+  const handleBwinClick = () => {
     // Track the button click with Google Analytics
     trackEvent(
-      'site_offline_sportingbet_click',
+      'site_offline_bwin_click',
       'site_offline_page',
-      'User clicked Sportingbet button from offline page'
+      'User clicked Bwin button from offline page'
     );
     
-    // Open Sportingbet in a new tab
-    window.open('https://www.sportingbet.bet.br/pt-br/sports', '_blank');
+    // Open Bwin in a new tab
+    window.open('https://sports.bwin.es/es/sports', '_blank');
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 fixed inset-0 z-50" style={{ backgroundColor: '#013DC4' }}>
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 fixed inset-0 z-50 bg-neutral-10">
       <div className="max-w-2xl w-full text-center">
-        {/* Sportingbot Logo - Outside the card */}
-        <div className="flex justify-center mb-8">
+        {/* Brand Logo */}
+        <div className="flex justify-center mb-12">
           <Image
-            src="/outline.png"
-            alt="Sportingbot Logo"
-            width={400}
-            height={400}
-            className="max-w-full h-auto"
+            src={brand.branding.logo.full}
+            alt={brand.displayName}
+            width={200}
+            height={80}
             priority
+            className="h-20 w-auto"
           />
         </div>
 
         {/* Card with messages */}
-        <div className="bg-white rounded-xl shadow-2xl px-6 md:px-6 py-8 md:py-12 space-y-6">
+        <div className="bg-white rounded-2xl px-8 md:px-12 py-12 md:py-16 space-y-8">
           {/* Main Heading */}
-          <h1 className="text-3xl md:text-5xl font-black text-gray-900 mb-4">
-            Voltamos logo!
+          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+            {offline.title}
           </h1>
 
           {/* Secondary Heading */}
-          <h2 className="text-xl md:text-2xl font-medium text-gray-700 mb-6">
-            É hora da minha pré-temporada, parceiro.
+          <h2 className="text-xl md:text-2xl font-medium text-gray-700 mb-8">
+            {offline.subtitle}
           </h2>
 
           {/* Description Text */}
-          <div className="text-base md:text-lg text-gray-600 mb-8 leading-relaxed">
+          <div className="text-lg md:text-xl text-gray-600 mb-12 leading-relaxed">
             <p>
-              Logo tô de volta com novidades.
-              <br />
-              Enquanto espera, se liga nas promoções da Sportingbet.{' '}
+              {offline.description.split('\n').map((line, index) => (
+                <span key={index}>
+                  {line}
+                  {index < offline.description.split('\n').length - 1 && <br />}
+                </span>
+              ))}{' '}
               <a
-                href="https://www.sportingbet.bet.br/pt-br/promo/offers"
+                href={offline.ctaLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 hover:underline font-medium"
+                className="text-brand-primary hover:text-brand-secondary underline font-semibold transition-colors duration-200"
               >
-                Confira aqui
+                {offline.ctaLinkText}
               </a>
             </p>
           </div>
 
-          {/* Sportingbet Button */}
+          {/* Brand Button without shadow */}
           <Button
-            variant="sportingbet"
-            size="xl"
-            onClick={handleSportingbetClick}
-            className="font-semibold text-lg px-12 py-4 rounded-lg shadow-lg hover:shadow-xl hover:brightness-90 transition-all duration-200"
+            onClick={handleBwinClick}
+            className="font-bold text-lg px-16 py-6 rounded-xl bg-brand-primary hover:bg-brand-secondary text-neutral-0 transition-all duration-300 transform hover:scale-105"
           >
-            Ir para Sportingbet
+            {offline.ctaText}
           </Button>
         </div>
+      </div>
+      
+      {/* Responsible Gaming Footer */}
+      <div className="pb-20 md:pb-0">
+        <ResponsibleGamingResponsive />
       </div>
     </div>
   );

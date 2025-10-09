@@ -9,6 +9,19 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      keyframes: {
+        shimmer: {
+          '0%': { backgroundPosition: 'calc(-1 * var(--shimmer-width)) 0' },
+          // Move the shimmer across in ~2s of a 10s cycle (leaves ~8s pause)
+          '20%': { backgroundPosition: 'calc(100% + var(--shimmer-width)) 0' },
+          // Hold position for the remainder to create the pause
+          '100%': { backgroundPosition: 'calc(100% + var(--shimmer-width)) 0' },
+        },
+      },
+      animation: {
+        // Total 10s: ~2s movement (faster) + ~8s pause
+        shimmer: 'shimmer 10s linear infinite',
+      },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':
@@ -20,8 +33,8 @@ const config: Config = {
         sm: 'calc(var(--radius) - 4px)',
       },
       fontFamily: {
-        'sportingbet': ['Sportingbet Sans', 'system-ui', 'sans-serif'],
-        'frutiger': ['Frutiger LT', 'Arial', 'Helvetica Neue', 'sans-serif'],
+        'roboto': ['Roboto', 'system-ui', 'sans-serif'],
+        'sans': ['Roboto', 'system-ui', 'sans-serif'],
       },
       spacing: {
         'safe-top': 'env(safe-area-inset-top)',
@@ -70,59 +83,34 @@ const config: Config = {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))',
         },
-        sportingbet: {
-          'bright-deep-blue': '#003DC4',
-          'bright-dark-blue': '#061F3F',
-          'bright-extra-light-blue': '#D3ECFF',
-          'bright-light-blue': '#45CAFF',
-          'bright-blue': '#0A5EEA',
-          'bright-red': '#F13131',
-          'white': '#FFFFFF',
-          'light-grey': '#EEEFF1',
+        bwin: {
+          'brand-primary': 'hsl(var(--bwin-brand-primary))',
+          'brand-secondary': 'hsl(var(--bwin-brand-secondary))',
+          'neutral-100': '#FFFFFF',
+          'neutral-90': '#E6E6E6',
+          'neutral-80': '#B3B3B3',
+          'neutral-70': '#8C8C8C',
+          'neutral-60': '#666666',
+          'neutral-50': '#4A4A4A',
+          'neutral-40': '#3E3E3E',
+          'neutral-30': '#2F2F2F',
+          'neutral-20': '#1E1E1E',
+          'neutral-10': '#121212',
+          'neutral-0': '#000000',
+          'success': 'hsl(var(--bwin-success))',
+          'warning': 'hsl(var(--bwin-warning))',
+          'danger': 'hsl(var(--bwin-danger))',
+          'info': 'hsl(var(--bwin-info))',
         }
       },
-      keyframes: {
-        'accordion-down': {
-          from: {
-            height: '0',
-          },
-          to: {
-            height: 'var(--radix-accordion-content-height)',
-          },
-        },
-        'accordion-up': {
-          from: {
-            height: 'var(--radix-accordion-content-height)',
-          },
-          to: {
-            height: '0',
-          },
-        },
-        'spin-slow': {
-          from: {
-            transform: 'rotate(0deg)',
-          },
-          to: {
-            transform: 'rotate(360deg)',
-          },
-        },
-        shimmer: {
-          "0%, 90%, 100%": {
-            "background-position": "calc(-100% - var(--shimmer-width)) 0",
-          },
-          "30%, 60%": {
-            "background-position": "calc(100% + var(--shimmer-width)) 0",
-          },
-        },
-      },
-      animation: {
-        'accordion-down': 'accordion-down 0.2s ease-out',
-        'accordion-up': 'accordion-up 0.2s ease-out',
-        'spin-slow': 'spin-slow 8s linear infinite',
-        shimmer: "shimmer 8s infinite",
-      },
+      boxShadow: {
+        'bwin-xs': '0 1px 2px rgba(0,0,0,0.40)',
+        'bwin-sm': '0 2px 4px rgba(0,0,0,0.45)',
+        'bwin-md': '0 4px 8px rgba(0,0,0,0.60)',
+      }
     },
   },
-  plugins: [require('tailwindcss-animate'), require('@tailwindcss/typography')],
+  plugins: [require("tailwindcss-animate")],
 };
+
 export default config;

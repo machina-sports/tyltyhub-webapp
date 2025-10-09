@@ -1,15 +1,16 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useEffect, useRef, useState, useCallback, useMemo } from "react"
 
 import {
-  Send,
   Reply,
+  Send,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 
 import { useRouter } from "next/navigation"
 
@@ -24,95 +25,127 @@ import { useTheme } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
 
 import { trackNewMessage, trackSuggestedQuestionClick } from "@/lib/analytics"
+import { ResponsibleGamingResponsive } from "@/components/responsible-gaming-responsive"
+import { useBrandTexts } from "@/hooks/use-brand-texts"
+import { Loading } from "@/components/ui/loading"
+import { useAssistant } from "@/providers/assistant/use-assistant"
+import { saveMessageToThread } from "@/functions/thread-register"
 
-const getImageUrl = (article: any): string => {
-  if (!article) return '';
-
-  const imageAddress = process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS;
-
-  if (article?.image_path) {
-    return `${imageAddress}/${article?.image_path}`;
-  }
-
-  const title = article.title || 'Article';
-  return `https://placehold.co/1200x600/2A9D8F/FFFFFF?text=${encodeURIComponent(title)}`;
-};
-
-const getEventType = (article: any): string => {
-  if (!article || !article.metadata) return 'Notícias';
-
-  // For soccer games, return "Futebol"
-  if (article.metadata.event_type === 'soccer-game') {
-    return 'Futebol';
-  }
-
-  // For competition names, make them more readable
-  if (article.metadata.competition) {
-    switch (article.metadata.competition) {
-      case 'sr:competition:17':
-        return 'Premier League';
-      case 'sr:competition:384':
-        return 'Libertadores';
-      case 'sr:competition:390':
-        return 'Brasileiro Série B';
-      default:
-        return article.metadata.competition;
-    }
-  }
-
-  return 'Notícias';
-};
+import { Loader2 } from "lucide-react"
+// import ScrollingRow from "./scrolling-row" // HIDDEN
 
 const ContainerHome = ({ query }: { query: string }) => {
-  const { isDarkMode } = useTheme() 
+  const { isDarkMode } = useTheme()
+  const { chat } = useBrandTexts()
+  const { threadId, openWithThread } = useAssistant()
 
   const router = useRouter()
 
   const [input, setInput] = useState(query)
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null) // null means no selection, -1 means input is focused
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
 
   const state = useGlobalState((state: any) => state.trending)
 
   const trendingArticle = state.trendingResults.data?.[0]?.value
+  const topQuestions = useMemo(() => 
+    trendingArticle?.["trending-questions"] || [], 
+    [trendingArticle]
+  )
 
-  const topQuestions = trendingArticle?.["trending-questions"] || []
+  // Only show loading if status is loading AND we don't have questions yet
+  const isLoadingTrending = state.trendingResults.status === "loading" && topQuestions.length === 0
 
   const user_id = "123"
 
-  // Random title options
-  const titleOptions = [
-    "Como posso entrar em campo para te ajudar hoje?",
-    "Vamos jogar? Me diz onde você precisa de reforço!",
-    "Bola rolando! Em que jogada posso te ajudar?",
-  ]
-
-  // Get random title after client-side mount to avoid hydration errors
-  const [randomTitle, setRandomTitle] = useState("Qual vai ser a sua aposta?")
-  
   const inputRef = useRef<HTMLInputElement>(null)
   const questionRefs = useRef<(HTMLDivElement | null)[]>([])
 
+  // Random title with hidden approach
+  const [title, setTitle] = useState("¿Cuál va a ser tu apuesta?")
+  const [isTitleVisible, setIsTitleVisible] = useState(false)
+  const [isInputVisible, setIsInputVisible] = useState(false)
+
   useEffect(() => {
-    setRandomTitle(titleOptions[Math.floor(Math.random() * titleOptions.length)])
+    // Define o título random primeiro
+    if (chat.titleOptions?.length > 0) {
+      const randomTitle = chat.titleOptions[Math.floor(Math.random() * chat.titleOptions.length)]
+      setTitle(randomTitle)
+    }
+
+    // Sequência de animações
+    const titleTimer = setTimeout(() => {
+      setIsTitleVisible(true)
+    }, 100)
+
+    const inputTimer = setTimeout(() => {
+      setIsInputVisible(true)
+      // Dispatch event when input animation completes
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent('homeAnimationsComplete'))
+      }, 300) // Wait for input animation to complete
+    }, 400) // 300ms após o título aparecer
+
+    return () => {
+      clearTimeout(titleTimer)
+      clearTimeout(inputTimer)
+    }
+  }, [chat.titleOptions])
+
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!input.trim()) return
+
+    setIsSubmitting(true)
+    trackNewMessage(input)
+    
+    try {
+      // Navigate to assistant page with the message as a query param
+      // The assistant page will handle sending it and getting the response
+      if (threadId) {
+        router.push(`/assistant/${threadId}?q=${encodeURIComponent(input.trim())}`)
+      } else {
+        // Fallback: if no threadId yet, just open the modal
+        openWithThread("")
+      }
+    } catch (error) {
+      console.error("Error submitting message:", error)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }, [input, router, threadId, openWithThread])
+
+  // Detect mobile screen size
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  // Auto-scroll to selected item
+  // Focus input on mount to ensure it's visible on iOS
   useEffect(() => {
-    if (selectedIndex !== null && selectedIndex >= 0 && questionRefs.current[selectedIndex]) {
-      questionRefs.current[selectedIndex]?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest'
-      })
-    } else if (selectedIndex === -1 && inputRef.current) {
+    if (inputRef.current) {
+      // Small delay to ensure input is rendered
+      const timer = setTimeout(() => {
+        inputRef.current?.focus()
+      }, 500)
+
+      return () => clearTimeout(timer)
+    }
+  }, [])
+
+  // Auto-scroll to selected item removed to prevent unwanted scrolling behavior
+  useEffect(() => {
+    if (selectedIndex === -1 && inputRef.current) {
       setTimeout(() => {
-        inputRef.current?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center'
-        })
-        setTimeout(() => {
-          inputRef.current?.focus()
-        }, 200)
-      }, 100)
+        // Only focus, no scrolling
+        inputRef.current?.focus()
+      }, 200)
     }
   }, [selectedIndex])
 
@@ -138,7 +171,7 @@ const ContainerHome = ({ query }: { query: string }) => {
       } else if (e.key === 'Enter') {
         e.preventDefault()
         if (selectedIndex !== null && selectedIndex >= 0) {
-          handleSampleQuery(topQuestions[selectedIndex])
+          handleSampleQuery(topQuestions[selectedIndex], selectedIndex)
         } else if (input.trim()) {
           handleSubmit(e as any)
         }
@@ -150,204 +183,245 @@ const ContainerHome = ({ query }: { query: string }) => {
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [selectedIndex, input, topQuestions])
+  }, [selectedIndex, input, topQuestions, handleSubmit])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!input.trim()) return
-
-    trackNewMessage(input)
-    router.push(`/chat/new?q=${encodeURIComponent(input)}&user_id=${user_id}`)
-  }
-
-  const handleSampleQuery = (text: string) => {
+  const handleSampleQuery = (text: string, index?: number) => {
     trackSuggestedQuestionClick(text)
     setInput(text)
-    setSelectedIndex(-1)
-    // Don't submit immediately, just put in input field
-    
-    // Scroll to input on mobile after selecting a question
+
+    // Set selected index to show visual feedback when clicking
+    if (index !== undefined) {
+      setSelectedIndex(index)
+      // After a brief moment, move to input
+      setTimeout(() => {
+        setSelectedIndex(-1)
+      }, 150)
+    } else {
+      setSelectedIndex(-1)
+    }
+
+    // Focus input after selecting a question (scroll removed)
     setTimeout(() => {
       if (inputRef.current) {
-        inputRef.current.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'center' 
-        })
         inputRef.current.focus()
       }
-    }, 100)
+    }, 200)
   }
-
-  const getInputPlaceholder = () => {
-    return "Converse com o SportingBOT..."
-  }
-
-  // Prevent scroll on mobile only for home page
-  useEffect(() => {
-    const isMobile = window.innerWidth <= 768
-    if (isMobile) {
-      // Store original body styles
-      const originalBodyStyle = {
-        overflow: document.body.style.overflow,
-        position: document.body.style.position,
-        height: document.body.style.height,
-        width: document.body.style.width
-      }
-
-      // Apply mobile-specific styles
-      document.body.style.overflow = 'hidden'
-      document.body.style.position = 'fixed'
-      document.body.style.height = '100vh'
-      document.body.style.width = '100%'
-
-      // Cleanup function
-      return () => {
-        document.body.style.overflow = originalBodyStyle.overflow
-        document.body.style.position = originalBodyStyle.position
-        document.body.style.height = originalBodyStyle.height
-        document.body.style.width = originalBodyStyle.width
-      }
-    }
-  }, [])
 
   return (
-    <div 
-      className={cn(
-        "flex flex-col h-[100vh] md:min-h-screen",
-        isDarkMode ? "bg-[#061F3F]" : "bg-background"
-      )}
-      style={{
-        overscrollBehavior: 'none',
-        WebkitOverflowScrolling: 'touch'
-      }}
-    >
-      <div 
-        className="flex-1 overflow-y-auto overflow-x-hidden hide-scrollbar momentum-scroll pb-32 pt-4 md:pt-4 md:pb-24"
-        style={{
-          overscrollBehavior: 'contain',
-          WebkitOverflowScrolling: 'touch'
-        }}
-      >
-        <div className="flex flex-col items-center p-4">
-          {/* Main heading for SEO - visually hidden but accessible */}
-          <h1 className="sr-only">A Inteligência Artificial da Sportingbet</h1>
-          <img className="w-full mb-0 max-w-[980px] mt-12 md:mt-0" src="/SBOT_FINAL.jpg" alt="Sportingbot: a IA da Sportingbet" />
-          <h2 className={cn(
-            "text-center mb-4 sm:mb-6 flex items-center gap-3 justify-center pt-10 pb-6 sm:pt-14 sm:pb-10 text-2xl sm:text-4xl font-bold",
-            isDarkMode && "text-[#ffffff]"
-          )}>
-            {randomTitle}
+    <div className="flex flex-col" style={{
+    }}>
+      <div className="flex-1 flex flex-col items-center py-6">
+        <div className="w-full max-w-4xl mx-auto text-center space-y-8 animate-fade-in">
+          <h2 className={`text-bwin-neutral-100 text-center text-3xl sm:text-5xl font-bold leading-tight px-4 py-2 md:pt-12 md:pb-12 max-w-2xl mx-auto transition-all duration-300 ${isTitleVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+            {title}
           </h2>
-          <div className="w-full max-w-xl mx-auto">
-            <form onSubmit={handleSubmit} className="relative">
-              <div className="absolute left-3 top-[22px] -translate-y-1/2">
-                <SportingbetDot size={20} className={cn(
-                  isDarkMode && "text-[#45CAFF]"
-                )} />
-              </div>
+        </div>
+
+        {/* Input sticky para mobile - na posição correta */}
+        {isMobile && (
+          <div className="w-full sticky top-[80px] pt-2 z-50 input-sticky-container">
+            <div className={`transition-all duration-300 ${isInputVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+              <form onSubmit={handleSubmit} className="relative p-4">
+              <Textarea
+                ref={inputRef as any}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault()
+                    handleSubmit(e as any)
+                  }
+                }}
+                placeholder={chat.placeholder}
+                className="w-full py-4 pl-6 pr-14 rounded-xl text-base text-white placeholder:text-neutral-80 focus:border-brand-primary focus:ring-0 transition-colors duration-200 home-input resize-none border-2"
+                disabled={isSubmitting}
+                rows={chat.mobileInputRows || 2}
+                style={{
+                  backgroundColor: 'hsl(var(--bg-secondary))',
+                  borderColor: 'hsl(var(--border-primary))',
+                  WebkitAppearance: 'none',
+                  WebkitTapHighlightColor: 'transparent',
+                  fontSize: '16px', // Prevents zoom on iOS
+                  minHeight: chat.mobileInputRows === 1 ? '50px' : '60px',
+                  maxHeight: chat.mobileInputRows === 1 ? '50px' : '82px'
+                }}
+              />
+                <Button
+                  type="submit"
+                  size="icon"
+                  disabled={!input.trim() || isSubmitting}
+                  className="absolute right-8 h-8 w-8 rounded-xl text-white transition-colors duration-200 disabled:opacity-50 home-send-button send-button cursor-pointer top-1/2 -translate-y-1/2"
+                  style={{
+                    backgroundColor: 'hsl(var(--border))'
+                  }}
+                >
+                  {isSubmitting ? (
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                  ) : (
+                    <Send className="h-5 w-5" />
+                  )}
+                </Button>
+              </form>
+            </div>
+          </div>
+        )}
+
+        <div className={`w-full max-w-xl mx-auto transition-all duration-300 ${isInputVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'} ${isMobile ? 'hidden' : ''}`}>
+          <form onSubmit={handleSubmit} className="relative">
+            {isMobile ? (
+              <Textarea
+                ref={inputRef as any}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault()
+                    handleSubmit(e as any)
+                  }
+                }}
+                placeholder={chat.placeholder}
+                className="w-full py-4 pl-6 pr-14 rounded-xl text-base text-white placeholder:text-neutral-60 focus:border-brand-primary focus:ring-0 transition-colors duration-200 home-input resize-none border-2"
+                disabled={isSubmitting}
+                rows={chat.mobileInputRows || 2}
+                style={{
+                  backgroundColor: 'hsl(var(--bg-secondary))',
+                  borderColor: 'hsl(var(--border-primary))',
+                  WebkitAppearance: 'none',
+                  WebkitTapHighlightColor: 'transparent',
+                  fontSize: '16px', // Prevents zoom on iOS
+                  minHeight: chat.mobileInputRows === 1 ? '50px' : '60px',
+                  maxHeight: chat.mobileInputRows === 1 ? '50px' : '82px'
+                }}
+              />
+            ) : (
               <Input
                 ref={inputRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder={getInputPlaceholder()}
-                className={cn(
-                  "w-full h-12 pl-12 pr-12 rounded-lg",
-                  selectedIndex === null && "ring-2 ring-primary/50",
-                  isDarkMode ? "bg-[#051A35] text-[#D3ECFF] placeholder:text-[#D3ECFF]/50 border border-[#45CAFF]/30 focus:border-[#45CAFF]/50 transition-colors" : "bg-secondary border-0"
-                )}
+                placeholder={chat.placeholder}
+                className="w-full py-8 mb-5 pl-6 pr-14 rounded-2xl text-base text-white placeholder:text-neutral-60 focus:border-brand-primary focus:ring-0 transition-colors duration-200 home-input"
+                disabled={isSubmitting}
+                style={{
+                  backgroundColor: 'hsl(var(--bg-secondary))',
+                  borderColor: 'hsl(var(--border-primary))',
+                  WebkitAppearance: 'none',
+                  WebkitTapHighlightColor: 'transparent',
+                  fontSize: '16px' // Prevents zoom on iOS
+                }}
               />
-              <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                <Button 
-                  type="submit" 
-                  size="icon" 
-                  variant="ghost" 
-                  className={cn(
-                    "h-8 w-8",
-                    isDarkMode && "text-[#45CAFF] hover:text-[#D3ECFF] hover:bg-[#45CAFF]/10"
-                  )}
-                >
-                  <Send className="h-4 w-4" />
-                </Button>
-              </div>
-            </form>
-            
-            {/* Navigation instruction - appears on both desktop and mobile */}
-            {topQuestions.length > 0 && (
-              <div className="mt-2 text-center hidden md:block">
-                <p className={cn(
-                  "text-xs",
-                  isDarkMode ? "text-[#D3ECFF]/40" : "text-muted-foreground/60"
-                )}>
-                  Use ↑↓ para navegar • Enter para confirmar • Esc para o campo de busca
-                </p>
-              </div>
             )}
-          </div>
-          
-          {/* Questions List */}
-          {topQuestions.length > 0 && (
-            <div className="mt-6 w-full max-w-xl mx-auto">
-              <div className="space-y-2">
-                {topQuestions.map((question: string, index: number) => (
-                  <motion.div
-                    key={index}
-                    ref={(el) => { questionRefs.current[index] = el }}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    className="flex items-center gap-4"
-                  >
-                    {/* Icon indicator - outside hover area */}
-                    <div className="flex-shrink-0 w-6 flex justify-center">
-                      {selectedIndex === index ? (
-                        <SportingbetDot 
-                          size={20} 
-                          className={cn(
-                            "transition-all duration-200",
-                            isDarkMode ? "text-[#45CAFF]" : "text-primary"
-                          )} 
-                        />
-                      ) : (
-                        <Reply 
-                          className={cn(
-                            "h-5 w-5 transition-colors duration-200",
-                            isDarkMode ? "text-[#D3ECFF]/40" : "text-muted-foreground/40"
-                          )} 
-                        />
-                      )}
-                    </div>
-                    
-                    {/* Text with hover - clickable area */}
-                    <div
-                      className={cn(
-                        "flex-1 p-3 rounded-lg cursor-pointer transition-all duration-200",
-                        selectedIndex === index
-                          ? isDarkMode 
-                            ? "bg-[#45CAFF]/10 border-2 border-[#45CAFF]/50 shadow-sm"
-                            : "bg-primary/10 border-2 border-primary/50 shadow-sm"
-                          : isDarkMode
-                            ? "hover:bg-[#45CAFF]/5 border-2 border-transparent"
-                            : "hover:bg-secondary/40 border-2 border-transparent"
-                      )}
-                      onClick={() => handleSampleQuery(question)}
-                    >
-                      <span className={cn(
-                        "text-base transition-colors duration-200",
-                        selectedIndex === index 
-                          ? isDarkMode ? "text-[#D3ECFF]" : "text-foreground"
-                          : isDarkMode ? "text-[#D3ECFF]/80" : "text-muted-foreground"
-                      )}>
-                        {question}
-                      </span>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          )}
+            <Button
+              type="submit"
+              size="icon"
+              disabled={!input.trim() || isSubmitting}
+              className={cn(
+                "absolute right-4 h-8 w-8 rounded-xl text-white transition-colors duration-200 disabled:opacity-50 home-send-button send-button cursor-pointer",
+                isMobile
+                  ? (chat.mobileInputRows === 1 ? "top-3" : "top-1/2 -translate-y-1/2")
+                  : "top-1/2 -translate-y-1/2"
+              )}
+              style={{
+                backgroundColor: 'hsl(var(--border))'
+              }}
+            >
+              {isSubmitting ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+                <Send className="h-5 w-5" />
+              )}
+            </Button>
+          </form>
         </div>
+
+        {/* Sample questions with Spanish translations - HIDDEN */}
+        {/* <div className="w-full max-w-4xl mx-auto mt-4">
+          <ScrollingRow
+            questions={[
+              "¿Qué probabilidades tiene el Atlético de Madrid de ganar La Liga?",
+              "¿Cómo puedo apostar en el próximo partido del Real Madrid?",
+              "¿Cuáles son las mejores cuotas para el Barcelona en La Liga?",
+              "¿Qué equipo de Madrid tiene más opciones en La Liga?",
+              "¿Cuándo juega el Atlético de Madrid su próximo partido en La Liga?",
+              "¿Cuáles son las cuotas para ganar La Liga?"
+            ]}
+            onSampleQuery={handleSampleQuery}
+          />
+        </div> */}
+
+        {/* Questions List */}
+        {isLoadingTrending ? (
+          <div className="mt-6 w-full max-w-4xl mx-auto px-4">
+            <div className="flex items-center justify-center min-h-[200px]">
+              <Loading width={100} height={100} showLabel={true} label="Carregando perguntas..." />
+            </div>
+          </div>
+        ) : topQuestions.length > 0 ? (
+          <div className="mt-2 w-full max-w-4xl mx-auto px-4">
+            <div className="space-y-2 flex flex-col md:items-center -ml-p[-20px] md:-ml-12">
+              {topQuestions.map((question: string, index: number) => (
+                <motion.div
+                  key={index}
+                  ref={(el) => { questionRefs.current[index] = el }}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  className="flex items-center gap-2 w-fit"
+                >
+                  {/* Icon indicator - always show with opacity */}
+                  <div className="flex-shrink-0 w-6 flex justify-center">
+                    <SportingbetDot
+                      size={20}
+                      className={cn(
+                        "transition-all duration-200",
+                        selectedIndex === index
+                          ? isDarkMode ? "text-brand-primary" : "text-[#FDBA12]"
+                          : "opacity-10"
+                      )}
+                    />
+                  </div>
+
+                  {/* Text with hover - clickable area */}
+                  <div
+                    className={cn(
+                      "w-fit max-w-full p-2 rounded-lg cursor-pointer transition-all duration-200 border-2",
+                      selectedIndex === index
+                        ? isDarkMode
+                          ? "bg-brand-primary/15 border-brand-primary/60 shadow-md scale-[1.02]"
+                          : "bg-primary/15 border-primary/60 shadow-md scale-[1.02]"
+                        : isDarkMode
+                          ? "hover:bg-brand-primary/8 hover:border-brand-primary/30 border-transparent hover:scale-[1.01]"
+                          : "hover:bg-secondary/50 hover:border-secondary/60 border-transparent hover:scale-[1.01]"
+                    )}
+                    onClick={() => handleSampleQuery(question, index)}
+                    onMouseEnter={() => setSelectedIndex(index)}
+                    onMouseLeave={() => setSelectedIndex(null)}
+                  >
+                    <span className={cn(
+                      "text-base transition-colors duration-200",
+                      selectedIndex === index
+                        ? isDarkMode ? "text-white" : "text-foreground"
+                        : isDarkMode ? "#FFF8E1" : "text-muted-foreground"
+                    )}>
+                      {question}
+                    </span>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        ) : (state.trendingResults.status === "idle" || state.trendingResults.status === "failed") ? (
+          <div className="mt-2 w-full max-w-4xl mx-auto px-4">
+            <div className="flex items-center justify-center px-4 min-h-[100px]">
+              <p className="text-muted-foreground text-center text-sm">
+                {chat.noSuggestionsFound}
+              </p>
+            </div>
+          </div>
+        ) : null}
       </div>
     </div>
+
   )
 }
 

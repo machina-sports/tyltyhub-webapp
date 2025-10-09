@@ -5,19 +5,14 @@ import { cn } from '@/lib/utils';
 import { useTheme } from '@/components/theme-provider';
 
 export interface DotProps extends React.SVGAttributes<SVGSVGElement> {
-  size?: number | string; // Represents the desired visual width of the unskewed base rectangle part
+  size?: number | string; // Diameter of the circle
   className?: string;
   color?: string;
 }
 
 /**
  * The Sportingbet DOT component
- * Using SVG path and skewX transform. Radius is calculated relative to the final size.
- *
- * Following brand guidelines interpretation:
- * - Base rectangle: 900px × 700px (aspect ratio maintained)
- * - Tilt: 12 degrees (interpreted as skewX(-12) applied to the shape - top leans left)
- * - Corner radius: 65px (scaled proportionally to the final size)
+ * Simple circle like the dot in the bwin logo's "i"
  */
 export function Dot({
   size = 24,
@@ -26,66 +21,33 @@ export function Dot({
   ...props
 }: DotProps) {
   const { isDarkMode } = useTheme();
-  // Default color now depends on theme
-  const defaultColor = isDarkMode ? '#45CAFF' : '#0A5EEA';
+  // Use brand primary color instead of hardcoded yellow
+  const defaultColor = 'hsl(var(--brand-primary))';
   const dotColor = color || defaultColor;
   
   const sizeNum = typeof size === 'string' ? parseInt(size, 10) : size;
-  const originalWidth = 900;
-  const originalHeight = 700;
-  const aspectRatio = originalWidth / originalHeight;
-  const w = sizeNum;
-  const h = w / aspectRatio;
-
-  // Scale the corner radii based on the FINAL size
-  const rx = (65 / originalWidth) * w;
-  const ry = (65 / originalHeight) * h;
-
-  // Construct the path data using the SCALED radii
-  const pathData = `
-    M ${rx},0
-    L ${w - rx},0
-    A ${rx},${ry},0,0,1,${w},${ry}
-    L ${w},${h - ry}
-    A ${rx},${ry},0,0,1,${w - rx},${h}
-    L ${rx},${h}
-    A ${rx},${ry},0,0,1,0,${h - ry}
-    L 0,${ry}
-    A ${rx},${ry},0,0,1,${rx},0
-    Z
-  `;
-
-  // Calculate the absolute horizontal offset caused by skewing
-  const tanAngle = Math.tan(12 * Math.PI / 180);
-  const skewOffset = h * tanAngle;
-  const renderWidth = w + skewOffset;
+  const radius = sizeNum / 2;
 
   return (
     <svg
-      width={renderWidth}
-      height={h}
-      // Adjust viewBox to capture the entire skewed shape.
-      // With skewX(-12), the shape shifts left by `skewOffset` at the bottom.
-      viewBox={`-${skewOffset} 0 ${renderWidth} ${h}`}
+      width={sizeNum}
+      height={sizeNum}
+      viewBox={`0 0 ${sizeNum} ${sizeNum}`}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={cn("inline-block align-middle", className)}
-      overflow="visible"
       {...props}
     >
-      {/* Path uses scaled radius, then skew is applied */}
-      <path d={pathData} fill={dotColor} transform={`skewX(-12)`} />
+      <circle cx={radius} cy={radius} r={radius} fill={dotColor} />
     </svg>
   );
 }
 
 // Export variants with theme awareness
 export function SportingbetDot(props: Omit<DotProps, 'color'>) {
-  const { isDarkMode } = useTheme();
-  return <Dot color={isDarkMode ? "#45CAFF" : "#0A5EEA"} {...props} />;
+  return <Dot color="hsl(var(--brand-primary))" {...props} />;
 }
 
 export function SportingbetDarkDot(props: Omit<DotProps, 'color'>) {
-  const { isDarkMode } = useTheme();
-  return <Dot color={isDarkMode ? "#D3ECFF" : "#061F3F"} {...props} />;
+  return <Dot color="hsl(var(--brand-secondary))" {...props} />;
 } 

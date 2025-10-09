@@ -1,37 +1,56 @@
-"use client"
+"use client";
 
-import { cn } from '@/lib/utils'
-import { ChatAvatar } from './avatar'
-import { useTheme } from '@/components/theme-provider'
+import { ReactNode } from "react";
+import { cn } from "@/lib/utils";
+import { Avatar } from "./avatar";
+import { useBrandColors } from "@/hooks/use-brand-colors";
+import { useBrand } from "@/contexts/brand-context";
 
 interface ChatBubbleProps {
-  role: 'user' | 'assistant'
-  children: React.ReactNode
+  role: "user" | "assistant";
+  children: ReactNode;
+  className?: string;
 }
 
-export function ChatBubble({ role, children }: ChatBubbleProps) {
-  const { isDarkMode } = useTheme();
+export function ChatBubble({ role, children, className }: ChatBubbleProps) {
+  const { brand } = useBrand();
+  const isUser = role === "user";
+  const userLabel = brand.id === 'sportingbet' ? 'Eu' : 'Tú';
 
   return (
     <div className={cn(
-      "flex items-start gap-3 px-4 w-full",
-      role === 'user' && "flex-row-reverse"
+      "flex w-full gap-3 mb-4",
+      isUser ? "justify-end" : "justify-start",
+      className
     )}>
-      <ChatAvatar role={role} />
-      <div className={cn(
-        "relative flex flex-col w-full md:max-w-[70%] px-4 py-3 rounded-2xl overflow-x-hidden break-words",
-        role === 'assistant' 
-          ? isDarkMode 
-            ? "bg-[#061F3F] text-[#D3ECFF] rounded-tl-none border border-[#45CAFF]/30" 
-            : "bg-secondary text-foreground rounded-tl-none"
-          : isDarkMode
-            ? "bg-[#45CAFF]/10 text-[#D3ECFF] rounded-tr-none ml-auto border border-[#45CAFF]/30"
-            : "bg-blue-50 text-foreground rounded-tr-none ml-auto"
-      )}>
-        <div className="w-full overflow-hidden break-words">
-          {children}
+      {!isUser && (
+        <div className="flex-shrink-0 mt-1">
+          <Avatar />
         </div>
+      )}
+      
+      <div 
+        className={cn(
+          "max-w-[520px] rounded-2xl px-5 py-4 text-sm leading-relaxed",
+          "break-words",
+          isUser 
+            ? "text-white ml-auto chat-bubble-user" 
+            : "text-white chat-bubble-assistant"
+        )}
+      >
+        {children}
       </div>
+      
+      {isUser && (
+        <div className="flex-shrink-0 mt-1">
+          <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{
+            backgroundColor: 'hsl(var(--neutral-30))',
+            color: 'hsl(var(--neutral-90))'
+          }}>
+            <span className="text-xs font-medium">{userLabel}</span>
+          </div>
+        </div>
+      )}
     </div>
-  )
+  );
 }

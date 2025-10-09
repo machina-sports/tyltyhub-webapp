@@ -1,36 +1,33 @@
 "use client";
-import React from "react";
-import {
-  useEffect,
-  useState,
-  useRef,
-  useMemo,
-  useCallback,
-  Suspense,
-} from "react";
-import { Badge } from "@/components/ui/badge";
+import { ArticleSharing } from "@/components/article/article-sharing";
+import { ArticleSkeleton } from "@/components/article/article-skeleton";
+import { ArticleContextProvider } from "@/components/article/article-context";
+import { ArticleVoting } from "@/components/article/article-voting";
+import { RelatedArticles } from "@/components/article/related-articles";
+import { RelatedOdds } from "@/components/article/related-odds";
 import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import Image from "next/image";
-import { ArticleVoting } from "@/components/article/article-voting";
-import { ArticleSharing } from "@/components/article/article-sharing";
-import { RelatedArticles } from "@/components/article/related-articles";
-import { RelatedOdds } from "@/components/article/related-odds";
-import { ArticleSkeleton } from "@/components/article/article-skeleton";
+import React, {
+    useEffect,
+    useMemo,
+    useRef,
+    useState
+} from "react";
 // import FollowUpQuestionForm from "@/components/follow-up-question";
-import ReactMarkdown from "react-markdown";
-import { useGlobalState } from "@/store/useState";
-import { useAppDispatch } from "@/store/dispatch";
-import {
-  doFetchArticle,
-  doFetchRelatedArticles,
-} from "@/providers/article/actions";
-import { Clock, Calendar, User } from "lucide-react";
-import dynamic from "next/dynamic";
-import { useTheme } from "@/components/theme-provider";
-import { cn } from "@/lib/utils";
 import { WidgetCarousel } from "@/components/carousel/container";
+import { ResponsibleGamingResponsive } from "@/components/responsible-gaming-responsive";
+import { useTheme } from "@/components/theme-provider";
+import { useBrand } from "@/contexts/brand-context";
+import { cn } from "@/lib/utils";
+import {
+    doFetchArticle,
+    doFetchRelatedArticles,
+} from "@/providers/article/actions";
+import { useAppDispatch } from "@/store/dispatch";
+import { useGlobalState } from "@/store/useState";
+import { Calendar, Clock, User } from "lucide-react";
 
 // // Dynamically import the WidgetEmbed component to improve initial load time
 // const WidgetEmbed = dynamic(
@@ -50,10 +47,10 @@ const unescapeMarkdown = (text: string | undefined | null): string => {
 const getImageUrl = (article: any): string => {
   if (!article) return "";
 
-  const imageAddress = process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS;
+  const imageAddress = "" // process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS;
 
   if (article?.value?.image_path) {
-    return `${imageAddress}/${article.value.image_path}`;
+    return `${article.value.image_path}`;
   }
 
   const title = article.value?.title || "Article";
@@ -123,6 +120,7 @@ interface ArticleContentProps {
 
 export default function ArticleContent({ articleParam }: ArticleContentProps) {
   const { isDarkMode } = useTheme();
+  const { brand } = useBrand();
   const dispatch = useAppDispatch();
   const articles = useGlobalState((state: any) => state.article);
   const article = articles.currentArticle;
@@ -175,7 +173,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
       imageUrl: getImageUrl(article),
       eventType: getEventType(article),
       readTime: getReadTime(article),
-      title: article.value?.title || "Sem título",
+      title: article.value?.title || "Sin título",
       subtitle: article.value?.subtitle || "",
       section_1_title: article.value?.["section_1_title"] || "",
       section_1_content: article.value?.["section_1_content"] || "",
@@ -210,14 +208,15 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
   if (!article || !articleData) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <h2 className="text-2xl font-bold">Artigo não encontrado</h2>
+        <h2 className="text-2xl font-bold">Artículo no encontrado</h2>
       </div>
     );
   }
 
   const mainImagePrefix = `${process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS}/article-image-id-${articleData?.["_id"]}`
 
-  const mainImageUrl = `${mainImagePrefix}-${articleData?.value?.["main_image_name"]}.png`
+  // const mainImageUrl = `${mainImagePrefix}-${articleData?.value?.["main_image_name"]}.png`
+  const mainImageUrl = getImageUrl(articleData)
 
   const hasTextImage = articleData?.metadata?.["content-group"] == "TEAM_ARTICLE"
 
@@ -261,31 +260,32 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
     )
   }
 
+  const shareUrl = `https://sportingbot.com/discover/${articleData.slug || articleData.articleId}`
+  
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 pt-20 md:pt-6 pb-32 sm:pb-36 space-y-6 sm:space-y-8">
-      {/* Main heading for SEO - visually hidden but accessible */}
-      <h1 className="sr-only">A Inteligência Artificial da Sportingbet</h1>
-
+    <ArticleContextProvider
+      articleId={articleData.articleId}
+      title={articleData.title}
+      url={shareUrl}
+      shareImageUrl={mainImageUrl}
+    >
+      
+      <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 pt-6 space-y-6 sm:space-y-8">
       <RenderImageComponent imageUrl={mainImageUrl} alt={articleData.title} />
-
       <div className="space-y-6">
-        {/* <Badge variant="secondary">{articleData.eventType}</Badge> */}
-
         <h2 className={cn(
           "text-2xl sm:text-4xl font-bold",
           isDarkMode ? "text-[#fff]" : ""
         )}>
           {articleData.title}
         </h2>
-        {/* Header Meta & Sharing */}
         <div className="flex flex-row items-center justify-between gap-3 sm:gap-6 mb-6">
-          {/* Meta information */}
           <div className="flex flex-col justify-center flex-1">
             {articleData.subtitle && (
               <p
                 className={cn(
                   "text-base sm:text-lg",
-                  isDarkMode ? "text-[#D3ECFF]/80" : "text-muted-foreground"
+                  isDarkMode && (brand.id === 'bwin' ? "text-[#FFF8E1]/80" : "text-foreground/80")
                 )}
               >
                 {articleData.subtitle}
@@ -295,7 +295,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
             <div
               className={cn(
                 "flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:text-sm mt-6",
-                isDarkMode ? "text-[#D3ECFF]/60" : "text-muted-foreground"
+                isDarkMode && (brand.id === 'bwin' ? "text-[#FFF8E1]/60" : "text-foreground/60")
               )}
             >
               {/* Date */}
@@ -303,7 +303,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
                 <Calendar
                   className={cn(
                     "h-3 w-3 sm:h-4 sm:w-4",
-                    isDarkMode && "text-[#45CAFF]"
+                    isDarkMode && (brand.id === 'bwin' ? "text-[#FFCB00]" : "text-primary")
                   )}
                 />
                 {articleData.createdDate
@@ -319,7 +319,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
                 <Clock
                   className={cn(
                     "h-3 w-3 sm:h-4 sm:w-4",
-                    isDarkMode && "text-[#45CAFF]"
+                    isDarkMode && (brand.id === 'bwin' ? "text-[#FFCB00]" : "text-primary")
                   )}
                 />
                 {articleData.readTime}
@@ -331,16 +331,16 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
                 <User
                   className={cn(
                     "h-3 w-3 sm:h-4 sm:w-4",
-                    isDarkMode && "text-[#45CAFF]"
+                    isDarkMode && (brand.id === 'bwin' ? "text-[#FFCB00]" : "text-primary")
                   )}
                 />
-                SportingBOT
+{brand.displayName}
               </span>
             </div>
           </div>
 
-          {/* Sharing – sits right side on desktop, below meta on mobile */}
-          <div className="flex-shrink-0">
+          {/* Sharing – sits right side on desktop, escondido no mobile (está no header) */}
+          <div className="flex-shrink-0 hidden md:block">
             <ArticleSharing
               articleId={articleData.articleId}
               title={articleData.title}
@@ -353,12 +353,12 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
 
       <div className={cn(
         "prose prose-neutral max-w-none",
-        isDarkMode ? "prose-invert text-[#D3ECFF]" : ""
+        isDarkMode && (brand.id === 'bwin' ? "prose-invert text-[#FFF8E1]" : "prose-invert text-foreground")
       )}>
         <div className="prose-container">
           <h2 className={cn(
             "text-lg font-bold mt-8 mb-8",
-            isDarkMode ? "text-[#D3ECFF]" : ""
+            isDarkMode && (brand.id === 'bwin' ? "text-[#FFF8E1]" : "text-foreground")
           )}></h2>
           {articleData.widgetEmbed && (
             <div className={cn("mt-0", isDarkMode && "dark")}>
@@ -371,19 +371,19 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
               <>
                 <p className={cn(
                   "text-lg mb-1",
-                  isDarkMode ? "text-[#D3ECFF]" : ""
+                  isDarkMode && (brand.id === 'bwin' ? "text-[#FFF8E1]" : "text-foreground")
                 )}>
                   {articleData?.["eventDetails"]?.match}
                 </p>
                 <p className={cn(
                   "text-lg mb-1",
-                  isDarkMode ? "text-[#D3ECFF]" : ""
+                  isDarkMode && (brand.id === 'bwin' ? "text-[#FFF8E1]" : "text-foreground")
                 )}>
                   {articleData?.["eventDetails"]?.when}
                 </p>
                 <p className={cn(
                   "text-lg mb-1",
-                  isDarkMode ? "text-[#D3ECFF]" : ""
+                  isDarkMode && (brand.id === 'bwin' ? "text-[#FFF8E1]" : "text-foreground")
                 )}>
                   {articleData?.["eventDetails"]?.venue}
                 </p>
@@ -403,7 +403,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           </h2>
           <p className={cn(
             "text-lg mt-8",
-            isDarkMode ? "text-[#D3ECFF]" : ""
+            isDarkMode && (brand.id === 'bwin' ? "text-[#FFF8E1]" : "text-foreground")
           )}>
             {articleData.section_1_content}
           </p>
@@ -421,7 +421,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           </h2>
           <p className={cn(
             "text-lg mt-8",
-            isDarkMode ? "text-[#D3ECFF]" : ""
+            isDarkMode && (brand.id === 'bwin' ? "text-[#FFF8E1]" : "text-foreground")
           )}>
             {articleData.section_2_content}
           </p>
@@ -439,7 +439,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           </h2>
           <p className={cn(
             "text-lg mt-8",
-            isDarkMode ? "text-[#D3ECFF]" : ""
+            isDarkMode && (brand.id === 'bwin' ? "text-[#FFF8E1]" : "text-foreground")
           )}>
             {articleData.section_3_content}
           </p>
@@ -457,7 +457,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           </h2>
           <p className={cn(
             "text-lg mt-8",
-            isDarkMode ? "text-[#D3ECFF]" : ""
+            isDarkMode && (brand.id === 'bwin' ? "text-[#FFF8E1]" : "text-foreground")
           )}>
             {articleData.section_4_content}
           </p>
@@ -475,7 +475,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           </h2>
           <p className={cn(
             "text-lg mt-8",
-            isDarkMode ? "text-[#D3ECFF]" : ""
+            isDarkMode && (brand.id === 'bwin' ? "text-[#FFF8E1]" : "text-foreground")
           )}>
             {articleData.section_5_content}
           </p>
@@ -483,17 +483,18 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
         </div>
       </div>
 
-      <Separator className={cn(isDarkMode ? "bg-[#45CAFF]/30" : "")} />
+      <Separator className={cn(isDarkMode && (brand.id === 'bwin' ? "bg-[#FFCB00]/30" : "bg-primary/30"))} />
 
       <ArticleVoting articleId={articleData.articleId} />
 
-      <Separator className={cn(isDarkMode ? "bg-[#45CAFF]/30" : "")} />
+      <div className="h-4" />
+
+      {/* <Separator className={cn(isDarkMode ? "bg-[#FFCB00]/30" : "")} /> */}
 
       <RelatedOdds currentArticleId={articleData.articleId} />
 
       <RelatedArticles currentArticleId={articleData.articleId} />
-
-      {/* <FollowUpQuestionForm /> */}
-    </div>
+      </div>
+    </ArticleContextProvider>
   );
 }

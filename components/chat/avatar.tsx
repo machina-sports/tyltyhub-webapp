@@ -1,25 +1,30 @@
-"use client"
+"use client";
 
-import { User, Bot } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn } from "@/lib/utils";
+import Image from "next/image";
+import { useBrandConfig } from "@/contexts/brand-context";
 
-interface ChatAvatarProps {
-  role: 'user' | 'assistant'
+interface AvatarProps {
+  className?: string;
 }
 
-export function ChatAvatar({ role }: ChatAvatarProps) {
+export function Avatar({ className }: AvatarProps) {
+  const brand = useBrandConfig();
+  
+  const iconSrc = brand.id === 'sportingbet' ? '/sb-new.png' : brand.branding.logo.icon;
+  
   return (
     <div className={cn(
-      "flex items-center justify-center w-10 h-10 rounded-full",
-      role === 'assistant'
-        ? "bg-primary/10 text-primary"
-        : "bg-blue-500/10 text-blue-500"
+      "w-12 h-12 rounded-full flex items-center justify-center overflow-hidden",
+      className
     )}>
-      {role === 'assistant' ? (
-        <img src="/sb-new.png" alt="SB Logo" className="object-contain" />
-      ) : (
-        <User className="w-5 h-5" />
-      )}
+      <Image
+        src={iconSrc}
+        alt={brand.displayName}
+        width={36}
+        height={36}
+        className="object-contain rounded-full"
+      />
     </div>
-  )
+  );
 }

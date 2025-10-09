@@ -29,15 +29,15 @@ export async function generateMetadata({ params }: { params: { articleId: string
     
     if (article?.value) {
       let imageUrl = '';
-      const imageAddress = process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS;
+      const imageAddress = "" // process.env.NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS;
       const mainImageName = article.value?.["main_image_name"];
       const articleIdForImage = article._id || article.id; // Assuming _id or id is used for image path
 
       if (imageAddress && mainImageName && articleIdForImage) {
         imageUrl = `${imageAddress}/article-image-id-${articleIdForImage}-${mainImageName}.png`;
-      } else if (imageAddress && article.value?.image_path) {
+      } else if (article.value?.image_path) {
         // Fallback to image_path if main_image_name is not available
-        imageUrl = `${imageAddress}/${article.value.image_path}`;
+        imageUrl = `${article.value.image_path}`;
       }
 
       const ogImages = imageUrl ? [{ url: imageUrl }] : [];

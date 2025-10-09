@@ -1,35 +1,59 @@
 "use client"
 
 import * as React from "react"
-import { ThemeProvider as NextThemesProvider } from "next-themes"
-import { type ThemeProviderProps as NextThemeProviderProps } from "next-themes/dist/types"
-import { useTheme as useNextTheme } from "next-themes"
+import { createContext, useContext, useEffect, useState } from "react"
 
-export interface ThemeProviderProps extends NextThemeProviderProps {
+type Theme = "dark"
+
+type ThemeProviderProps = {
   children: React.ReactNode
+  defaultTheme?: Theme
+  storageKey?: string
 }
 
-export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
-  return <NextThemesProvider {...props}>{children}</NextThemesProvider>
+type ThemeProviderState = {
+  theme: Theme
+  isDarkMode: boolean
 }
 
-// Add a hook to get and set the current theme
-export function useTheme() {
-  const { theme, setTheme } = useNextTheme()
+const initialState: ThemeProviderState = {
+  theme: "dark",
+  isDarkMode: true,
+}
 
-  // Function to toggle dark mode
-  const toggleDarkMode = React.useCallback(() => {
-    if (theme === 'dark') {
-      setTheme('light')
-    } else {
-      setTheme('dark')
-    }
-  }, [theme, setTheme])
+const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
 
-  return {
-    theme,
-    setTheme,
-    toggleDarkMode,
-    isDarkMode: theme === 'dark'
+export function ThemeProvider({
+  children,
+  defaultTheme = "dark",
+  storageKey = "vite-ui-theme",
+  ...props
+}: ThemeProviderProps) {
+  const [theme] = useState<Theme>("dark")
+
+  useEffect(() => {
+    const root = window.document.documentElement
+    root.classList.remove("light", "dark")
+    root.classList.add("dark")
+  }, [])
+
+  const value = {
+    theme: "dark" as Theme,
+    isDarkMode: true,
   }
+
+  return (
+    <ThemeProviderContext.Provider {...props} value={value}>
+      {children}
+    </ThemeProviderContext.Provider>
+  )
+}
+
+export const useTheme = () => {
+  const context = useContext(ThemeProviderContext)
+
+  if (context === undefined)
+    throw new Error("useTheme must be used within a ThemeProvider")
+
+  return context
 }

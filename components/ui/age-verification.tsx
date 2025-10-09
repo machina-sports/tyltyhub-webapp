@@ -5,18 +5,24 @@ import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { Button } from './button'
 import { Card, CardContent } from './card'
-import { useTheme } from '@/components/theme-provider'
 import AnimatedShinyText from '@/components/magicui/animated-shiny-text'
+import { BrandLogo } from '@/components/brand/brand-logo'
+import { useBrandConfig } from '@/contexts/brand-context'
+
+const brandId = process.env.NEXT_PUBLIC_BRAND || 'bwin';
 
 export function AgeVerification() {
   const [isVisible, setIsVisible] = useState(false)
   const [showUnderage, setShowUnderage] = useState(false)
-  const { isDarkMode } = useTheme()
+  const brand = useBrandConfig()
   
   useEffect(() => {
     const hasVerification = localStorage.getItem('age-verification')
     if (!hasVerification) {
       setIsVisible(true)
+      // Dispatch event when age verification becomes visible
+      console.log('Age Verification: Dispatching visible=true event');
+      window.dispatchEvent(new CustomEvent('ageVerificationChange', { detail: { visible: true } }))
     }
   }, [])
 
@@ -25,7 +31,9 @@ export function AgeVerification() {
     setIsVisible(false)
     
     // Dispatch custom event to notify other components
+    console.log('Age Verification: Dispatching visible=false event');
     window.dispatchEvent(new CustomEvent('ageVerificationComplete'))
+    window.dispatchEvent(new CustomEvent('ageVerificationChange', { detail: { visible: false } }))
   }
 
   const handleReject = () => {
@@ -37,85 +45,115 @@ export function AgeVerification() {
   return (
     <>
       {/* Backdrop with blur */}
-      <div className="fixed inset-0 z-[100] bg-gray-900/80 backdrop-blur-md" />
+      <div 
+        className="fixed inset-0 z-[100] backdrop-blur-md" 
+        style={{
+          backgroundColor: `rgba(0, 0, 0, ${brand.ageVerification?.backdropOpacity || '0.9'})`
+        }}
+      />
       
       {/* Modal Content */}
       <div className="fixed inset-0 z-[101] flex items-center justify-center p-4">
-        <Card className="mx-auto max-w-md w-full shadow-2xl relative overflow-hidden border-0">
+        <Card 
+          className="mx-auto max-w-md w-full shadow-2xl relative overflow-hidden bg-white"
+          style={{
+            border: brand.ageVerification?.modalBorder || '0'
+          }}
+        >
           {!showUnderage ? (
-            <div className="bg-white">
+            <div>
               {/* Logo/Brand Header */}
-              <div className="bg-[#013DC4] text-white py-4 px-6">
-                <div className="h-[80px] min-h-[80px] flex flex-col items-center justify-center py-4">
-                  <div className="flex items-center justify-center pl-3 ml-[-10px]">
-                    <Image
-                      src="/outline.png"
-                      alt="Sportingbot"
-                      width={250}
-                      height={120}
-                      priority
-                      className="ml-[-4px]"
-                    />
+              <div 
+                className="text-white py-8 px-8"
+                style={{
+                  backgroundColor: brand.ageVerification?.headerBackgroundColor || 'hsl(var(--brand-primary))'
+                }}
+              >
+                <div className="flex flex-col items-center justify-center space-y-4">
+                  <BrandLogo
+                    variant="full"
+                    width={140}
+                    height={56}
+                    priority
+                    className="h-14 w-auto"
+                  />
+                  <div className="text-sm text-white font-medium">
+                    {brand.content.subtitle}
                   </div>
-                  <AnimatedShinyText className="text-xs text-white/50 pt-3">A Inteligência Artificial da Sportingbet</AnimatedShinyText>
                 </div>
               </div>
               
               {/* Content */}
-              <div className="p-8 text-center bg-gray-50">
-                {/* Message */}
+              <div className="p-8 text-center bg-white">
                 <div className="mb-8">
-                  <h2 className="text-2xl font-bold text-gray-700 leading-tight">
-                    Você tem 18 anos ou mais?
+                  <h2 className="text-2xl font-bold text-gray-800 leading-tight mb-2">
+                    {brand.ageVerification?.title || '¿Tienes 18 años o más?'}
                   </h2>
+                  <p className="text-gray-600 text-sm">
+                    {brand.ageVerification?.description || 'Para acceder a este contenido debes ser mayor de edad'}
+                  </p>
                 </div>
                 
-                {/* Buttons */}
+                {/* Buttons without shadows */}
                 <div className="flex gap-4">
                   <Button
                     onClick={handleReject}
-                    variant="outline"
-                    className="flex-1 h-14 text-lg font-semibold border border-gray-400 text-gray-700 bg-white hover:bg-gray-100 rounded-lg transition-colors"
+                    className="flex-1 h-14 text-base font-semibold rounded-xl"
+                    style={{
+                      backgroundColor: 'white',
+                      color: '#374151',
+                      border: '2px solid #D1D5DB',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#F9FAFB';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'white';
+                    }}
                   >
-                    Não tenho.
+                    {brand.ageVerification?.rejectText || 'No'}
                   </Button>
                   <Button
                     onClick={handleAccept}
-                    className="flex-1 h-14 text-lg font-semibold border border-[#0066CC] bg-[#0066CC] hover:bg-[#0052A3] text-white rounded-lg transition-colors"
+                    className={`flex-1 h-14 text-base font-semibold rounded-xl ${brandId === 'sportingbet' ? 'sportingbet-age-verification-cta' : 'bwin-age-verification-cta'}`}
                   >
-                    Sim, tenho.
+                    {brand.ageVerification?.acceptText || 'Sí, tengo 18+'}
                   </Button>
                 </div>
               </div>
-              
             </div>
           ) : (
-            <div className="bg-white">
+            <div>
               {/* Logo/Brand Header */}
-              <div className="bg-[#013DC4] text-white py-4 px-6">
-                <div className="h-[80px] min-h-[80px] flex flex-col items-center justify-center">
-                  <div className="flex items-center justify-center pl-3 ml-[-10px]">
-                    <Image
-                      src="/outline.png"
-                      alt="Sportingbot"
-                      width={250}
-                      height={120}
-                      priority
-                      className="ml-[-4px]"
-                    />
+              <div 
+                className="text-white py-8 px-8"
+                style={{
+                  backgroundColor: brand.ageVerification?.headerBackgroundColor || 'hsl(var(--brand-primary))'
+                }}
+              >
+                <div className="flex flex-col items-center justify-center space-y-4">
+                  <BrandLogo
+                    variant="full"
+                    width={140}
+                    height={56}
+                    priority
+                    className="h-14 w-auto"
+                  />
+                  <div className="text-sm text-white font-medium">
+                    {brand.content.subtitle}
                   </div>
-                  <AnimatedShinyText className="text-xs text-white/50 pt-3">A Inteligência Artificial da Sportingbet</AnimatedShinyText>
-                  <div className="text-[10px] text-white/40 pt-1 font-sportingbet">Versão Beta</div>
                 </div>
               </div>
               
               {/* Content */}
-              <div className="p-8 text-center bg-gray-50">
-                {/* Underage Message */}
+              <div className="p-8 text-center bg-white">
                 <div className="mb-8">
-                  <h2 className="text-2xl font-bold text-gray-700 leading-tight">
-                    Desculpe, você ainda não<br />tem idade suficiente para<br />acessar este conteúdo.
+                  <h2 className="text-2xl font-bold text-gray-800 leading-tight mb-4">
+                    Lo siento, aún no tienes<br />la edad suficiente para<br />acceder a este contenido.
                   </h2>
+                  <p className="text-gray-600 text-sm">
+                    Este sitio es solo para mayores de 18 años
+                  </p>
                 </div>
               </div>
             </div>

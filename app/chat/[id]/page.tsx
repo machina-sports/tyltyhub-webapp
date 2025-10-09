@@ -1,38 +1,39 @@
 import ContainerView from "@/components/chat/container-view"
 import ShareProvider from "@/providers/share/provider"
-
 import ThreadProvider from "@/providers/threads/provider"
+import { getBrandConfig } from "@/config/brands"
 
 // Metadata generation for improved sharing experience
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const id = params.id
   
-  // In a real implementation, you would fetch the thread data from the API
-  // For now, we'll use a default title and description
+  // Get brand configuration
+  const brandId = process.env.NEXT_PUBLIC_BRAND || 'bwin';
+  const brand = getBrandConfig(brandId);
   
   return {
-    title: 'SportingBOT | Chat',
-    description: 'A Inteligência Artificial da Sportingbet',
+    title: `${brand.displayName} | Chat`,
+    description: brand.description,
     openGraph: {
-      title: 'SportingBOT | Chat',
-      description: 'A Inteligência Artificial da Sportingbet',
+      title: `${brand.displayName} | Chat`,
+      description: brand.description,
       type: 'website',
-      locale: 'pt_BR',
-      siteName: 'SportingBOT',
+      locale: brand.locale,
+      siteName: brand.displayName,
       images: [
         {
-          url: 'https://sportingbot.com/og_image_4.png',
+          url: brand.content.ogImage,
           width: 980,
           height: 250,
-          alt: 'SportingBOT: a IA da Sportingbet',
+          alt: brand.displayName,
         },
       ],
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'SportingBOT | Chat',
-      description: 'A Inteligência Artificial da Sportingbet',
-      images: ['https://sportingbot.com/og_image_4.png'],
+      title: `${brand.displayName} | Chat`,
+      description: brand.description,
+      images: [brand.content.ogImage],
     }
   }
 }

@@ -1,0 +1,132 @@
+{
+  "id": "bwin",
+  "name": "bwin",
+  "displayName": "Bot And Win",
+  "description": "la IA de bwin para LaLiga 2025/2026",
+  "language": "es-ES",
+  "locale": "es_ES",
+  "domain": "bwinbot.com",
+  "baseUrl": "https://bwinbot.com",
+  "sportsBaseUrl": "https://www.bwin.es",
+  "analytics": {
+    "ga4Primary": "G-RP42Y35MC2",
+    "ga4Secondary": "G-9F6CHT1XS6"
+  },
+  "branding": {
+    "colors": {
+      "primary": "#FFCB00",
+      "secondary": "#FDBA12",
+      "success": "#2ECC71",
+      "warning": "#FDBA12",
+      "danger": "#FF3B30",
+      "info": "#209CEE"
+    },
+    "fonts": {
+      "primary": "Roboto",
+      "fallback": "system-ui, sans-serif"
+    },
+    "logo": {
+      "icon": "/bwin-logo-icon.png",
+      "full": "/bwin-logo.png",
+      "alt": "bwin logo",
+      "footer": {
+        "width": 80,
+        "height": 24,
+        "className": "w-20 h-6 md:w-24 md:h-7",
+        "mobile": {
+          "width": 120,
+          "height": 24,
+          "className": ""
+        }
+      }
+    }
+  },
+  "content": {
+    "title": "Bot And Win: la IA de bwin para LaLiga 2025/2026",
+    "description": "Apuesta junto con la Inteligencia Artificial de bwin. Pregunta a nuestro chat sobre las noticias y cuotas de LaLiga 2025/2026 y descubre cómo apostar mejor.",
+    "ogImage": "https://bwinbot.com/og_image_4.png",
+    "favicon": "/bwin-logo-icon.png",
+    "subtitle": "La Inteligencia Artificial de bwin",
+    "navigation": {
+      "chat": "Conversar",
+      "discover": "Descubrir"
+    },
+    "cta": {
+      "register": "https://www.bwin.es/es/engage/lan/sports/generic?wm=5557099",
+      "login": "https://www.bwin.es/es/sports?_affiliateHelper=true&wm=5557101",
+      "registerText": "Regístrate Ahora",
+      "loginText": "Iniciar Sesión"
+    },
+    "chat": {
+      "titleOptions": [
+        "¿Cómo puedo entrar al campo para ayudarte hoy?",
+        "¿Vamos a jugar? ¡Dime dónde necesitas refuerzo!",
+        "¡Balón en juego! ¿En qué jugada puedo ayudarte?"
+      ],
+      "placeholder": "Pregúntame sobre LaLiga, Champions, Serie A, etc...",
+      "assistantPlaceholder": "Pregúntame...",
+      "followUpPlaceholder": "¿Te gustó? ¿Quieres saber más? ¡Dímelo!",
+      "followUpTranscription": "¿Cómo puedo apostar en el próximo partido del Real Madrid?",
+      "preparing": "Preparando...",
+      "recording": "Grabando...",
+      "transcribing": "Transcribiendo...",
+      "noSuggestionsFound": "No se encontraron preguntas sugeridas en este momento.",
+      "mobileInputRows": 2,
+      "mobileInputPaddingBottom": "1rem"
+    },
+    "offline": {
+      "title": "¡Volvemos pronto!",
+      "subtitle": "Es hora de mi pretemporada, amigo.",
+      "description": "Pronto estaré de vuelta con novedades.\nMientras esperas, echa un vistazo a las promociones de bwin.",
+      "ctaText": "Ir a bwin",
+      "ctaLink": "https://sports.bwin.es/es/sports/promotions",
+      "ctaLinkText": "Consulta aquí"
+    }
+  },
+  "features": {
+    "enableAvatar": false,
+    "enableBets": false,
+    "enableChat": true
+  },
+  "responsibleGaming": {
+    "enabled": true,
+    "text": "Juega con responsabilidad",
+    "image": "/Juega con responsabilidad.png",
+    "footer": {
+      "oddsDisclaimer": "* Cuotas sujetas a cambios. Este chatbot tiene únicamente fines informativos y no solicita, almacena ni procesa ningún dato personal. Por favor, no comparta información personal ni sensible al utilizarlo",
+      "images": {
+        "showImages": true,
+        "responsabilidad": "/Juega con responsabilidad.png",
+        "diversion": "/no_hay_juego.png",
+        "age": "/+18.png",
+        "mano": "/mano.png",
+        "seguro": "/Juego Seguro.png"
+      }
+    }
+  },
+  "ageVerification": {
+    "enabled": true,
+    "title": "¿Tienes 18 años o más?",
+    "description": "Para acceder a este contenido debes ser mayor de edad",
+    "acceptText": "Sí, tengo 18+",
+    "rejectText": "No",
+    "underageTitle": "Acceso Restringido",
+    "underageDescription": "Este contenido está destinado solo para mayores de 18 años.",
+    "underageButtonText": "Entendido",
+    "headerBackgroundColor": "#000000",
+    "acceptButtonColor": "#000000",
+    "backdropOpacity": "0.7",
+    "modalBorder": "2px solid #FFCB00"
+  },
+  "privacy": {
+    "lgpd": {
+      "enabled": true,
+      "title": "Privacidad y Cookies",
+      "description": "Utilizamos cookies para mejorar tu experiencia de navegación y analizar el uso del sitio. Puedes elegir qué tipos de cookies aceptar. Para más información, consulta nuestra política de privacidad.",
+      "acceptText": "Aceptar",
+      "dismissText": "Ahora no",
+      "privacyPolicyUrl": "https://www.bwin.es/politica-de-privacidad",
+      "privacyPolicyText": "política de privacidad"
+    }
+  }
+}

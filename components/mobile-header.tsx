@@ -1,11 +1,9 @@
 "use client"
 
-import { ArrowLeft, Menu, MessageSquare, Compass } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { usePathname, useRouter } from "next/navigation"
 import { useChatState } from "@/hooks/use-chat-state"
-import { useTheme } from "@/components/theme-provider"
-import { cn } from "@/lib/utils"
+import { ArrowLeft, Compass, Menu, MessageSquare } from "lucide-react"
+import { usePathname, useRouter } from "next/navigation"
 
 interface MobileHeaderProps {
   onMenuClick: () => void
@@ -15,14 +13,13 @@ export function MobileHeader({ onMenuClick }: MobileHeaderProps) {
   const pathname = usePathname() || ''
   const router = useRouter()
   const { resetChat } = useChatState()
-  const { isDarkMode } = useTheme()
   const isArticlePage = pathname.startsWith("/discover/") && pathname !== "/discover"
   const isDiscoverPage = pathname === "/discover"
   const isChatPage = pathname === "/" || pathname.startsWith("/chat")
   
   const getPageTitle = () => {
-    if (isArticlePage) return "Notícias"
-    if (pathname === "/discover") return "Descobrir"
+    if (isArticlePage) return "Noticias"
+    if (pathname === "/discover") return "Descubrir"
     return "Conversar"
   }
 
@@ -55,10 +52,9 @@ export function MobileHeader({ onMenuClick }: MobileHeaderProps) {
   }
 
   return (
-    <div className={cn(
-      "fixed top-0 left-0 right-0 h-16 backdrop-blur-sm border-b z-40 md:hidden",
-      isDarkMode ? "bg-[#061F3F] border-[#D3ECFF]/20" : "bg-sportingbet-bright-deep-blue border-white/10"
-    )}>
+    <div className="fixed top-0 left-0 right-0 h-16 backdrop-blur-sm border-b z-[60] md:hidden" style={{
+      borderColor: 'hsl(var(--brand-primary) / 0.2)'
+    }}>
       <div className="flex items-center justify-between h-full px-4">
         <Button
           variant="ghost"

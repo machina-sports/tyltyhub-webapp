@@ -2,6 +2,37 @@
 
 Sportingbet is an AI-powered sports betting platform that provides users with insightful analysis, betting tips, and odds for various sports events. This project is built using Next.js, React, and Tailwind CSS, and leverages a variety of modern UI components to deliver a seamless user experience.
 
+## 🏷️ White Label System
+
+This project now supports a **white label system** that allows multiple brands (bwin, sportingbet, etc.) to be deployed from the same codebase. Each brand can have its own:
+
+- **Branding**: Colors, logos, fonts, and visual identity
+- **Content**: Titles, descriptions, and localized text
+- **Features**: Toggleable functionality per brand
+- **Analytics**: Separate tracking and analytics per brand
+- **Deployment**: Independent deployment and scaling
+
+### 📚 Documentation
+
+For complete white label documentation, see the [`docs/`](./docs/) folder:
+
+- **[Quick Start Guide](./docs/README.md)** - Get started with the white label system
+- **[Complete Guide](./docs/WHITE_LABEL_GUIDE.md)** - Detailed implementation guide
+- **[Architecture](./docs/ARCHITECTURE.md)** - Technical architecture and design
+- **[Diagrams](./docs/DIAGRAMS.md)** - Visual diagrams and flow charts
+
+### 🚀 Quick Commands
+
+```bash
+# Development
+NEXT_PUBLIC_BRAND=bwin npm run dev          # Develop with bwin brand
+NEXT_PUBLIC_BRAND=sportingbet npm run dev   # Develop with sportingbet brand
+
+# Production
+NEXT_PUBLIC_BRAND=bwin npm run build        # Build for bwin
+NEXT_PUBLIC_BRAND=sportingbet npm run build # Build for sportingbet
+```
+
 ## Features
 
 - **AI-Powered Analysis**: Get in-depth analysis and betting tips for sports events
@@ -41,9 +72,25 @@ Sportingbet is an AI-powered sports betting platform that provides users with in
    npm install
    ```
 
-3. **Run the development server**:
+3. **Set up environment variables**:
+   Create a `.env.local` file with your configuration:
    ```bash
-   npm run dev
+   # Brand Configuration
+   NEXT_PUBLIC_BRAND=bwin
+   
+   # API Configuration
+   MACHINA_API_KEY=your_machina_api_key_here
+   MACHINA_CLIENT_URL=your_machina_client_url_here
+   IMAGE_CONTAINER_URL=your_image_container_url_here
+   ```
+
+4. **Run the development server**:
+   ```bash
+   # For bwin brand
+   NEXT_PUBLIC_BRAND=bwin npm run dev
+   
+   # For sportingbet brand
+   NEXT_PUBLIC_BRAND=sportingbet npm run dev
    ```
 
    Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

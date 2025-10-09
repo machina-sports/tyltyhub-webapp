@@ -1,0 +1,125 @@
+{
+  "id": "sportingbet",
+  "name": "sportingbet",
+  "displayName": "SportingBOT",
+  "description": "a IA do Sportingbet para Campeonato Brasileiro 2025",
+  "language": "pt-BR",
+  "locale": "pt_BR",
+  "domain": "sportingbot.com.br",
+  "baseUrl": "https://sportingbot.com.br",
+  "sportsBaseUrl": "https://www.sportingbet.bet.br",
+  "analytics": {
+    "ga4Primary": "G-SPORTINGBET-PRIMARY",
+    "ga4Secondary": "G-SPORTINGBET-SECONDARY"
+  },
+  "branding": {
+    "colors": {
+      "primary": "#1E40AF",
+      "secondary": "#3B82F6",
+      "success": "#10B981",
+      "warning": "#F59E0B",
+      "danger": "#EF4444",
+      "info": "#06B6D4"
+    },
+    "fonts": {
+      "primary": "Inter",
+      "fallback": "system-ui, sans-serif"
+    },
+    "logo": {
+      "icon": "/outline.png",
+      "full": "/outline.png",
+      "alt": "SportingBOT logo",
+      "footer": {
+        "width": 240,
+        "height": 62,
+        "className": "w-42 h-20 md:w-42 md:h-20",
+        "mobile": {
+          "width": 180,
+          "height": 45,
+          "className": "w-42 h-10 md:w-32 md:h-10 p-0"
+        }
+      }
+    }
+  },
+  "content": {
+    "title": "SportingBOT: a IA do Sportingbet para Campeonato Brasileiro 2025",
+    "description": "Aposte junto com a Inteligência Artificial do Sportingbet. Pergunte ao nosso chat sobre as notícias e odds do Campeonato Brasileiro 2025 e descubra como apostar melhor.",
+    "ogImage": "https://sportingbot.com.br/og_image_1.png",
+    "favicon": "/sb-new.ico",
+    "subtitle": "A Inteligência Artificial do Sportingbet",
+    "navigation": {
+      "chat": "Conversar",
+      "discover": "Descobrir"
+    },
+    "cta": {
+      "register": "https://www.sportingbet.bet.br/pt-br/sports/registro",
+      "login": "https://www.sportingbet.bet.br/pt-br/sports/login",
+      "registerText": "Cadastre-se Agora",
+      "loginText": "Entrar"
+    },
+    "chat": {
+      "titleOptions": [
+        "Como posso entrar em campo para te ajudar hoje?",
+        "Vamos jogar? Me diga onde você precisa de reforço!",
+        "Bola em jogo! Em que jogada posso te ajudar?"
+      ],
+      "placeholder": "Pergunte-me sobre o Campeonato Brasileiro...",
+      "followUpPlaceholder": "Gostou? Quer saber mais? Me diga!",
+      "followUpTranscription": "Como posso apostar no próximo jogo do Real Madrid?",
+      "preparing": "Preparando...",
+      "recording": "Gravando...",
+      "transcribing": "Transcrevendo...",
+      "noSuggestionsFound": "Não foram encontradas perguntas sugeridas no momento.",
+      "mobileInputRows": 2,
+      "mobileInputPaddingBottom": "1rem"
+    },
+    "offline": {
+      "title": "Voltamos em breve!",
+      "subtitle": "É hora da minha pré-temporada, amigo.",
+      "description": "Em breve estarei de volta com novidades.\nEnquanto espera, dê uma olhada nas promoções da Sportingbet.",
+      "ctaText": "Ir para Sportingbet",
+      "ctaLink": "https://www.sportingbet.bet.br/pt-br/sports/promotions",
+      "ctaLinkText": "Consulte aqui"
+    }
+  },
+  "features": {
+    "enableAvatar": true,
+    "enableBets": true,
+    "enableChat": true
+  },
+  "responsibleGaming": {
+    "enabled": true,
+    "text": "Jogue com responsabilidade",
+    "image": "/Jogo Seguro.png",
+    "footer": {
+      "disclaimer": "18+. Apostar pode causar dependência e transtornos do jogo patológico. Jogue com responsabilidade. Autorizada pela SPA/MF sob licença nº 247.",
+      "copyright": "2025 Sportingbet",
+      "oddsDisclaimer": "* Odds sujeitas a alterações. Este chatbot tem fins meramente informativos e não solicita, armazena nem processa dados pessoais. Por favor, não compartilhe informações pessoais ou sensíveis ao utilizá-lo",
+      "images": {
+        "showImages": false
+      }
+    }
+  },
+  "ageVerification": {
+    "enabled": true,
+    "title": "Você tem 18 anos ou mais?",
+    "description": "Para acessar este conteúdo você deve ser maior de idade",
+    "acceptText": "Sim, tenho 18+",
+    "rejectText": "Não",
+    "underageTitle": "Acesso Restrito",
+    "underageDescription": "Este conteúdo é destinado apenas para maiores de 18 anos.",
+    "underageButtonText": "Entendi",
+    "backdropOpacity": "0.75"
+  },
+  "privacy": {
+    "lgpd": {
+      "enabled": true,
+      "title": "Privacidade e Cookies",
+      "description": "Utilizamos cookies e tecnologias similares para melhorar sua experiência de navegação, personalizar conteúdo e anúncios, e analisar o tráfego do site. Ao continuar navegando, você aceita nossa política de privacidade.",
+      "acceptText": "Aceitar",
+      "dismissText": "Agora não",
+      "privacyPolicyUrl": "https://www.sportingbet.bet.br/politica-de-privacidade",
+      "privacyPolicyText": "política de privacidade"
+    }
+  }
+}

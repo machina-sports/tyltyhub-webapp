@@ -4,6 +4,8 @@ import Markdown from "markdown-to-jsx";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { AnchorHTMLAttributes } from "react";
+import { convertUrlsToMarkdown } from "@/lib/url-utils";
+import { replaceBettingLinks } from "@/lib/betting-links";
 
 interface MarkdownContentProps {
   content: string;
@@ -19,6 +21,7 @@ const MarkdownLink = (props: AnchorHTMLAttributes<HTMLAnchorElement>) => {
 };
 
 export function MarkdownChat({ content, className }: MarkdownContentProps) {
+  const processedContent = content;
   return (
     <article className={cn("prose prose-neutral dark:prose-invert max-w-none text-sm break-words", className)}>
       <Markdown
@@ -26,26 +29,92 @@ export function MarkdownChat({ content, className }: MarkdownContentProps) {
           overrides: {
             a: {
               component: MarkdownLink,
-              props: { className: "text-blue-600 dark:text-blue-400 underline" },
+              props: { className: "text-brand-primary underline hover:underline" },
             },
-            ul: { props: { className: "list-disc mt-2" } },
-            ol: { props: { className: "list-decimal mt-2" } },
-            li: { props: { className: "my-1" } },
-            p:  { props: { className: "my-2" } },
-            h2: { props: { className: "font-bold text-sm" } },
-            h3: { props: { className: "font-bold text-sm" } },
-            strong: { props: { className: "font-bold" } },
-            code: { props: { className: 'not-prose font-semibold' } },
-            blockquote: { props: { className: 'not-prose my-2 py-2 px-3 pl-4 bg-muted/50 rounded-lg text-sm text-foreground/90 dark:text-[#D3ECFF] dark:bg-[#061F3F]/50 border-l-4 border-primary dark:border-[#45CAFF]' } },
-            table: { props: { className: 'my-4 text-sm w-full border-collapse' } },
-            thead: { props: { className: 'bg-muted/50 text-foreground/90 dark:text-[#D3ECFF] dark:bg-[#061F3F]/50' } },
-            tr: { props: { className: 'border-b' } },
-            th: { props: { className: 'p-3 text-left font-semibold' } },
-            td: { props: { className: 'p-3 text-left' } },
+            ul: { 
+              props: { 
+                className: "list-none space-y-4 mt-4 mb-3" 
+              } 
+            },
+            ol: { 
+              props: { 
+                className: "list-none space-y-4 mt-4 mb-3" 
+              } 
+            },
+            li: { 
+              props: { 
+                className: "relative pl-6 leading-relaxed" 
+              } 
+            },
+            p: { 
+              props: { 
+                className: "my-3 leading-relaxed" 
+              } 
+            },
+            h1: { 
+              props: { 
+                className: "text-base font-bold mb-4 text-bwin-neutral-100 leading-tight" 
+              } 
+            },
+            h2: { 
+              props: { 
+                className: "text-sm font-semibold mb-3 text-bwin-neutral-100 leading-tight" 
+              } 
+            },
+            h3: { 
+              props: { 
+                className: "text-sm font-semibold mb-3 text-bwin-neutral-100 leading-tight" 
+              } 
+            },
+            strong: { 
+              props: { 
+                className: "font-bold text-brand-primary" 
+              } 
+            },
+            em: { 
+              props: { 
+                className: "italic text-bwin-neutral-70" 
+              } 
+            },
+            code: { 
+              props: { 
+                className: 'bg-neutral-25 px-1.5 py-0.5 rounded text-xs font-mono text-brand-primary border border-neutral-30' 
+              } 
+            },
+            blockquote: { 
+              props: { 
+                className: 'border-l-4 border-brand-primary pl-4 py-3 my-4 bg-neutral-15 rounded-r-lg italic text-neutral-70' 
+              } 
+            },
+            table: { 
+              props: { 
+                className: 'my-4 text-sm w-full border-collapse border border-bwin-neutral-30 rounded-lg overflow-hidden' 
+              } 
+            },
+            thead: { 
+              props: { 
+                className: 'bg-bwin-neutral-25 text-bwin-neutral-100' 
+              } 
+            },
+            tr: { 
+              props: { 
+                className: 'border-b border-bwin-neutral-30' 
+              } 
+            },
+            th: { 
+              props: { 
+                className: 'p-3 text-left font-semibold' 
+              } 
+            },
+            td: { 
+              props: { 
+                className: 'p-3 text-left' 
+              } 
+            },
           },
         }}
       >
-        {content}
+        {processedContent}
       </Markdown>
     </article>
   );

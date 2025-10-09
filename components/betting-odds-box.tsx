@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Check, DollarSign, Loader2, ChevronLeft } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { motion, AnimatePresence } from "framer-motion"
+import { useBrand } from "@/contexts/brand-context"
 
 interface Market {
   name: string
@@ -53,7 +53,23 @@ interface BettingOddsBoxProps {
   }) => void
 }
 
+// Function to convert American odds to decimal format
+const convertToDecimal = (odds: string): string => {
+  const numOdds = parseFloat(odds);
+  
+  if (isNaN(numOdds)) return odds; // Return original if not a number
+  
+  if (numOdds > 0) {
+    // Positive American odds: decimal = (american / 100) + 1
+    return ((numOdds / 100) + 1).toFixed(2);
+  } else {
+    // Negative American odds: decimal = (100 / |american|) + 1
+    return ((100 / Math.abs(numOdds)) + 1).toFixed(2);
+  }
+};
+
 export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: BettingOddsBoxProps) {
+  const { brand } = useBrand()
   const [selectedBet, setSelectedBet] = useState<{
     market: string
     selection: string
@@ -146,24 +162,13 @@ export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: B
       "p-4 md:p-6 bg-white shadow-md rounded-lg space-y-4 md:space-y-6 relative overflow-hidden",
       isCompleted && "opacity-75 pointer-events-none"
     )}>
-      <AnimatePresence mode="wait">
-        {isCompleted && (
-          <motion.div 
-            className="absolute inset-0 bg-gray-100/70 backdrop-blur-sm rounded-lg flex items-center justify-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <motion.p 
-              className="text-base font-semibold text-gray-800 bg-white/80 py-3 px-6 rounded-full shadow-sm"
-              initial={{ scale: 0.9 }}
-              animate={{ scale: 1 }}
-            >
-              Aposta Feita com Sucesso!
-            </motion.p>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {isCompleted && (
+        <div className="absolute inset-0 bg-gray-100/70 backdrop-blur-sm rounded-lg flex items-center justify-center">
+          <p className="text-base font-semibold text-gray-800 bg-white/80 py-3 px-6 rounded-full shadow-sm">
+            Aposta Feita com Sucesso!
+          </p>
+        </div>
+      )}
       
       <div className="flex items-center justify-between border-b pb-3">
         <h3 className="font-bold text-base md:text-lg text-gray-900">{event}</h3>
@@ -192,26 +197,19 @@ export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: B
         )}
       </div>
 
-      <AnimatePresence mode="wait">
-        {!showConfirmation ? (
-          <motion.div 
-            className="space-y-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
+      {!showConfirmation ? (
+        <div className="space-y-4">
             {markets && markets.length > 0 ? markets.map((market, index) => (
               <div key={index} className="space-y-2 md:space-y-3">
                 <p className="text-sm md:text-base text-gray-600 font-medium">{market.name}</p>
                 <div className="grid grid-cols-2 gap-2 md:gap-3">
                   {market.options.map((option, idx) => (
-                    <motion.button
+                    <button
                       key={idx}
-                      whileTap={{ scale: 0.98 }}
                       disabled={isCompleted}
                       className={cn(
-                        "flex flex-col items-start gap-1 w-full py-3 md:py-4 px-3 md:px-5 rounded-md border border-gray-300 hover:border-gray-400 active:bg-gray-50 transition-all",
-                        selectedBet?.selection === option.name && "border-blue-500 bg-blue-50/50"
+                        "flex flex-col items-start gap-1 w-full py-3 md:py-4 px-3 md:px-5 rounded-md border border-gray-300 hover:border-gray-400 active:bg-gray-50",
+                        selectedBet?.selection === option.name && "border-brand-primary bg-brand-primary/10"
                       )}
                       onClick={() => handleSelectOption(market.name, option)}
                     >
@@ -219,29 +217,33 @@ export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: B
                       <span className="text-xs md:text-sm text-gray-500 font-mono">
                         {option.odds}
                       </span>
-                    </motion.button>
+                    </button>
                   ))}
                 </div>
               </div>
             )) : (
               <p className="text-gray-500 text-center py-4">Nenhum mercado de aposta disponível</p>
             )}
-          </motion.div>
-        ) : (
-          <motion.div 
-            className="space-y-4 md:space-y-5"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-          >
-            <div className="bg-blue-50 p-3 md:p-4 rounded-lg space-y-2 md:space-y-3">
+            
+            {/* Odds Disclaimer */}
+            {brand.responsibleGaming.footer?.oddsDisclaimer && (
+              <div className="mt-4 pt-3 border-t border-gray-200">
+                <p className="text-xs text-gray-500 text-center italic max-w-2xl mx-auto">
+                  {brand.responsibleGaming.footer.oddsDisclaimer}
+                </p>
+              </div>
+            )}
+        </div>
+      ) : (
+        <div className="space-y-4 md:space-y-5">
+            <div className="bg-brand-primary/10 p-3 md:p-4 rounded-lg space-y-2 md:space-y-3">
               <div className="flex justify-between text-sm md:text-base">
                 <span className="text-gray-600">Seleção:</span>
                 <span className="font-semibold text-gray-800">{selectedBet?.selection}</span>
               </div>
               <div className="flex justify-between text-sm md:text-base">
                 <span className="text-gray-600">Odds:</span>
-                <span className="font-mono text-gray-800">{selectedBet?.odds}</span>
+                <span className="font-mono text-gray-800">{selectedBet?.odds ? convertToDecimal(selectedBet.odds) : 'N/A'}</span>
               </div>
             </div>
 
@@ -255,7 +257,7 @@ export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: B
                   inputMode="decimal"
                   value={stake}
                   onChange={(e) => setStake(e.target.value)}
-                  className="pl-9 md:pl-10 border-gray-300 focus:border-blue-500 h-10 md:h-12 text-base"
+                  className="pl-9 md:pl-10 border-gray-300 focus:border-brand-primary h-10 md:h-12 text-base"
                   placeholder="Digite o valor da aposta"
                 />
               </div>
@@ -266,7 +268,7 @@ export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: B
             </div>
 
             <Button 
-              className="w-full bg-blue-600 text-white hover:bg-blue-700 h-12 text-base font-medium"
+              className="w-full bg-brand-primary text-black hover:bg-brand-secondary h-12 text-base font-medium"
               disabled={!stake || isPlacing || isCompleted}
               onClick={handlePlaceBet}
             >
@@ -282,9 +284,8 @@ export function BettingOddsBox({ event, markets = DUMMY_MARKETS, onPlaceBet }: B
                 </>
               )}
             </Button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        </div>
+      )}
     </Card>
   )
 }

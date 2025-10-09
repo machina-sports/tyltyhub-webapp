@@ -5,19 +5,21 @@ import { Loader2, Reply, BarChart3, Newspaper, Gift, ChevronLeft, ChevronRight }
 import { ChatBubble } from "./chat/bubble"
 
 import { MarkdownChat } from "./markdown-content"
+import { getBrandConfig } from "@/config/brands"
 
 import React, { useMemo, useState } from "react"
 import Link from "next/link"
 import { trackRelatedQuestionClick } from "@/lib/analytics"
 import { cn } from "@/lib/utils"
-import { useTheme } from '@/components/theme-provider'
 
 import { RelatedOdds } from "@/components/article/related-odds";
 import { StandingsTable } from "@/components/discover/standings-table";
+import { SportingbetDot } from "@/components/ui/dot";
 import { MatchCard, MatchesCalendar } from "@/components/discover/matches-calendar";
 import { TeamsGrid } from "@/components/discover/teams-grid";
 import { LiveMatchStatus } from "@/components/live-match-status";
 import { WidgetCarousel } from "@/components/carousel/container";
+import { BettingRecommendationsWidget } from "@/components/betting-recommendations-widget";
 
 interface ChatMessageProps {
   role: "user" | "assistant"
@@ -29,9 +31,9 @@ interface ChatMessageProps {
 
 export function ChatMessage({ role, content, date, isTyping, onNewMessage }: ChatMessageProps) {
   const [showWidget, setShowWidget] = useState(false)
-  const { isDarkMode } = useTheme();
 
-  const currentMessage = content?.["question_answer"] || (typeof content === 'string' ? content : JSON.stringify(content))
+  const rawMessage = content?.["question_answer"] || (typeof content === 'string' ? content : JSON.stringify(content))
+  const currentMessage = rawMessage // Backend already processes betting links
 
   const relatedQuestions = content?.["related_questions"] || []
 
@@ -99,19 +101,22 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
 
   const haveSportsContext = content?.["sport_event"]
 
+  // Handle betting recommendations
+  const bettingRecommendations = content?.["betting_recommendations"] || content?.["markets"]
+
   // Handle both single widget and array of widgets
   const parsedWidgetContent = content?.["selected-widgets"]
   const widgetArray = useMemo(() => {
     const widgets = [];
-    
+
     // Add LiveMatchStatus as first widget if eventStatus exists and status is "live"
     if (eventStatus && eventStatus.status === "live") {
       widgets.push({
         name: "Live Match Status",
         component: (
-          <LiveMatchStatus 
+          <LiveMatchStatus
             eventStatus={eventStatus}
-            isDarkMode={isDarkMode}
+            isDarkMode={true}
             teamHomeName={teamHomeName}
             teamAwayName={teamAwayName}
             teamHomeAbbreviation={teamHomeAbbreviation}
@@ -120,7 +125,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
         )
       });
     }
-    
+
     // Add regular widgets
     if (parsedWidgetContent) {
       if (Array.isArray(parsedWidgetContent)) {
@@ -129,18 +134,20 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
         widgets.push(parsedWidgetContent);
       }
     }
-    
+
     return widgets;
-  }, [parsedWidgetContent, eventStatus, isDarkMode, teamHomeName, teamAwayName, teamHomeAbbreviation, teamAwayAbbreviation]);
+  }, [parsedWidgetContent, eventStatus, teamHomeName, teamAwayName, teamHomeAbbreviation, teamAwayAbbreviation]);
 
   return (
     <div className="mb-2 last:mb-0">
       <ChatBubble role={role}>
-        <div className="space-y-2">
+        <div className="chat-bubble-content">
           {isTyping ? (
-            <div className="flex items-center gap-2 text-muted-foreground">
+            <div className="flex items-center gap-2 text-bwin-neutral-60">
               <span className="text-sm">{content || "Pensando..."}</span>
-              <img src="/soccer.gif" alt="Pensando..." className="w-6 h-6" />
+              <div className="animate-pulse">
+                <SportingbetDot size={12} />
+              </div>
             </div>
           ) : (
             <MarkdownChat content={currentMessage} />
@@ -150,7 +157,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
 
       {/* {marketSelected && (
         <div className="mt-4 pl-4 sm:pl-14">
-          <div className="mt-2 space-y-2 text-sm text-muted-foreground">
+          <div className="mt-2 space-y-2 text-sm text-bwin-neutral-60">
             <div className="text-sm">
               <RelatedOdds
                 currentArticleId={marketSelected}
@@ -170,7 +177,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
           <MatchCard
             fixture={{
               date: "",
-              ko: haveSportsContext?.["start_time"] ? new Date(haveSportsContext["start_time"]).toLocaleString('pt-BR', {
+              ko: haveSportsContext?.["start_time"] ? new Date(haveSportsContext["start_time"]).toLocaleString('es-ES', {
                 hour: '2-digit',
                 minute: '2-digit',
                 day: '2-digit',
@@ -187,26 +194,30 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
         </div>
       )}
 
+      {/* Betting Recommendations Section */}
+      {bettingRecommendations && Array.isArray(bettingRecommendations) && bettingRecommendations.length > 0 && (
+        <div className="mt-4 pl-6 sm:pl-[60px] max-w-[420px]">
+          <BettingRecommendationsWidget
+            markets={bettingRecommendations}
+            title="Recomendaciones de Apuestas"
+          />
+        </div>
+      )}
+
       {/* TESTE PROVISÓRIO - Componentes FIFA CWC */}
       {/* {role === "assistant" && (
         <div className="mt-6 pl-14">
           <div className="space-y-8">
             <div>
-              <h3 className={cn(
-                "text-lg font-semibold mb-4",
-                isDarkMode ? "text-[#45CAFF]" : "text-foreground"
-              )}>
-                📊 Classificação dos Grupos
+              <h3 className="text-lg font-semibold mb-4 text-brand-primary">
+                📊 Clasificación de los Grupos
               </h3>
               <StandingsTable />
             </div>
             
             <div>
-              <h3 className={cn(
-                "text-lg font-semibold mb-4",
-                isDarkMode ? "text-[#45CAFF]" : "text-foreground"
-              )}>
-                📅 Calendário de Partidas
+              <h3 className="text-lg font-semibold mb-4 text-brand-primary">
+                📅 Calendario de Partidos
               </h3>
               <MatchesCalendar 
                 useAbbreviations={true} 
@@ -217,11 +228,8 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
             </div>
             
             <div>
-              <h3 className={cn(
-                "text-lg font-semibold mb-4",
-                isDarkMode ? "text-[#45CAFF]" : "text-foreground"
-              )}>
-                ⚽ Times Participantes
+              <h3 className="text-lg font-semibold mb-4 text-brand-primary">
+                ⚽ Equipos Participantes
               </h3>
               <TeamsGrid />
             </div>
@@ -235,12 +243,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
           <div className="mt-2 ml-2 sm:ml-4">
             <Link
               href={`/discover/${relatedArticle.slug}`}
-              className={cn(
-                "flex items-center gap-3 p-3 rounded-lg transition-colors max-w-[420px] border overflow-hidden",
-                isDarkMode
-                  ? "border-[#45CAFF]/30 hover:border-[#45CAFF]/50 hover:bg-[#45CAFF]/10"
-                  : "border-border hover:border-primary/30 hover:bg-muted/50"
-              )}
+              className="flex items-center gap-3 p-3 rounded-lg transition-colors max-w-[420px] border overflow-hidden border-border hover:border-brand-primary hover:bg-brand-primary/10"
             >
               <div className="flex-shrink-0 w-16 h-16 bg-muted rounded-md overflow-hidden">
                 {getRelatedArticleImageUrl(relatedArticle) ? (
@@ -251,16 +254,16 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <Newspaper className="h-6 w-6 text-muted-foreground" />
+                    <Newspaper className="h-6 w-6 text-bwin-neutral-60" />
                   </div>
                 )}
               </div>
               <div className="flex-1 min-w-0 overflow-hidden">
-                <h4 className="text-sm font-medium text-primary line-clamp-2 leading-tight">
+                <h4 className="text-sm font-medium text-brand-primary line-clamp-2 leading-tight">
                   {relatedArticle.title}
                 </h4>
                 {relatedArticle.subtitle && (
-                  <p className="text-xs text-muted-foreground mt-1 line-clamp-1">
+                  <p className="text-xs text-bwin-neutral-60 mt-1 line-clamp-1">
                     {relatedArticle.subtitle}
                   </p>
                 )}
@@ -277,17 +280,12 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
               href={promotion.link}
               target="_blank"
               rel="noopener noreferrer"
-              className={cn(
-                "block rounded-lg transition-colors max-w-[420px] border overflow-hidden",
-                isDarkMode
-                  ? "border-[#45CAFF]/30 hover:border-[#45CAFF]/50 hover:bg-[#45CAFF]/10"
-                  : "border-border hover:border-primary/30 hover:bg-muted/50"
-              )}
+              className="block rounded-lg transition-colors max-w-[420px] border overflow-hidden border-border hover:border-brand-primary hover:bg-brand-primary/10"
             >
               {getPromotionImageUrl(promotion.image) ? (
                 <img
                   src={getPromotionImageUrl(promotion.image)}
-                  alt="Promoção"
+                  alt="Promoción"
                   className="w-full h-auto object-cover"
                 />
               ) : (
@@ -301,21 +299,18 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
       )}
 
       {(widgetArray.length > 0) && !hideWidgetOdds && (
-        <div className={cn("mt-4 pl-4 sm:pl-[68px] max-w-[420px]", isDarkMode && "dark")}>
-          <WidgetCarousel widgets={widgetArray} isDarkMode={isDarkMode} />
+        <div className="mt-4 pl-4 sm:pl-[68px] max-w-[420px] dark">
+          <WidgetCarousel widgets={widgetArray} isDarkMode={true} />
         </div>
       )}
 
       {relatedQuestions.length > 0 && (
-        <div className="mt-4 pl-4 sm:pl-14">
-          <div className="mt-2 space-y-2 text-sm text-muted-foreground">
+        <div className="mt-4 pl-4 sm:pl-10 ml-9 md:ml-3">
+          <div className="mt-2 space-y-2 text-sm text-bwin-neutral-60">
             {relatedQuestions.slice(0, 2).map((question: any, index: number) => (
               <div key={index} className="text-sm hover:underline cursor-pointer pr-2">
                 <button
-                  className={cn(
-                    "flex items-start gap-2 ml-2 sm:ml-4 text-left w-full bg-transparent border-none p-0 hover:underline break-words",
-                    isDarkMode ? "text-[#D3ECFF]/70 hover:text-[#D3ECFF]" : "text-muted-foreground hover:text-foreground"
-                  )}
+                  className="flex items-start gap-2 ml-2 sm:ml-4 text-left w-full bg-transparent border-none p-0 hover:underline break-words text-bwin-neutral-70 hover:text-bwin-neutral-100"
                   onClick={(e) => {
                     e.preventDefault()
                     trackRelatedQuestionClick(question)
@@ -333,7 +328,7 @@ export function ChatMessage({ role, content, date, isTyping, onNewMessage }: Cha
 
       {/* {isRelatedBettingsEnabled && (
         <div className="mt-4 pl-14 ml-3">
-          <div className="mt-2 space-y-2 text-md text-muted-foreground">
+          <div className="mt-2 space-y-2 text-md text-bwin-neutral-60">
             {relatedBettings.slice(0, 3).map((bet: any, index: number) => (
               <BetBox key={index} bet={bet} />
             ))}

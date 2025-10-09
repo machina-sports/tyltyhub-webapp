@@ -1,32 +1,24 @@
 import { Metadata } from "next"
 import ChatClientLayout from "./client-layout"
+import { getBrandConfig } from "@/config/brands"
+import { generateBrandMetadata } from "@/lib/metadata"
+
+const brand = getBrandConfig()
+const { metadata: brandMetadata } = generateBrandMetadata(brand)
 
 export const metadata: Metadata = {
-  title: "Chat | SportingBOT - Mundial de Clubes 2025",
-  description: "Converse com a Inteligência Artificial da Sportingbet sobre o Mundial de Clubes FIFA 2025. Tire dúvidas, veja odds e faça suas apostas.",
-  icons: {
-    icon: "/favicon.ico",
-  },
+  ...brandMetadata,
+  title: `Chat | ${brand.displayName}`,
+  description: `Conversa con ${brand.content.subtitle}. Resuelve dudas, consulta cuotas y realiza tus apuestas.`,
   openGraph: {
-    title: "Chat | SportingBOT - Mundial de Clubes 2025",
-    description: "Converse com a Inteligência Artificial da Sportingbet sobre o Mundial de Clubes FIFA 2025. Tire dúvidas, veja odds e faça suas apostas.",
-    type: "website",
-    locale: "pt_BR",
-    siteName: "SportingBOT",
-    images: [
-      {
-        url: "https://sportingbot.com/og_image_4.png",
-        width: 980,
-        height: 250,
-        alt: "SportingBOT: a IA da Sportingbet",
-      },
-    ],
+    ...brandMetadata.openGraph,
+    title: `Chat | ${brand.displayName}`,
+    description: `Conversa con ${brand.content.subtitle}. Resuelve dudas, consulta cuotas y realiza tus apuestas.`,
   },
   twitter: {
-    card: "summary_large_image",
-    title: "Chat | SportingBOT - Mundial de Clubes 2025",
-    description: "Converse com a Inteligência Artificial da Sportingbet sobre o Mundial de Clubes FIFA 2025. Tire dúvidas, veja odds e faça suas apostas.",
-    images: ["https://sportingbot.com/og_image_4.png"],
+    ...brandMetadata.twitter,
+    title: `Chat | ${brand.displayName}`,
+    description: `Conversa con ${brand.content.subtitle}. Resuelve dudas, consulta cuotas y realiza tus apuestas.`,
   },
 }
 
@@ -35,9 +27,5 @@ export default function ChatLayout({
 }: {
   children: React.ReactNode
 }) {
-  return (
-    <ChatClientLayout>
-      {children}
-    </ChatClientLayout>
-  )
+  return <ChatClientLayout>{children}</ChatClientLayout>
 }

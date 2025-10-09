@@ -1,145 +1,45 @@
 "use client";
-import { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import { Newspaper, Table2, Search } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TeamFilter as TeamFilterComponent } from "@/components/discover/sport-filter";
 import { ArticleGrid } from "@/components/discover/article-grid";
-import { ArticleSkeleton } from "@/components/discover/article-skeleton";
-import { FifaCwcSchedule } from "@/components/discover/fifa-cwc-schedule";
-import { useGlobalState } from "@/store/useState";
-import { useAppDispatch } from "@/store/dispatch";
+import { useSearch } from "@/components/discover/search-context";
+import { SearchWrapper } from "@/components/discover/search-wrapper";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import teamsData from "@/data/teams.json";
-import { searchArticles } from "@/providers/discover/actions";
 import { Loading } from "@/components/ui/loading";
-import { useTheme } from "@/components/theme-provider";
-import { cn } from "@/lib/utils";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
+import { searchArticles } from "@/providers/discover/actions";
+import { useAppDispatch } from "@/store/dispatch";
+import { useGlobalState } from "@/store/useState";
+import { Newspaper, Plus, Search } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useBrandConfig } from "@/contexts/brand-context";
 
-interface Team {
-  id: string;
-  name: string;
-  logo?: string;
-  league: string;
-}
+const language = process.env.NEXT_PUBLIC_FEATURE_TOGGLE_LANGUAGE_SELECTED || "es";
 
-interface SearchFilters extends Record<string, any> {
+interface SearchFilters {
   name: string;
   "metadata.language": string;
-  team?: string;
-  "value.title"?: { 
-    $regex: string; 
-    $options: string; 
-  };
+  "metadata.content_type"?: { "$ne": string };
+  "value.title"?: { $regex: string; $options: string };
+  "metadata.sport_type"?: string;
 }
 
 interface SearchResults {
-  data: Article[];
+  data: any[];
+  status: string;
   pagination: {
     page: number;
-    page_size: number;
-    total: number;
     hasMore: boolean;
   };
-  status: "idle" | "loading" | "failed";
-  error: string | null;
-}
-
-interface Article {
-  _id?: string;
-  id?: string;
-  value?: {
-    title?: string;
-    subtitle?: string;
-    [key: string]: any;
-  };
-  metadata?: {
-    language?: string;
-    [key: string]: any;
-  };
-  [key: string]: any;
 }
 
 interface ArticleSection {
   type: 'fullWidth' | 'threeCards';
-  articles: Article[];
+  articles: any[];
 }
 
-const SPORTS = [
-  "Todos os Esportes",
-  "Futebol",
-  "Basquete",
-  "Tênis",
-  "Beisebol",
-  "Fórmula 1",
-  "MMA",
-  "Boxe"
-];
-
-interface TeamFilterProps {
-  value: string;
-  onChange: (value: string) => void;
-}
-
-const SportFilter = ({ value, onChange }: TeamFilterProps) => {
-  const { isDarkMode } = useTheme();
-  return (
-    <div className={cn(
-      "w-[220px]",
-      isDarkMode ? "text-[#45CAFF]" : ""
-    )}>
-      <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className={cn(
-          "bg-background",
-          isDarkMode ? "border-[#45CAFF]/30" : ""
-        )}>
-          <SelectValue placeholder="Selecionar Esporte" />
-        </SelectTrigger>
-        <SelectContent>
-          {SPORTS.map((sport) => (
-            <SelectItem 
-              key={sport} 
-              value={sport.toLowerCase()}
-              className={cn(
-                isDarkMode ? "text-[#D3ECFF] hover:bg-[#45CAFF]/10" : ""
-              )}
-            >
-              {sport}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
-  );
-};
-
-const buildSearchFilters = (
-  selectedTeam: string,
-  teams: Team[],
-  searchQuery: string
-): SearchFilters => {
-  const baseFilters: SearchFilters = {
-    name: "content-article",
-    "metadata.language": "br",
-    "metadata.content_type": { "$ne": "trendings-competition-trendings" }
-  };
-  
-  if (selectedTeam !== "all-teams") {
-    const team = teams.find((t: Team) => t.id === selectedTeam);
-    if (team) {
-      baseFilters["$and"] = [
-        { "value.title": { $regex: team.name, $options: "i" } }
-      ];
-    }
-  }
-
-  if (searchQuery) {
-    baseFilters["value.title"] = { $regex: searchQuery, $options: "i" };
-  }
-
-  return baseFilters;
-};
-
+// Custom hook for search debouncing
 function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
 
@@ -156,22 +56,41 @@ function useDebounce<T>(value: T, delay: number): T {
   return debouncedValue;
 }
 
+const buildSearchFilters = (searchQuery: string, sportType: string): SearchFilters => {
+
+
+  const baseFilters: SearchFilters = {
+    name: "content-article",
+    "metadata.language": language,
+    "metadata.content_type": { "$ne": "trendings-competition-trendings" }
+  };
+
+  if (searchQuery) {
+    baseFilters["value.title"] = { $regex: searchQuery, $options: "i" };
+  }
+
+  if (sportType && sportType !== "all") {
+    baseFilters["metadata.sport_type"] = sportType;
+  }
+
+  return baseFilters;
+};
+
 export default function DiscoverPage() {
-  const { isDarkMode } = useTheme();
-  const [selectedTeam, setSelectedTeam] = useState("all-teams");
+  const brand = useBrandConfig();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("news");
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
-
+  const [selectedSport, setSelectedSport] = useState<string>("all");
+  
+  const { isSearchVisible } = useSearch();
   const headerRef = useRef<HTMLDivElement>(null);
-  const loadMoreRef = useRef<HTMLDivElement>(null);
 
   const dispatch = useAppDispatch();
   const searchResults = useGlobalState((state: any) => state.discover.searchResults) as SearchResults;
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
-  const teams = useMemo(() => teamsData.teams || [], []);
-  const pageSize = 6;
+  const pageSize = 8; // Carregando em múltiplos de 4
 
   const handleScroll = useCallback(() => {
     if (headerRef.current) {
@@ -187,7 +106,7 @@ export default function DiscoverPage() {
       
       if (!newValue) {
         setIsSearching(true);
-        const filters = buildSearchFilters(selectedTeam, teams, "");
+        const filters = buildSearchFilters("", selectedSport);
         dispatch(searchArticles({ 
           filters,
           pagination: { page: 1, page_size: pageSize },
@@ -195,14 +114,14 @@ export default function DiscoverPage() {
         })).finally(() => setIsSearching(false));
       }
     },
-    [selectedTeam, teams, dispatch, pageSize]
+    [dispatch, pageSize, selectedSport]
   );
 
   const handleSearchKeyPress = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Enter' && searchQuery.trim()) {
         setIsSearching(true);
-        const filters = buildSearchFilters(selectedTeam, teams, searchQuery);
+        const filters = buildSearchFilters(searchQuery, selectedSport);
         dispatch(searchArticles({ 
           filters,
           pagination: { page: 1, page_size: pageSize },
@@ -210,19 +129,8 @@ export default function DiscoverPage() {
         })).finally(() => setIsSearching(false));
       }
     },
-    [searchQuery, selectedTeam, teams, dispatch, pageSize]
+    [searchQuery, dispatch, pageSize, selectedSport]
   );
-
-  const handleTeamChange = useCallback((value: string) => {
-    setSelectedTeam(value);
-    setIsSearching(true);
-    const filters = buildSearchFilters(value, teams, searchQuery);
-    dispatch(searchArticles({ 
-      filters,
-      pagination: { page: 1, page_size: pageSize },
-      sorters: ["_id", -1]
-    })).finally(() => setIsSearching(false));
-  }, [teams, searchQuery, dispatch, pageSize]);
 
   const handleTabChange = useCallback((value: string) => {
     setActiveTab(value);
@@ -235,57 +143,57 @@ export default function DiscoverPage() {
     }
   }, []);
 
+  const handleClearSearch = useCallback(() => {
+    setSearchQuery("");
+    // Recarregar artigos sem filtro de busca
+    setIsSearching(true);
+    const filters = buildSearchFilters("", selectedSport);
+    dispatch(searchArticles({ 
+      filters,
+      pagination: { page: 1, page_size: pageSize },
+      sorters: ["_id", -1]
+    })).finally(() => setIsSearching(false));
+  }, [dispatch, pageSize, selectedSport]);
+
+  const handleLoadMore = useCallback(() => {
+    if (searchResults.status !== "loading" && searchResults.pagination.hasMore) {
+      const nextPage = searchResults.pagination.page + 1;
+      const filters = buildSearchFilters(debouncedSearchQuery, selectedSport);
+
+      dispatch(searchArticles({ 
+        filters,
+        pagination: { page: nextPage, page_size: pageSize },
+        sorters: ["_id", -1]
+      }));
+    }
+  }, [searchResults.status, searchResults.pagination.hasMore, searchResults.pagination.page, debouncedSearchQuery, dispatch, pageSize, selectedSport]);
+
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
   useEffect(() => {
-    const filters = buildSearchFilters(selectedTeam, teams, "");
+    const filters = buildSearchFilters("", selectedSport);
     dispatch(searchArticles({ 
       filters,
       pagination: { page: 1, page_size: pageSize },
       sorters: ["_id", -1]
     }));
-  }, [selectedTeam, dispatch, teams, pageSize]);
+  }, [dispatch, pageSize, selectedSport]);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const target = entries[0];
-        if (target.isIntersecting && searchResults.status !== "loading" && searchResults.pagination.hasMore) {
-          const nextPage = searchResults.pagination.page + 1;
-          const filters = buildSearchFilters(selectedTeam, teams, debouncedSearchQuery);
+  const handleSportChange = useCallback((value: string) => {
+    setSelectedSport(value);
+    setIsSearching(true);
+    const filters = buildSearchFilters(searchQuery, value);
+    dispatch(searchArticles({
+      filters,
+      pagination: { page: 1, page_size: pageSize },
+      sorters: ["_id", -1]
+    })).finally(() => setIsSearching(false));
+  }, [dispatch, pageSize, searchQuery]);
 
-          dispatch(searchArticles({ 
-            filters,
-            pagination: { page: nextPage, page_size: pageSize },
-            sorters: ["_id", -1]
-          }));
-        }
-      },
-      { threshold: 0.1 }
-    );
 
-    const currentRef = loadMoreRef.current;
-    if (currentRef) {
-      observer.observe(currentRef);
-    }
-
-    return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
-      }
-    };
-  }, [
-    searchResults.status,
-    searchResults.pagination,
-    dispatch,
-    debouncedSearchQuery,
-    selectedTeam,
-    teams,
-    pageSize
-  ]);
 
   const displayedArticles = searchResults.data;
 
@@ -317,8 +225,9 @@ export default function DiscoverPage() {
   }, [displayedArticles]);
 
   return (
-    <div className="mobile-container pb-4 space-y-6 max-w-5xl mx-auto">
-      <h1 className="sr-only">A Inteligência Artificial da Sportingbet</h1>
+    <SearchWrapper onClearSearch={handleClearSearch}>
+      <div className="mobile-container pt-4 max-w-5xl mx-auto">
+      <h1 className="sr-only">{brand.description}</h1>
       <Tabs
         value={activeTab}
         onValueChange={handleTabChange}
@@ -326,68 +235,62 @@ export default function DiscoverPage() {
       >
         <div
           ref={headerRef}
-          className={cn(
-            "md:sticky z-20 transition-shadow duration-200",
-            isScrolled ? "shadow-md shadow-black/5" : "shadow-none",
-            "top-[64px] md:top-0",
-            isDarkMode ? "bg-[#061F3F]" : "bg-background",
-            "pt-24 md:pt-8 pb-4"
-          )}
-          // style={{ position: "sticky" }}
+          style={{
+          }}
         >
-          <div className={cn(
-            "border-b pb-4",
-            isDarkMode && "border-[#D3ECFF]/20"
-          )}>
-            <TabsList className={cn(
-              "w-full justify-start overflow-x-auto",
-              isDarkMode ? "bg-[#45CAFF] border-[#D3ECFF]/20" : "bg-background"
-            )}>
+          <div className="border-b pb-4 border-bwin-neutral-30">
+            <TabsList className="w-full justify-start overflow-x-auto" style={{
+              backgroundColor: 'hsl(var(--bg-secondary))',
+              borderColor: 'hsl(var(--border-primary))'
+            }}>
               <TabsTrigger 
                 value="news" 
-                className={cn(
-                  "flex items-center gap-2",
-                  isDarkMode && "text-[#061F3F] data-[state=active]:bg-[#061F3F] data-[state=active]:text-[#D3ECFF]"
-                )}
+                className="flex items-center gap-2 text-white data-[state=active]:text-white"
+                style={{
+                  backgroundColor: 'transparent'
+                }}
               >
                 <Newspaper className="h-4 w-4" />
-                Notícias
-              </TabsTrigger>
-              <TabsTrigger 
-                value="teams" 
-                className={cn(
-                  "flex items-center gap-2",
-                  isDarkMode && "text-[#061F3F] data-[state=active]:bg-[#061F3F] data-[state=active]:text-[#D3ECFF]"
-                )}
-              >
-                <Table2 className="h-4 w-4" />
-                Estatísticas
+                {brand.content.navigation?.discover || "Notícias"}
               </TabsTrigger>
             </TabsList>
           </div>
 
           {activeTab === "news" && (
             <div className={cn(
-              "py-4 px-0 sm:px-0",
-              isDarkMode ? "bg-[#061F3F]" : "bg-background"
+              "py-4 px-0 sm:px-0 transition-all duration-300",
+              // No mobile: mostrar apenas se isSearchVisible for true
+              // No desktop: sempre mostrar
+              "md:block",
+              isSearchVisible ? "block" : "hidden md:block"
             )}>
-              <div className="flex justify-between items-center gap-4">
-                <TeamFilterComponent value={selectedTeam} onChange={handleTeamChange} />
+              <div className="flex justify-between items-center gap-3">
                 <div className="relative w-full md:w-[232px]">
-                  <Search className={cn(
-                    "absolute left-2 top-2.5 h-4 w-4",
-                    isDarkMode ? "text-[#D3ECFF]" : "text-muted-foreground"
-                  )} />
+                  <Select value={selectedSport} onValueChange={handleSportChange}>
+                    <SelectTrigger className="text-white" style={{ backgroundColor: 'hsl(var(--bg-secondary))', borderColor: 'hsl(var(--border-primary))' }}>
+                      <SelectValue placeholder="All sports" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
+                      <SelectItem value="football">Football</SelectItem>
+                      <SelectItem value="nfl">NFL</SelectItem>
+                      <SelectItem value="tennis">Tennis</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="relative w-full md:w-[232px]">
+                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-bwin-neutral-80" />
                   <Input
                     placeholder="Buscar artigos..."
-                    className={cn(
-                      "pl-8 text-base max-w-[232px]",
-                      isDarkMode && "bg-[#061F3F] border-[#D3ECFF]/20 text-[#D3ECFF] placeholder:text-[#D3ECFF]/50"
-                    )}
+                    className="pl-8 text-base max-w-[232px] text-white placeholder:text-neutral-60 focus:border-brand-primary"
                     value={searchQuery}
                     onChange={handleSearchChange}
                     onKeyPress={handleSearchKeyPress}
-                    style={{ fontSize: '16px' }}
+                    style={{
+                      backgroundColor: 'hsl(var(--bg-secondary))',
+                      borderColor: 'hsl(var(--border-primary))',
+                      fontSize: '16px'
+                    }}
                   />
                   {isSearching && (
                     <div className="absolute right-2 top-1/2 -translate-y-1/2">
@@ -404,7 +307,7 @@ export default function DiscoverPage() {
           <div className="space-y-12">
             {searchResults.status === "loading" && !searchResults.data.length ? (
               <div className="flex items-center justify-center min-h-[300px]">
-                <Loading width={100} height={100} />
+                <Loading width={100} height={100} showLabel={true} label="Carregando artigos..." />
               </div>
             ) : articleSections && articleSections.length > 0 ? (
               <>
@@ -423,24 +326,36 @@ export default function DiscoverPage() {
                     )}
                   </div>
                 ))}
-                {/* Load more indicator */}
-                <div ref={loadMoreRef} className="py-4 flex justify-center">
+                {/* Load more button */}
+                <div className="py-8 flex justify-center">
                   {searchResults.status === "loading" &&
                     !isSearching &&
-                    searchResults.data.length > 0 && (
-                      <Loading width={100} height={100} />
-                    )}
-                  {searchResults.status !== "loading" &&
-                    !searchResults.pagination.hasMore &&
-                    searchResults.data.length > 0 && (
-                      <p className="text-sm text-muted-foreground py-2">
+                    searchResults.data.length > 0 ? (
+                      <Loading width={100} height={100} showLabel={true} label="Carregando mais artigos..." />
+                    ) : searchResults.pagination.hasMore && searchResults.data.length > 0 ? (
+                      <div className="flex flex-col items-center gap-3">
+                        <Button
+                          onClick={handleLoadMore}
+                          className="rounded-full w-16 h-16 p-0 shadow-lg hover:shadow-xl transition-all duration-200 load-more-button"
+                          style={{ 
+                            backgroundColor: 'hsl(var(--brand-primary))',
+                            color: 'white'
+                          }}
+                          disabled={searchResults.status === "loading"}
+                        >
+                          <Plus className="h-8 w-8" />
+                        </Button>
+                        <span className="text-sm text-bwin-neutral-60 font-medium">Carregar mais artigos</span>
+                      </div>
+                    ) : searchResults.data.length > 0 ? (
+                      <p className="text-sm text-bwin-neutral-60 py-2">
                         Não há mais artigos para carregar
                       </p>
-                    )}
+                    ) : null}
                 </div>
               </>
             ) : (
-              <div className="py-8 text-center text-muted-foreground">
+              <div className="py-8 text-center text-bwin-neutral-60">
                 {searchResults.status === "loading"
                   ? "Carregando artigos..."
                   : "Nenhum artigo encontrado"}
@@ -448,14 +363,9 @@ export default function DiscoverPage() {
             )}
           </div>
         </TabsContent>
-
-        <TabsContent value="teams" className="pt-4">
-          <div className="pt-2">
-            <FifaCwcSchedule />
-          </div>
-        </TabsContent>
       </Tabs>
     </div>
+    </SearchWrapper>
   );
 }
 
