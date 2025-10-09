@@ -134,6 +134,13 @@ export function ResponsibleGamingMobile({
             </div>
           )}
         </div>
+        {brand.responsibleGaming.footer?.oddsDisclaimer && (
+          <div className="mt-4 px-2">
+            <p className="text-xs text-muted-foreground text-center italic opacity-70 max-w-2xl mx-auto">
+              {brand.responsibleGaming.footer.oddsDisclaimer}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   )

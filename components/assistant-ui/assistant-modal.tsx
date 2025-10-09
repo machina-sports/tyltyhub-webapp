@@ -458,7 +458,7 @@ export function AssistantModal() {
         {!isOpen && (
           <button
             onClick={() => setIsOpen(true)}
-            className="fixed bottom-4 right-4 z-50 h-14 w-14 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 transition-all duration-200 flex items-center justify-center"
+            className="fixed bottom-28 right-4 z-50 h-14 w-14 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 transition-all duration-200 flex items-center justify-center md:bottom-4 md:right-4"
             aria-label="Open Chat Assistant"
           >
             <MessageSquare className="h-6 w-6" />
