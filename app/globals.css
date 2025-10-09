@@ -1094,9 +1094,15 @@ a {
   border-color: hsl(var(--brand-primary) / 0.3) !important;
 }
 
+.bwin-age-verification-cta {  
+  background-color: hsl(var(--brand-primary)) !important;
+}
+.bwin-lgpd-consent-cta {  
+  background-color: hsl(var(--brand-primary)) !important;
+}
 .sportingbet-age-verification-cta {
   background-color: hsl(var(--brand-primary)) !important;
 }
-.bwin-age-verification-cta {  
+.sportingbet-lgpd-consent-cta {
   background-color: hsl(var(--brand-primary)) !important;
 }

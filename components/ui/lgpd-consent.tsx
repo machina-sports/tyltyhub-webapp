@@ -21,6 +21,8 @@ const defaultConsent: CookieConsent = {
   marketing: false
 }
 
+const brandId = process.env.NEXT_PUBLIC_BRAND || 'bwin';
+
 export function LGPDConsent() {
   const [isVisible, setIsVisible] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
@@ -276,7 +278,7 @@ export function LGPDConsent() {
                   <Button
                     onClick={handleAcceptAll}
                     style={{ backgroundColor: 'var(--brand-primary)' }}
-                    className="flex-1 text-primary-foreground hover:opacity-90"
+                    className={`flex-1 text-primary-foreground hover:opacity-90 ${brandId === 'sportingbet' ? 'sportingbet-lgpd-consent-cta' : 'bwin-lgpd-consent-cta'}`}
                   >
                     {acceptText || 'Aceptar Todo'}
                   </Button>
@@ -302,7 +304,7 @@ export function LGPDConsent() {
                   <Button
                     onClick={handleSaveSettings}
                     style={{ backgroundColor: 'var(--brand-primary)' }}
-                    className="flex-1 text-primary-foreground hover:opacity-90"
+                    className={`flex-1 text-primary-foreground hover:opacity-90 ${brandId === 'sportingbet' ? 'sportingbet-lgpd-consent-cta' : 'bwin-lgpd-consent-cta'}`}
                   >
                     Guardar Preferencias
                   </Button>
