@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loading } from "@/components/ui/loading";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { searchArticles } from "@/providers/discover/actions";
 import { useAppDispatch } from "@/store/dispatch";
@@ -21,6 +22,7 @@ interface SearchFilters {
   "metadata.language": string;
   "metadata.content_type"?: { "$ne": string };
   "value.title"?: { $regex: string; $options: string };
+  "metadata.sport_type"?: string;
 }
 
 interface SearchResults {
@@ -54,7 +56,7 @@ function useDebounce<T>(value: T, delay: number): T {
   return debouncedValue;
 }
 
-const buildSearchFilters = (searchQuery: string): SearchFilters => {
+const buildSearchFilters = (searchQuery: string, sportType: string): SearchFilters => {
 
 
   const baseFilters: SearchFilters = {
@@ -67,6 +69,10 @@ const buildSearchFilters = (searchQuery: string): SearchFilters => {
     baseFilters["value.title"] = { $regex: searchQuery, $options: "i" };
   }
 
+  if (sportType && sportType !== "all") {
+    baseFilters["metadata.sport_type"] = sportType;
+  }
+
   return baseFilters;
 };
 
@@ -76,6 +82,7 @@ export default function DiscoverPage() {
   const [activeTab, setActiveTab] = useState("news");
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+  const [selectedSport, setSelectedSport] = useState<string>("all");
   
   const { isSearchVisible } = useSearch();
   const headerRef = useRef<HTMLDivElement>(null);
@@ -99,7 +106,7 @@ export default function DiscoverPage() {
       
       if (!newValue) {
         setIsSearching(true);
-        const filters = buildSearchFilters("");
+        const filters = buildSearchFilters("", selectedSport);
         dispatch(searchArticles({ 
           filters,
           pagination: { page: 1, page_size: pageSize },
@@ -107,14 +114,14 @@ export default function DiscoverPage() {
         })).finally(() => setIsSearching(false));
       }
     },
-    [dispatch, pageSize]
+    [dispatch, pageSize, selectedSport]
   );
 
   const handleSearchKeyPress = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Enter' && searchQuery.trim()) {
         setIsSearching(true);
-        const filters = buildSearchFilters(searchQuery);
+        const filters = buildSearchFilters(searchQuery, selectedSport);
         dispatch(searchArticles({ 
           filters,
           pagination: { page: 1, page_size: pageSize },
@@ -122,7 +129,7 @@ export default function DiscoverPage() {
         })).finally(() => setIsSearching(false));
       }
     },
-    [searchQuery, dispatch, pageSize]
+    [searchQuery, dispatch, pageSize, selectedSport]
   );
 
   const handleTabChange = useCallback((value: string) => {
@@ -140,18 +147,18 @@ export default function DiscoverPage() {
     setSearchQuery("");
     // Recarregar artigos sem filtro de busca
     setIsSearching(true);
-    const filters = buildSearchFilters("");
+    const filters = buildSearchFilters("", selectedSport);
     dispatch(searchArticles({ 
       filters,
       pagination: { page: 1, page_size: pageSize },
       sorters: ["_id", -1]
     })).finally(() => setIsSearching(false));
-  }, [dispatch, pageSize]);
+  }, [dispatch, pageSize, selectedSport]);
 
   const handleLoadMore = useCallback(() => {
     if (searchResults.status !== "loading" && searchResults.pagination.hasMore) {
       const nextPage = searchResults.pagination.page + 1;
-      const filters = buildSearchFilters(debouncedSearchQuery);
+      const filters = buildSearchFilters(debouncedSearchQuery, selectedSport);
 
       dispatch(searchArticles({ 
         filters,
@@ -159,7 +166,7 @@ export default function DiscoverPage() {
         sorters: ["_id", -1]
       }));
     }
-  }, [searchResults.status, searchResults.pagination.hasMore, searchResults.pagination.page, debouncedSearchQuery, dispatch, pageSize]);
+  }, [searchResults.status, searchResults.pagination.hasMore, searchResults.pagination.page, debouncedSearchQuery, dispatch, pageSize, selectedSport]);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -167,13 +174,24 @@ export default function DiscoverPage() {
   }, [handleScroll]);
 
   useEffect(() => {
-    const filters = buildSearchFilters("");
+    const filters = buildSearchFilters("", selectedSport);
     dispatch(searchArticles({ 
       filters,
       pagination: { page: 1, page_size: pageSize },
       sorters: ["_id", -1]
     }));
-  }, [dispatch, pageSize]);
+  }, [dispatch, pageSize, selectedSport]);
+
+  const handleSportChange = useCallback((value: string) => {
+    setSelectedSport(value);
+    setIsSearching(true);
+    const filters = buildSearchFilters(searchQuery, value);
+    dispatch(searchArticles({
+      filters,
+      pagination: { page: 1, page_size: pageSize },
+      sorters: ["_id", -1]
+    })).finally(() => setIsSearching(false));
+  }, [dispatch, pageSize, searchQuery]);
 
 
 
@@ -246,7 +264,20 @@ export default function DiscoverPage() {
               "md:block",
               isSearchVisible ? "block" : "hidden md:block"
             )}>
-              <div className="flex justify-end items-center">
+              <div className="flex justify-between items-center gap-3">
+                <div className="relative w-full md:w-[232px]">
+                  <Select value={selectedSport} onValueChange={handleSportChange}>
+                    <SelectTrigger className="text-white" style={{ backgroundColor: 'hsl(var(--bg-secondary))', borderColor: 'hsl(var(--border-primary))' }}>
+                      <SelectValue placeholder="All sports" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
+                      <SelectItem value="football">Football</SelectItem>
+                      <SelectItem value="nfl">NFL</SelectItem>
+                      <SelectItem value="tennis">Tennis</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                 <div className="relative w-full md:w-[232px]">
                   <Search className="absolute left-2 top-2.5 h-4 w-4 text-bwin-neutral-80" />
                   <Input
