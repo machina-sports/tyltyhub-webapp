@@ -349,15 +349,15 @@ function AssistantChatContent({
 
             <div className="border-t bg-background">
               <div className="max-w-4xl mx-auto p-4">
-                <ComposerPrimitive.Root className="flex gap-2 items-end">
+                <ComposerPrimitive.Root className="flex gap-2 items-center">
                   <ComposerPrimitive.Input
                     ref={composerRef as any}
                     placeholder={chat.placeholder}
-                    className="flex-1 px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                    className="flex-1 px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none overflow-hidden h-12 max-h-12 min-h-12"
                     rows={1}
                   />
                   <ComposerPrimitive.Send asChild>
-                  <Button size="lg" className="h-12 px-6 bg-brand-primary hover:brightness-95 text-black">
+                    <Button size="lg" className="h-12 px-6 bg-brand-primary hover:brightness-95 text-black shrink-0">
                       <Send className="h-5 w-5" />
                     </Button>
                   </ComposerPrimitive.Send>
