@@ -192,6 +192,9 @@ function AssistantChatContent({
     if (initialQuery && !messageSent.current && composerRef.current) {
       messageSent.current = true;
       
+      // Remove the ?q parameter from URL to prevent re-submission on refresh
+      router.replace(`/assistant/${threadId}`, { scroll: false });
+      
       // Set the composer value and trigger submit
       const composer = composerRef.current;
       const form = composer.closest('form');
@@ -213,7 +216,7 @@ function AssistantChatContent({
         }, 100);
       }
     }
-  }, [initialQuery, runtime]);
+  }, [initialQuery, runtime, router, threadId]);
 
   return (
     <AssistantRuntimeProvider runtime={runtime}>
