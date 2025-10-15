@@ -304,9 +304,10 @@ function AssistantChatContent({
                         <div className="flex flex-col items-start w-full">
                           <div className="bg-muted rounded-lg px-4 py-3 max-w-[80%]">
                             <MessagePrimitive.Content />
-                            {objects && objects.length > 0 && markets.length === 0 && (
+                            {/* Temporarily hidden - will be reactivated later */}
+                            {/* {objects && objects.length > 0 && markets.length === 0 && (
                               <ObjectCards objects={objects} />
-                            )}
+                            )} */}
                             {markets && markets.length > 0 && (
                               <div className="mt-3">
                                 <BettingRecommendationsWidget markets={markets as any} />
