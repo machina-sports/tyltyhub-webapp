@@ -10,7 +10,7 @@ import {
   useMessage,
 } from "@assistant-ui/react";
 import { Button } from "@/components/ui/button";
-import { Send, ExternalLink, ArrowDown, Minimize2 } from "lucide-react";
+import { Send, ExternalLink, ArrowDown, Minimize2, Sparkles } from "lucide-react";
 import Image from "next/image";
 import { BrandLogo } from "@/components/brand/brand-logo";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
@@ -156,6 +156,7 @@ function AssistantChatContent({
 }) {
   const router = useRouter();
   const objectsMapRef = useRef<Map<string, any[]>>(new Map());
+  const suggestionsMapRef = useRef<Map<string, string[]>>(new Map());
   const [objectsVersion, setObjectsVersion] = useState(0);
   const { name } = useAssistantConfig();
   const { chat } = useBrandTexts();
@@ -172,6 +173,7 @@ function AssistantChatContent({
       streamWorkflows: AGENT_CONFIG.streamWorkflows,
       threadId: threadId,
       objectsMapRef: objectsMapRef,
+      suggestionsMapRef: suggestionsMapRef,
       onObjectsUpdate: () => {
         setObjectsVersion(v => v + 1);
       },
@@ -254,6 +256,9 @@ function AssistantChatContent({
                         .join("");
                       const objectsData = objectsMapRef.current.get(textContent);
                       const objects = Array.isArray(objectsData) ? objectsData : [];
+                      const suggestionsData = suggestionsMapRef.current.get(textContent);
+                      const suggestions = Array.isArray(suggestionsData) ? suggestionsData : [];
+                      
                       const markets = Array.isArray(objects)
                         ? objects.map((o: any) => {
                             const oddsValue = Number(
@@ -274,8 +279,29 @@ function AssistantChatContent({
                           .filter((m: any) => m.title && typeof m.odds === 'number' && !Number.isNaN(m.odds))
                         : [];
 
+                      const handleSuggestionClick = (suggestion: string) => {
+                        const composer = composerRef.current;
+                        if (!composer) return;
+                        
+                        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+                          window.HTMLTextAreaElement.prototype,
+                          'value'
+                        )?.set;
+                        
+                        if (nativeInputValueSetter) {
+                          nativeInputValueSetter.call(composer, suggestion);
+                          const event = new Event('input', { bubbles: true });
+                          composer.dispatchEvent(event);
+                          
+                          const form = composer.closest('form');
+                          if (form) {
+                            setTimeout(() => form.requestSubmit(), 50);
+                          }
+                        }
+                      };
+
                       return (
-                        <div className="flex justify-start">
+                        <div className="flex flex-col items-start w-full">
                           <div className="bg-muted rounded-lg px-4 py-3 max-w-[80%]">
                             <MessagePrimitive.Content />
                             {objects && objects.length > 0 && markets.length === 0 && (
@@ -287,6 +313,20 @@ function AssistantChatContent({
                               </div>
                             )}
                           </div>
+                          {suggestions && suggestions.length > 0 && (
+                            <div className="mt-3 space-y-2 max-w-[80%]">
+                              {suggestions.map((suggestion: string, index: number) => (
+                                <button
+                                  key={index}
+                                  onClick={() => handleSuggestionClick(suggestion)}
+                                  className="flex items-center gap-2 px-3 py-2 text-sm text-left bg-background border border-border rounded-lg hover:bg-accent hover:border-primary transition-colors w-full"
+                                >
+                                  <Sparkles className="h-4 w-4 flex-shrink-0 text-primary" />
+                                  <span className="break-words">{suggestion}</span>
+                                </button>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       );
                     },

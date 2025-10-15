@@ -21,6 +21,7 @@ export interface StreamingAdapterConfig {
   streamWorkflows?: boolean; // Enable workflow-by-workflow progress streaming
   threadId?: string; // Thread ID for conversation tracking
   objectsMapRef?: React.MutableRefObject<Map<string, any[]>>; // Map to store objects per message
+  suggestionsMapRef?: React.MutableRefObject<Map<string, string[]>>; // Map to store suggestions per message
   onObjectsUpdate?: () => void; // Callback to trigger re-render when objects are updated
 }
 
@@ -129,18 +130,34 @@ export const createStreamingAdapterWithConfig = (
               if (chunk.type === 'content') {
                 hasReceivedContent = true;
 
-                // Check if this is a complete response (has metadata with state) or a streaming chunk
-                if (chunk.metadata?.state?.document_content) {
+                // Check multiple possible locations for document_content
+                const documentContent = chunk.metadata?.state?.document_content || chunk.document_content;
+
+                // Check if this is a complete response or a streaming chunk
+                if (documentContent && Array.isArray(documentContent) && documentContent.length > 0) {
                   // Complete response - replace everything
-                  const message = chunk.metadata.state.document_content[0]?.content || chunk.content;
+                  const message = documentContent[0]?.content || chunk.content;
                   fullText = message;
 
                   // Extract objects if available
-                  objects = chunk.metadata.state.document_content[0]?.objects || [];
+                  objects = documentContent[0]?.objects || [];
+
+                  // Extract suggestions if available
+                  const suggestions = documentContent[0]?.suggestions || chunk.suggestions || [];
 
                   // Store objects in map keyed by message text
                   if (config.objectsMapRef && objects.length > 0) {
                     config.objectsMapRef.current.set(fullText, objects);
+
+                    // Trigger re-render callback
+                    if (config.onObjectsUpdate) {
+                      config.onObjectsUpdate();
+                    }
+                  }
+
+                  // Store suggestions in map keyed by message text
+                  if (config.suggestionsMapRef && suggestions.length > 0) {
+                    config.suggestionsMapRef.current.set(fullText, suggestions);
 
                     // Trigger re-render callback
                     if (config.onObjectsUpdate) {
