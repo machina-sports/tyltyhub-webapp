@@ -308,12 +308,12 @@ function AssistantChatContent({
                             {/* {objects && objects.length > 0 && markets.length === 0 && (
                               <ObjectCards objects={objects} />
                             )} */}
-                            {markets && markets.length > 0 && (
-                              <div className="mt-3">
-                                <BettingRecommendationsWidget markets={markets as any} />
-                              </div>
-                            )}
                           </div>
+                          {markets && markets.length > 0 && (
+                            <div className="mt-3 w-full">
+                              <BettingRecommendationsWidget markets={markets as any} />
+                            </div>
+                          )}
                           {suggestions && suggestions.length > 0 && (
                             <div className="mt-3 space-y-2 max-w-[80%]">
                               {suggestions.map((suggestion: string, index: number) => (
