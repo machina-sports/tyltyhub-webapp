@@ -149,11 +149,13 @@ function useAssistantConfig() {
 function AssistantChatContent({
   threadId,
   initialMessages,
-  initialQuery
+  initialQuery,
+  rawMessages
 }: {
   threadId: string;
   initialMessages: any[];
   initialQuery?: string;
+  rawMessages?: any[];
 }) {
   const router = useRouter();
   const objectsMapRef = useRef<Map<string, any[]>>(new Map());
@@ -163,6 +165,37 @@ function AssistantChatContent({
   const { chat } = useBrandTexts();
   const composerRef = useRef<HTMLTextAreaElement>(null);
   const messageSent = useRef(false);
+
+  // Populate refs from raw messages on mount
+  useEffect(() => {
+    if (rawMessages && rawMessages.length > 0) {
+      rawMessages.forEach((msg: any) => {
+        if (msg.role === 'assistant') {
+          const textContent = typeof msg.content === 'string' ? msg.content : msg.content?.content || '';
+          
+          // Extract objects from document_content if available
+          const docContent = msg.document_content?.[0];
+          if (docContent) {
+            if (docContent.objects && docContent.objects.length > 0) {
+              objectsMapRef.current.set(textContent, docContent.objects);
+            }
+            if (docContent.suggestions && docContent.suggestions.length > 0) {
+              suggestionsMapRef.current.set(textContent, docContent.suggestions);
+            }
+          } else {
+            // Fallback to root level
+            if (msg.objects && msg.objects.length > 0) {
+              objectsMapRef.current.set(textContent, msg.objects);
+            }
+            if (msg.suggestions && msg.suggestions.length > 0) {
+              suggestionsMapRef.current.set(textContent, msg.suggestions);
+            }
+          }
+        }
+      });
+      setObjectsVersion(v => v + 1);
+    }
+  }, [rawMessages]);
 
   const handleMinimize = () => {
     router.back();
@@ -305,33 +338,41 @@ function AssistantChatContent({
                       };
 
                       return (
-                        <div className="flex flex-col items-start w-full">
-                          <div className="bg-muted rounded-lg px-4 py-3 max-w-[80%]">
-                            <MessagePrimitive.Content />
-                            {/* Temporarily hidden - will be reactivated later */}
-                            {/* {objects && objects.length > 0 && markets.length === 0 && (
-                              <ObjectCards objects={objects} />
-                            )} */}
+                        <div className="flex gap-3 items-start w-full">
+                          {/* Brand Icon */}
+                          <div className="flex-shrink-0 mt-2 bg-background p-1.5 rounded-lg border">
+                            <BrandLogo variant="icon" width={32} height={32} className="rounded" />
                           </div>
-                          {markets && markets.length > 0 && (
-                            <div className="mt-3 w-full">
-                              <BettingRecommendationsWidget markets={markets as any} />
+                          
+                          {/* Message Content */}
+                          <div className="flex flex-col items-start flex-1">
+                            <div className="bg-muted rounded-lg px-4 py-3 max-w-[80%]">
+                              <MessagePrimitive.Content />
+                              {/* Temporarily hidden - will be reactivated later */}
+                              {/* {objects && objects.length > 0 && markets.length === 0 && (
+                                <ObjectCards objects={objects} />
+                              )} */}
                             </div>
-                          )}
-                          {suggestions && suggestions.length > 0 && (
-                            <div className="mt-3 space-y-2 max-w-[80%]">
-                              {suggestions.map((suggestion: string, index: number) => (
-                                <button
-                                  key={index}
-                                  onClick={() => handleSuggestionClick(suggestion)}
-                                  className="flex items-center gap-2 px-3 py-2 text-sm text-left bg-background border border-border rounded-lg hover:bg-accent hover:border-primary transition-colors w-full"
-                                >
-                                  <Sparkles className="h-4 w-4 flex-shrink-0 text-primary" />
-                                  <span className="break-words">{suggestion}</span>
-                                </button>
-                              ))}
-                            </div>
-                          )}
+                            {markets && markets.length > 0 && (
+                              <div className="mt-3 w-full">
+                                <BettingRecommendationsWidget markets={markets as any} />
+                              </div>
+                            )}
+                            {suggestions && suggestions.length > 0 && (
+                              <div className="mt-3 space-y-2 max-w-[80%]">
+                                {suggestions.map((suggestion: string, index: number) => (
+                                  <button
+                                    key={index}
+                                    onClick={() => handleSuggestionClick(suggestion)}
+                                    className="flex items-center gap-2 px-3 py-2 text-sm text-left bg-background border border-border rounded-lg hover:bg-accent hover:border-primary transition-colors w-full"
+                                  >
+                                    <Sparkles className="h-4 w-4 flex-shrink-0 text-primary" />
+                                    <span className="break-words">{suggestion}</span>
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                          </div>
                         </div>
                       );
                     },
@@ -381,6 +422,7 @@ export default function AssistantChatPage() {
   const initialQuery = searchParams.get('q');
   
   const [initialMessages, setInitialMessages] = useState<any[]>([]);
+  const [rawMessages, setRawMessages] = useState<any[]>([]);
   const [isReady, setIsReady] = useState(false);
 
   // Load thread history
@@ -389,12 +431,16 @@ export default function AssistantChatPage() {
 
     getThreadHistory(threadId).then(({ error, messages }) => {
       if (!error && messages && messages.length > 0) {
+        // Store raw messages for extracting objects/suggestions
+        setRawMessages(messages);
+        
+        // Format messages for assistant-ui
         const formattedMessages = messages.map((msg: any) => ({
           role: msg.role as "user" | "assistant",
           content: [
             {
               type: "text" as const,
-              text: msg.content
+              text: typeof msg.content === 'string' ? msg.content : msg.content?.content || ''
             }
           ]
         }));
@@ -420,6 +466,7 @@ export default function AssistantChatPage() {
       key={`${threadId}-${initialMessages.length}`} 
       threadId={threadId} 
       initialMessages={initialMessages}
+      rawMessages={rawMessages}
       initialQuery={initialQuery || undefined}
     />
   );
