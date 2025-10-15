@@ -18,6 +18,7 @@ import { createStreamingAdapterWithConfig } from "@/components/assistant-ui/stre
 import { getThreadHistory } from "@/functions/thread-register";
 import { useBrandTexts } from "@/hooks/use-brand-texts";
 import { BettingRecommendationsWidget } from "@/components/betting-recommendations-widget";
+import { ResponsibleGamingResponsive } from "@/components/responsible-gaming-responsive";
 
 // Component to render object cards (events, matches, etc.)
 function ObjectCards({ objects }: { objects: any[] }) {
@@ -333,11 +334,16 @@ function AssistantChatContent({
                     },
                   }}
                 />
-                <ThreadPrimitive.ScrollToBottom className="sticky bottom-4 ml-auto mr-4">
+                <ThreadPrimitive.ScrollToBottom className="sticky bottom-4 ml-auto mr-4 md:hidden">
                   <Button variant="outline" size="icon" className="h-10 w-10 rounded-full shadow-lg">
                     <ArrowDown className="h-5 w-5" />
                   </Button>
                 </ThreadPrimitive.ScrollToBottom>
+                
+                {/* Responsible Gaming Footer inside scroll area */}
+                <div className="mt-8 pb-4">
+                  <ResponsibleGamingResponsive />
+                </div>
               </div>
             </ThreadPrimitive.Viewport>
 

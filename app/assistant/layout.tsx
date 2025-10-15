@@ -3,5 +3,9 @@ export default function AssistantLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return (
+    <div className="fixed inset-0 z-50 bg-background">
+      {children}
+    </div>
+  );
 }
