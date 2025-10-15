@@ -409,9 +409,8 @@ function useShouldRenderModal() {
 }
 
 export function AssistantModal() {
-  const { threadId: contextThreadId } = useAssistant();
+  const { threadId: contextThreadId, isOpen, setIsOpen } = useAssistant();
   const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(false);
   const [initialMessages, setInitialMessages] = useState<any[]>([]);
   const [isReady, setIsReady] = useState(false);
   const [lastLoadedThreadId, setLastLoadedThreadId] = useState<string>("");

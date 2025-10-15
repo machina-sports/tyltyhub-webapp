@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useRef } from "react";
+import { flushSync } from "react-dom";
 import {
   AssistantRuntimeProvider,
   useLocalRuntime,
@@ -19,6 +20,7 @@ import { getThreadHistory } from "@/functions/thread-register";
 import { useBrandTexts } from "@/hooks/use-brand-texts";
 import { BettingRecommendationsWidget } from "@/components/betting-recommendations-widget";
 import { ResponsibleGamingResponsive } from "@/components/responsible-gaming-responsive";
+import { useAssistant } from "@/providers/assistant/use-assistant";
 
 // Component to render object cards (events, matches, etc.)
 function ObjectCards({ objects }: { objects: any[] }) {
@@ -138,14 +140,6 @@ const AGENT_CONFIG = {
   streamWorkflows: true,
 };
 
-function useAssistantConfig() {
-  const { assistant } = useBrandTexts();
-  return {
-    name: assistant.name,
-    welcomeMessage: assistant.welcomeMessage
-  };
-}
-
 function AssistantChatContent({
   threadId,
   initialMessages,
@@ -158,10 +152,10 @@ function AssistantChatContent({
   rawMessages?: any[];
 }) {
   const router = useRouter();
+  const { openWithThread } = useAssistant();
   const objectsMapRef = useRef<Map<string, any[]>>(new Map());
   const suggestionsMapRef = useRef<Map<string, string[]>>(new Map());
   const [objectsVersion, setObjectsVersion] = useState(0);
-  const { name } = useAssistantConfig();
   const { chat } = useBrandTexts();
   const composerRef = useRef<HTMLTextAreaElement>(null);
   const messageSent = useRef(false);
@@ -198,7 +192,11 @@ function AssistantChatContent({
   }, [rawMessages]);
 
   const handleMinimize = () => {
-    router.back();
+    // Use flushSync to ensure state update completes before navigation
+    flushSync(() => {
+      openWithThread(threadId);
+    });
+    router.push('/');
   };
 
   const adapter = useMemo(() => {
@@ -255,20 +253,25 @@ function AssistantChatContent({
     <AssistantRuntimeProvider runtime={runtime}>
       <div className="flex flex-col h-screen bg-background">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b bg-background">
-          <div className="flex items-center gap-3">
-            <BrandLogo variant="icon" width={28} height={28} className="rounded" />
-            <h1 className="text-xl font-semibold">{name}</h1>
+        <div className="border-b bg-background">
+          <div className="max-w-4xl mx-auto flex items-center justify-between p-4">
+            <button 
+              onClick={() => router.push('/')}
+              className="cursor-pointer"
+              aria-label="Go to home"
+            >
+              <BrandLogo variant="full" height={32} className="w-[180px]" />
+            </button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleMinimize}
+              className="h-8 w-8 p-0"
+              title="Minimize"
+            >
+              <Minimize2 className="h-4 w-4" />
+            </Button>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleMinimize}
-            className="h-8 w-8 p-0"
-            title="Minimize"
-          >
-            <Minimize2 className="h-4 w-4" />
-          </Button>
         </div>
 
         {/* Chat Thread */}
@@ -340,8 +343,8 @@ function AssistantChatContent({
                       return (
                         <div className="flex gap-3 items-start w-full">
                           {/* Brand Icon */}
-                          <div className="flex-shrink-0 mt-2 bg-background p-1.5 rounded-lg border">
-                            <BrandLogo variant="icon" width={32} height={32} className="rounded" />
+                          <div className="flex-shrink-0 mt-2 bg-background rounded-lg">
+                            <BrandLogo variant="icon" width={36} height={36} className="rounded" />
                           </div>
                           
                           {/* Message Content */}
