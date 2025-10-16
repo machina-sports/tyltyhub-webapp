@@ -260,7 +260,7 @@ function AssistantChatContent({
               className="cursor-pointer"
               aria-label="Go to home"
             >
-              <BrandLogo variant="full" height={32} className="w-[180px] assistant-page-logo" />
+              <BrandLogo variant="full" height={40} className="w-[200px] assistant-page-logo" />
             </button>
             <Button
               variant="ghost"

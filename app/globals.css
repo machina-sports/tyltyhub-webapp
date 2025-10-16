@@ -560,17 +560,32 @@
     color: hsl(var(--brand-primary)) !important;
   }
 
-  /* Bwin: make assistant modal logo narrower */
+  /* Sportingbet: assistant modal logo size */
+  [data-brand="sportingbet"] .assistant-modal-logo {
+    max-width: 24px !important;
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  /* Bwin: assistant modal logo size */
   [data-brand="bwin"] .assistant-modal-logo {
     max-width: 20px !important;
     width: 20px !important;
     height: 20px !important;
   }
 
-  /* Bwin: make assistant page logo narrower */
+  /* Sportingbet: assistant page logo size */
+  [data-brand="sportingbet"] .assistant-page-logo {
+    max-width: 240px !important;
+    width: 240px !important;
+    height: 40px !important;
+  }
+
+  /* Bwin: assistant page logo size */
   [data-brand="bwin"] .assistant-page-logo {
     max-width: 120px !important;
     width: 120px !important;
+    height: 40px !important;
   }
   
   /* Sportingbet button colors */
@@ -1071,6 +1086,18 @@ a {
 [data-brand="sportingbet"] ::selection {
   background: hsl(207deg 95.24% 41.18%);
   color: white;
+}
+
+/* Sportingbet: user message bubble selection - different colors for visibility */
+[data-brand="sportingbet"] .user-message-bubble ::selection {
+  background: white !important;
+  color: hsl(207deg 95.24% 41.18%) !important;
+}
+
+/* Bwin: user message bubble selection - different colors for visibility */
+[data-brand="bwin"] .user-message-bubble ::selection {
+  background: black !important;
+  color: hsl(var(--bwin-brand-primary)) !important;
 }
 
 /* Home screen input focus/hover - theme specific */

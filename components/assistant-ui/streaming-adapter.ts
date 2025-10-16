@@ -273,7 +273,7 @@ export const createStreamingAdapterWithConfig = (
                 if (chunk.type === 'start') {
                   progressText = chunk.content ? `${chunk.content}\n\n` : '';
                 } else if (chunk.type === 'workflow_start') {
-                  progressText = `🔄 ${chunk.content}`;
+                  progressText = `${chunk.content}`;
                 } else if (chunk.type === 'workflow_complete') {
                   progressText = `✓ ${chunk.content}`;
                 } else if (chunk.type === 'workflow_output') {
