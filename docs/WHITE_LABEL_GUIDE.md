@@ -357,7 +357,7 @@ To migrate hardcoded code to the white label system:
 2. **Replace hardcoded texts:**
    ```tsx
    // Before
-   <h1>Bot And Win: bwin's AI</h1>
+   <h1>BotAndWin: bwin's AI</h1>
    
    // After
    <BrandText type="title" />

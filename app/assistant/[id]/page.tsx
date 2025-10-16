@@ -260,13 +260,13 @@ function AssistantChatContent({
               className="cursor-pointer"
               aria-label="Go to home"
             >
-              <BrandLogo variant="full" height={32} className="w-[180px]" />
+              <BrandLogo variant="full" height={32} className="w-[180px] assistant-page-logo" />
             </button>
             <Button
               variant="ghost"
               size="sm"
               onClick={handleMinimize}
-              className="h-8 w-8 p-0"
+              className="h-8 w-8 p-0 assistant-header-button"
               title="Minimize"
             >
               <Minimize2 className="h-4 w-4" />
@@ -283,7 +283,7 @@ function AssistantChatContent({
                   components={{
                     UserMessage: () => (
                       <div className="flex justify-end gap-3 items-start w-full">
-                        <div className="bg-primary text-white rounded-lg px-4 py-3 max-w-[80%] text-base font-sans">
+                        <div className="bg-primary user-message-bubble rounded-lg px-4 py-3 max-w-[80%] text-[15px] font-sans">
                           <MessagePrimitive.Content />
                         </div>
                         {/* User Icon */}
@@ -353,7 +353,7 @@ function AssistantChatContent({
                           
                           {/* Message Content */}
                           <div className="flex flex-col items-start flex-1">
-                            <div className="bg-muted rounded-lg px-4 py-3 max-w-[80%] border border-border text-base text-white font-sans">
+                            <div className="bg-muted rounded-lg px-4 py-3 max-w-[80%] border border-border text-[15px] text-white font-sans">
                               <MessagePrimitive.Content />
                               {/* Temporarily hidden - will be reactivated later */}
                               {/* {objects && objects.length > 0 && markets.length === 0 && (
@@ -408,7 +408,7 @@ function AssistantChatContent({
                     rows={1}
                   />
                   <ComposerPrimitive.Send asChild>
-                    <Button size="lg" className="h-12 px-6 bg-brand-primary hover:brightness-95 text-white shrink-0">
+                    <Button size="lg" className="h-12 px-6 bg-brand-primary hover:brightness-95 assistant-send-button shrink-0">
                       <Send className="h-5 w-5" />
                     </Button>
                   </ComposerPrimitive.Send>

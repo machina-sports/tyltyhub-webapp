@@ -232,14 +232,14 @@ export function BettingRecommendationsWidget({
         </div>
       </div>
       
-      {/* Odds Disclaimer - Only show for bwin */}
-      {brand.id === 'bwin' && brand.responsibleGaming.footer?.oddsDisclaimer && (
+      {/* Odds Disclaimer - Hidden for assistant pages */}
+      {/* {brand.id === 'bwin' && brand.responsibleGaming.footer?.oddsDisclaimer && (
         <div className="mt-4 pt-2 border-t border-muted">
           <p className="text-xs text-muted-foreground text-center italic max-w-2xl mx-auto">
             {brand.responsibleGaming.footer.oddsDisclaimer}
           </p>
         </div>
-      )}
+      )} */}
     </div>
   )
 } 

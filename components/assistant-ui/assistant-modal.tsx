@@ -227,7 +227,7 @@ function AssistantModalContent({
                 variant="ghost"
                 size="sm"
                 onClick={handleExpand}
-                className="h-8 w-8 p-0"
+                className="h-8 w-8 p-0 assistant-header-button"
                 title="Expand to full page"
               >
                 <Maximize2 className="h-4 w-4" />
@@ -236,7 +236,7 @@ function AssistantModalContent({
                 variant="ghost"
                 size="sm"
                 onClick={onClose}
-                className="h-8 w-8 p-0"
+                className="h-8 w-8 p-0 assistant-header-button"
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -251,7 +251,7 @@ function AssistantModalContent({
                   components={{
                     UserMessage: () => (
                       <div className="flex justify-end gap-3 items-start w-full">
-                        <div className="bg-primary text-white rounded-lg px-4 py-2 max-w-[80%] text-base font-sans">
+                        <div className="bg-primary user-message-bubble rounded-lg px-4 py-2 max-w-[80%] text-[15px] font-sans">
                           <MessagePrimitive.Content />
                         </div>
                         {/* User Icon */}
@@ -321,7 +321,7 @@ function AssistantModalContent({
                           
                           {/* Message Content */}
                           <div className="flex flex-col items-start flex-1">
-                            <div className="bg-muted rounded-lg px-4 py-2 max-w-[80%] border border-border text-base text-white font-sans">
+                            <div className="bg-muted rounded-lg px-4 py-2 max-w-[80%] border border-border text-[15px] text-white font-sans">
                               <MessagePrimitive.Content />
                               {/* Temporarily hidden - will be reactivated later */}
                               {/* {objects && objects.length > 0 && markets.length === 0 && (
@@ -368,7 +368,7 @@ function AssistantModalContent({
                     className="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 <ComposerPrimitive.Send asChild>
-                  <Button size="default" className="h-10 bg-brand-primary hover:brightness-95 text-white">
+                  <Button size="default" className="h-10 bg-brand-primary hover:brightness-95 assistant-send-button">
                     <Send className="h-5 w-5" />
                   </Button>
                 </ComposerPrimitive.Send>

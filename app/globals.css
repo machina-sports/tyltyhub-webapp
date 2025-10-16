@@ -525,6 +525,53 @@
   [data-brand="sportingbet"] .assistant-modal-container {
     background-color: hsl(220 100% 12%) !important;
   }
+
+  /* Sportingbet: white text for user messages and send button */
+  [data-brand="sportingbet"] .user-message-bubble {
+    color: white !important;
+  }
+
+  [data-brand="sportingbet"] .assistant-send-button {
+    color: white !important;
+  }
+
+  /* Bwin: black text for user messages and send button */
+  [data-brand="bwin"] .user-message-bubble {
+    color: black !important;
+  }
+
+  [data-brand="bwin"] .assistant-send-button {
+    color: black !important;
+  }
+
+  [data-brand="bwin"] .assistant-launcher {
+    color: black !important;
+  }
+
+  /* Bwin: assistant header buttons (expand, minimize, close) hover */
+  [data-brand="bwin"] .assistant-header-button:hover {
+    background-color: hsl(var(--brand-primary)) !important;
+    color: black !important;
+  }
+
+  /* Sportingbet: assistant header buttons hover */
+  [data-brand="sportingbet"] .assistant-header-button:hover {
+    background-color: hsl(var(--brand-primary) / 0.1) !important;
+    color: hsl(var(--brand-primary)) !important;
+  }
+
+  /* Bwin: make assistant modal logo narrower */
+  [data-brand="bwin"] .assistant-modal-logo {
+    max-width: 20px !important;
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  /* Bwin: make assistant page logo narrower */
+  [data-brand="bwin"] .assistant-page-logo {
+    max-width: 120px !important;
+    width: 120px !important;
+  }
   
   /* Sportingbet button colors */
   [data-brand="sportingbet"] .sidebar-cta-button {
@@ -1016,14 +1063,14 @@ a {
 
 /* Professional selection styling */
 ::selection {
-  background: hsl(var(--bwin-brand-primary) / 0.3);
-  color: hsl(var(--bwin-neutral-100));
+  background: hsl(var(--bwin-brand-primary));
+  color: black;
 }
 
-/* Sportingbet specific selection styling - blue instead of yellow */
+/* Sportingbet specific selection styling - blue background with white text */
 [data-brand="sportingbet"] ::selection {
-  background: hsl(207deg 95.24% 41.18% / 0.3);
-  color: hsl(var(--bwin-neutral-100));
+  background: hsl(207deg 95.24% 41.18%);
+  color: white;
 }
 
 /* Home screen input focus/hover - theme specific */

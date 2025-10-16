@@ -82,7 +82,7 @@ npm run build:sportingbet
 ```json
 {
   "content": {
-    "title": "Bot And Win: bwin's AI for LaLiga 2025/2026",
+    "title": "BotAndWin: bwin's AI for LaLiga 2025/2026",
     "description": "Bet with bwin's Artificial Intelligence...",
     "ogImage": "https://bwinbot.com/og_image_4.png",
     "favicon": "/bwin-logo-icon.png"
@@ -265,7 +265,7 @@ Place in `public/` folder:
 ### Before (Hardcoded)
 ```tsx
 <img src="/bwin-logo.png" alt="bwin" />
-<h1>Bot And Win: bwin's AI</h1>
+<h1>BotAndWin: bwin's AI</h1>
 <div className="bg-yellow-500" />
 ```
 

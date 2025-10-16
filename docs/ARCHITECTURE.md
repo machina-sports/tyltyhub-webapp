@@ -206,7 +206,7 @@ components/brand/bwin/
 ### Before (Hardcoded)
 ```tsx
 <img src="/bwin-logo.png" alt="bwin" />
-<h1>Bot And Win: bwin's AI</h1>
+<h1>BotAndWin: bwin's AI</h1>
 <div className="bg-yellow-500" />
 ```
 

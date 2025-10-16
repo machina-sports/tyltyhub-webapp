@@ -95,7 +95,7 @@ Brand Configuration (JSON)
 ├── Basic Info
 │   ├── id: "bwin"
 │   ├── name: "bwin"
-│   ├── displayName: "Bot And Win"
+│   ├── displayName: "BotAndWin"
 │   └── description: "bwin's AI for LaLiga"
 ├── Localization
 │   ├── language: "es-ES"
@@ -107,7 +107,7 @@ Brand Configuration (JSON)
 │   ├── fonts: { primary, fallback }
 │   └── logo: { icon, full, alt }
 ├── Content
-│   ├── title: "Bot And Win: bwin's AI"
+│   ├── title: "BotAndWin: bwin's AI"
 │   ├── description: "SEO description"
 │   ├── ogImage: "https://bwinbot.com/og.png"
 │   └── favicon: "/bwin-logo-icon.png"
