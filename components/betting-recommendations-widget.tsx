@@ -49,7 +49,7 @@ interface BettingRecommendationsWidgetProps {
 }
 
 // Individual Recommendation Card Component
-function RecommendationCard({ market }: { market: MarketRecommendation }) {
+function RecommendationCard({ market, isCarousel = false }: { market: MarketRecommendation, isCarousel?: boolean }) {
 
   // Resolve IDs from explicit fields or from deep_link (fixture-market-option)
   const resolveIds = () => {
@@ -78,54 +78,66 @@ function RecommendationCard({ market }: { market: MarketRecommendation }) {
     return "https://www.bwin.es/en/sports"
   })()
 
+  const content = (
+    <>
+      {/* Header with title and odds in same row */}
+      <div className="flex items-start justify-between">
+        <div className="flex-1 pr-3">
+          <h4 className="font-semibold text-md line-clamp-2 leading-tight">
+            {market.title}
+          </h4>
+          {market.runner && (
+            <p className="text-sm text-muted-foreground mt-1 font-small">
+              {market.runner}
+            </p>
+          )}
+        </div>
+        <a
+          href={deeplinkHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => {
+            const { eventId, marketId, optionId } = resolveIds()
+            trackBettingLinkClick({
+              eventId,
+              marketId,
+              optionId,
+              market_type: market.market_type,
+              market_title: market.title,
+              odds_value: market.odds
+            });
+          }}
+          className={cn(
+            "px-3 py-1.5 rounded-md font-mono font-bold text-lg cursor-pointer shrink-0",
+            "bg-brand-primary/20 text-brand-primary border border-brand-primary/40 hover:bg-brand-primary/30 hover:border-brand-primary/60"
+          )}
+        >
+          {typeof market.odds === 'number' ? market.odds.toFixed(2) : parseFloat(market.odds).toFixed(2)}
+        </a>
+      </div>
+
+      {/* Rationale */}
+      {market.rationale && (
+        <div className="mt-2 pt-2 border-t border-border">
+          <p className="text-xs text-muted-foreground leading-relaxed line-clamp-3">
+            {market.rationale}
+          </p>
+        </div>
+      )}
+    </>
+  )
+
+  // If in carousel, return content without Card wrapper
+  if (isCarousel) {
+    return <div className="w-full">{content}</div>
+  }
+
+  // Single card with its own border
   return (
     <div className="w-full">
-      <Card className="h-full rounded-2xl">
+      <Card className="h-full rounded-lg border-border bg-card">
         <CardContent className="p-5">
-          {/* Header with title and odds in same row */}
-          <div className="flex items-start justify-between">
-            <div className="flex-1 pr-3">
-              <h4 className="font-semibold text-md line-clamp-2 leading-tight">
-                {market.title}
-              </h4>
-              {market.runner && (
-                <p className="text-sm text-muted-foreground mt-1 font-medium">
-                  {market.runner}
-                </p>
-              )}
-            </div>
-            <a
-              href={deeplinkHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => {
-                const { eventId, marketId, optionId } = resolveIds()
-                trackBettingLinkClick({
-                  eventId,
-                  marketId,
-                  optionId,
-                  market_type: market.market_type,
-                  market_title: market.title,
-                  odds_value: market.odds
-                });
-              }}
-              className={cn(
-                "px-3 py-1.5 rounded-md font-mono font-bold text-lg cursor-pointer shrink-0",
-                "bg-brand-primary/20 text-brand-primary border border-brand-primary/40 hover:bg-brand-primary/30 hover:border-brand-primary/60"
-              )}
-            >
-              {typeof market.odds === 'number' ? market.odds.toFixed(2) : parseFloat(market.odds).toFixed(2)}
-            </a>
-          </div>
-
-          {/* Rationale */}
-          {market.rationale && (
-            <div className="mt-2 pt-2 border-t">
-              <p className="text-xs text-muted-foreground leading-relaxed line-clamp-3">
-                {market.rationale}
-              </p>
-            </div>
-          )}
+          {content}
         </CardContent>
       </Card>
     </div>
@@ -176,15 +188,13 @@ export function BettingRecommendationsWidget({
   // Multiple recommendations - carousel
   return (
     <div className={cn("w-full max-w-[420px]", className)}>
-      {/* Carousel Container */}
-      <div className="rounded-2xl border ml-9 md:ml-[0px] p-3 border-border bg-card">
-        {/* Current Recommendation */}
-        <div className="overflow-hidden rounded-md">
-          <RecommendationCard market={markets[currentIndex]} />
-        </div>
+      {/* Carousel Container - Single border containing everything */}
+      <div className="rounded-lg border border-border bg-card text-card-foreground shadow ml-9 md:ml-[0px] p-4">
+        {/* Current Recommendation - No nested Card wrapper */}
+        <RecommendationCard market={markets[currentIndex]} isCarousel={true} />
 
         {/* Carousel Navigation */}
-        <div className="flex items-center justify-between mt-2">
+        <div className="flex items-center justify-between mt-3 pt-3 border-t border-border">
           {/* Left Arrow */}
           <button
             onClick={prevRecommendation}

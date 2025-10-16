@@ -11,7 +11,7 @@ import {
   useMessage,
 } from "@assistant-ui/react";
 import { Button } from "@/components/ui/button";
-import { Send, ExternalLink, ArrowDown, Minimize2, Sparkles } from "lucide-react";
+import { Send, ExternalLink, ArrowDown, Minimize2, Sparkles, User } from "lucide-react";
 import Image from "next/image";
 import { BrandLogo } from "@/components/brand/brand-logo";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
@@ -282,9 +282,13 @@ function AssistantChatContent({
                 <ThreadPrimitive.Messages
                   components={{
                     UserMessage: () => (
-                      <div className="flex justify-end">
-                        <div className="bg-primary text-black rounded-lg px-4 py-3 max-w-[80%]">
+                      <div className="flex justify-end gap-3 items-start w-full">
+                        <div className="bg-primary text-white rounded-lg px-4 py-3 max-w-[80%] text-base font-sans">
                           <MessagePrimitive.Content />
+                        </div>
+                        {/* User Icon */}
+                        <div className="flex-shrink-0 mt-1 bg-primary/20 p-2 rounded-full">
+                          <User className="h-6 w-6 text-primary" />
                         </div>
                       </div>
                     ),
@@ -349,7 +353,7 @@ function AssistantChatContent({
                           
                           {/* Message Content */}
                           <div className="flex flex-col items-start flex-1">
-                            <div className="bg-muted rounded-lg px-4 py-3 max-w-[80%]">
+                            <div className="bg-muted rounded-lg px-4 py-3 max-w-[80%] border border-border text-base text-white font-sans">
                               <MessagePrimitive.Content />
                               {/* Temporarily hidden - will be reactivated later */}
                               {/* {objects && objects.length > 0 && markets.length === 0 && (
@@ -362,12 +366,12 @@ function AssistantChatContent({
                               </div>
                             )}
                             {suggestions && suggestions.length > 0 && (
-                              <div className="mt-3 space-y-2 max-w-[80%]">
+                              <div className="mt-3 space-y-2 w-auto">
                                 {suggestions.map((suggestion: string, index: number) => (
                                   <button
                                     key={index}
                                     onClick={() => handleSuggestionClick(suggestion)}
-                                    className="flex items-center gap-2 px-3 py-2 text-sm text-left bg-background border border-border rounded-lg hover:bg-accent hover:border-primary transition-colors w-full"
+                                    className="flex items-center gap-2 px-3 py-2 text-sm text-left bg-card border border-border rounded-lg hover:bg-brand-primary/10 hover:border-brand-primary/60 transition-colors w-auto"
                                   >
                                     <Sparkles className="h-4 w-4 flex-shrink-0 text-primary" />
                                     <span className="break-words">{suggestion}</span>
@@ -381,8 +385,8 @@ function AssistantChatContent({
                     },
                   }}
                 />
-                <ThreadPrimitive.ScrollToBottom className="sticky bottom-4 ml-auto mr-4 md:hidden">
-                  <Button variant="outline" size="icon" className="h-10 w-10 rounded-full shadow-lg">
+                <ThreadPrimitive.ScrollToBottom className="sticky bottom-8 ml-auto mr-4 md:hidden">
+                  <Button variant="outline" size="icon" className="h-10 w-10 rounded-full shadow-lg hover:bg-brand-primary/10 hover:border-brand-primary/60">
                     <ArrowDown className="h-5 w-5" />
                   </Button>
                 </ThreadPrimitive.ScrollToBottom>
@@ -404,7 +408,7 @@ function AssistantChatContent({
                     rows={1}
                   />
                   <ComposerPrimitive.Send asChild>
-                    <Button size="lg" className="h-12 px-6 bg-brand-primary hover:brightness-95 text-black shrink-0">
+                    <Button size="lg" className="h-12 px-6 bg-brand-primary hover:brightness-95 text-white shrink-0">
                       <Send className="h-5 w-5" />
                     </Button>
                   </ComposerPrimitive.Send>
@@ -463,10 +467,10 @@ export default function AssistantChatPage() {
     );
   }
 
-  // Use key to force remount when messages are loaded
+  // Use key to force remount only when thread changes
   return (
     <AssistantChatContent 
-      key={`${threadId}-${initialMessages.length}`} 
+      key={threadId} 
       threadId={threadId} 
       initialMessages={initialMessages}
       rawMessages={rawMessages}

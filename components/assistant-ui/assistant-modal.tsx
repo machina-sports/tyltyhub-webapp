@@ -10,7 +10,7 @@ import {
   useMessage,
 } from "@assistant-ui/react";
 import { Button } from "@/components/ui/button";
-import { X, MessageSquare, Send, ExternalLink, ArrowDown, Maximize2 } from "lucide-react";
+import { X, MessageSquare, Send, ExternalLink, ArrowDown, Maximize2, Sparkles, User } from "lucide-react";
 import Image from "next/image";
 import { BrandLogo } from "@/components/brand/brand-logo";
 import { useBrandConfig } from "@/contexts/brand-context";
@@ -174,17 +174,21 @@ function AssistantModalContent({
   setIsOpen,
   onClose,
   objectsMapRef,
+  suggestionsMapRef,
   objectsVersion,
   assistantName,
-  threadId
+  threadId,
+  composerRef
 }: {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
   onClose: () => void;
   objectsMapRef: React.MutableRefObject<Map<string, any[]>>;
+  suggestionsMapRef: React.MutableRefObject<Map<string, string[]>>;
   objectsVersion: number;
   assistantName: string;
   threadId: string;
+  composerRef: React.RefObject<HTMLTextAreaElement>;
 }) {
   const router = useRouter();
   const brand = useBrandConfig();
@@ -202,7 +206,7 @@ function AssistantModalContent({
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className={`assistant-launcher hidden md:flex fixed bottom-28 right-4 z-50 h-14 w-14 rounded-full shadow-lg transition-all duration-200 items-center justify-center ${isSportingbet ? "bg-brand-secondary" : "bg-brand-primary"} text-black hover:brightness-95 md:bottom-4`}
+          className={`assistant-launcher hidden md:flex fixed bottom-[32px] right-8 z-50 h-14 w-14 rounded-full shadow-lg transition-all duration-200 items-center justify-center ${isSportingbet ? "bg-brand-secondary" : "bg-brand-primary"} text-white hover:brightness-95`}
           aria-label={`Open ${assistantName}`}
         >
           <MessageSquare className="h-6 w-6" />
@@ -246,9 +250,13 @@ function AssistantModalContent({
                 <ThreadPrimitive.Messages
                   components={{
                     UserMessage: () => (
-                      <div className="flex justify-end">
-                        <div className="bg-primary text-black rounded-lg px-4 py-2 max-w-[80%]">
+                      <div className="flex justify-end gap-3 items-start w-full">
+                        <div className="bg-primary text-white rounded-lg px-4 py-2 max-w-[80%] text-base font-sans">
                           <MessagePrimitive.Content />
+                        </div>
+                        {/* User Icon */}
+                        <div className="flex-shrink-0 mt-2 bg-primary/20 p-2 rounded-full">
+                          <User className="h-5 w-5 text-primary" />
                         </div>
                       </div>
                     ),
@@ -260,9 +268,12 @@ function AssistantModalContent({
                         .map((c: any) => c.text)
                         .join("");
 
-                      // Look up objects for this specific message
+                      // Look up objects and suggestions for this specific message
                       const objectsData = objectsMapRef.current.get(textContent);
                       const objects = Array.isArray(objectsData) ? objectsData : [];
+                      const suggestionsData = suggestionsMapRef.current.get(textContent);
+                      const suggestions = Array.isArray(suggestionsData) ? suggestionsData : [];
+                      
                       const markets = Array.isArray(objects)
                         ? objects.map((o: any) => {
                             const oddsValue = Number(
@@ -283,16 +294,57 @@ function AssistantModalContent({
                           .filter((m: any) => m.title && typeof m.odds === 'number' && !Number.isNaN(m.odds))
                         : [];
 
+                      const handleSuggestionClick = (suggestion: string) => {
+                        const composer = composerRef.current;
+                        if (!composer) return;
+                        
+                        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+                          window.HTMLTextAreaElement.prototype,
+                          'value'
+                        )?.set;
+                        
+                        if (nativeInputValueSetter) {
+                          nativeInputValueSetter.call(composer, suggestion);
+                          const event = new Event('input', { bubbles: true });
+                          composer.dispatchEvent(event);
+                          
+                          const form = composer.closest('form');
+                          if (form) {
+                            setTimeout(() => form.requestSubmit(), 50);
+                          }
+                        }
+                      };
+
                       return (
-                        <div className="flex justify-start">
-                          <div className="bg-muted rounded-lg px-4 py-2 max-w-[80%]">
-                            <MessagePrimitive.Content />
-                            {objects && objects.length > 0 && markets.length === 0 && (
-                              <ObjectCards objects={objects} />
-                            )}
+                        <div className="flex gap-3 items-start w-full">
+                          {/* Brand Icon - Hidden in modal to save space */}
+                          
+                          {/* Message Content */}
+                          <div className="flex flex-col items-start flex-1">
+                            <div className="bg-muted rounded-lg px-4 py-2 max-w-[80%] border border-border text-base text-white font-sans">
+                              <MessagePrimitive.Content />
+                              {/* Temporarily hidden - will be reactivated later */}
+                              {/* {objects && objects.length > 0 && markets.length === 0 && (
+                                <ObjectCards objects={objects} />
+                              )} */}
+                            </div>
                             {markets && markets.length > 0 && (
-                              <div className="mt-3">
+                              <div className="mt-3 w-full">
                                 <BettingRecommendationsWidget markets={markets as any} />
+                              </div>
+                            )}
+                            {suggestions && suggestions.length > 0 && (
+                              <div className="mt-3 space-y-2 w-auto">
+                                {suggestions.map((suggestion: string, index: number) => (
+                                  <button
+                                    key={index}
+                                    onClick={() => handleSuggestionClick(suggestion)}
+                                    className="flex items-center gap-2 px-3 py-2 text-sm text-left bg-card border border-border rounded-lg hover:bg-brand-primary/10 hover:border-brand-primary/60 transition-colors w-auto"
+                                  >
+                                    <Sparkles className="h-4 w-4 flex-shrink-0 text-primary" />
+                                    <span className="break-words">{suggestion}</span>
+                                  </button>
+                                ))}
                               </div>
                             )}
                           </div>
@@ -301,8 +353,8 @@ function AssistantModalContent({
                     },
                   }}
                 />
-                <ThreadPrimitive.ScrollToBottom className="absolute bottom-20 right-6">
-                  <Button variant="outline" size="icon" className="h-8 w-8 rounded-full">
+                <ThreadPrimitive.ScrollToBottom className="absolute bottom-24 right-6">
+                  <Button variant="outline" size="icon" className="h-8 w-8 rounded-full hover:bg-brand-primary/10 hover:border-brand-primary/60 mb-1">
                     <ArrowDown className="h-4 w-4" />
                   </Button>
                 </ThreadPrimitive.ScrollToBottom>
@@ -311,11 +363,12 @@ function AssistantModalContent({
               <div className="border-t p-4">
                 <ComposerPrimitive.Root className="flex gap-2 items-end">
                   <ComposerPrimitive.Input
+                    ref={composerRef as any}
                     placeholder={assistantPlaceholder}
                     className="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 <ComposerPrimitive.Send asChild>
-                  <Button size="default" className="h-10 bg-brand-primary hover:brightness-95 text-black">
+                  <Button size="default" className="h-10 bg-brand-primary hover:brightness-95 text-white">
                     <Send className="h-5 w-5" />
                   </Button>
                 </ComposerPrimitive.Send>
@@ -350,20 +403,55 @@ function useAssistantConfig() {
 function AssistantModalInner({
   threadId,
   initialMessages,
+  rawMessages,
   isOpen,
   setIsOpen,
   onClose
 }: {
   threadId: string;
   initialMessages: any[];
+  rawMessages?: any[];
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
   onClose: () => void;
 }) {
   // Map to store objects per message (keyed by message text to identify unique messages)
   const objectsMapRef = useRef<Map<string, any[]>>(new Map());
+  const suggestionsMapRef = useRef<Map<string, string[]>>(new Map());
+  const composerRef = useRef<HTMLTextAreaElement>(null);
   // Version counter to trigger re-renders when objects change
   const [objectsVersion, setObjectsVersion] = useState(0);
+
+  // Populate refs from raw messages on mount
+  useEffect(() => {
+    if (rawMessages && rawMessages.length > 0) {
+      rawMessages.forEach((msg: any) => {
+        if (msg.role === 'assistant') {
+          const textContent = typeof msg.content === 'string' ? msg.content : msg.content?.content || '';
+          
+          // Extract objects from document_content if available
+          const docContent = msg.document_content?.[0];
+          if (docContent) {
+            if (docContent.objects && docContent.objects.length > 0) {
+              objectsMapRef.current.set(textContent, docContent.objects);
+            }
+            if (docContent.suggestions && docContent.suggestions.length > 0) {
+              suggestionsMapRef.current.set(textContent, docContent.suggestions);
+            }
+          } else {
+            // Fallback to root level
+            if (msg.objects && msg.objects.length > 0) {
+              objectsMapRef.current.set(textContent, msg.objects);
+            }
+            if (msg.suggestions && msg.suggestions.length > 0) {
+              suggestionsMapRef.current.set(textContent, msg.suggestions);
+            }
+          }
+        }
+      });
+      setObjectsVersion(v => v + 1);
+    }
+  }, [rawMessages]);
 
   // Get assistant configuration
   const { name, welcomeMessage } = useAssistantConfig();
@@ -375,6 +463,7 @@ function AssistantModalInner({
       streamWorkflows: AGENT_CONFIG.streamWorkflows,
       threadId: threadId,
       objectsMapRef: objectsMapRef,
+      suggestionsMapRef: suggestionsMapRef,
       onObjectsUpdate: () => {
         setObjectsVersion(v => v + 1);
       },
@@ -394,9 +483,11 @@ function AssistantModalInner({
         setIsOpen={setIsOpen}
         onClose={onClose}
         objectsMapRef={objectsMapRef}
+        suggestionsMapRef={suggestionsMapRef}
         objectsVersion={objectsVersion}
         assistantName={name}
         threadId={threadId}
+        composerRef={composerRef}
       />
     </AssistantRuntimeProvider>
   );
@@ -412,6 +503,7 @@ export function AssistantModal() {
   const { threadId: contextThreadId, isOpen, setIsOpen } = useAssistant();
   const pathname = usePathname();
   const [initialMessages, setInitialMessages] = useState<any[]>([]);
+  const [rawMessages, setRawMessages] = useState<any[]>([]);
   const [isReady, setIsReady] = useState(false);
   const [lastLoadedThreadId, setLastLoadedThreadId] = useState<string>("");
   const brand = useBrandConfig();
@@ -428,30 +520,35 @@ export function AssistantModal() {
     if (!shouldRender) {
       // Reset when leaving the page
       setLastLoadedThreadId("");
+      setIsReady(false);
       return;
     }
     
-    // Reload history if threadId exists and we haven't loaded this thread yet
-    if (contextThreadId && (contextThreadId !== lastLoadedThreadId || !isReady)) {
+    // Reload history only if threadId changed
+    if (contextThreadId && contextThreadId !== lastLoadedThreadId) {
       setLastLoadedThreadId(contextThreadId);
       setIsReady(false);
 
       // Load history for the thread
       getThreadHistory(contextThreadId).then(({ error: historyError, messages }) => {
         if (!historyError && messages && messages.length > 0) {
+          // Store raw messages for objects/suggestions extraction
+          setRawMessages(messages);
+          
           // Convert backend messages to assistant-ui format
           const formattedMessages = messages.map((msg: any) => ({
             role: msg.role as "user" | "assistant",
             content: [
               {
                 type: "text" as const,
-                text: msg.content
+                text: typeof msg.content === 'string' ? msg.content : msg.content?.content || ''
               }
             ]
           }));
 
           setInitialMessages(formattedMessages);
         } else {
+          setRawMessages([]);
           setInitialMessages([]);
         }
         setIsReady(true);
@@ -459,10 +556,11 @@ export function AssistantModal() {
         console.error("Failed to load history:", err);
         setIsReady(true);
       });
-    } else if (contextThreadId && !isReady) {
+    } else if (!contextThreadId) {
+      // No thread yet, mark as ready
       setIsReady(true);
     }
-  }, [contextThreadId, shouldRender, pathname]);
+  }, [contextThreadId, shouldRender, lastLoadedThreadId]);
 
   const threadId = contextThreadId || "";
 
@@ -486,7 +584,7 @@ export function AssistantModal() {
         {!isOpen && (
           <button
             onClick={() => setIsOpen(true)}
-            className={`assistant-launcher hidden md:flex bottom-28 right-4 z-50 h-14 w-14 rounded-full ${isSportingbet ? "bg-brand-secondary" : "bg-brand-primary"} text-black shadow-lg hover:brightness-95 transition-all duration-200 items-center justify-center md:bottom-4 md:right-4`}
+            className={`assistant-launcher hidden md:flex bottom-28 right-4 z-50 h-14 w-14 rounded-full ${isSportingbet ? "bg-brand-secondary" : "bg-brand-primary"} text-white shadow-lg hover:brightness-95 transition-all duration-200 items-center justify-center md:bottom-4 md:right-4`}
             aria-label="Open Chat Assistant"
           >
             <MessageSquare className="h-6 w-6" />
@@ -503,12 +601,13 @@ export function AssistantModal() {
     );
   }
 
-  // Use key to ensure component remounts with correct initial messages
+  // Use key to ensure component remounts when switching threads
   return (
     <AssistantModalInner
-      key={`${threadId}-${initialMessages.length}`} // Force remount when thread or messages change
+      key={threadId} // Only remount when thread changes, not when messages are added
       threadId={threadId}
       initialMessages={initialMessages}
+      rawMessages={rawMessages}
       isOpen={isOpen}
       setIsOpen={setIsOpen}
       onClose={handleClose}

@@ -4,8 +4,6 @@ import { Compass, MessageSquare } from "lucide-react"
 
 import { usePathname, useRouter } from "next/navigation"
 
-import { ShareIconButton } from "@/components/chat/share-icon-button"
-
 import { SearchToggleButton } from "@/components/discover/search-toggle-button"
 
 import { BrandLogo } from "@/components/brand"
@@ -45,12 +43,8 @@ export function Topbar() {
     router.push("/");
   };
 
-  // Verifica se está em uma página de chat específico (não na home)
-  const isChatPage = pathname && pathname.startsWith("/chat/") && pathname !== "/chat/new";
   // Verifica se está na página Discover
   const isDiscoverPage = pathname === "/discover";
-  // Verifica se está em uma página de artigo
-  const isArticlePage = pathname && pathname.startsWith("/discover/") && pathname !== "/discover";
 
   if (isMobile) {
     return (
@@ -74,19 +68,9 @@ export function Topbar() {
           />
         </div>
         
-        {/* Botão Share apenas no mobile e apenas em páginas de chat específicas */}
-        {isChatPage && (
-          <ShareIconButton />
-        )}
-        
         {/* Botão Search apenas no mobile e apenas na página Discover */}
         {isDiscoverPage && (
           <SearchToggleButton />
-        )}
-        
-        {/* Botão Share para páginas de artigo */}
-        {isArticlePage && (
-          <ShareIconButton />
         )}
       </div>
     );

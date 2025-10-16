@@ -64,6 +64,7 @@
         "Bola em jogo! Em que jogada posso te ajudar?"
       ],
       "placeholder": "Pergunte-me sobre o Campeonato Brasileiro...",
+      "assistantPlaceholder": "Pergunte-me sobre o Brasileirão...",
       "followUpPlaceholder": "Gostou? Quer saber mais? Me diga!",
       "followUpTranscription": "Como posso apostar no próximo jogo do Real Madrid?",
       "preparing": "Preparando...",

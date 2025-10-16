@@ -109,76 +109,165 @@ export const createStreamingAdapterWithConfig = (
         let buffer = '';
         let hasReceivedContent = false;
         let objects: any[] = [];
+        let suggestions: string[] = [];
+        let shouldExit = false;
 
-        while (true) {
-          const { done, value } = await reader.read();
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
 
-          if (done) break;
+            if (done) {
+              console.log('[StreamAdapter] Stream ended by server');
+              break;
+            }
 
-          buffer += decoder.decode(value, { stream: true });
+            buffer += decoder.decode(value, { stream: false });
 
-          const lines = buffer.split('\n');
-          buffer = lines.pop() || '';
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || '';
 
-          for (const line of lines) {
-            if (!line.trim()) continue;
+            for (const line of lines) {
+              if (!line.trim()) continue;
 
-            try {
-              const chunk = JSON.parse(line);
+              try {
+                const chunk = JSON.parse(line);
+                console.log('[StreamAdapter] Received chunk:', { type: chunk.type, hasContent: !!chunk.content, hasDocContent: !!(chunk.metadata?.state?.document_content || chunk.document_content) });
 
               // Handle different chunk types
-              if (chunk.type === 'content') {
-                hasReceivedContent = true;
-
-                // Check multiple possible locations for document_content
-                const documentContent = chunk.metadata?.state?.document_content || chunk.document_content;
-
-                // Check if this is a complete response or a streaming chunk
-                if (documentContent && Array.isArray(documentContent) && documentContent.length > 0) {
-                  // Complete response - replace everything
-                  const message = documentContent[0]?.content || chunk.content;
-                  fullText = message;
-
-                  // Extract objects if available
-                  objects = documentContent[0]?.objects || [];
-
-                  // Extract suggestions if available
-                  const suggestions = documentContent[0]?.suggestions || chunk.suggestions || [];
-
-                  // Store objects in map keyed by message text
-                  if (config.objectsMapRef && objects.length > 0) {
-                    config.objectsMapRef.current.set(fullText, objects);
-
-                    // Trigger re-render callback
-                    if (config.onObjectsUpdate) {
-                      config.onObjectsUpdate();
+              // Check for done FIRST before other logic
+              if (chunk.type === 'done') {
+                // Mark as done - stream is complete
+                console.log('[StreamAdapter] ✓✓✓ DONE signal received!');
+                
+                // Save final state if available
+                if (chunk.metadata?.state) {
+                  console.log('[StreamAdapter] Final state:', chunk.metadata.state);
+                  
+                  // Try multiple possible locations for content
+                  const state = chunk.metadata.state;
+                  let finalContent = '';
+                  
+                  // Check for document_content array (legacy format)
+                  const finalDocContent = state.document_content;
+                  if (finalDocContent && Array.isArray(finalDocContent) && finalDocContent.length > 0) {
+                    finalContent = finalDocContent[0]?.content || '';
+                    
+                    // Extract objects and suggestions from document_content
+                    const finalObjects = finalDocContent[0]?.objects || [];
+                    if (finalObjects.length > 0) {
+                      objects = finalObjects;
                     }
-                  }
-
-                  // Store suggestions in map keyed by message text
-                  if (config.suggestionsMapRef && suggestions.length > 0) {
-                    config.suggestionsMapRef.current.set(fullText, suggestions);
-
-                    // Trigger re-render callback
-                    if (config.onObjectsUpdate) {
-                      config.onObjectsUpdate();
+                    
+                    const finalSuggestions = finalDocContent[0]?.suggestions || [];
+                    if (finalSuggestions.length > 0) {
+                      suggestions = finalSuggestions;
                     }
+                  } 
+                  // Check for direct content/response keys in state
+                  else if (state.content) {
+                    finalContent = state.content;
+                  } 
+                  else if (state.response) {
+                    finalContent = state.response;
                   }
-                } else {
-                  // Streaming chunk - accumulate it
-                  fullText += chunk.content || '';
+                  else if (state.output) {
+                    finalContent = state.output;
+                  }
+                  
+                  if (finalContent) {
+                    fullText = finalContent;
+                    hasReceivedContent = true;
+                    console.log('[StreamAdapter] Extracted content from state, length:', finalContent.length);
+                  }
+                }
+                
+                // If no content received at all, use last progress
+                if (!hasReceivedContent && progressText) {
+                  fullText = progressText;
+                  hasReceivedContent = true;
                 }
 
-                // Build content with text only
-                yield {
-                  role: "assistant" as const,
-                  content: [
-                    {
-                      type: "text" as const,
-                      text: fullText,
-                    },
-                  ],
-                };
+                // Yield final content if we have it
+                if (hasReceivedContent && fullText) {
+                  yield {
+                    role: "assistant" as const,
+                    content: [
+                      {
+                        type: "text" as const,
+                        text: fullText,
+                      },
+                    ],
+                  };
+                }
+                
+                // Exit the loop - we're done
+                shouldExit = true;
+                break;
+              }
+              else if (chunk.type === 'content') {
+                // Check multiple possible locations for document_content
+                const documentContent = chunk.metadata?.state?.document_content || chunk.document_content;
+                
+                // Check for metadata markers (final, workflow_complete)
+                const isFinalMarker = chunk.metadata?.final === true;
+                const isWorkflowCompleteMarker = chunk.metadata?.workflow_complete === true;
+                
+                // Skip empty content with metadata markers (they're just markers)
+                if (!chunk.content && !documentContent && (isFinalMarker || isWorkflowCompleteMarker)) {
+                  continue;
+                }
+
+                // documentContent contains the COMPLETE final message - replace, don't append
+                if (documentContent && Array.isArray(documentContent) && documentContent.length > 0) {
+                  // This is the final complete response - REPLACE fullText
+                  const finalContent = documentContent[0]?.content || '';
+                  
+                  // Only update if we got content
+                  if (finalContent) {
+                    fullText = finalContent;
+                    hasReceivedContent = true;
+                  }
+
+                  // Extract objects if available
+                  const newObjects = documentContent[0]?.objects || [];
+                  if (newObjects.length > 0) {
+                    objects = newObjects;
+                  }
+
+                  // Extract suggestions if available
+                  const newSuggestions = documentContent[0]?.suggestions || [];
+                  if (newSuggestions.length > 0) {
+                    suggestions = newSuggestions;
+                  }
+
+                  // Yield the complete final text
+                  if (fullText) {
+                    yield {
+                      role: "assistant" as const,
+                      content: [
+                        {
+                          type: "text" as const,
+                          text: fullText,
+                        },
+                      ],
+                    };
+                  }
+                } else if (chunk.content) {
+                  // Regular streaming chunk - APPEND
+                  fullText += chunk.content;
+                  hasReceivedContent = true;
+
+                  // Yield accumulated text
+                  yield {
+                    role: "assistant" as const,
+                    content: [
+                      {
+                        type: "text" as const,
+                        text: fullText,
+                      },
+                    ],
+                  };
+                }
               } else if (!hasReceivedContent) {
                 // Only show progress if we haven't received final content
                 if (chunk.type === 'start') {
@@ -205,27 +294,42 @@ export const createStreamingAdapterWithConfig = (
                     ],
                   };
                 }
-              } else if (chunk.type === 'done') {
-                // Stream completed - if no content received, keep last progress
-                if (!hasReceivedContent && progressText) {
-                  fullText = progressText;
-
-                  yield {
-                    role: "assistant" as const,
-                    content: [
-                      {
-                        type: "text" as const,
-                        text: fullText,
-                      },
-                    ],
-                  };
-                }
-              } else if (chunk.type === 'error') {
+              } else if (chunk.type === 'workflow_error' || chunk.type === 'error') {
+                console.error('[StreamAdapter] Received ERROR:', chunk.content);
                 throw new Error(chunk.content);
               }
-            } catch (parseError) {
-              console.error('Failed to parse chunk:', line, parseError);
+              } catch (parseError) {
+                console.error('[StreamAdapter] Failed to parse chunk:', line, parseError);
+              }
             }
+            
+            // Break outer loop if done signal received
+            if (shouldExit) {
+              console.log('[StreamAdapter] Exiting stream loop');
+              break;
+            }
+          }
+        } finally {
+          // Always release the reader lock
+          reader.releaseLock();
+          console.log('[StreamAdapter] Reader lock released');
+        }
+
+        console.log('[StreamAdapter] Processing complete. hasReceivedContent:', hasReceivedContent, 'fullText length:', fullText.length);
+
+        // After stream completes, store objects and suggestions in map
+        if (hasReceivedContent && fullText) {
+          if (config.objectsMapRef && objects.length > 0) {
+            config.objectsMapRef.current.set(fullText, objects);
+          }
+
+          if (config.suggestionsMapRef && suggestions.length > 0) {
+            config.suggestionsMapRef.current.set(fullText, suggestions);
+          }
+
+          // Trigger re-render callback once at the end
+          if (config.onObjectsUpdate && (objects.length > 0 || suggestions.length > 0)) {
+            config.onObjectsUpdate();
           }
         }
 

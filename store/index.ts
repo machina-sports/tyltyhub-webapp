@@ -7,9 +7,7 @@ import {
 import DiscoverReducer from "@/providers/discover/reducer"
 import ArticleReducer from "@/providers/article/reducer"
 import StandingsReducer from "@/providers/standings/reducer"
-import ThreadsReducer from "@/providers/threads/reducer"
 import TrendingReducer from "@/providers/trending/reducer"
-import ShareReducer from "@/providers/share/reducer"
 import CalendarReducer from "@/providers/calendar/reducer"
 
 export function makeStore() {
@@ -18,9 +16,7 @@ export function makeStore() {
       article: ArticleReducer.reducer,
       discover: DiscoverReducer.reducer,
       standings: StandingsReducer.reducer,
-      threads: ThreadsReducer.reducer,
       trending: TrendingReducer.reducer,
-      share: ShareReducer.reducer,
       calendar: CalendarReducer.reducer,
     },
     middleware: (getDefaultMiddlewares) => getDefaultMiddlewares().concat()
