@@ -26,6 +26,8 @@ export async function POST(req: Request) {
       ? "Olá! Eu sou o SportingBOT, seu assistente de apostas esportivas. Considere perguntar sobre partidas, odds, estatísticas e muito mais. Como posso ajudar?"
       : "¡Hola! Soy BotAndWin, tu asistente de apuestas deportivas. Pregunte sobre partidos, cuotas, estadísticas y mucho más. ¿En qué puedo ayudarte?";
 
+    const firstStatusMessage = brand.id === 'sportingbet' ? "Interpretando a sua pergunta..." : "Interpretando tu pregunta...";
+
     const requestBody = {
       name: "thread",
       metadata: {
@@ -42,6 +44,7 @@ export async function POST(req: Request) {
             timestamp: new Date().toISOString()
           }
         ],
+        status_message: firstStatusMessage,
         status: "active",
         agent_id: agentId,
         assistant_name: assistantName

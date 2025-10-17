@@ -13,6 +13,7 @@
 
 import type { ChatModelAdapter } from "@assistant-ui/react";
 import type React from "react";
+import { getBrandConfig } from "@/config/brands";
 
 export interface StreamingAdapterConfig {
   agentId: string;
@@ -22,6 +23,7 @@ export interface StreamingAdapterConfig {
   threadId?: string; // Thread ID for conversation tracking
   objectsMapRef?: React.MutableRefObject<Map<string, any[]>>; // Map to store objects per message
   suggestionsMapRef?: React.MutableRefObject<Map<string, string[]>>; // Map to store suggestions per message
+  animatedWidgetsRef?: React.MutableRefObject<Set<string>>; // Track which widgets should NOT animate (already shown)
   onObjectsUpdate?: () => void; // Callback to trigger re-render when objects are updated
 }
 
@@ -76,9 +78,14 @@ export const createStreamingAdapterWithConfig = (
           stream_workflows: config.streamWorkflows || false
         };
         if (config.threadId) {
+          // Get brand configuration for status message
+          const brand = getBrandConfig();
+          const statusMessage = brand.id === 'sportingbet' ? "Interpretando a sua pergunta..." : "Interpretando tu pregunta...";
+
           requestBody["context-agent"] = {
             thread_id: config.threadId,
-            messages: [formattedMessage]
+            messages: [formattedMessage],
+            status_message: statusMessage
           };
         }
 
@@ -269,13 +276,35 @@ export const createStreamingAdapterWithConfig = (
                   };
                 }
               } else if (!hasReceivedContent) {
-                // Only show progress if we haven't received final content
-                if (chunk.type === 'start') {
-                  progressText = chunk.content ? `${chunk.content}\n\n` : '';
+                // Only show progress/status if we haven't received final content
+                if (chunk.type === 'status_update') {
+                  // Handle status updates during workflow execution
+                  const statusMsg = chunk.metadata?.status_message || chunk.content;
+                  console.log('[StreamAdapter] status_update received:', statusMsg);
+                  
+                  if (statusMsg) {
+                    progressText = `⏳ ${statusMsg}`;
+                  }
+                } else if (chunk.type === 'start') {
+                  // Use status_message if available, otherwise use content
+                  const statusMsg = chunk.metadata?.status_message;
+                  progressText = statusMsg ? statusMsg : (chunk.content ? `${chunk.content}\n\n` : '');
                 } else if (chunk.type === 'workflow_start') {
-                  progressText = `${chunk.content}`;
+                  // Use status_message from thread document if available
+                  const statusMsg = chunk.metadata?.status_message;
+                  console.log('[StreamAdapter] workflow_start received:', {
+                    content: chunk.content,
+                    metadata: chunk.metadata,
+                    statusMsg
+                  });
+
+                  // Get status message from workflow metadata
+                  if (statusMsg) {
+                    progressText = `⏳ ${statusMsg}`;
+                  }
                 } else if (chunk.type === 'workflow_complete') {
-                  progressText = `✓ ${chunk.content}`;
+                  // Don't show workflow completion messages
+                  progressText = '';
                 } else if (chunk.type === 'workflow_output') {
                   progressText = `→ ${chunk.content}`;
                 } else if (chunk.type === 'workflow_error') {
@@ -319,12 +348,26 @@ export const createStreamingAdapterWithConfig = (
 
         // After stream completes, store objects and suggestions in map
         if (hasReceivedContent && fullText) {
+          const isNewObjects = config.objectsMapRef && !config.objectsMapRef.current.has(fullText) && objects.length > 0;
+          const isNewSuggestions = config.suggestionsMapRef && !config.suggestionsMapRef.current.has(fullText) && suggestions.length > 0;
+          
           if (config.objectsMapRef && objects.length > 0) {
             config.objectsMapRef.current.set(fullText, objects);
           }
 
           if (config.suggestionsMapRef && suggestions.length > 0) {
             config.suggestionsMapRef.current.set(fullText, suggestions);
+          }
+
+          // Mark new widgets so they DON'T get marked as "should animate"
+          // (they're from streaming, so they should appear immediately without animation on first load)
+          if (config.animatedWidgetsRef) {
+            if (isNewObjects) {
+              // Don't mark - let them animate!
+            }
+            if (isNewSuggestions) {
+              // Don't mark - let them animate!
+            }
           }
 
           // Trigger re-render callback once at the end

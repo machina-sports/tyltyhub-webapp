@@ -21,6 +21,7 @@ import { useBrandTexts } from "@/hooks/use-brand-texts";
 import { BettingRecommendationsWidget } from "@/components/betting-recommendations-widget";
 import { ResponsibleGamingResponsive } from "@/components/responsible-gaming-responsive";
 import { useAssistant } from "@/providers/assistant/use-assistant";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Component to render object cards (events, matches, etc.)
 function ObjectCards({ objects }: { objects: any[] }) {
@@ -159,6 +160,8 @@ function AssistantChatContent({
   const { chat } = useBrandTexts();
   const composerRef = useRef<HTMLTextAreaElement>(null);
   const messageSent = useRef(false);
+  // Track which widget groups have already been animated (separate tracking for markets and suggestions)
+  const animatedWidgetsRef = useRef<Set<string>>(new Set());
 
   // Populate refs from raw messages on mount
   useEffect(() => {
@@ -172,17 +175,23 @@ function AssistantChatContent({
           if (docContent) {
             if (docContent.objects && docContent.objects.length > 0) {
               objectsMapRef.current.set(textContent, docContent.objects);
+              // Mark these widgets as already rendered (no animation on page load)
+              animatedWidgetsRef.current.add(`markets-${textContent}`);
             }
             if (docContent.suggestions && docContent.suggestions.length > 0) {
               suggestionsMapRef.current.set(textContent, docContent.suggestions);
+              // Mark these widgets as already rendered (no animation on page load)
+              animatedWidgetsRef.current.add(`suggestions-${textContent}`);
             }
           } else {
             // Fallback to root level
             if (msg.objects && msg.objects.length > 0) {
               objectsMapRef.current.set(textContent, msg.objects);
+              animatedWidgetsRef.current.add(`markets-${textContent}`);
             }
             if (msg.suggestions && msg.suggestions.length > 0) {
               suggestionsMapRef.current.set(textContent, msg.suggestions);
+              animatedWidgetsRef.current.add(`suggestions-${textContent}`);
             }
           }
         }
@@ -206,6 +215,7 @@ function AssistantChatContent({
       threadId: threadId,
       objectsMapRef: objectsMapRef,
       suggestionsMapRef: suggestionsMapRef,
+      animatedWidgetsRef: animatedWidgetsRef,
       onObjectsUpdate: () => {
         setObjectsVersion(v => v + 1);
       },
@@ -303,6 +313,18 @@ function AssistantChatContent({
                       const suggestionsData = suggestionsMapRef.current.get(textContent);
                       const suggestions = Array.isArray(suggestionsData) ? suggestionsData : [];
                       
+                      // Check if these specific widgets should animate
+                      const marketsKey = `markets-${textContent}`;
+                      const suggestionsKey = `suggestions-${textContent}`;
+                      const shouldAnimateMarkets = !animatedWidgetsRef.current.has(marketsKey) && objects.length > 0;
+                      const shouldAnimateSuggestions = !animatedWidgetsRef.current.has(suggestionsKey) && suggestions.length > 0;
+                      
+                      // Mark as animated AFTER mount using effect
+                      useEffect(() => {
+                        if (objects.length > 0) animatedWidgetsRef.current.add(marketsKey);
+                        if (suggestions.length > 0) animatedWidgetsRef.current.add(suggestionsKey);
+                      }, [marketsKey, suggestionsKey, objects.length, suggestions.length]);
+                      
                       const markets = Array.isArray(objects)
                         ? objects.map((o: any) => {
                             const oddsValue = Number(
@@ -360,25 +382,47 @@ function AssistantChatContent({
                                 <ObjectCards objects={objects} />
                               )} */}
                             </div>
-                            {markets && markets.length > 0 && (
-                              <div className="mt-3 w-full">
-                                <BettingRecommendationsWidget markets={markets as any} />
-                              </div>
-                            )}
-                            {suggestions && suggestions.length > 0 && (
-                              <div className="mt-3 space-y-2 w-auto">
-                                {suggestions.map((suggestion: string, index: number) => (
-                                  <button
-                                    key={index}
-                                    onClick={() => handleSuggestionClick(suggestion)}
-                                    className="flex items-center gap-2 px-3 py-2 text-sm text-left bg-card border border-border rounded-lg hover:bg-brand-primary/10 hover:border-brand-primary/60 transition-colors w-auto"
-                                  >
-                                    <Sparkles className="h-4 w-4 flex-shrink-0 text-primary" />
-                                    <span className="break-words">{suggestion}</span>
-                                  </button>
-                                ))}
-                              </div>
-                            )}
+                            <AnimatePresence mode="wait">
+                              {markets && markets.length > 0 && (
+                                <motion.div
+                                  key={`betting-widget-${textContent}`}
+                                  initial={shouldAnimateMarkets ? { opacity: 0, y: -20 } : false}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ duration: 0.5, ease: "easeOut" }}
+                                  className="mt-3 w-full"
+                                >
+                                  <BettingRecommendationsWidget markets={markets as any} />
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                            <AnimatePresence mode="wait">
+                              {suggestions && suggestions.length > 0 && (
+                                <motion.div
+                                  key={`suggestions-${textContent}`}
+                                  initial={shouldAnimateSuggestions ? { opacity: 0 } : false}
+                                  animate={{ opacity: 1 }}
+                                  className="mt-3 space-y-2 w-auto"
+                                >
+                                  {suggestions.map((suggestion: string, index: number) => (
+                                    <motion.button
+                                      key={`${textContent}-${index}`}
+                                      initial={shouldAnimateSuggestions ? { opacity: 0, y: -10 } : false}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      transition={{ 
+                                        duration: 0.3, 
+                                        delay: index * 0.1,
+                                        ease: "easeOut" 
+                                      }}
+                                      onClick={() => handleSuggestionClick(suggestion)}
+                                      className="flex items-center gap-2 px-3 py-2 text-sm text-left bg-card border border-border rounded-lg hover:bg-brand-primary/10 hover:border-brand-primary/60 transition-colors w-auto"
+                                    >
+                                      <Sparkles className="h-4 w-4 flex-shrink-0 text-primary" />
+                                      <span className="break-words">{suggestion}</span>
+                                    </motion.button>
+                                  ))}
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
                           </div>
                         </div>
                       );
