@@ -1,4 +1,4 @@
-name: Build SportingBot
+name: Build SportingBOT
 
 on:
   push:
@@ -68,7 +68,7 @@ jobs:
           SLACK_CHANNEL: your-slack-channel
           SLACK_USERNAME: GitHub Actions
           SLACK_COLOR: 'good'
-          SLACK_TITLE: 'SportingBot Build Successful'
+          SLACK_TITLE: 'SportingBOT Build Successful'
           SLACK_MESSAGE: 'Build of ${{ env.APP_NAME }}:${{ env.RELEASE_NAME }} completed successfully and pushed to registry.'
           SLACK_ICON: ':heavy_check_mark:'
         if: success()
@@ -80,7 +80,7 @@ jobs:
           SLACK_CHANNEL: your-slack-channel
           SLACK_USERNAME: GitHub Actions
           SLACK_COLOR: 'danger'
-          SLACK_TITLE: 'SportingBot Build Failed'
+          SLACK_TITLE: 'SportingBOT Build Failed'
           SLACK_MESSAGE: 'Build of ${{ env.APP_NAME }}:${{ env.RELEASE_NAME }} failed.'
           SLACK_ICON: ':x:'
         if: failure() 
