@@ -3,8 +3,11 @@
 import { useState, ReactNode, useEffect, useRef } from 'react';
 import { AssistantContext } from './context';
 import { registerThread } from '@/functions/thread-register';
+import { getAgentId } from '@/lib/agent-config';
+import { useBrandConfig } from '@/contexts/brand-context';
 
 export function AssistantProvider({ children }: { children: ReactNode }) {
+  const brand = useBrandConfig();
   const [threadId, setThreadId] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const threadRegistered = useRef(false);
@@ -15,7 +18,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
       threadRegistered.current = true;
       
       registerThread({
-        agentId: "assistant-thread-agent",
+        agentId: getAgentId(brand.id),
         userId: undefined,
         metadata: {
           source: "assistant-provider",
@@ -30,7 +33,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
         threadRegistered.current = false;
       });
     }
-  }, []);
+  }, [brand.id]);
 
   const openWithThread = (id: string) => {
     setThreadId(id);

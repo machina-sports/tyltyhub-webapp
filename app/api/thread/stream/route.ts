@@ -1,8 +1,11 @@
 import { NextRequest } from "next/server"
+import { getAgentId } from "@/lib/agent-config"
 
 export async function POST(req: NextRequest) {
   const api_url = process.env.MACHINA_CLIENT_URL
   const bearer = process.env.MACHINA_API_KEY
+  const brandId = process.env.NEXT_PUBLIC_BRAND || 'bwin'
+  const agentId = getAgentId(brandId)
 
   const headers = {
     "X-Api-Token": `${bearer}`,
@@ -12,8 +15,8 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
     
-    // Forward request to Flask backend streaming endpoint
-    const response = await fetch(`${api_url}/agent/stream/assistant-thread-agent`, {
+    // Forward request to Flask backend streaming endpoint (brand-specific agent)
+    const response = await fetch(`${api_url}/agent/stream/${agentId}`, {
       method: "POST",
       headers: headers,
       body: JSON.stringify(body),

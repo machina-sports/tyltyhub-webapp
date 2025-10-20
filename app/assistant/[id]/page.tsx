@@ -22,6 +22,8 @@ import { BettingRecommendationsWidget } from "@/components/betting-recommendatio
 import { ResponsibleGamingResponsive } from "@/components/responsible-gaming-responsive";
 import { useAssistant } from "@/providers/assistant/use-assistant";
 import { motion, AnimatePresence } from "framer-motion";
+import { getAgentId } from "@/lib/agent-config";
+import { useBrandConfig } from "@/contexts/brand-context";
 
 // Component to render object cards (events, matches, etc.)
 function ObjectCards({ objects }: { objects: any[] }) {
@@ -136,8 +138,8 @@ function ObjectCards({ objects }: { objects: any[] }) {
   );
 }
 
+// Note: agentId is now dynamically determined based on brand
 const AGENT_CONFIG = {
-  agentId: "assistant-thread-agent",
   streamWorkflows: true,
 };
 
@@ -154,6 +156,7 @@ function AssistantChatContent({
 }) {
   const router = useRouter();
   const { openWithThread } = useAssistant();
+  const brand = useBrandConfig();
   const objectsMapRef = useRef<Map<string, any[]>>(new Map());
   const suggestionsMapRef = useRef<Map<string, string[]>>(new Map());
   const [objectsVersion, setObjectsVersion] = useState(0);
@@ -210,7 +213,7 @@ function AssistantChatContent({
 
   const adapter = useMemo(() => {
     return createStreamingAdapterWithConfig({
-      agentId: AGENT_CONFIG.agentId,
+      agentId: getAgentId(brand.id),
       streamWorkflows: AGENT_CONFIG.streamWorkflows,
       threadId: threadId,
       objectsMapRef: objectsMapRef,
@@ -220,7 +223,7 @@ function AssistantChatContent({
         setObjectsVersion(v => v + 1);
       },
     });
-  }, [threadId]);
+  }, [threadId, brand.id]);
 
   // Create runtime with initial messages - useLocalRuntime must be called unconditionally
   const runtime = useLocalRuntime(

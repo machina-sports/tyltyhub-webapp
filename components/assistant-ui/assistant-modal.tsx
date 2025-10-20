@@ -21,6 +21,7 @@ import { useBrandTexts } from "@/hooks/use-brand-texts";
 import { useAssistant } from "@/providers/assistant/use-assistant";
 import { BettingRecommendationsWidget } from "@/components/betting-recommendations-widget";
 import { motion, AnimatePresence } from "framer-motion";
+import { getAgentId } from "@/lib/agent-config";
 
 // Component to render object cards (events, matches, etc.)
 function ObjectCards({ objects }: { objects: any[] }) {
@@ -420,9 +421,8 @@ function AssistantModalContent({
 }
 
 // Configuration - Update these values for your environment
+// Note: agentId is now dynamically determined based on brand
 const AGENT_CONFIG = {
-  // Your agent ID or name from the backend
-  agentId: "assistant-thread-agent",
   // Enable workflow-by-workflow streaming (shows progress as each workflow executes)
   streamWorkflows: true, // Set to true to see workflow progress + final message
 };
@@ -501,11 +501,12 @@ function AssistantModalInner({
 
   // Get assistant configuration
   const { name, welcomeMessage } = useAssistantConfig();
+  const brand = useBrandConfig();
 
   // Create adapter with thread ID and objects map
   const adapter = useMemo(() => {
     return createStreamingAdapterWithConfig({
-      agentId: AGENT_CONFIG.agentId,
+      agentId: getAgentId(brand.id),
       streamWorkflows: AGENT_CONFIG.streamWorkflows,
       threadId: threadId,
       objectsMapRef: objectsMapRef,
@@ -515,7 +516,7 @@ function AssistantModalInner({
         setObjectsVersion(v => v + 1);
       },
     });
-  }, [threadId]);
+  }, [threadId, brand.id]);
 
   // Create runtime with initial messages
   const runtime = useLocalRuntime(
