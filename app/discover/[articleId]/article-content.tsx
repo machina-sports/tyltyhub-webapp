@@ -21,6 +21,7 @@ import { ResponsibleGamingResponsive } from "@/components/responsible-gaming-res
 import { useTheme } from "@/components/theme-provider";
 import { useBrand } from "@/contexts/brand-context";
 import { cn } from "@/lib/utils";
+import { BettingRecommendationsWidget } from "@/components/betting-recommendations-widget";
 import {
     doFetchArticle,
     doFetchRelatedArticles,
@@ -114,6 +115,22 @@ const WidgetEmbed = React.memo(({ content }: { content: string }) => (
 ))
 WidgetEmbed.displayName = 'WidgetEmbed'
 
+// Transform section_X_docs format to BettingRecommendationsWidget format
+const transformDocsToMarkets = (docs: any[]): any[] => {
+  if (!Array.isArray(docs) || docs.length === 0) return [];
+  
+  return docs.map(doc => ({
+    market_type: doc.marketType || doc.market_type || 'odds_information',
+    odds: Number(doc.price || doc.odds || 0),
+    rationale: doc.rationale || '',
+    title: doc.title || '',
+    runner: doc.name || '',
+    event_id: doc['event-id'] || doc.event_id,
+    market_id: doc['market-id'] || doc.market_id,
+    option_id: doc['option-id'] || doc.option_id
+  })).filter(m => m.title && m.odds > 0);
+};
+
 interface ArticleContentProps {
   articleParam: string;
 }
@@ -177,14 +194,19 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
       subtitle: article.value?.subtitle || "",
       section_1_title: article.value?.["section_1_title"] || "",
       section_1_content: article.value?.["section_1_content"] || "",
+      section_1_docs: article.value?.["section_1_docs"] || [],
       section_2_title: article.value?.["section_2_title"] || "",
       section_2_content: article.value?.["section_2_content"] || "",
+      section_2_docs: article.value?.["section_2_docs"] || [],
       section_3_title: article.value?.["section_3_title"] || "",
       section_3_content: article.value?.["section_3_content"] || "",
+      section_3_docs: article.value?.["section_3_docs"] || [],
       section_4_title: article.value?.["section_4_title"] || "",
       section_4_content: article.value?.["section_4_content"] || "",
+      section_4_docs: article.value?.["section_4_docs"] || [],
       section_5_title: article.value?.["section_5_title"] || "",
       section_5_content: article.value?.["section_5_content"] || "",
+      section_5_docs: article.value?.["section_5_docs"] || [],
       createdDate: article.created || article.date,
       articleId: (article._id || article.id || "").toString(),
       eventDetails: article.value?.["event-details"],
@@ -274,7 +296,7 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
       <RenderImageComponent imageUrl={mainImageUrl} alt={articleData.title} />
       <div className="space-y-6">
         <h2 className={cn(
-          "text-2xl sm:text-4xl font-bold",
+          "text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight",
           isDarkMode ? "text-[#fff]" : ""
         )}>
           {articleData.title}
@@ -407,6 +429,13 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           )}>
             {articleData.section_1_content}
           </p>
+          {articleData.section_1_docs && articleData.section_1_docs.length > 0 && (
+            <div className="mt-8 mb-8">
+              <BettingRecommendationsWidget 
+                markets={transformDocsToMarkets(articleData.section_1_docs)}
+              />
+            </div>
+          )}
           <RenderImageComponent imageUrl={section1ImageUrl} alt={articleData?.["section_1_title"]} />
           {articleData?.oddsWidgets?.mainWidget && (
             <div className={cn("mt-0 pl-4 sm:pl-0 max-w-[420px]", isDarkMode && "dark")}>
@@ -425,6 +454,13 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           )}>
             {articleData.section_2_content}
           </p>
+          {articleData.section_2_docs && articleData.section_2_docs.length > 0 && (
+            <div className="mt-8 mb-8">
+              <BettingRecommendationsWidget 
+                markets={transformDocsToMarkets(articleData.section_2_docs)}
+              />
+            </div>
+          )}
           <RenderImageComponent imageUrl={section2ImageUrl} alt={articleData?.["section_2_title"]} />
           {articleData?.oddsWidgets?.thirdWidget && (
             <div className={cn("mt-0 pl-4 sm:pl-0 max-w-[420px]", isDarkMode && "dark")}>
@@ -443,6 +479,13 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           )}>
             {articleData.section_3_content}
           </p>
+          {articleData.section_3_docs && articleData.section_3_docs.length > 0 && (
+            <div className="mt-8 mb-8">
+              <BettingRecommendationsWidget 
+                markets={transformDocsToMarkets(articleData.section_3_docs)}
+              />
+            </div>
+          )}
           <RenderImageComponent imageUrl={section3ImageUrl} alt={articleData?.["section_3_title"]} />
           {articleData?.oddsWidgets?.fourthWidget && (
             <div className={cn("mt-0 pl-4 sm:pl-0 max-w-[420px]", isDarkMode && "dark")}>
@@ -461,6 +504,13 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           )}>
             {articleData.section_4_content}
           </p>
+          {articleData.section_4_docs && articleData.section_4_docs.length > 0 && (
+            <div className="mt-8 mb-8">
+              <BettingRecommendationsWidget 
+                markets={transformDocsToMarkets(articleData.section_4_docs)}
+              />
+            </div>
+          )}
           <RenderImageComponent imageUrl={section4ImageUrl} alt={articleData?.["section_4_title"]} />
           {articleData?.oddsWidgets?.fifthWidget && (
             <div className={cn("mt-0 pl-4 sm:pl-0 max-w-[420px]", isDarkMode && "dark")}>
@@ -479,6 +529,13 @@ export default function ArticleContent({ articleParam }: ArticleContentProps) {
           )}>
             {articleData.section_5_content}
           </p>
+          {articleData.section_5_docs && articleData.section_5_docs.length > 0 && (
+            <div className="mt-8 mb-8">
+              <BettingRecommendationsWidget 
+                markets={transformDocsToMarkets(articleData.section_5_docs)}
+              />
+            </div>
+          )}
           <RenderImageComponent imageUrl={section5ImageUrl} alt={articleData?.["section_5_title"]} />
         </div>
       </div>
