@@ -1,0 +1,130 @@
+{
+  "id": "tyltyhub",
+  "name": "tyltyhub",
+  "displayName": "TyltyHUB",
+  "description": "Múltiplas, odds altas, bets exclusivas e alavancagens em um só lugar. Para quem quer subir de nível.",
+  "language": "pt-BR",
+  "locale": "pt_BR",
+  "domain": "tyltyhub.machina.gg",
+  "baseUrl": "https://tyltyhub.machina.gg",
+  "sportsBaseUrl": "https://www.sportingbet.bet.br",
+  "analytics": {
+    "ga4Primary": "G-TYLTYHUB-PRIMARY",
+    "ga4Secondary": "G-TYLTYHUB-SECONDARY"
+  },
+  "branding": {
+    "colors": {
+      "primary": "#7221BF",
+      "secondary": "#8B3FD9",
+      "success": "#10B981",
+      "warning": "#F59E0B",
+      "danger": "#EF4444",
+      "info": "#06B6D4"
+    },
+    "fonts": {
+      "primary": "Roboto",
+      "fallback": "system-ui, sans-serif"
+    },
+    "logo": {
+      "icon": "/tyltyhub/favicon.png",
+      "full": "/tyltyhub/logo.svg",
+      "alt": "TyltyHUB logo",
+      "footer": {
+        "width": 80,
+        "height": 24,
+        "className": "w-20 h-6 md:w-24 md:h-7",
+        "mobile": {
+          "width": 120,
+          "height": 24,
+          "className": ""
+        }
+      }
+    }
+  },
+  "content": {
+    "title": "TyltyHUB: Múltiplas, odds altas, bets exclusivas e alavancagens",
+    "description": "Múltiplas, odds altas, bets exclusivas e alavancagens em um só lugar. Para quem quer subir de nível. Pergunte ao nosso chat sobre as notícias e odds e descubra como apostar melhor.",
+    "ogImage": "https://tyltyhub.machina.gg/og_image_4.png",
+    "favicon": "/tyltyhub/favicon.png",
+    "subtitle": "Para quem quer subir de nível",
+    "navigation": {
+      "chat": "Conversar",
+      "discover": "Descobrir"
+    },
+    "cta": {
+      "register": "https://app.tyltyhub.com/register",
+      "login": "https://app.tyltyhub.com/login",
+      "registerText": "Acesso grátis",
+      "loginText": "Entrar"
+    },
+    "chat": {
+      "titleOptions": [
+        "Como posso turbinar suas apostas hoje?",
+        "Pronto para as melhores odds? Me diga o que precisa!",
+        "Bora subir a banca? Como posso te ajudar?"
+      ],
+      "placeholder": "Pergunte sobre jogos, odds, dicas e estratégias...",
+      "assistantPlaceholder": "Pergunte sobre jogos, odds, dicas...",
+      "followUpPlaceholder": "Gostou? Quer saber mais? Me diga!",
+      "followUpTranscription": "Quais são as melhores odds de hoje?",
+      "preparing": "Preparando...",
+      "recording": "Gravando...",
+      "transcribing": "Transcrevendo...",
+      "noSuggestionsFound": "Não foram encontradas perguntas sugeridas no momento.",
+      "mobileInputRows": 2,
+      "mobileInputPaddingBottom": "1rem"
+    },
+    "offline": {
+      "title": "Voltamos em breve!",
+      "subtitle": "É hora da minha pré-temporada, amigo.",
+      "description": "Em breve estarei de volta com novidades.\nEnquanto espera, dê uma olhada nas promoções.",
+      "ctaText": "Ir para Sportingbet",
+      "ctaLink": "https://www.sportingbet.bet.br/pt-br/sports/promotions",
+      "ctaLinkText": "Consulte aqui"
+    }
+  },
+  "features": {
+    "enableAvatar": false,
+    "enableBets": false,
+    "enableChat": true
+  },
+  "responsibleGaming": {
+    "enabled": true,
+    "text": "Jogue com responsabilidade",
+    "image": "/Jogo Seguro.png",
+    "footer": {
+      "disclaimer": "Aposte com Responsabilidade. Ganhos passados não representam possibilidade de ganhos futuros. Portaria SPA/MF nº 247",
+      "copyright": "2025 TyltyHUB",
+      "oddsDisclaimer": "* Odds sujeitas a alterações. Este chatbot tem fins meramente informativos e não solicita, armazena nem processa dados pessoais. Por favor, não compartilhe informações pessoais ou sensíveis ao utilizá-lo",
+      "images": {
+        "showImages": false
+      }
+    }
+  },
+  "ageVerification": {
+    "enabled": true,
+    "title": "Você tem 18 anos ou mais?",
+    "description": "Para acessar este conteúdo você deve ser maior de idade",
+    "acceptText": "Sim, tenho 18+",
+    "rejectText": "Não",
+    "underageTitle": "Acesso Restrito",
+    "underageDescription": "Este conteúdo é destinado apenas para maiores de 18 anos.",
+    "underageButtonText": "Entendi",
+    "headerBackgroundColor": "#000000",
+    "acceptButtonColor": "#000000",
+    "backdropOpacity": "0.7",
+    "modalBorder": "2px solid #7221BF"
+  },
+  "privacy": {
+    "lgpd": {
+      "enabled": true,
+      "title": "Privacidade e Cookies",
+      "description": "Utilizamos cookies e tecnologias similares para melhorar sua experiência de navegação, personalizar conteúdo e anúncios, e analisar o tráfego do site. Ao continuar navegando, você aceita nossa política de privacidade.",
+      "acceptText": "Aceitar",
+      "dismissText": "Agora não",
+      "privacyPolicyUrl": "https://www.sportingbet.bet.br/politica-de-privacidade",
+      "privacyPolicyText": "política de privacidade"
+    }
+  }
+}
+

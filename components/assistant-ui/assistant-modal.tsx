@@ -210,10 +210,10 @@ function AssistantModalContent({
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className={`assistant-launcher hidden md:flex fixed bottom-[32px] right-8 z-50 h-14 w-14 rounded-full shadow-lg transition-all duration-200 items-center justify-center ${isSportingbet ? "bg-brand-secondary" : "bg-brand-primary"} text-white hover:brightness-95`}
+          className={`assistant-launcher hidden md:flex fixed bottom-[32px] right-8 z-50 h-[64px] w-[64px] rounded-full shadow-lg transition-all duration-200 items-center justify-center ${isSportingbet ? "bg-brand-secondary" : "bg-brand-primary"} text-white hover:brightness-95`}
           aria-label={`Open ${assistantName}`}
         >
-          <MessageSquare className="h-6 w-6" />
+          <MessageSquare className="h-8 w-8" />
         </button>
       )}
 
@@ -403,7 +403,7 @@ function AssistantModalContent({
                   <ComposerPrimitive.Input
                     ref={composerRef as any}
                     placeholder={assistantPlaceholder}
-                    className="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary resize-none overflow-hidden"
                   />
                 <ComposerPrimitive.Send asChild>
                   <Button size="default" className="h-10 bg-brand-primary hover:brightness-95 assistant-send-button">

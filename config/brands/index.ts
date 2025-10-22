@@ -1,5 +1,6 @@
 import bwinConfig from './bwin.json';
 import sportingbetConfig from './sportingbet.json';
+import tyltyhubConfig from './tyltyhub.json';
 
 export interface BrandConfig {
   id: string;
@@ -136,6 +137,7 @@ export interface BrandConfig {
 export const brands: Record<string, BrandConfig> = {
   bwin: bwinConfig,
   sportingbet: sportingbetConfig,
+  tyltyhub: tyltyhubConfig,
 };
 
 export const getBrandConfig = (brandId?: string): BrandConfig => {

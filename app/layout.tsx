@@ -109,7 +109,19 @@ export default function RootLayout({
               --bg-primary: 220 100% 8%;
               --bg-secondary: 220 100% 12%;
               --background: rgb(6, 31, 63);
-            ` : `
+            ` : brandId === 'tyltyhub' ? `
+              /* Tyltyhub Brand Colors */
+              --brand-primary: 271 71% 44% !important;
+              --brand-secondary: 271 71% 54% !important;
+              --brand-success: 145 63% 49% !important;
+              --brand-warning: 43 98% 53% !important;
+              --brand-danger: 3 100% 59% !important;
+              --brand-info: 204 86% 53% !important;
+              --border-primary: 271 71% 44%;
+              --bg-primary: 0 0% 7%;
+              --bg-secondary: 0 0% 12%;
+              --background: 0 0% 7%;
+            ` : brandId === 'bwin' ? `
               /* Bwin Brand Colors */
               --brand-primary: 48 100% 50% !important;
               --brand-secondary: 43 98% 53% !important;
@@ -118,6 +130,18 @@ export default function RootLayout({
               --brand-danger: 3 100% 59% !important;
               --brand-info: 204 86% 53% !important;
               --border-primary: 48 100% 50%;
+              --bg-primary: 0 0% 7%;
+              --bg-secondary: 0 0% 12%;
+              --background: 0 0% 7%;
+            ` : `
+              /* Default Gray Colors (before theme loads) */
+              --brand-primary: 0 0% 40% !important;
+              --brand-secondary: 0 0% 30% !important;
+              --brand-success: 145 63% 49% !important;
+              --brand-warning: 43 98% 53% !important;
+              --brand-danger: 3 100% 59% !important;
+              --brand-info: 204 86% 53% !important;
+              --border-primary: 0 0% 40%;
               --bg-primary: 0 0% 7%;
               --bg-secondary: 0 0% 12%;
               --background: 0 0% 7%;

@@ -125,6 +125,13 @@ export function ResponsibleGamingFooter({
                 </div>
               )}
               
+              {/* Odds Disclaimer */}
+              {brand.responsibleGaming.footer?.oddsDisclaimer && (
+                <div className="text-xs text-muted-foreground italic mt-2 max-w-2xl">
+                  {brand.responsibleGaming.footer.oddsDisclaimer}
+                </div>
+              )}
+              
               {brand.responsibleGaming.footer?.disclaimer && (
                 <div className="text-sm text-muted-foreground max-w-2xl">
                   {brand.responsibleGaming.footer.disclaimer}
@@ -134,13 +141,6 @@ export function ResponsibleGamingFooter({
               {brand.responsibleGaming.footer?.copyright && (
                 <div className="text-sm text-muted-foreground">
                   {brand.responsibleGaming.footer.copyright}
-                </div>
-              )}
-              
-              {/* Odds Disclaimer */}
-              {brand.responsibleGaming.footer?.oddsDisclaimer && (
-                <div className="text-xs text-muted-foreground italic mt-2 max-w-2xl">
-                  {brand.responsibleGaming.footer.oddsDisclaimer}
                 </div>
               )}
             </div>

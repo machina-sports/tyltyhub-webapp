@@ -100,6 +100,39 @@ export function generateBrandCSS(): string {
     `;
   }
 
+  // Tyltyhub CSS - similar to bwin but with purple
+  if (brandId === 'tyltyhub') {
+    return `
+      :root {
+        /* Tyltyhub Brand Colors - Use exact primary purple #7221BF */
+        --brand-primary: ${primaryHsl} !important;
+        --brand-secondary: ${secondaryHsl} !important;
+        --brand-success: ${successHsl} !important;
+        --brand-warning: ${warningHsl} !important;
+        --brand-danger: ${dangerHsl} !important;
+        --brand-info: ${infoHsl} !important;
+        
+        /* Tyltyhub Border Colors */
+        --border-primary: ${primaryHsl};
+        
+        /* Tyltyhub Neutral Colors */
+        --neutral-100: 0 0% 100%;
+        --neutral-90: 0 0% 90%;
+        --neutral-80: 0 0% 70%;
+        --neutral-70: 0 0% 55%;
+        --neutral-60: 0 0% 40%;
+        --neutral-50: 0 0% 29%;
+        --neutral-40: 0 0% 24%;
+        --neutral-30: 0 0% 18%;
+        --neutral-25: 0 0% 15%;
+        --neutral-20: 0 0% 12%;
+        --neutral-15: 0 0% 10%;
+        --neutral-10: 0 0% 7%;
+        --neutral-0: 0 0% 0%;
+      }
+    `;
+  }
+
   // Default bwin CSS
   return `
     :root {
