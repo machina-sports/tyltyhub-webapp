@@ -3,15 +3,15 @@ kind: Deployment
 metadata:
   annotations:
     deployment.kubernetes.io/revision: "1"
-  name: machina-workspace-entain-bwin-app
-  namespace: machina-workspace
+  name: tenant-otg-organization-tyltyhub-app
+  namespace: tenant-otg-organization
 spec:
   progressDeadlineSeconds: 600
   replicas: 1
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: machina-workspace-entain-bwin-app
+      app: tenant-otg-organization-tyltyhub-app
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -20,7 +20,7 @@ spec:
   template:
     metadata:
       labels:
-        app: machina-workspace-entain-bwin-app
+        app: tenant-otg-organization-tyltyhub-app
     spec:
       containers:
       - command:
@@ -29,9 +29,9 @@ spec:
         env:
         - name: NODE_ENV
           value: production
-        image: machinasports/entain-bwin:latest
+        image: machinasports/tyltyhub:latest
         imagePullPolicy: Always
-        name: machina-workspace-entain-bwin-app
+        name: tenant-otg-organization-tyltyhub-app
         ports:
         - containerPort: 3000
           protocol: TCP

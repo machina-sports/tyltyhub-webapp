@@ -1,8 +1,8 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: machina-workspace-entain-bwin-app
-  namespace: machina-workspace
+  name: tenant-otg-organization-tyltyhub-app
+  namespace: tenant-otg-organization
 spec:
   clusterIP: 
   internalTrafficPolicy: Cluster
@@ -14,6 +14,6 @@ spec:
     protocol: TCP
     targetPort: 3000
   selector:
-    app: machina-workspace-entain-bwin-app
+    app: tenant-otg-organization-tyltyhub-app
   sessionAffinity: None
   type: ClusterIP 
