@@ -25,6 +25,17 @@
       "primary": "Roboto",
       "fallback": "system-ui, sans-serif"
     },
+    "ui": {
+      "dateLocale": "es-ES",
+      "defaultTexts": {
+        "recent": "Reciente",
+        "noArticles": "No se encontraron artículos",
+        "noDescription": "Sin descripción"
+      },
+      "textColors": {
+        "muted": "text-[#FFF8E1]/70"
+      }
+    },
     "logo": {
       "icon": "/bwin-logo-icon.png",
       "full": "/bwin-logo.png",

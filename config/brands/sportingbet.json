@@ -25,6 +25,14 @@
       "primary": "Inter",
       "fallback": "system-ui, sans-serif"
     },
+    "ui": {
+      "dateLocale": "pt-BR",
+      "defaultTexts": {
+        "recent": "Recente",
+        "noArticles": "Nenhum artigo encontrado",
+        "noDescription": "Sem descrição"
+      }
+    },
     "logo": {
       "icon": "/sb-new.png",
       "full": "/outline.png",

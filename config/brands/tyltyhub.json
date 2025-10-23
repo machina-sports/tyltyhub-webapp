@@ -25,6 +25,14 @@
       "primary": "Roboto",
       "fallback": "system-ui, sans-serif"
     },
+    "ui": {
+      "dateLocale": "pt-BR",
+      "defaultTexts": {
+        "recent": "Recente",
+        "noArticles": "Nenhum artigo encontrado",
+        "noDescription": "Sem descrição"
+      }
+    },
     "logo": {
       "icon": "/tyltyhub/favicon.png",
       "full": "/tyltyhub/logo.svg",

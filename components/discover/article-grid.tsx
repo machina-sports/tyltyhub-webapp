@@ -6,11 +6,11 @@ import { CalendarDays } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { formatDistanceToNow } from "date-fns"
-import { es, ptBR } from 'date-fns/locale'
 import ReactMarkdown from 'react-markdown'
 import { Article } from "@/providers/article/reducer"
 import { cn } from "@/lib/utils"
 import { useBrand } from "@/contexts/brand-context"
+import { useBrandLocale, useBrandTexts, useBrandTextColors } from "@/hooks/use-brand-locale"
 
 interface ArticleGridProps {
   articles: Article[]
@@ -98,7 +98,9 @@ const getDescriptionSnippet = (description: string, maxLength: number): string =
 
 const ArticleCard = ({ article }: { article: Article }) => {
   const { brand } = useBrand();
-  const locale = brand.id === 'sportingbet' ? ptBR : es;
+  const locale = useBrandLocale();
+  const brandTexts = useBrandTexts();
+  const textColors = useBrandTextColors();
   if (!article) return null;
 
   const articleId = article._id || article.id;
@@ -135,17 +137,17 @@ const ArticleCard = ({ article }: { article: Article }) => {
               )}
             </Link>
             <div className="p-3 flex flex-col flex-grow min-w-0">
-              <h3 className="text-sm font-semibold mb-1 line-clamp-2">
+              <h3 className="text-base font-semibold mb-1 line-clamp-2">
                 <Link href={articleUrl} prefetch={false} className="text-foreground hover:text-primary transition-colors">
                   {title}
                 </Link>
               </h3>
               <div className={cn(
                 "text-xs flex-grow",
-                brand.id === 'bwin' ? "text-[#FFF8E1]/70" : "text-muted-foreground"
+                textColors.muted
               )}>
                 <p className="line-clamp-2">
-                  {getDescriptionSnippet(description, 80) || 'Sin descripción'}
+                  {getDescriptionSnippet(description, 80) || brandTexts.noDescription}
                 </p>
               </div>
             </div>
@@ -166,22 +168,22 @@ const ArticleCard = ({ article }: { article: Article }) => {
               )}
             </Link>
             <div className="p-5 flex flex-col flex-grow">
-              <h3 className="text-sm md:text-xl font-semibold mb-2 line-clamp-3">
+              <h3 className="text-sm md:text-2xl font-semibold mb-2 line-clamp-3">
                 <Link href={articleUrl} prefetch={false} className="text-foreground hover:text-primary transition-colors">
                   {title}
                 </Link>
               </h3>
               <div className={cn(
                 "text-sm mb-2",
-                brand.id === 'bwin' ? "text-[#FFF8E1]/70" : "text-muted-foreground"
+                textColors.muted
               )}>
                 <p className="line-clamp-3">
-                  {getDescriptionSnippet(description, 120) || 'Sin descripción'}
+                  {getDescriptionSnippet(description, 120) || brandTexts.noDescription}
                 </p>
               </div>
               <div className="flex items-center mt-2 pt-2 text-xs text-muted-foreground">
                 <CalendarDays className="h-3 w-3 mr-1 text-primary" />
-                {articleDate ? formatDistanceToNow(new Date(articleDate), { addSuffix: true, locale }) : (brand.id === 'sportingbet' ? 'Recente' : 'Reciente')}
+                {articleDate ? formatDistanceToNow(new Date(articleDate), { addSuffix: true, locale }) : brandTexts.recent}
               </div>
             </div>
           </div>
@@ -193,9 +195,11 @@ const ArticleCard = ({ article }: { article: Article }) => {
 
 export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProps) {
   const { brand } = useBrand()
-  const locale = brand.id === 'sportingbet' ? ptBR : es
+  const locale = useBrandLocale();
+  const brandTexts = useBrandTexts();
+  const textColors = useBrandTextColors();
   if (!articles || articles.length === 0) {
-    return <div className="py-8 text-center text-bwin-neutral-60">No se encontraron artículos</div>;
+    return <div className="py-8 text-center text-muted-foreground">{brandTexts.noArticles}</div>;
   }
 
   if (layout === 'fullWidth' && articles.length > 0) {
@@ -236,7 +240,7 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
             </div>
             <div className="md:col-span-6 p-4 md:p-8 flex flex-col">
               <div className="space-y-3">
-                <h2 className="text-lg md:text-3xl font-bold line-clamp-3">
+                <h2 className="text-3xl md:text-4xl font-bold line-clamp-3">
                   <Link href={articleUrl} prefetch={false} className="text-foreground hover:text-primary transition-colors">
                     {title}
                   </Link>
@@ -244,10 +248,10 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
 
                 <div className={cn(
                   "prose prose-sm prose-neutral max-w-none md:line-clamp-5",
-                  brand.id === 'bwin' ? "text-[#FFF8E1]/70" : "text-muted-foreground"
+                  textColors.muted
                 )}>
                   <ReactMarkdown>
-                    {getDescriptionSnippet(description, 360) || 'Sin descripción'}
+                    {getDescriptionSnippet(description, 360) || brandTexts.noDescription}
                   </ReactMarkdown>
                 </div>
               </div>
@@ -258,7 +262,7 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
                 </div>
                 <div className="flex items-center text-xs md:text-sm text-muted-foreground">
                   <CalendarDays className="h-3 w-3 md:h-4 md:w-4 mr-1 text-primary" />
-                  {articleDate ? formatDistanceToNow(new Date(articleDate), { addSuffix: true, locale }) : (brand.id === 'sportingbet' ? 'Recente' : 'Reciente')}
+                  {articleDate ? formatDistanceToNow(new Date(articleDate), { addSuffix: true, locale }) : brandTexts.recent}
                 </div>
               </div>
             </div>

@@ -33,12 +33,12 @@ export function MarkdownChat({ content, className }: MarkdownContentProps) {
             },
             ul: { 
               props: { 
-                className: "list-none space-y-4 mt-4 mb-3" 
+                className: "list-none space-y-4 mt-4 mb-4" 
               } 
             },
             ol: { 
               props: { 
-                className: "list-none space-y-4 mt-4 mb-3" 
+                className: "list-none space-y-4 mt-4 mb-4" 
               } 
             },
             li: { 
@@ -48,22 +48,22 @@ export function MarkdownChat({ content, className }: MarkdownContentProps) {
             },
             p: { 
               props: { 
-                className: "my-3 leading-relaxed" 
+                className: "my-2 leading-relaxed" 
               } 
             },
             h1: { 
               props: { 
-                className: "text-base font-bold mb-4 text-foreground leading-tight" 
+                className: "text-base font-bold mt-6 mb-4 text-foreground leading-tight" 
               } 
             },
             h2: { 
               props: { 
-                className: "text-sm font-semibold mb-3 text-foreground leading-tight" 
+                className: "text-sm font-semibold mt-5 mb-3 text-foreground leading-tight" 
               } 
             },
             h3: { 
               props: { 
-                className: "text-sm font-semibold mb-3 text-foreground leading-tight" 
+                className: "text-sm font-semibold mt-4 mb-3 text-foreground leading-tight" 
               } 
             },
             strong: { 
