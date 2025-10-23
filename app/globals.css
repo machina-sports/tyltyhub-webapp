@@ -1253,6 +1253,24 @@ a {
   color: #7221BF !important;
 }
 
+/* Article title hover colors - match selection/highlight colors per brand */
+[data-brand="bwin"] .article-title-hover:hover {
+  color: #FFCB00 !important;
+}
+
+[data-brand="sportingbet"] .article-title-hover:hover {
+  color: hsl(207deg 95.24% 41.18%) !important;
+}
+
+[data-brand="tyltyhub"] .article-title-hover:hover {
+  color: #7221BF !important;
+}
+
+/* Dark mode article title hover - bwin specific */
+.dark [data-brand="bwin"] .article-title-hover:hover {
+  color: #FFCB00 !important;
+}
+
 /* Home screen input focus/hover - theme specific */
 [data-brand="bwin"] .home-input:focus {
   border-color: hsl(var(--brand-primary)) !important;

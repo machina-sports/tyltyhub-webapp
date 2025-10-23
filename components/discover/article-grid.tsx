@@ -138,7 +138,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
             </Link>
             <div className="p-3 flex flex-col flex-grow min-w-0">
               <h3 className="text-base font-semibold mb-1 line-clamp-2">
-                <Link href={articleUrl} prefetch={false} className="text-foreground hover:text-primary transition-colors">
+                <Link href={articleUrl} prefetch={false} className="article-title-hover text-foreground transition-colors">
                   {title}
                 </Link>
               </h3>
@@ -169,7 +169,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
             </Link>
             <div className="p-5 flex flex-col flex-grow">
               <h3 className="text-sm md:text-2xl font-semibold mb-2 line-clamp-3">
-                <Link href={articleUrl} prefetch={false} className="text-foreground hover:text-primary transition-colors">
+                <Link href={articleUrl} prefetch={false} className="article-title-hover text-foreground transition-colors">
                   {title}
                 </Link>
               </h3>
@@ -241,7 +241,7 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
             <div className="md:col-span-6 p-4 md:p-8 flex flex-col">
               <div className="space-y-3">
                 <h2 className="text-3xl md:text-4xl font-bold line-clamp-3">
-                  <Link href={articleUrl} prefetch={false} className="text-foreground hover:text-primary transition-colors">
+                  <Link href={articleUrl} prefetch={false} className="article-title-hover text-foreground transition-colors">
                     {title}
                   </Link>
                 </h2>

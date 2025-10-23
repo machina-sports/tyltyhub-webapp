@@ -82,10 +82,10 @@ export function RelatedArticles({ currentArticleId }: RelatedArticlesProps) {
                 </div>
                 <div className="p-4 w-full">
                   <h4 className={cn(
-                    "font-semibold line-clamp-2 mb-2 text-base transition-colors",
+                    "article-title-hover font-semibold line-clamp-2 mb-2 text-base transition-colors",
                     isDarkMode
-                      ? "text-[#FFF8E1] hover:text-[#FFCB00]"
-                      : "hover:text-primary"
+                      ? "text-[#FFF8E1]"
+                      : ""
                   )}>
                     {article.title}
                   </h4>
