@@ -83,6 +83,9 @@ export function generateBrandCSS(): string {
         --card: var(--bg-secondary);
         --border: var(--border-primary);
         
+        /* Sportingbet Odds Text Color - Use brand primary */
+        --odds-text-color: 207 95.24% 41.18%;
+        
         /* Sportingbet Text Colors */
         --text-primary: 0 0% 100%;
         --text-secondary: 0 0% 90%;
@@ -115,6 +118,9 @@ export function generateBrandCSS(): string {
         /* Tyltyhub Border Colors */
         --border-primary: ${primaryHsl};
         
+        /* Tyltyhub Odds Text Color - White for better contrast */
+        --odds-text-color: 0 0% 100%;
+        
         /* Tyltyhub Neutral Colors */
         --neutral-100: 0 0% 100%;
         --neutral-90: 0 0% 90%;
@@ -146,6 +152,9 @@ export function generateBrandCSS(): string {
       
       /* Bwin Border Colors */
       --border-primary: ${primaryHsl};
+      
+      /* Bwin Odds Text Color - Use brand primary */
+      --odds-text-color: ${primaryHsl};
       
       /* Bwin Neutral Colors */
       --neutral-100: 0 0% 100%;

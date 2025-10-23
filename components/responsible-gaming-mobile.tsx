@@ -122,20 +122,20 @@ export function ResponsibleGamingMobile({
 
               {brand.responsibleGaming.footer?.oddsDisclaimer && (
                 <div className="mt-4 px-2">
-                  <p className="text-xs text-muted-foreground text-center italic opacity-70 max-w-2xl mx-auto">
+                  <p className="text-xs text-muted-foreground/90 text-center italic max-w-2xl mx-auto">
                     {brand.responsibleGaming.footer.oddsDisclaimer}
                   </p>
                 </div>
               )}
               
               {brand.responsibleGaming.footer?.disclaimer && (
-                <div className="text-sm text-muted-foreground">
+                <div className="text-sm text-muted-foreground/90">
                   {brand.responsibleGaming.footer.disclaimer}
                 </div>
               )}
 
               {brand.responsibleGaming.footer?.copyright && (
-                <div className="text-sm text-muted-foreground">
+                <div className="text-sm text-muted-foreground/90">
                   {brand.responsibleGaming.footer.copyright}
                 </div>
               )}

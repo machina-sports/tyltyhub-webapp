@@ -81,6 +81,11 @@
       "ctaText": "Ir para Sportingbet",
       "ctaLink": "https://www.sportingbet.bet.br/pt-br/sports/promotions",
       "ctaLinkText": "Consulte aqui"
+    },
+    "assistant": {
+      "name": "TyltyHUB",
+      "welcomeMessage": "E aí! Sou a TyltyHUB, sua assistente de apostas inteligente. Pergunte sobre jogos, odds, dicas e estratégias. Bora subir a banca?",
+      "statusMessage": "Analisando sua pergunta..."
     }
   },
   "features": {
@@ -113,7 +118,13 @@
     "headerBackgroundColor": "#000000",
     "acceptButtonColor": "#000000",
     "backdropOpacity": "0.7",
-    "modalBorder": "2px solid #7221BF"
+    "modalBorder": "2px solid #7221BF",
+    "rejectButton": {
+      "backgroundColor": "#E5E7EB",
+      "color": "#000000",
+      "border": "2px solid #6B7280",
+      "hoverBackgroundColor": "#D1D5DB"
+    }
   },
   "privacy": {
     "lgpd": {

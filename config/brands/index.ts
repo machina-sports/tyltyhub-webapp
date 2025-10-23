@@ -83,6 +83,11 @@ export interface BrandConfig {
       ctaLink: string;
       ctaLinkText: string;
     };
+    assistant?: {
+      name: string;
+      welcomeMessage: string;
+      statusMessage: string;
+    };
   };
   features: {
     enableAvatar: boolean;
@@ -120,6 +125,12 @@ export interface BrandConfig {
     acceptButtonColor?: string;
     backdropOpacity?: string;
     modalBorder?: string;
+    rejectButton?: {
+      backgroundColor: string;
+      color: string;
+      border: string;
+      hoverBackgroundColor: string;
+    };
   };
   privacy?: {
     lgpd?: {

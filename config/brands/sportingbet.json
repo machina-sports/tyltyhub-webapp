@@ -81,6 +81,11 @@
       "ctaText": "Ir para Sportingbet",
       "ctaLink": "https://www.sportingbet.bet.br/pt-br/sports/promotions",
       "ctaLinkText": "Consulte aqui"
+    },
+    "assistant": {
+      "name": "SportingBOT",
+      "welcomeMessage": "Olá! Eu sou o SportingBOT, seu assistente de apostas esportivas. Considere perguntar sobre partidas, odds, estatísticas e muito mais. Como posso ajudar?",
+      "statusMessage": "Interpretando a sua pergunta..."
     }
   },
   "features": {
@@ -110,7 +115,13 @@
     "underageTitle": "Acesso Restrito",
     "underageDescription": "Este conteúdo é destinado apenas para maiores de 18 anos.",
     "underageButtonText": "Entendi",
-    "backdropOpacity": "0.75"
+    "backdropOpacity": "0.75",
+    "rejectButton": {
+      "backgroundColor": "#FFFFFF",
+      "color": "#374151",
+      "border": "2px solid #D1D5DB",
+      "hoverBackgroundColor": "#F9FAFB"
+    }
   },
   "privacy": {
     "lgpd": {

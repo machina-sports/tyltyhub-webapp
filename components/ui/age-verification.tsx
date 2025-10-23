@@ -98,24 +98,25 @@ export function AgeVerification() {
                 <div className="flex gap-4">
                   <Button
                     onClick={handleReject}
+                    variant="outline"
                     className="flex-1 h-14 text-base font-semibold rounded-xl"
                     style={{
-                      backgroundColor: 'white',
-                      color: '#374151',
-                      border: '2px solid #D1D5DB',
+                      backgroundColor: brand.ageVerification?.rejectButton?.backgroundColor || '#FFFFFF',
+                      color: brand.ageVerification?.rejectButton?.color || '#374151',
+                      border: brand.ageVerification?.rejectButton?.border || '2px solid #D1D5DB',
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#F9FAFB';
+                      e.currentTarget.style.backgroundColor = brand.ageVerification?.rejectButton?.hoverBackgroundColor || '#F9FAFB';
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = 'white';
+                      e.currentTarget.style.backgroundColor = brand.ageVerification?.rejectButton?.backgroundColor || '#FFFFFF';
                     }}
                   >
                     {brand.ageVerification?.rejectText || 'No'}
                   </Button>
                   <Button
                     onClick={handleAccept}
-                    className={`flex-1 h-14 text-base font-semibold rounded-xl ${brandId === 'sportingbet' ? 'sportingbet-age-verification-cta' : 'bwin-age-verification-cta'}`}
+                    className={`flex-1 h-14 text-base font-semibold rounded-xl ${brandId}-age-verification-cta`}
                   >
                     {brand.ageVerification?.acceptText || 'Sí, tengo 18+'}
                   </Button>
