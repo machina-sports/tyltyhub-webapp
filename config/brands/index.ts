@@ -29,6 +29,17 @@ export interface BrandConfig {
       primary: string;
       fallback: string;
     };
+    ui?: {
+      dateLocale?: string;
+      defaultTexts?: {
+        recent?: string;
+        noArticles?: string;
+        noDescription?: string;
+      };
+      textColors?: {
+        muted?: string;
+      };
+    };
     logo: {
       icon: string;
       full: string;
