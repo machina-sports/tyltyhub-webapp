@@ -7,6 +7,11 @@ on:
 
 env:
   APP_NAME: tyltyhub
+  AKS_CLUSTER_NAME: mks-community-cluster
+  AKS_RESOURCE_GROUP: mks-community-group
+  DEPLOYMENT_NAME: tenant-otg-organization-tyltyhub-app
+  CONTAINER_NAME: tenant-otg-organization-tyltyhub-app
+  NAMESPACE: tenant-otg-organization
   MACHINA_API_KEY: ${{ secrets.PROD_TYLTYHUB_MACHINA_API_KEY }}
   MACHINA_CLIENT_URL: ${{ vars.PROD_TYLTYHUB_MACHINA_CLIENT_URL }}
 
@@ -34,7 +39,7 @@ jobs:
           echo " " >> .env
           echo "NEXT_PUBLIC_BRAND=tyltyhub" >> .env
           echo " " >> .env
-          echo "NEXT_PUBLIC_FEATURE_TOGGLE_LANGUAGE_SELECTED=pt-BR" >> .env
+          echo "NEXT_PUBLIC_FEATURE_TOGGLE_LANGUAGE_SELECTED=br" >> .env
           echo " " >> .env
           echo "NEXT_PUBLIC_IMAGE_CONTAINER_ADDRESS=${{ vars.IMAGE_CONTAINER_ADDRESS }}" >> .env
           echo " " >> .env
@@ -61,6 +66,22 @@ jobs:
           tags: |
             ${{ secrets.REGISTRY_URL }}/${{ env.APP_NAME }}:${{ env.RELEASE_NAME }}
             ${{ secrets.REGISTRY_URL }}/${{ env.APP_NAME }}:latest
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Get AKS credentials
+        uses: azure/aks-set-context@v3
+        with:
+          cluster-name: ${{ env.AKS_CLUSTER_NAME }}
+          resource-group: ${{ env.AKS_RESOURCE_GROUP }}
+
+      - name: Deploy to AKS
+        run: |
+          kubectl set image deployment/${{ env.DEPLOYMENT_NAME }} ${{ env.CONTAINER_NAME }}=${{ secrets.REGISTRY_URL }}/${{ env.APP_NAME }}:${{ env.RELEASE_NAME }} -n ${{ env.NAMESPACE }}
+          kubectl rollout status deployment/${{ env.DEPLOYMENT_NAME }} -n ${{ env.NAMESPACE }}
 
       - name: Notify Slack - Build Success
         uses: rtCamp/action-slack-notify@v2
