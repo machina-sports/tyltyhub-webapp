@@ -22,6 +22,9 @@ export async function fetchSiteRetrieve(): Promise<any> {
         },
         "metadata.language": {
           "$in": [language]
+        },
+        "metadata.article_type": {
+          "$in": ["preview"]
         }
       },
       "page": 1,
