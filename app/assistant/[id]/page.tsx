@@ -24,6 +24,7 @@ import { useAssistant } from "@/providers/assistant/use-assistant";
 import { motion, AnimatePresence } from "framer-motion";
 import { getAgentId } from "@/lib/agent-config";
 import { useBrandConfig } from "@/contexts/brand-context";
+import { MarkdownChat } from "@/components/markdown-content";
 
 // Component to render object cards (events, matches, etc.)
 function ObjectCards({ objects }: { objects: any[] }) {
@@ -379,7 +380,7 @@ function AssistantChatContent({
                           {/* Message Content */}
                           <div className="flex flex-col items-start flex-1">
                             <div className="bg-muted rounded-lg px-4 py-3 max-w-[80%] border border-border text-[15px] text-white font-sans">
-                              <MessagePrimitive.Content />
+                              <MarkdownChat content={textContent} />
                               {/* Temporarily hidden - will be reactivated later */}
                               {/* {objects && objects.length > 0 && markets.length === 0 && (
                                 <ObjectCards objects={objects} />
