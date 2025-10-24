@@ -21,12 +21,9 @@ export async function POST(req: Request) {
 
     // Resolve brand and welcome message
     const brand = getBrandConfig(process.env.NEXT_PUBLIC_BRAND);
-    const assistantName = brand.id === 'sportingbet' ? 'SportingBOT' : 'BotAndWin';
-    const welcomeMessage = brand.id === 'sportingbet'
-      ? "Olá! Eu sou o SportingBOT, seu assistente de apostas esportivas. Considere perguntar sobre partidas, odds, estatísticas e muito mais. Como posso ajudar?"
-      : "¡Hola! Soy BotAndWin, tu asistente de apuestas deportivas. Pregunte sobre partidos, cuotas, estadísticas y mucho más. ¿En qué puedo ayudarte?";
-
-    const firstStatusMessage = brand.id === 'sportingbet' ? "Interpretando a sua pergunta..." : "Interpretando tu pregunta...";
+    const assistantName = brand.content?.assistant?.name || 'BotAndWin';
+    const welcomeMessage = brand.content?.assistant?.welcomeMessage || "¡Hola! Soy BotAndWin, tu asistente de apuestas deportivas. Pregunte sobre partidos, cuotas, estadísticas y mucho más. ¿En qué puedo ayudarte?";
+    const firstStatusMessage = brand.content?.assistant?.statusMessage || "Interpretando tu pregunta...";
 
     const requestBody = {
       name: "thread",

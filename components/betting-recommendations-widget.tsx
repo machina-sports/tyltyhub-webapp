@@ -109,8 +109,9 @@ function RecommendationCard({ market, isCarousel = false }: { market: MarketReco
           }}
           className={cn(
             "px-3 py-1.5 rounded-md font-mono font-bold text-lg cursor-pointer shrink-0",
-            "bg-brand-primary/20 text-brand-primary border border-brand-primary/40 hover:bg-brand-primary/30 hover:border-brand-primary/60"
+            "bg-brand-primary/20 border border-brand-primary/40 hover:bg-brand-primary/30 hover:border-brand-primary/60"
           )}
+          style={{ color: 'hsl(var(--odds-text-color))' }}
         >
           {typeof market.odds === 'number' ? market.odds.toFixed(2) : parseFloat(market.odds).toFixed(2)}
         </a>

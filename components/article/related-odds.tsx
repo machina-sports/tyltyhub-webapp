@@ -10,12 +10,12 @@
 
 import { Card } from "@/components/ui/card"
 import { formatDistanceToNow } from "date-fns"
-import { ptBR } from 'date-fns/locale'
 import Image from "next/image"
 import { useTheme } from "@/components/theme-provider"
 import { useBrand } from "@/contexts/brand-context"
 import { cn } from "@/lib/utils"
 import teamsData from "@/data/teams.json"
+import { useBrandLocale } from "@/hooks/use-brand-locale"
 
 // Team mapping interface
 interface TeamInfo {
@@ -155,6 +155,7 @@ export function RelatedOdds({
 }: RelatedOddsProps) {
   const { isDarkMode } = useTheme();
   const { brand } = useBrand();
+  const locale = useBrandLocale();
   
   if (!currentArticleId) {
     return null;
@@ -185,7 +186,7 @@ export function RelatedOdds({
         return 'Agora';
       }
       
-      return `em ${formatDistanceToNow(eventDate, { locale: ptBR })}`;
+      return `em ${formatDistanceToNow(eventDate, { locale })}`;
     } catch (error) {
       return 'Agora';
     }
@@ -329,7 +330,7 @@ export function RelatedOdds({
             "text-xs text-center",
             "text-muted-foreground/70"
           )}>
-            Odds atualizadas {formatDistanceToNow(new Date(), { addSuffix: true, locale: ptBR })}
+            Odds atualizadas {formatDistanceToNow(new Date(), { addSuffix: true, locale })}
           </p>
           {brand.responsibleGaming.footer?.oddsDisclaimer && (
             <p className="text-xs text-center text-muted-foreground italic max-w-2xl mx-auto">

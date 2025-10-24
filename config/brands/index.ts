@@ -1,5 +1,6 @@
 import bwinConfig from './bwin.json';
 import sportingbetConfig from './sportingbet.json';
+import tyltyhubConfig from './tyltyhub.json';
 
 export interface BrandConfig {
   id: string;
@@ -27,6 +28,17 @@ export interface BrandConfig {
     fonts: {
       primary: string;
       fallback: string;
+    };
+    ui?: {
+      dateLocale?: string;
+      defaultTexts?: {
+        recent?: string;
+        noArticles?: string;
+        noDescription?: string;
+      };
+      textColors?: {
+        muted?: string;
+      };
     };
     logo: {
       icon: string;
@@ -82,6 +94,11 @@ export interface BrandConfig {
       ctaLink: string;
       ctaLinkText: string;
     };
+    assistant?: {
+      name: string;
+      welcomeMessage: string;
+      statusMessage: string;
+    };
   };
   features: {
     enableAvatar: boolean;
@@ -119,6 +136,12 @@ export interface BrandConfig {
     acceptButtonColor?: string;
     backdropOpacity?: string;
     modalBorder?: string;
+    rejectButton?: {
+      backgroundColor: string;
+      color: string;
+      border: string;
+      hoverBackgroundColor: string;
+    };
   };
   privacy?: {
     lgpd?: {
@@ -136,6 +159,7 @@ export interface BrandConfig {
 export const brands: Record<string, BrandConfig> = {
   bwin: bwinConfig,
   sportingbet: sportingbetConfig,
+  tyltyhub: tyltyhubConfig,
 };
 
 export const getBrandConfig = (brandId?: string): BrandConfig => {

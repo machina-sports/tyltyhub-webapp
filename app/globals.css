@@ -181,23 +181,23 @@
     /* Firefox */
   }
 
-  /* Custom scrollbar styles */
+  /* Custom scrollbar styles - gray default */
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
 
   ::-webkit-scrollbar-track {
-    background: hsl(var(--scrollbar-track, 0 0% 15%));
+    background: hsl(0 0% 15%);
   }
 
   ::-webkit-scrollbar-thumb {
-    background: hsl(var(--scrollbar-thumb, 0 0% 30%));
+    background: hsl(0 0% 40%);
     border-radius: 4px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--scrollbar-thumb, 0 0% 40%));
+    background: hsl(0 0% 50%);
   }
 
   /* Custom shape for age verification component */
@@ -211,6 +211,12 @@
 
 :root {
   /* Brand Colors - Applied server-side via generateBrandCSS() */
+  /* Default to gray before theme loads, brands override with their colors */
+  --brand-primary: 0 0% 40%;
+  /* Gray default before theme loads */
+  --brand-secondary: 0 0% 30%;
+  /* Gray default before theme loads */
+  
   --bwin-brand-primary: 51 100% 50%;
   /* #FFCB00 - default bwin (fallback) */
   --bwin-brand-secondary: 40 98% 54%;
@@ -588,6 +594,13 @@
     height: 40px !important;
   }
   
+  /* Bwin: assistant page logo size */
+  [data-brand="tyltyhub"] .assistant-page-logo {
+    max-width: 180px !important;
+    width: 180px !important;
+    height: 40px !important;
+  }
+  
   /* Sportingbet button colors */
   [data-brand="sportingbet"] .sidebar-cta-button {
     background-color: hsl(var(--brand-primary)) !important;
@@ -938,6 +951,128 @@
     background-color: hsl(0deg 0% 7.06%) !important;
   }
 
+  /* Tyltyhub scrollbar - purple color */
+  [data-brand="tyltyhub"] ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  [data-brand="tyltyhub"] ::-webkit-scrollbar-track {
+    background: hsl(var(--neutral-20));
+  }
+  
+  [data-brand="tyltyhub"] ::-webkit-scrollbar-thumb {
+    background: hsl(var(--brand-primary));
+    border-radius: 4px;
+  }
+  
+  [data-brand="tyltyhub"] ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--brand-primary) / 0.8);
+  }
+
+  /* Tyltyhub load more button */
+  [data-brand="tyltyhub"] .load-more-button {
+    background-color: hsl(var(--brand-primary)) !important;
+    color: white !important;
+  }
+  
+  [data-brand="tyltyhub"] .load-more-button:hover {
+    background-color: hsl(var(--brand-primary) / 0.8) !important;
+  }
+
+  /* Tyltyhub trending topics */
+  [data-brand="tyltyhub"] .bg-brand-primary\/10 {
+    background-color: hsl(var(--brand-primary) / 0.1) !important;
+  }
+  
+  [data-brand="tyltyhub"] .border-brand-primary\/50 {
+    border-color: hsl(var(--brand-primary) / 0.5) !important;
+  }
+  
+  [data-brand="tyltyhub"] .hover\:bg-brand-primary\/5:hover {
+    background-color: hsl(var(--brand-primary) / 0.05) !important;
+  }
+  
+  [data-brand="tyltyhub"] .text-brand-primary {
+    color: hsl(var(--brand-primary)) !important;
+  }
+
+  /* Tyltyhub specific button text color */
+  [data-brand="tyltyhub"] .sidebar-cta-button {
+    color: white !important;
+  }
+  
+  /* Tyltyhub: use white text on primary backgrounds */
+  [data-brand="tyltyhub"] {
+    --primary-foreground: 0 0% 100% !important; /* white */
+  }
+
+  /* Additional specificity for tyltyhub registration button */
+  [data-brand="tyltyhub"] a.sidebar-cta-button {
+    color: white !important;
+  }
+
+  /* Tyltyhub footer background */
+  [data-brand="tyltyhub"] .footer-mobile {
+    background-color: hsl(var(--bwin-neutral-10)) !important;
+  }
+  
+  /* Tyltyhub - Force exact primary purple #7221BF for chat/conversar buttons */
+  [data-brand="tyltyhub"] .text-brand-primary {
+    color: #7221BF !important;
+  }
+
+  /* Tyltyhub: force white text wherever text-primary-foreground is used */
+  [data-brand="tyltyhub"] .text-primary-foreground {
+    color: white !important;
+  }
+  
+  [data-brand="tyltyhub"] .bg-brand-primary\/10 {
+    background-color: rgba(114, 33, 191, 0.1) !important;
+  }
+  
+  [data-brand="tyltyhub"] .bg-brand-primary\/15 {
+    background-color: rgba(114, 33, 191, 0.15) !important;
+  }
+  
+  /* Force exact primary purple for selected navigation buttons */
+  [data-brand="tyltyhub"] button[style*="hsl(var(--brand-primary) / 0.15)"] {
+    background-color: rgba(114, 33, 191, 0.15) !important;
+  }
+  
+  /* Additional overrides for tyltyhub primary color */
+  [data-brand="tyltyhub"] [style*="color: hsl(var(--brand-primary))"] {
+    color: #7221BF !important;
+  }
+  
+  [data-brand="tyltyhub"] [style*="backgroundColor: hsl(var(--brand-primary))"] {
+    background-color: #7221BF !important;
+  }
+
+  /* Tyltyhub send button - white icon on purple background */
+  [data-brand="tyltyhub"] .home-send-button,
+  [data-brand="tyltyhub"] .send-button {
+    background-color: #7221BF !important;
+    color: white !important;
+  }
+
+  [data-brand="tyltyhub"] .home-send-button svg,
+  [data-brand="tyltyhub"] .send-button svg {
+    color: white !important;
+  }
+
+  /* Tyltyhub topbar */
+  [data-brand="tyltyhub"] .topbar-mobile {
+    background-color: hsl(var(--bg-primary)) !important;
+    backdrop-filter: none !important;
+    border-bottom: 3px solid rgba(114, 33, 191, 0.1) !important;
+  }
+
+  /* Tyltyhub input sticky container */
+  [data-brand="tyltyhub"] .input-sticky-container {
+    background-color: hsl(0deg 0% 7.06%) !important;
+  }
+
   /* Footer buttons selected state - primary color background */
   .footer-mobile .footer-button-selected {
     background-color: hsl(var(--brand-primary) / 0.25) !important;
@@ -1058,28 +1193,40 @@ a {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Enhanced scrollbar */
+/* Enhanced scrollbar - gray default before theme loads */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: hsl(var(--bwin-neutral-20));
+  background: hsl(0 0% 15%);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--brand-primary));
+  background: hsl(0 0% 40%);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--brand-primary) / 0.8);
+  background: hsl(0 0% 50%);
 }
 
-/* Professional selection styling */
+/* Professional selection styling - gray default */
 ::selection {
-  background: hsl(var(--bwin-brand-primary));
+  background: hsl(0 0% 40%);
+  color: white;
+}
+
+/* Bwin specific selection styling - yellow background with black text */
+[data-brand="bwin"] ::selection {
+  background: #FFCB00;
   color: black;
+}
+
+/* Bwin: user message bubble selection - different colors for visibility */
+[data-brand="bwin"] .user-message-bubble ::selection {
+  background: black !important;
+  color: #FFCB00 !important;
 }
 
 /* Sportingbet specific selection styling - blue background with white text */
@@ -1094,10 +1241,34 @@ a {
   color: hsl(207deg 95.24% 41.18%) !important;
 }
 
-/* Bwin: user message bubble selection - different colors for visibility */
-[data-brand="bwin"] .user-message-bubble ::selection {
-  background: black !important;
-  color: hsl(var(--bwin-brand-primary)) !important;
+/* Tyltyhub specific selection styling - purple background with white text */
+[data-brand="tyltyhub"] ::selection {
+  background: #7221BF;
+  color: white;
+}
+
+/* Tyltyhub: user message bubble selection - different colors for visibility */
+[data-brand="tyltyhub"] .user-message-bubble ::selection {
+  background: white !important;
+  color: #7221BF !important;
+}
+
+/* Article title hover colors - match selection/highlight colors per brand */
+[data-brand="bwin"] .article-title-hover:hover {
+  color: #FFCB00 !important;
+}
+
+[data-brand="sportingbet"] .article-title-hover:hover {
+  color: hsl(207deg 95.24% 41.18%) !important;
+}
+
+[data-brand="tyltyhub"] .article-title-hover:hover {
+  color: #7221BF !important;
+}
+
+/* Dark mode article title hover - bwin specific */
+.dark [data-brand="bwin"] .article-title-hover:hover {
+  color: #FFCB00 !important;
 }
 
 /* Home screen input focus/hover - theme specific */
@@ -1142,6 +1313,29 @@ a {
   border-color: hsl(var(--brand-primary) / 0.3) !important;
 }
 
+/* Tyltyhub home input styles */
+[data-brand="tyltyhub"] .home-input:focus {
+  border-color: hsl(var(--brand-primary)) !important;
+  box-shadow: 0 0 0 2px hsl(var(--brand-primary) / 0.2) !important;
+}
+
+[data-brand="tyltyhub"] .home-input:hover {
+  border-color: hsl(var(--brand-primary) / 0.7) !important;
+}
+
+[data-brand="tyltyhub"] .home-send-button {
+  background-color: hsl(var(--brand-primary)) !important;
+  color: white !important;
+}
+
+[data-brand="tyltyhub"] .home-send-button:hover {
+  background-color: hsl(var(--brand-primary) / 0.8) !important;
+}
+
+[data-brand="tyltyhub"] .home-input {
+  border-color: hsl(var(--brand-primary) / 0.3) !important;
+}
+
 /* Home textarea specific styles for mobile */
 .home-input.resize-none {
   resize: none;
@@ -1179,6 +1373,20 @@ a {
   border-color: hsl(var(--brand-primary) / 0.3) !important;
 }
 
+/* Tyltyhub textarea focus styles */
+[data-brand="tyltyhub"] .home-input.resize-none:focus {
+  border-color: hsl(var(--brand-primary)) !important;
+  box-shadow: 0 0 0 2px hsl(var(--brand-primary) / 0.2) !important;
+}
+
+[data-brand="tyltyhub"] .home-input.resize-none:hover {
+  border-color: hsl(var(--brand-primary) / 0.7) !important;
+}
+
+[data-brand="tyltyhub"] .home-input.resize-none {
+  border-color: hsl(var(--brand-primary) / 0.3) !important;
+}
+
 .bwin-age-verification-cta {  
   background-color: hsl(var(--brand-primary)) !important;
 }
@@ -1191,3 +1399,4 @@ a {
 .sportingbet-lgpd-consent-cta {
   background-color: hsl(var(--brand-primary)) !important;
 }
+

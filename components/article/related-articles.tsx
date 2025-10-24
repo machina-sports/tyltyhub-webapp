@@ -2,7 +2,6 @@
 
 import { Card } from "@/components/ui/card"
 import { formatDistanceToNow } from "date-fns"
-import { ptBR, es } from 'date-fns/locale'
 import Image from "next/image"
 import Link from "next/link"
 import { useGlobalState } from "@/store/useState"
@@ -10,6 +9,7 @@ import { Article } from "@/providers/article/reducer"
 import { useTheme } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
 import { useBrand } from "@/contexts/brand-context"
+import { useBrandLocale, useBrandTexts } from "@/hooks/use-brand-locale"
 
 interface RelatedArticlesProps {
   currentArticleId: string
@@ -34,7 +34,8 @@ export function RelatedArticles({ currentArticleId }: RelatedArticlesProps) {
   const articles = useGlobalState((state: any) => state.article);
   const { isDarkMode } = useTheme();
   const { brand } = useBrand();
-  const locale = brand.id === 'sportingbet' ? ptBR : es;
+  const locale = useBrandLocale();
+  const brandTexts = useBrandTexts();
 
   // Filter out the current article and limit to 4 related articles
   const relatedArticles = articles.relatedArticles
@@ -81,10 +82,10 @@ export function RelatedArticles({ currentArticleId }: RelatedArticlesProps) {
                 </div>
                 <div className="p-4 w-full">
                   <h4 className={cn(
-                    "font-semibold line-clamp-2 mb-2 text-base transition-colors",
+                    "article-title-hover font-semibold line-clamp-2 mb-2 text-base transition-colors",
                     isDarkMode
-                      ? "text-[#FFF8E1] hover:text-[#FFCB00]"
-                      : "hover:text-primary"
+                      ? "text-[#FFF8E1]"
+                      : ""
                   )}>
                     {article.title}
                   </h4>
@@ -98,7 +99,7 @@ export function RelatedArticles({ currentArticleId }: RelatedArticlesProps) {
                     )} />
                     {articleDate ?
                       formatDistanceToNow(new Date(articleDate), { addSuffix: true, locale }) :
-                      (brand.id === 'sportingbet' ? 'Recente' : 'Reciente')
+                      brandTexts.recent
                     }
                   </p>
                 </div>

@@ -1,28 +1,28 @@
 {
-  "id": "sportingbet",
-  "name": "sportingbet",
-  "displayName": "SportingBOT",
-  "description": "a IA do Sportingbet para Campeonato Brasileiro 2025",
+  "id": "tyltyhub",
+  "name": "tyltyhub",
+  "displayName": "TyltyHUB",
+  "description": "Múltiplas, odds altas, bets exclusivas e alavancagens em um só lugar. Para quem quer subir de nível.",
   "language": "pt-BR",
   "locale": "pt_BR",
-  "domain": "sportingbot.com.br",
-  "baseUrl": "https://sportingbot.com.br",
+  "domain": "tyltyhub.machina.gg",
+  "baseUrl": "https://tyltyhub.machina.gg",
   "sportsBaseUrl": "https://www.sportingbet.bet.br",
   "analytics": {
-    "ga4Primary": "G-SPORTINGBET-PRIMARY",
-    "ga4Secondary": "G-SPORTINGBET-SECONDARY"
+    "ga4Primary": "G-TYLTYHUB-PRIMARY",
+    "ga4Secondary": "G-TYLTYHUB-SECONDARY"
   },
   "branding": {
     "colors": {
-      "primary": "#1E40AF",
-      "secondary": "#3B82F6",
+      "primary": "#7221BF",
+      "secondary": "#8B3FD9",
       "success": "#10B981",
       "warning": "#F59E0B",
       "danger": "#EF4444",
       "info": "#06B6D4"
     },
     "fonts": {
-      "primary": "Inter",
+      "primary": "Roboto",
       "fallback": "system-ui, sans-serif"
     },
     "ui": {
@@ -34,47 +34,47 @@
       }
     },
     "logo": {
-      "icon": "/sb-new.png",
-      "full": "/outline.png",
-      "alt": "SportingBOT logo",
+      "icon": "/tyltyhub/favicon.png",
+      "full": "/tyltyhub/logo.svg",
+      "alt": "TyltyHUB logo",
       "footer": {
-        "width": 240,
-        "height": 62,
-        "className": "w-42 h-20 md:w-42 md:h-20",
+        "width": 80,
+        "height": 24,
+        "className": "w-20 h-6 md:w-24 md:h-7",
         "mobile": {
-          "width": 180,
-          "height": 45,
-          "className": "w-42 h-10 md:w-32 md:h-10 p-0"
+          "width": 120,
+          "height": 24,
+          "className": ""
         }
       }
     }
   },
   "content": {
-    "title": "SportingBOT: a IA do Sportingbet para Campeonato Brasileiro 2025",
-    "description": "Aposte junto com a Inteligência Artificial do Sportingbet. Pergunte ao nosso chat sobre as notícias e odds do Campeonato Brasileiro 2025 e descubra como apostar melhor.",
-    "ogImage": "https://sportingbot.com.br/og_image_1.png",
-    "favicon": "/sb-new.ico",
-    "subtitle": "A Inteligência Artificial do Sportingbet",
+    "title": "TyltyHUB: Múltiplas, odds altas, bets exclusivas e alavancagens",
+    "description": "Múltiplas, odds altas, bets exclusivas e alavancagens em um só lugar. Para quem quer subir de nível. Pergunte ao nosso chat sobre as notícias e odds e descubra como apostar melhor.",
+    "ogImage": "https://tyltyhub.machina.gg/og_image_4.png",
+    "favicon": "/tyltyhub/favicon.png",
+    "subtitle": "Para quem quer subir de nível",
     "navigation": {
       "chat": "Conversar",
       "discover": "Descobrir"
     },
     "cta": {
-      "register": "https://www.sportingbet.bet.br/pt-br/sports/registro",
-      "login": "https://www.sportingbet.bet.br/pt-br/sports/login",
-      "registerText": "Cadastre-se Agora",
+      "register": "https://app.tyltyhub.com/register",
+      "login": "https://app.tyltyhub.com/login",
+      "registerText": "Acesso grátis",
       "loginText": "Entrar"
     },
     "chat": {
       "titleOptions": [
-        "Como posso entrar em campo para te ajudar hoje?",
-        "Vamos jogar? Me diga onde você precisa de reforço!",
-        "Bola em jogo! Em que jogada posso te ajudar?"
+        "Como posso turbinar suas apostas hoje?",
+        "Pronto para as melhores odds? Me diga o que precisa!",
+        "Bora subir a banca? Como posso te ajudar?"
       ],
-      "placeholder": "Pergunte-me sobre o Campeonato Brasileiro...",
-      "assistantPlaceholder": "Pergunte-me sobre o Brasileirão...",
+      "placeholder": "Pergunte sobre jogos, odds, dicas e estratégias...",
+      "assistantPlaceholder": "Pergunte sobre jogos, odds, dicas...",
       "followUpPlaceholder": "Gostou? Quer saber mais? Me diga!",
-      "followUpTranscription": "Como posso apostar no próximo jogo do Real Madrid?",
+      "followUpTranscription": "Quais são as melhores odds de hoje?",
       "preparing": "Preparando...",
       "recording": "Gravando...",
       "transcribing": "Transcrevendo...",
@@ -85,20 +85,20 @@
     "offline": {
       "title": "Voltamos em breve!",
       "subtitle": "É hora da minha pré-temporada, amigo.",
-      "description": "Em breve estarei de volta com novidades.\nEnquanto espera, dê uma olhada nas promoções da Sportingbet.",
+      "description": "Em breve estarei de volta com novidades.\nEnquanto espera, dê uma olhada nas promoções.",
       "ctaText": "Ir para Sportingbet",
       "ctaLink": "https://www.sportingbet.bet.br/pt-br/sports/promotions",
       "ctaLinkText": "Consulte aqui"
     },
     "assistant": {
-      "name": "SportingBOT",
-      "welcomeMessage": "Olá! Eu sou o SportingBOT, seu assistente de apostas esportivas. Considere perguntar sobre partidas, odds, estatísticas e muito mais. Como posso ajudar?",
-      "statusMessage": "Interpretando a sua pergunta..."
+      "name": "TyltyHUB",
+      "welcomeMessage": "Fala, tropa! Bora montar bilhetes com +EV e subir essa banca com gestão? Pergunte sobre jogos, odds, props e estratégias. Preço é rei!",
+      "statusMessage": "Analisando sua pergunta..."
     }
   },
   "features": {
-    "enableAvatar": true,
-    "enableBets": true,
+    "enableAvatar": false,
+    "enableBets": false,
     "enableChat": true
   },
   "responsibleGaming": {
@@ -106,8 +106,8 @@
     "text": "Jogue com responsabilidade",
     "image": "/Jogo Seguro.png",
     "footer": {
-      "disclaimer": "18+. Apostar pode causar dependência e transtornos do jogo patológico. Jogue com responsabilidade. Autorizada pela SPA/MF sob licença nº 247.",
-      "copyright": "2025 Sportingbet",
+      "disclaimer": "Aposte com Responsabilidade. Ganhos passados não representam possibilidade de ganhos futuros. Portaria SPA/MF nº 247",
+      "copyright": "2025 TyltyHUB",
       "oddsDisclaimer": "* Odds sujeitas a alterações. Este chatbot tem fins meramente informativos e não solicita, armazena nem processa dados pessoais. Por favor, não compartilhe informações pessoais ou sensíveis ao utilizá-lo",
       "images": {
         "showImages": false
@@ -123,12 +123,15 @@
     "underageTitle": "Acesso Restrito",
     "underageDescription": "Este conteúdo é destinado apenas para maiores de 18 anos.",
     "underageButtonText": "Entendi",
-    "backdropOpacity": "0.75",
+    "headerBackgroundColor": "#000000",
+    "acceptButtonColor": "#000000",
+    "backdropOpacity": "0.7",
+    "modalBorder": "2px solid #7221BF",
     "rejectButton": {
-      "backgroundColor": "#FFFFFF",
-      "color": "#374151",
-      "border": "2px solid #D1D5DB",
-      "hoverBackgroundColor": "#F9FAFB"
+      "backgroundColor": "#E5E7EB",
+      "color": "#000000",
+      "border": "2px solid #6B7280",
+      "hoverBackgroundColor": "#D1D5DB"
     }
   },
   "privacy": {
@@ -143,3 +146,4 @@
     }
   }
 }
+

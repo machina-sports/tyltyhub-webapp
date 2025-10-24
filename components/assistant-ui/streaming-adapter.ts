@@ -80,7 +80,7 @@ export const createStreamingAdapterWithConfig = (
         if (config.threadId) {
           // Get brand configuration for status message
           const brand = getBrandConfig();
-          const statusMessage = brand.id === 'sportingbet' ? "Interpretando a sua pergunta..." : "Interpretando tu pregunta...";
+          const statusMessage = brand.content?.assistant?.statusMessage || "Interpretando tu pregunta...";
 
           requestBody["context-agent"] = {
             thread_id: config.threadId,

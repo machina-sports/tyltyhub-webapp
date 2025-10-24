@@ -16,7 +16,7 @@ export function ResponsibleGamingMobile({
   const brand = useBrandConfig();
   const showImages = brand.responsibleGaming.footer?.images?.showImages ?? true;
   const images = brand.responsibleGaming.footer?.images;
-  
+
   return (
     <div className={cn(
       "w-full md:mb-0 py-8 pb-0 mt-2 responsible-gaming-mobile",
@@ -119,28 +119,29 @@ export function ResponsibleGamingMobile({
                   />
                 </div>
               )}
-              
-              {brand.responsibleGaming.footer?.disclaimer && (
-                <div className="text-sm text-muted-foreground">
-                  {brand.responsibleGaming.footer.disclaimer}
+
+              {brand.responsibleGaming.footer?.oddsDisclaimer && (
+                <div className="mt-4 px-2">
+                  <p className="text-xs text-muted-foreground/90 text-center italic max-w-2xl mx-auto">
+                    {brand.responsibleGaming.footer.oddsDisclaimer}
+                  </p>
                 </div>
               )}
               
+              {brand.responsibleGaming.footer?.disclaimer && (
+                <div className="text-sm text-muted-foreground/90">
+                  {brand.responsibleGaming.footer.disclaimer}
+                </div>
+              )}
+
               {brand.responsibleGaming.footer?.copyright && (
-                <div className="text-sm text-muted-foreground">
+                <div className="text-sm text-muted-foreground/90">
                   {brand.responsibleGaming.footer.copyright}
                 </div>
               )}
             </div>
           )}
         </div>
-        {brand.responsibleGaming.footer?.oddsDisclaimer && (
-          <div className="mt-4 px-2">
-            <p className="text-xs text-muted-foreground text-center italic opacity-70 max-w-2xl mx-auto">
-              {brand.responsibleGaming.footer.oddsDisclaimer}
-            </p>
-          </div>
-        )}
       </div>
     </div>
   )

@@ -33,12 +33,12 @@ export function MarkdownChat({ content, className }: MarkdownContentProps) {
             },
             ul: { 
               props: { 
-                className: "list-none space-y-4 mt-4 mb-3" 
+                className: "list-none space-y-4 mt-4 mb-4" 
               } 
             },
             ol: { 
               props: { 
-                className: "list-none space-y-4 mt-4 mb-3" 
+                className: "list-none space-y-4 mt-4 mb-4" 
               } 
             },
             li: { 
@@ -48,57 +48,57 @@ export function MarkdownChat({ content, className }: MarkdownContentProps) {
             },
             p: { 
               props: { 
-                className: "my-3 leading-relaxed" 
+                className: "my-2 leading-relaxed" 
               } 
             },
             h1: { 
               props: { 
-                className: "text-base font-bold mb-4 text-bwin-neutral-100 leading-tight" 
+                className: "text-base font-bold mt-6 mb-4 text-foreground leading-tight" 
               } 
             },
             h2: { 
               props: { 
-                className: "text-sm font-semibold mb-3 text-bwin-neutral-100 leading-tight" 
+                className: "text-sm font-semibold mt-5 mb-3 text-foreground leading-tight" 
               } 
             },
             h3: { 
               props: { 
-                className: "text-sm font-semibold mb-3 text-bwin-neutral-100 leading-tight" 
+                className: "text-sm font-semibold mt-4 mb-3 text-foreground leading-tight" 
               } 
             },
             strong: { 
               props: { 
-                className: "font-bold text-brand-primary" 
+                className: "font-bold text-foreground" 
               } 
             },
             em: { 
               props: { 
-                className: "italic text-bwin-neutral-70" 
+                className: "italic text-muted-foreground" 
               } 
             },
             code: { 
               props: { 
-                className: 'bg-neutral-25 px-1.5 py-0.5 rounded text-xs font-mono text-brand-primary border border-neutral-30' 
+                className: 'bg-muted/50 px-1.5 py-0.5 rounded text-xs font-mono text-foreground border border-border' 
               } 
             },
             blockquote: { 
               props: { 
-                className: 'border-l-4 border-brand-primary pl-4 py-3 my-4 bg-neutral-15 rounded-r-lg italic text-neutral-70' 
+                className: 'border-l-4 border-brand-primary pl-4 py-3 my-4 bg-muted/30 rounded-r-lg italic text-muted-foreground' 
               } 
             },
             table: { 
               props: { 
-                className: 'my-4 text-sm w-full border-collapse border border-bwin-neutral-30 rounded-lg overflow-hidden' 
+                className: 'my-4 text-sm w-full border-collapse border border-border rounded-lg overflow-hidden' 
               } 
             },
             thead: { 
               props: { 
-                className: 'bg-bwin-neutral-25 text-bwin-neutral-100' 
+                className: 'bg-muted text-foreground' 
               } 
             },
             tr: { 
               props: { 
-                className: 'border-b border-bwin-neutral-30' 
+                className: 'border-b border-border' 
               } 
             },
             th: { 

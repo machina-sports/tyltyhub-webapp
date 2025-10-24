@@ -21,6 +21,7 @@ interface SearchFilters {
   name: string;
   "metadata.language": string;
   "metadata.content_type"?: { "$ne": string };
+  "metadata.article_type"?: { "$in": string[] };
   "value.title"?: { $regex: string; $options: string };
   "metadata.sport_type"?: string;
 }
@@ -62,6 +63,9 @@ const buildSearchFilters = (searchQuery: string, sportType: string): SearchFilte
   const baseFilters: SearchFilters = {
     name: "content-article",
     "metadata.language": language,
+    "metadata.article_type": {
+      "$in": ["preview"]
+    },
     "metadata.content_type": { "$ne": "trendings-competition-trendings" }
   };
 

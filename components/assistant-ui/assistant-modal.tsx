@@ -20,8 +20,10 @@ import { registerThread, getThreadHistory, saveMessageToThread } from "@/functio
 import { useBrandTexts } from "@/hooks/use-brand-texts";
 import { useAssistant } from "@/providers/assistant/use-assistant";
 import { BettingRecommendationsWidget } from "@/components/betting-recommendations-widget";
+import { ArticleRecommendationWidget } from "@/components/article-recommendation-widget";
 import { motion, AnimatePresence } from "framer-motion";
 import { getAgentId } from "@/lib/agent-config";
+import { MarkdownChat } from "@/components/markdown-content";
 
 // Component to render object cards (events, matches, etc.)
 function ObjectCards({ objects }: { objects: any[] }) {
@@ -210,10 +212,10 @@ function AssistantModalContent({
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className={`assistant-launcher hidden md:flex fixed bottom-[32px] right-8 z-50 h-14 w-14 rounded-full shadow-lg transition-all duration-200 items-center justify-center ${isSportingbet ? "bg-brand-secondary" : "bg-brand-primary"} text-white hover:brightness-95`}
+          className={`assistant-launcher hidden md:flex fixed bottom-[32px] right-8 z-50 h-[64px] w-[64px] rounded-full shadow-lg transition-all duration-200 items-center justify-center ${isSportingbet ? "bg-brand-secondary" : "bg-brand-primary"} text-white hover:brightness-95`}
           aria-label={`Open ${assistantName}`}
         >
-          <MessageSquare className="h-6 w-6" />
+          <MessageSquare className="h-8 w-8" />
         </button>
       )}
 
@@ -280,35 +282,54 @@ function AssistantModalContent({
                       
                       // Check if these specific widgets should animate
                       const marketsKey = `markets-${textContent}`;
+                      const articlesKey = `articles-${textContent}`;
                       const suggestionsKey = `suggestions-${textContent}`;
-                      const shouldAnimateMarkets = !animatedWidgetsRef.current.has(marketsKey) && objects.length > 0;
+                      
+                      // Extract articles and markets from objects
+                      const articles = Array.isArray(objects)
+                        ? objects
+                            .filter((o: any) => o?.article_id && o?.slug)
+                            .map((o: any) => ({
+                              article_id: o.article_id,
+                              image_path: o.image_path || '',
+                              title: o.title || '',
+                              subtitle: o.subtitle || '',
+                              slug: o.slug
+                            }))
+                        : [];
+                      
+                      const markets = Array.isArray(objects)
+                        ? objects
+                            .filter((o: any) => !o?.article_id) // Exclude articles from markets
+                            .map((o: any) => {
+                              const oddsValue = Number(
+                                (o && (o.price ?? o.bet_odd ?? o.odds ?? o.odd))
+                              );
+                              return {
+                                market_type: o?.market_type || o?.marketType || o?.market || 'odds_information',
+                                odds: oddsValue,
+                                rationale: o?.rationale || o?.reason || o?.description || '',
+                                title: o?.title || o?.bet_title || o?.market_title || o?.name || '',
+                                runner: o?.runner || o?.runner_name || o?.selection || o?.option_name || o?.name,
+                                event_id: o?.event_id || (o && o["event-id"]) || o?.fixture_id || o?.eventId,
+                                market_id: o?.market_id || (o && o["market-id"]) || o?.marketId,
+                                option_id: o?.option_id || (o && o["option-id"]) || o?.optionId,
+                                deep_link: o?.deep_link || o?.deepLink
+                              } as any;
+                            })
+                            .filter((m: any) => m.title && typeof m.odds === 'number' && !Number.isNaN(m.odds))
+                        : [];
+                      
+                      const shouldAnimateMarkets = !animatedWidgetsRef.current.has(marketsKey) && markets.length > 0;
+                      const shouldAnimateArticles = !animatedWidgetsRef.current.has(articlesKey) && articles.length > 0;
                       const shouldAnimateSuggestions = !animatedWidgetsRef.current.has(suggestionsKey) && suggestions.length > 0;
                       
                       // Mark as animated AFTER mount using effect
                       useEffect(() => {
-                        if (objects.length > 0) animatedWidgetsRef.current.add(marketsKey);
+                        if (markets.length > 0) animatedWidgetsRef.current.add(marketsKey);
+                        if (articles.length > 0) animatedWidgetsRef.current.add(articlesKey);
                         if (suggestions.length > 0) animatedWidgetsRef.current.add(suggestionsKey);
-                      }, [marketsKey, suggestionsKey, objects.length, suggestions.length]);
-                      
-                      const markets = Array.isArray(objects)
-                        ? objects.map((o: any) => {
-                            const oddsValue = Number(
-                              (o && (o.price ?? o.bet_odd ?? o.odds ?? o.odd))
-                            );
-                            return {
-                              market_type: o?.market_type || o?.marketType || o?.market || 'odds_information',
-                              odds: oddsValue,
-                              rationale: o?.rationale || o?.reason || o?.description || '',
-                              title: o?.title || o?.bet_title || o?.market_title || o?.name || '',
-                              runner: o?.runner || o?.runner_name || o?.selection || o?.option_name || o?.name,
-                              event_id: o?.event_id || (o && o["event-id"]) || o?.fixture_id || o?.eventId,
-                              market_id: o?.market_id || (o && o["market-id"]) || o?.marketId,
-                              option_id: o?.option_id || (o && o["option-id"]) || o?.optionId,
-                              deep_link: o?.deep_link || o?.deepLink
-                            } as any;
-                          })
-                          .filter((m: any) => m.title && typeof m.odds === 'number' && !Number.isNaN(m.odds))
-                        : [];
+                      }, [marketsKey, articlesKey, suggestionsKey, markets.length, articles.length, suggestions.length]);
 
                       const handleSuggestionClick = (suggestion: string) => {
                         const composer = composerRef.current;
@@ -338,7 +359,7 @@ function AssistantModalContent({
                           {/* Message Content */}
                           <div className="flex flex-col items-start flex-1">
                             <div className="bg-muted rounded-lg px-4 py-2 max-w-[80%] border border-border text-[15px] text-white font-sans">
-                              <MessagePrimitive.Content />
+                              <MarkdownChat content={textContent} />
                               {/* Temporarily hidden - will be reactivated later */}
                               {/* {objects && objects.length > 0 && markets.length === 0 && (
                                 <ObjectCards objects={objects} />
@@ -354,6 +375,19 @@ function AssistantModalContent({
                                   className="mt-3 w-full"
                                 >
                                   <BettingRecommendationsWidget markets={markets as any} />
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                            <AnimatePresence mode="wait">
+                              {articles && articles.length > 0 && (
+                                <motion.div
+                                  key={`article-widget-${textContent}`}
+                                  initial={shouldAnimateArticles ? { opacity: 0, y: -20 } : false}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ duration: 0.5, ease: "easeOut" }}
+                                  className="mt-3 w-full"
+                                >
+                                  <ArticleRecommendationWidget articles={articles as any} />
                                 </motion.div>
                               )}
                             </AnimatePresence>
@@ -403,7 +437,7 @@ function AssistantModalContent({
                   <ComposerPrimitive.Input
                     ref={composerRef as any}
                     placeholder={assistantPlaceholder}
-                    className="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary resize-none overflow-hidden"
                   />
                 <ComposerPrimitive.Send asChild>
                   <Button size="default" className="h-10 bg-brand-primary hover:brightness-95 assistant-send-button">
