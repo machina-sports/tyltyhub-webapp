@@ -115,6 +115,7 @@ export const createStreamingAdapterWithConfig = (
         let progressText = '';
         let buffer = '';
         let hasReceivedContent = false;
+        let hasReceivedFinalContent = false; // Track if we received the final content event
         let objects: any[] = [];
         let suggestions: string[] = [];
         let shouldExit = false;
@@ -146,56 +147,91 @@ export const createStreamingAdapterWithConfig = (
                 // Mark as done - stream is complete
                 console.log('[StreamAdapter] ✓✓✓ DONE signal received!');
                 
-                // Save final state if available
-                if (chunk.metadata?.state) {
-                  console.log('[StreamAdapter] Final state:', chunk.metadata.state);
-                  
-                  // Try multiple possible locations for content
-                  const state = chunk.metadata.state;
-                  let finalContent = '';
-                  
-                  // Check for document_content array (legacy format)
-                  const finalDocContent = state.document_content;
-                  if (finalDocContent && Array.isArray(finalDocContent) && finalDocContent.length > 0) {
-                    finalContent = finalDocContent[0]?.content || '';
-                    
-                    // Extract objects and suggestions from document_content
-                    const finalObjects = finalDocContent[0]?.objects || [];
-                    if (finalObjects.length > 0) {
-                      objects = finalObjects;
-                    }
-                    
-                    const finalSuggestions = finalDocContent[0]?.suggestions || [];
-                    if (finalSuggestions.length > 0) {
-                      suggestions = finalSuggestions;
-                    }
-                  } 
-                  // Check for direct content/response keys in state
-                  else if (state.content) {
-                    finalContent = state.content;
-                  } 
-                  else if (state.response) {
-                    finalContent = state.response;
-                  }
-                  else if (state.output) {
-                    finalContent = state.output;
-                  }
+                let shouldYield = false;
+                let previousFullText = fullText;
+                let finalContent = '';
+                
+                // Extract from standardized metadata structure
+                if (chunk.metadata) {
+                  finalContent = chunk.metadata.content || '';
+                  const finalObjects = chunk.metadata.objects || [];
+                  const finalSuggestions = chunk.metadata.suggestions || [];
                   
                   if (finalContent) {
-                    fullText = finalContent;
-                    hasReceivedContent = true;
-                    console.log('[StreamAdapter] Extracted content from state, length:', finalContent.length);
+                    // If we already received the final content event, don't replace it
+                    if (hasReceivedFinalContent) {
+                      console.log('[StreamAdapter] Already received final content, ensuring objects are mapped');
+                      // Just ensure objects are mapped to current text
+                      if (config.objectsMapRef && objects.length > 0 && fullText) {
+                        config.objectsMapRef.current.set(fullText, objects);
+                      }
+                      // No need to yield - we already have the correct text
+                    } else if (!hasReceivedContent || !fullText) {
+                      // Haven't received any content yet - use done metadata
+                      fullText = finalContent;
+                      hasReceivedContent = true;
+                      shouldYield = true;
+                      console.log('[StreamAdapter] Using content from done metadata, length:', finalContent.length);
+                    } else {
+                      // We have streamed chunks but not the final content event
+                      // Check if done metadata differs from accumulated chunks
+                      console.log('[StreamAdapter] Have chunks but not final content, comparing with done metadata');
+                      if (finalContent !== fullText) {
+                        console.log('[StreamAdapter] ⚠️ Done metadata differs from chunks! Using done metadata as authoritative');
+                        // Transfer objects to the new text BEFORE changing fullText
+                        if (config.objectsMapRef && objects.length > 0) {
+                          console.log('[StreamAdapter] Pre-transferring', objects.length, 'objects to new text');
+                          config.objectsMapRef.current.set(finalContent, objects);
+                          // Keep at old text too temporarily
+                          config.objectsMapRef.current.set(fullText, objects);
+                        }
+                        fullText = finalContent;
+                        shouldYield = true;
+                      } else {
+                        console.log('[StreamAdapter] Done metadata matches accumulated chunks, no need to yield');
+                      }
+                    }
+                  }
+                  
+                  if (finalObjects.length > 0) {
+                    console.log('[StreamAdapter] Received', finalObjects.length, 'final objects in done event');
+                    objects = finalObjects;
+                    // Associate final objects with current text - CRITICAL for preventing flicker
+                    if (config.objectsMapRef && fullText) {
+                      config.objectsMapRef.current.set(fullText, finalObjects);
+                      // Also keep at previous text if different
+                      if (previousFullText && previousFullText !== fullText) {
+                        config.objectsMapRef.current.set(previousFullText, finalObjects);
+                      }
+                      // Trigger re-render
+                      config.onObjectsUpdate?.();
+                    }
+                  }
+                  
+                  if (finalSuggestions.length > 0) {
+                    suggestions = finalSuggestions;
                   }
                 }
                 
-                // If no content received at all, use last progress
-                if (!hasReceivedContent && progressText) {
+                // If no meaningful final content, preserve the last status message
+                if (!finalContent && progressText) {
+                  // No final content was provided, but we have a status message - keep showing it
+                  if (!fullText || fullText === progressText) {
+                    console.log('[StreamAdapter] Preserving last status message:', progressText.substring(0, 50));
+                    fullText = progressText;
+                    hasReceivedContent = true;
+                    shouldYield = true;
+                  }
+                } else if (!hasReceivedContent && progressText) {
+                  // Fallback: No content received at all, use last progress
                   fullText = progressText;
                   hasReceivedContent = true;
+                  shouldYield = true;
                 }
 
-                // Yield final content if we have it
-                if (hasReceivedContent && fullText) {
+                // Only yield if we have new content or if this is the first content
+                if (shouldYield && hasReceivedContent && fullText) {
+                  console.log('[StreamAdapter] Yielding final content');
                   yield {
                     role: "assistant" as const,
                     content: [
@@ -205,6 +241,8 @@ export const createStreamingAdapterWithConfig = (
                       },
                     ],
                   };
+                } else {
+                  console.log('[StreamAdapter] Skipping final yield (no changes or already yielded)');
                 }
                 
                 // Exit the loop - we're done
@@ -212,57 +250,38 @@ export const createStreamingAdapterWithConfig = (
                 break;
               }
               else if (chunk.type === 'content') {
-                // Check multiple possible locations for document_content
-                const documentContent = chunk.metadata?.state?.document_content || chunk.document_content;
-                
-                // Check for metadata markers (final, workflow_complete)
-                const isFinalMarker = chunk.metadata?.final === true;
-                const isWorkflowCompleteMarker = chunk.metadata?.workflow_complete === true;
-                
-                // Skip empty content with metadata markers (they're just markers)
-                if (!chunk.content && !documentContent && (isFinalMarker || isWorkflowCompleteMarker)) {
-                  continue;
-                }
-
-                // documentContent contains the COMPLETE final message - replace, don't append
-                if (documentContent && Array.isArray(documentContent) && documentContent.length > 0) {
-                  // This is the final complete response - REPLACE fullText
-                  const finalContent = documentContent[0]?.content || '';
+                // Content chunks are streamed text
+                if (chunk.content) {
+                  const previousText = fullText;
+                  const isFinal = chunk.metadata?.final === true;
                   
-                  // Only update if we got content
-                  if (finalContent) {
-                    fullText = finalContent;
-                    hasReceivedContent = true;
+                  if (isFinal) {
+                    // This is the final complete content - REPLACE fullText
+                    console.log('[StreamAdapter] Received FINAL content, length:', chunk.content.length);
+                    fullText = chunk.content;
+                    hasReceivedFinalContent = true;
+                  } else {
+                    // Regular chunk - APPEND to fullText
+                    fullText += chunk.content;
                   }
-
-                  // Extract objects if available
-                  const newObjects = documentContent[0]?.objects || [];
-                  if (newObjects.length > 0) {
-                    objects = newObjects;
-                  }
-
-                  // Extract suggestions if available
-                  const newSuggestions = documentContent[0]?.suggestions || [];
-                  if (newSuggestions.length > 0) {
-                    suggestions = newSuggestions;
-                  }
-
-                  // Yield the complete final text
-                  if (fullText) {
-                    yield {
-                      role: "assistant" as const,
-                      content: [
-                        {
-                          type: "text" as const,
-                          text: fullText,
-                        },
-                      ],
-                    };
-                  }
-                } else if (chunk.content) {
-                  // Regular streaming chunk - APPEND
-                  fullText += chunk.content;
                   hasReceivedContent = true;
+                  
+                  // If we had objects from earlier workflow_objects event, associate them with this text now
+                  if (objects.length > 0 && config.objectsMapRef) {
+                    console.log('[StreamAdapter] Associating', objects.length, 'objects with content:', fullText.substring(0, 50));
+                    config.objectsMapRef.current.set(fullText, objects);
+                    
+                    // Also keep the association with previous texts so cards don't flicker during transition
+                    if (previousText && previousText !== fullText) {
+                      config.objectsMapRef.current.set(previousText, objects);
+                    }
+                    if (progressText && progressText !== fullText) {
+                      console.log('[StreamAdapter] Keeping objects also at progressText for smooth transition');
+                      config.objectsMapRef.current.set(progressText, objects);
+                    }
+                    
+                    config.onObjectsUpdate?.();
+                  }
 
                   // Yield accumulated text
                   yield {
@@ -275,53 +294,119 @@ export const createStreamingAdapterWithConfig = (
                     ],
                   };
                 }
-              } else if (!hasReceivedContent) {
-                // Only show progress/status if we haven't received final content
-                if (chunk.type === 'status_update') {
-                  // Handle status updates during workflow execution
+              } else if (chunk.type === 'workflow_objects') {
+                // Handle workflow_objects ALWAYS (not conditional)
+                // Accumulate objects from workflow completion
+                if (chunk.metadata?.objects) {
+                  objects = chunk.metadata.objects;
+                  console.log('[StreamAdapter] Received workflow_objects:', objects.length, 'objects');
+                  
+                  // Associate objects with current text (could be fullText or progressText)
+                  if (config.objectsMapRef) {
+                    const currentText = fullText || progressText || 'Loading...';
+                    console.log('[StreamAdapter] Associating objects with current text:', currentText.substring(0, 50));
+                    config.objectsMapRef.current.set(currentText, objects);
+                    
+                    // If we have fullText (streaming content), keep objects there as text grows
+                    if (fullText) {
+                      config.objectsMapRef.current.set(fullText, objects);
+                    }
+                    // Also keep at progressText for smooth transition
+                    if (progressText && progressText !== fullText) {
+                      config.objectsMapRef.current.set(progressText, objects);
+                    }
+                    
+                    config.onObjectsUpdate?.();
+                  }
+                  
+                  // If we don't have streaming content yet, yield progress to show objects
+                  if (!hasReceivedContent || !fullText) {
+                    const displayText = fullText || progressText || '⏳ Loading...';
+                    yield {
+                      role: "assistant" as const,
+                      content: [
+                        {
+                          type: "text" as const,
+                          text: displayText,
+                        },
+                      ],
+                    };
+                  }
+                }
+              } else if (chunk.type === 'status_update') {
+                // Handle status updates ALWAYS (show updates even when objects exist)
+                if (!hasReceivedFinalContent) {
                   const statusMsg = chunk.metadata?.status_message || chunk.content;
                   console.log('[StreamAdapter] status_update received:', statusMsg);
                   
                   if (statusMsg) {
-                    progressText = `⏳ ${statusMsg}`;
+                    // Don't add loading icon - status messages have their own icons
+                    progressText = statusMsg;
+                    
+                    // Yield progress text even if objects exist
+                    yield {
+                      role: "assistant" as const,
+                      content: [
+                        {
+                          type: "text" as const,
+                          text: progressText,
+                        },
+                      ],
+                    };
+                    
+                    // Keep objects associated with progress text for smooth transition
+                    if (objects.length > 0 && config.objectsMapRef) {
+                      config.objectsMapRef.current.set(progressText, objects);
+                      config.onObjectsUpdate?.();
+                    }
                   }
-                } else if (chunk.type === 'start') {
+                }
+              } else if (!hasReceivedContent && objects.length === 0) {
+                // Only show other progress messages if we haven't received content AND no objects yet
+                if (chunk.type === 'start') {
                   // Use status_message if available, otherwise use content
                   const statusMsg = chunk.metadata?.status_message;
-                  progressText = statusMsg ? statusMsg : (chunk.content ? `${chunk.content}\n\n` : '');
+                  // Don't add loading icon - messages have their own formatting
+                  progressText = statusMsg ? statusMsg : (chunk.content ? chunk.content : '');
+                  
+                  if (progressText) {
+                    yield {
+                      role: "assistant" as const,
+                      content: [
+                        {
+                          type: "text" as const,
+                          text: progressText,
+                        },
+                      ],
+                    };
+                  }
                 } else if (chunk.type === 'workflow_start') {
-                  // Use status_message from thread document if available
-                  const statusMsg = chunk.metadata?.status_message;
                   console.log('[StreamAdapter] workflow_start received:', {
                     content: chunk.content,
                     metadata: chunk.metadata,
-                    statusMsg
+                    currentProgressText: progressText
                   });
 
-                  // Get status message from workflow metadata
-                  if (statusMsg) {
-                    progressText = `⏳ ${statusMsg}`;
+                  // Only show workflow_start if we don't have a recent status message
+                  // This prevents overwriting status updates from previous workflow
+                  const isInitialStart = !progressText || progressText.includes('Loading');
+                  
+                  if (isInitialStart) {
+                    // First workflow or no previous status - show the start message
+                    // Don't add loading icon - messages have their own formatting
+                    progressText = chunk.content;
+                    
+                    yield {
+                      role: "assistant" as const,
+                      content: [
+                        {
+                          type: "text" as const,
+                          text: progressText,
+                        },
+                      ],
+                    };
                   }
-                } else if (chunk.type === 'workflow_complete') {
-                  // Don't show workflow completion messages
-                  progressText = '';
-                } else if (chunk.type === 'workflow_output') {
-                  progressText = `→ ${chunk.content}`;
-                } else if (chunk.type === 'workflow_error') {
-                  progressText = `❌ ${chunk.content}`;
-                }
-
-                // Yield progress text (it will replace previous progress)
-                if (progressText) {
-                  yield {
-                    role: "assistant" as const,
-                    content: [
-                      {
-                        type: "text" as const,
-                        text: progressText,
-                      },
-                    ],
-                  };
+                  // Otherwise, let previous status message persist
                 }
               } else if (chunk.type === 'workflow_error' || chunk.type === 'error') {
                 console.error('[StreamAdapter] Received ERROR:', chunk.content);
@@ -344,7 +429,7 @@ export const createStreamingAdapterWithConfig = (
           console.log('[StreamAdapter] Reader lock released');
         }
 
-        console.log('[StreamAdapter] Processing complete. hasReceivedContent:', hasReceivedContent, 'fullText length:', fullText.length);
+        console.log('[StreamAdapter] Processing complete. hasReceivedContent:', hasReceivedContent, 'fullText length:', fullText.length, 'objects:', objects.length);
 
         // After stream completes, store objects and suggestions in map
         if (hasReceivedContent && fullText) {
@@ -352,7 +437,16 @@ export const createStreamingAdapterWithConfig = (
           const isNewSuggestions = config.suggestionsMapRef && !config.suggestionsMapRef.current.has(fullText) && suggestions.length > 0;
           
           if (config.objectsMapRef && objects.length > 0) {
+            console.log('[StreamAdapter] Final: Setting objects for text:', fullText.substring(0, 50));
             config.objectsMapRef.current.set(fullText, objects);
+            
+            // Clean up only truly temporary keys, but keep progressText if it had the cards
+            config.objectsMapRef.current.delete('loading');
+            // DON'T delete progressText - it might still be used by the displayed message
+            // Only delete empty string if it's different from progressText
+            if (progressText !== '') {
+              config.objectsMapRef.current.delete('');
+            }
           }
 
           if (config.suggestionsMapRef && suggestions.length > 0) {
