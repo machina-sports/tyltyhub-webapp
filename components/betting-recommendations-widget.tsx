@@ -190,7 +190,7 @@ export function BettingRecommendationsWidget({
   return (
     <div className={cn("w-full max-w-[420px]", className)}>
       {/* Carousel Container - Single border containing everything */}
-      <div className="rounded-lg border border-border bg-card text-card-foreground shadow ml-9 md:ml-[0px] p-4">
+      <div className="rounded-lg border border-border bg-card text-card-foreground shadow md:ml-[0px] p-4">
         {/* Current Recommendation - No nested Card wrapper */}
         <RecommendationCard market={markets[currentIndex]} isCarousel={true} />
 

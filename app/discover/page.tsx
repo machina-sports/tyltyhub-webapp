@@ -313,7 +313,7 @@ export default function DiscoverPage() {
               // No mobile: mostrar apenas se isSearchVisible for true
               // No desktop: sempre mostrar
               "md:block",
-              isSearchVisible ? "block" : "hidden md:block"
+              "block"
             )}>
               <div className="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-3">
                 <div className="relative w-full md:w-[232px]">
