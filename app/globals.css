@@ -426,26 +426,9 @@
     border: 1px solid hsl(var(--brand-primary) / 0.3) !important;
   }
 
-  /* Assistant bubble styling - transparent background */
+  /* Assistant bubble styling */
   .chat-bubble-assistant {
-    background-color: transparent !important;
     border: 1px solid hsl(var(--brand-primary) / 0.2) !important;
-  }
-  
-  /* Override any background that might be applied to assistant bubbles */
-  [data-brand="bwin"] .chat-bubble-assistant,
-  [data-brand="sportingbet"] .chat-bubble-assistant {
-    background-color: transparent !important;
-  }
-  
-  /* Force transparent background for assistant bubbles - highest specificity */
-  div.chat-bubble-assistant {
-    background-color: transparent !important;
-  }
-  
-  [data-brand="bwin"] div.chat-bubble-assistant,
-  [data-brand="sportingbet"] div.chat-bubble-assistant {
-    background-color: transparent !important;
   }
   
   /* Sportingbet specific assistant bubble styling */
@@ -463,15 +446,6 @@
   [data-brand="bwin"] .chat-bubble-content h2,
   [data-brand="bwin"] .chat-bubble-content h3 {
     color: black !important;
-  }
-
-  /* Sportingbet input improvements - remove backgrounds */
-  [data-brand="sportingbet"] .chat-input-container {
-    background-color: transparent !important;
-  }
-  
-  [data-brand="sportingbet"] .chat-input-field {
-    background-color: transparent !important;
   }
 
   /* Sportingbet footer improvements - use proper background */
@@ -493,16 +467,6 @@
   /* Force footer background with highest specificity */
   [data-brand="sportingbet"] div.fixed.bottom-0.left-0.right-0.border-t.flex.items-center.justify-around.px-4.bg-bwin-neutral-10.border-bwin-neutral-30.footer-mobile {
     background-color: hsl(var(--background)) !important;
-  }
-
-  /* Sportingbet responsible gaming footer - transparent */
-  [data-brand="sportingbet"] .responsible-gaming-footer {
-    background-color: transparent !important;
-  }
-
-  /* Sportingbet responsible gaming mobile - transparent */
-  [data-brand="sportingbet"] .responsible-gaming-mobile {
-    background-color: transparent !important;
   }
 
   /* Sportingbet text colors - use dynamic brand primary */
@@ -651,20 +615,6 @@
     color: hsl(var(--brand-primary)) !important;
   }
 
-  /* Sportingbet - remove all remaining backgrounds */
-  [data-brand="sportingbet"] .bg-bwin-neutral-10,
-  [data-brand="sportingbet"] .bg-bwin-neutral-20,
-  [data-brand="sportingbet"] .bg-bwin-neutral-25,
-  [data-brand="sportingbet"] .bg-bwin-neutral-30,
-  [data-brand="sportingbet"] .bg-bwin-neutral-40,
-  [data-brand="sportingbet"] .bg-bwin-neutral-50,
-  [data-brand="sportingbet"] .bg-bwin-neutral-60,
-  [data-brand="sportingbet"] .bg-bwin-neutral-70,
-  [data-brand="sportingbet"] .bg-bwin-neutral-80,
-  [data-brand="sportingbet"] .bg-bwin-neutral-90 {
-    background-color: transparent !important;
-  }
-
   /* Bwin scrollbar - yellow color */
   [data-brand="bwin"] ::-webkit-scrollbar {
     width: 8px;
@@ -736,35 +686,9 @@
     color: hsl(var(--brand-primary)) !important;
   }
 
-  /* Sportingbet specific background override */
-  [data-brand="sportingbet"] {
-    /* --bg-primary removed to allow transparency */
-  }
-  
   [data-brand="sportingbet"] main,
   [data-brand="sportingbet"] .main-content {
     background-color: #061F3F;
-  }
-  
-  /* Override any bwin-specific backgrounds for sportingbet */
-  [data-brand="sportingbet"] .bg-bwin-neutral-10,
-  [data-brand="sportingbet"] .bg-bwin-neutral-20,
-  [data-brand="sportingbet"] .bg-bwin-neutral-25,
-  [data-brand="sportingbet"] .bg-bwin-neutral-30,
-  [data-brand="sportingbet"] .bg-bwin-neutral-40,
-  [data-brand="sportingbet"] .bg-bwin-neutral-50,
-  [data-brand="sportingbet"] .bg-bwin-neutral-60,
-  [data-brand="sportingbet"] .bg-bwin-neutral-70,
-  [data-brand="sportingbet"] .bg-bwin-neutral-80,
-  [data-brand="sportingbet"] .bg-bwin-neutral-90,
-  [data-brand="sportingbet"] .bg-bwin-neutral-100 {
-    background-color: transparent;
-  }
-  
-  /* Override input backgrounds for sportingbet */
-  [data-brand="sportingbet"] input,
-  [data-brand="sportingbet"] textarea {
-    background-color: transparent;
   }
   
   /* Sportingbet main background */
@@ -784,12 +708,6 @@
   /* Sportingbet sidebar background */
   [data-brand="sportingbet"] .sidebar-container {
     background-color: #061F3F !important;
-  }
-  
-  /* Keep flex containers transparent for layering */
-  [data-brand="sportingbet"] .flex,
-  [data-brand="sportingbet"] .flex-1 {
-    background-color: transparent;
   }
   
   /* Sportingbet specific border color */
