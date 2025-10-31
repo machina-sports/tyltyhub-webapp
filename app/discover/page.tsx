@@ -23,7 +23,20 @@ interface SearchFilters {
   "metadata.content_type"?: { "$ne": string };
   "metadata.article_type"?: { "$in": string[] };
   "value.title"?: { $regex: string; $options: string };
-  "metadata.sport_type"?: string;
+  "metadata.competition_name"?: { "$in": string[] };
+}
+
+interface CompetitionFilter {
+  name: string;
+  title: string;
+  category: string;
+  description: string;
+  metadata: {
+    competition_name?: string[];
+    name?: string[];
+  };
+  sorters: any[];
+  view: string;
 }
 
 interface SearchResults {
@@ -57,7 +70,7 @@ function useDebounce<T>(value: T, delay: number): T {
   return debouncedValue;
 }
 
-const buildSearchFilters = (searchQuery: string, sportType: string): SearchFilters => {
+const buildSearchFilters = (searchQuery: string, competitionFilter?: CompetitionFilter): SearchFilters => {
 
 
   const baseFilters: SearchFilters = {
@@ -73,8 +86,13 @@ const buildSearchFilters = (searchQuery: string, sportType: string): SearchFilte
     baseFilters["value.title"] = { $regex: searchQuery, $options: "i" };
   }
 
-  if (sportType && sportType !== "all") {
-    baseFilters["metadata.sport_type"] = sportType;
+  // Add competition filter if selected
+  if (competitionFilter && competitionFilter.name !== "all-competitions") {
+    if (competitionFilter.metadata.competition_name && competitionFilter.metadata.competition_name.length > 0) {
+      baseFilters["metadata.competition_name"] = {
+        "$in": competitionFilter.metadata.competition_name
+      };
+    }
   }
 
   return baseFilters;
@@ -86,7 +104,9 @@ export default function DiscoverPage() {
   const [activeTab, setActiveTab] = useState("news");
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
-  const [selectedSport, setSelectedSport] = useState<string>("all");
+  const [competitionFilters, setCompetitionFilters] = useState<CompetitionFilter[]>([]);
+  const [selectedCompetition, setSelectedCompetition] = useState<string>("all-competitions");
+  const [isLoadingFilters, setIsLoadingFilters] = useState(true);
   
   const { isSearchVisible } = useSearch();
   const headerRef = useRef<HTMLDivElement>(null);
@@ -103,6 +123,11 @@ export default function DiscoverPage() {
     }
   }, []);
 
+  const selectedCompetitionFilter = useMemo(() => 
+    competitionFilters.find(f => f.name === selectedCompetition),
+    [competitionFilters, selectedCompetition]
+  );
+
   const handleSearchChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = e.target.value;
@@ -110,7 +135,7 @@ export default function DiscoverPage() {
       
       if (!newValue) {
         setIsSearching(true);
-        const filters = buildSearchFilters("", selectedSport);
+        const filters = buildSearchFilters("", selectedCompetitionFilter);
         dispatch(searchArticles({ 
           filters,
           pagination: { page: 1, page_size: pageSize },
@@ -118,14 +143,14 @@ export default function DiscoverPage() {
         })).finally(() => setIsSearching(false));
       }
     },
-    [dispatch, pageSize, selectedSport]
+    [dispatch, pageSize, selectedCompetitionFilter]
   );
 
   const handleSearchKeyPress = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Enter' && searchQuery.trim()) {
         setIsSearching(true);
-        const filters = buildSearchFilters(searchQuery, selectedSport);
+        const filters = buildSearchFilters(searchQuery, selectedCompetitionFilter);
         dispatch(searchArticles({ 
           filters,
           pagination: { page: 1, page_size: pageSize },
@@ -133,7 +158,7 @@ export default function DiscoverPage() {
         })).finally(() => setIsSearching(false));
       }
     },
-    [searchQuery, dispatch, pageSize, selectedSport]
+    [searchQuery, dispatch, pageSize, selectedCompetitionFilter]
   );
 
   const handleTabChange = useCallback((value: string) => {
@@ -151,18 +176,18 @@ export default function DiscoverPage() {
     setSearchQuery("");
     // Recarregar artigos sem filtro de busca
     setIsSearching(true);
-    const filters = buildSearchFilters("", selectedSport);
+    const filters = buildSearchFilters("", selectedCompetitionFilter);
     dispatch(searchArticles({ 
       filters,
       pagination: { page: 1, page_size: pageSize },
       sorters: ["_id", -1]
     })).finally(() => setIsSearching(false));
-  }, [dispatch, pageSize, selectedSport]);
+  }, [dispatch, pageSize, selectedCompetitionFilter]);
 
   const handleLoadMore = useCallback(() => {
     if (searchResults.status !== "loading" && searchResults.pagination.hasMore) {
       const nextPage = searchResults.pagination.page + 1;
-      const filters = buildSearchFilters(debouncedSearchQuery, selectedSport);
+      const filters = buildSearchFilters(debouncedSearchQuery, selectedCompetitionFilter);
 
       dispatch(searchArticles({ 
         filters,
@@ -170,32 +195,54 @@ export default function DiscoverPage() {
         sorters: ["_id", -1]
       }));
     }
-  }, [searchResults.status, searchResults.pagination.hasMore, searchResults.pagination.page, debouncedSearchQuery, dispatch, pageSize, selectedSport]);
+  }, [searchResults.status, searchResults.pagination.hasMore, searchResults.pagination.page, debouncedSearchQuery, dispatch, pageSize, selectedCompetitionFilter]);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
+  
+  useEffect(() => {
+    const fetchCompetitionFilters = async () => {
+      try {
+        setIsLoadingFilters(true);
+        const response = await fetch('/api/competition-filters');
+        const data = await response.json();
+        if (data.data && Array.isArray(data.data)) {
+          setCompetitionFilters(data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching competition filters:', error);
+      } finally {
+        setIsLoadingFilters(false);
+      }
+    };
+
+    fetchCompetitionFilters();
+  }, []);
 
   useEffect(() => {
-    const filters = buildSearchFilters("", selectedSport);
-    dispatch(searchArticles({ 
-      filters,
-      pagination: { page: 1, page_size: pageSize },
-      sorters: ["_id", -1]
-    }));
-  }, [dispatch, pageSize, selectedSport]);
+    if (!isLoadingFilters) {
+      const filters = buildSearchFilters("", selectedCompetitionFilter);
+      dispatch(searchArticles({ 
+        filters,
+        pagination: { page: 1, page_size: pageSize },
+        sorters: ["_id", -1]
+      }));
+    }
+  }, [dispatch, pageSize, selectedCompetitionFilter, isLoadingFilters]);
 
-  const handleSportChange = useCallback((value: string) => {
-    setSelectedSport(value);
+  const handleCompetitionChange = useCallback((value: string) => {
+    setSelectedCompetition(value);
     setIsSearching(true);
-    const filters = buildSearchFilters(searchQuery, value);
+    const newCompetitionFilter = competitionFilters.find(f => f.name === value);
+    const filters = buildSearchFilters(searchQuery, newCompetitionFilter);
     dispatch(searchArticles({
       filters,
       pagination: { page: 1, page_size: pageSize },
       sorters: ["_id", -1]
     })).finally(() => setIsSearching(false));
-  }, [dispatch, pageSize, searchQuery]);
+  }, [dispatch, pageSize, searchQuery, competitionFilters]);
 
 
 
@@ -266,19 +313,24 @@ export default function DiscoverPage() {
               // No mobile: mostrar apenas se isSearchVisible for true
               // No desktop: sempre mostrar
               "md:block",
-              isSearchVisible ? "block" : "hidden md:block"
+              "block"
             )}>
-              <div className="flex justify-between items-center gap-3">
+              <div className="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-3">
                 <div className="relative w-full md:w-[232px]">
-                  <Select value={selectedSport} onValueChange={handleSportChange}>
+                  <Select 
+                    value={selectedCompetition} 
+                    onValueChange={handleCompetitionChange}
+                    disabled={isLoadingFilters || competitionFilters.length === 0}
+                  >
                     <SelectTrigger className="text-white" style={{ backgroundColor: 'hsl(var(--bg-secondary))', borderColor: 'hsl(var(--border-primary))' }}>
-                      <SelectValue placeholder="All sports" />
+                      <SelectValue placeholder={isLoadingFilters ? "Loading..." : "All competitions"} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All</SelectItem>
-                      <SelectItem value="football">Football</SelectItem>
-                      <SelectItem value="nfl">NFL</SelectItem>
-                      <SelectItem value="tennis">Tennis</SelectItem>
+                      {competitionFilters.map((filter) => (
+                        <SelectItem key={filter.name} value={filter.name}>
+                          {filter.title}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -286,7 +338,7 @@ export default function DiscoverPage() {
                   <Search className="absolute left-2 top-2.5 h-4 w-4 text-bwin-neutral-80" />
                   <Input
                     placeholder="Buscar artigos..."
-                    className="pl-8 text-base max-w-[232px] text-white placeholder:text-neutral-60 focus:border-brand-primary"
+                    className="pl-8 text-base max-w-full md:max-w-[232px] text-white placeholder:text-neutral-60 focus:border-brand-primary"
                     value={searchQuery}
                     onChange={handleSearchChange}
                     onKeyPress={handleSearchKeyPress}
