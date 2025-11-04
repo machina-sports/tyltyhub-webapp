@@ -226,7 +226,7 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
         <CardContent className="p-0">
           <div className="flex flex-col md:grid md:grid-cols-12 gap-0">
             <div className="md:col-span-6">
-              <Link href={articleUrl} prefetch={false} className="relative aspect-[3/2] md:h-full w-full block cursor-pointer">
+              <Link href={articleUrl} prefetch={false} className="relative aspect-[3/2] w-full block cursor-pointer">
                 {imageUrl && (
                   <Image
                     src={mainImageUrl}
@@ -238,9 +238,9 @@ export function ArticleGrid({ articles, layout = 'threeCards' }: ArticleGridProp
                 )}
               </Link>
             </div>
-            <div className="md:col-span-6 p-4 md:p-8 flex flex-col">
+            <div className="md:col-span-6 p-4 md:px-8 md:py-5 flex flex-col justify-center">
               <div className="space-y-3">
-                <h2 className="text-3xl md:text-4xl font-bold line-clamp-3">
+                <h2 className="text-2xl md:text-3xl font-bold line-clamp-3">
                   <Link href={articleUrl} prefetch={false} className="article-title-hover text-foreground transition-colors">
                     {title}
                   </Link>
