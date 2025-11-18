@@ -29,7 +29,6 @@ import { ResponsibleGamingResponsive } from "@/components/responsible-gaming-res
 import { useBrandTexts } from "@/hooks/use-brand-texts"
 import { Loading } from "@/components/ui/loading"
 import { useAssistant } from "@/providers/assistant/use-assistant"
-import { saveMessageToThread } from "@/functions/thread-register"
 
 import { Loader2 } from "lucide-react"
 // import ScrollingRow from "./scrolling-row" // HIDDEN

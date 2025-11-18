@@ -45,42 +45,6 @@ export async function registerThread({
 }
 
 /**
- * Save a message to the thread
- * Call this immediately when user sends a message
- */
-export async function saveMessageToThread({
-  threadId,
-  message,
-}: {
-  threadId: string;
-  message: {
-    role: "user" | "assistant";
-    content: string;
-  };
-}): Promise<{ error: boolean }> {
-  try {
-    // Call Next.js API route for server-side processing
-    const response = await fetch("/api/thread/message", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        threadId,
-        message
-      }),
-    });
-
-    const result = await response.json();
-    return { error: result.error || false };
-
-  } catch (error) {
-    console.error("Error saving message to thread:", error);
-    return { error: true };
-  }
-}
-
-/**
  * Get thread history - loads all messages from thread
  */
 export async function getThreadHistory(threadId: string): Promise<{
