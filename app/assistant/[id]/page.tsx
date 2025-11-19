@@ -20,6 +20,7 @@ import { getThreadHistory } from "@/functions/thread-register";
 import { useBrandTexts } from "@/hooks/use-brand-texts";
 import { BettingRecommendationsWidget } from "@/components/betting-recommendations-widget";
 import { ArticleRecommendationWidget } from "@/components/article-recommendation-widget";
+import { ParlayBettingWidget } from "@/components/parlay-betting-widget";
 import { ResponsibleGamingResponsive } from "@/components/responsible-gaming-responsive";
 import { useAssistant } from "@/providers/assistant/use-assistant";
 import { motion, AnimatePresence } from "framer-motion";
@@ -319,11 +320,16 @@ function AssistantChatContent({
                       const suggestions = Array.isArray(suggestionsData) ? suggestionsData : [];
                       
                       // Check if these specific widgets should animate
+                      const parlayKey = `parlay-${textContent}`;
                       const marketsKey = `markets-${textContent}`;
                       const articlesKey = `articles-${textContent}`;
                       const suggestionsKey = `suggestions-${textContent}`;
                       
-                      // Extract articles and markets from objects
+                      // Extract parlay, articles and markets from objects
+                      const parlay = Array.isArray(objects)
+                        ? objects.find((o: any) => o?.runners && o?.total_odd && o?.leg_count)
+                        : null;
+                      
                       const articles = Array.isArray(objects)
                         ? objects
                             .filter((o: any) => o?.article_id && o?.slug)
@@ -338,7 +344,7 @@ function AssistantChatContent({
                       
                       const markets = Array.isArray(objects)
                         ? objects
-                            .filter((o: any) => !o?.article_id) // Exclude articles from markets
+                            .filter((o: any) => !o?.article_id && !o?.runners) // Exclude articles and parlays from markets
                             .map((o: any) => {
                               const oddsValue = Number(
                                 (o && (o.price ?? o.bet_odd ?? o.odds ?? o.odd))
@@ -358,16 +364,18 @@ function AssistantChatContent({
                             .filter((m: any) => m.title && typeof m.odds === 'number' && !Number.isNaN(m.odds))
                         : [];
                       
+                      const shouldAnimateParlay = !animatedWidgetsRef.current.has(parlayKey) && parlay !== null;
                       const shouldAnimateMarkets = !animatedWidgetsRef.current.has(marketsKey) && markets.length > 0;
                       const shouldAnimateArticles = !animatedWidgetsRef.current.has(articlesKey) && articles.length > 0;
                       const shouldAnimateSuggestions = !animatedWidgetsRef.current.has(suggestionsKey) && suggestions.length > 0;
                       
                       // Mark as animated AFTER mount using effect
                       useEffect(() => {
+                        if (parlay) animatedWidgetsRef.current.add(parlayKey);
                         if (markets.length > 0) animatedWidgetsRef.current.add(marketsKey);
                         if (articles.length > 0) animatedWidgetsRef.current.add(articlesKey);
                         if (suggestions.length > 0) animatedWidgetsRef.current.add(suggestionsKey);
-                      }, [marketsKey, articlesKey, suggestionsKey, markets.length, articles.length, suggestions.length]);
+                      }, [parlayKey, marketsKey, articlesKey, suggestionsKey, parlay, markets.length, articles.length, suggestions.length]);
 
                       const handleSuggestionClick = (suggestion: string) => {
                         const composer = composerRef.current;
@@ -406,6 +414,19 @@ function AssistantChatContent({
                                 <ObjectCards objects={objects} />
                               )} */}
                             </div>
+                            <AnimatePresence mode="wait">
+                              {parlay && (
+                                <motion.div
+                                  key={`parlay-widget-${textContent}`}
+                                  initial={shouldAnimateParlay ? { opacity: 0, y: -20 } : false}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ duration: 0.5, ease: "easeOut" }}
+                                  className="mt-3 w-full"
+                                >
+                                  <ParlayBettingWidget parlay={parlay} />
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
                             <AnimatePresence mode="wait">
                               {markets && markets.length > 0 && (
                                 <motion.div

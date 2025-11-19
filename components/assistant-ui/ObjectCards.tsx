@@ -1,4 +1,5 @@
 import { ExternalLink } from "lucide-react";
+import { ParlayBettingWidget } from "../parlay-betting-widget";
 
 interface ObjectCardsProps {
   objects: any[];
@@ -6,6 +7,12 @@ interface ObjectCardsProps {
 
 export function ObjectCards({ objects }: ObjectCardsProps) {
   if (!objects || !Array.isArray(objects) || objects.length === 0) return null;
+
+  // Check if there's a parlay bet in the objects array
+  const parlayObject = objects.find(obj => obj.runners && obj.total_odd && obj.leg_count);
+  if (parlayObject) {
+    return <ParlayBettingWidget parlay={parlayObject} />;
+  }
 
   // Helper to format date/time nicely
   const formatDateTime = (obj: any) => {

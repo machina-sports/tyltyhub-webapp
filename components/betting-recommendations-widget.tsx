@@ -153,6 +153,8 @@ export function BettingRecommendationsWidget({
   const [currentIndex, setCurrentIndex] = useState(0)
   const { brand } = useBrand()
 
+  markets = markets.slice(0, 8); // Limit to 8 markets
+
   const nextRecommendation = () => {
     setCurrentIndex((prev) => (prev + 1) % markets.length)
   }
